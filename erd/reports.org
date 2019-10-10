@@ -1,0 +1,59 @@
+
+* Ontology
+** Model attributes
+   Comprehensive metadata list is:
+   https://wiki.wemove.eu/display/CAMPEVAL/Campaigning+metadata
+** Entities
+*** Campaigns
+    - language campaigns
+    - parent campaigns
+    - some other - in the middle - campaigns?
+**** has many actions [tactics?] inside
+     - but really, what action is the campaign about ?
+     - what is the ORDER of actions? Which are even attempted, which not?
+     - what is the preferred action for campaign
+     - what is the action member is directed to (say, two buttons in the e-mail)?
+     - 
+     -
+*** Member 
+    - (or: Actor? Person? people could be good table name)
+    - Member vs "non-member" (subscribed? active member? non-on ice?)
+    - New (fresh member)? [ joining_dt = consent_dt = action_dt ]
+    - Seed (from partner)
+    - AD-member (find better name)
+    - [this are all parameters of influx of people from Sources ]
+    - 
+**** Is a kind of Segment
+**** Language is a very important property
+*** Goal ( measured in different quantities ) 
+    - signatures
+    - actions
+    - actions in response to an ask (but not shares for instance)
+    - impressions ?
+
+*** Segments
+    - A person can have a number >= 0 of (joined_dt, left_dt) non-overlapping segment memberships
+    - segment membership of (joined_dt, NULL) means (joined_dt, CURRENT_TIME)
+    - 
+   
+*** Sources (Broadcasts?)
+**** Sharing / Viral broadcast
+***** generation (worth encoding in tracking code)
+***** medium type
+**** Social media ads
+***** budget spent 
+**** Social media posts
+**** Email Blasts
+***** 
+**** Other blasts
+**** Partners seeding
+*****  wwwhat was their seed list size?
+***** exposure? (= opens)
+
+*** 
+** Metrics
+*** Goal achieved %
+
+
+
+* Metrics
