@@ -1,4 +1,6 @@
-create  table calendar (
+drop table if exists calendar;
+
+create table calendar (
        dt date not null primary key,
        y smallint null,
        q tinyint null,
@@ -13,7 +15,7 @@ create  table calendar (
 
 
 
-create table ints ( i tinyint ); insert into ints values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
+create temporary table ints ( i tinyint ); insert into ints values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
 
 insert into calendar (dt) select date('2010-01-01') + interval a.i*10000 + b.i*1000 + c.i*100 + d.i*10 + e.i day
 from ints a join ints b join ints c join ints d join ints e
@@ -33,3 +35,5 @@ update calendar set
        dayname = dayname(dt),
        w = week(dt);
    
+
+drop table ints;
