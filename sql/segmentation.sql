@@ -9,5 +9,7 @@ VALUES
 ('Membership', NULL),
 ('Language', 32),
 ('Country interest', 10),
-('Country', NULL)
+('Country', NULL),
+('Active 6 month', NULL),
+('Active 3 month', NULL)
 ;

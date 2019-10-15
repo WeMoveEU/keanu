@@ -78,26 +78,3 @@ WHERE ghj.status = 'Added'
 
 DROP TABLE group_history;
 
-
------ -=================
--- problematic contact_id = 25446
--- ERROR 1062 (23000): Duplicate entry '5-1-21-2015-09-04 10:43:49' for key 'one_segment_in_segmentation_at_a_time'
--- 21
-
-SELECT DISTINCT
-s.segmentation_id,
-s.id,
-ghj.contact_id,
-ghj.date,
-ghl.date
-FROM group_history ghj
--- only take contacts we still process
-JOIN contact c ON ghj.contact_id = c.id
--- find the ending time of this group membership
-LEFT JOIN group_history ghl
-ON ghj.group_id = ghl.group_id AND ghj.contact_id = ghl.contact_id AND ghj.order_rank + 1 = ghl.order_rank
-JOIN
-segment s ON ghj.group_id = s.external_id
-
-WHERE ghj.status = 'Added'
-and c.id = 21

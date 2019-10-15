@@ -29,5 +29,7 @@ FROM wemove_47.civicrm_contact c JOIN
 
 WHERE c.contact_type = 'Individual' AND  c.is_deleted <> 1
 AND NOT e.id IN (20, 283,119152, 1072837) -- ignore anomalous duplicate primary emails
+-- update XXX
+AND c.id > 2352698
 
 ;

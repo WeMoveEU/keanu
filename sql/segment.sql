@@ -34,4 +34,12 @@ parents = 10;
 
 set @country = (select id from segmentation where name = 'Country');
 
+-- Active
 
+INSERT INTO segment (name, segmentation_id, external_id)
+SELECT
+s.name,
+s.id,
+NULL
+FROM segmentation s
+WHERE s.name like 'Active%';
