@@ -2,7 +2,7 @@ DROP FUNCTION date_trunc_day;
 
 CREATE FUNCTION date_trunc_day (d DATETIME)
 RETURNS DATETIME DETERMINISTIC
-RETURN str_to_date(date_format(d, '%Y-%m-%d'), '%Y-%m-%d');
+RETURN date(d);
 
 
 DROP FUNCTION date_trunc_month;
