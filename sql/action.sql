@@ -1,3 +1,4 @@
+-- Houdini widgets
 INSERT INTO action
   (campaign_id, action_type, started_at, ended_at, external_id, external_system)
   SELECT
@@ -5,14 +6,15 @@ INSERT INTO action
     'donate',
     c.start_date,
     c.end_date,
-    SUBSTR(c.external_identifier FROM 4),
+    RIGHT(c.external_identifier, 1),
     'houdini'
   FROM wemove_47.civicrm_campaign c
   JOIN wemove_47.civicrm_campaign p ON p.id=c.parent_id
   JOIN campaign camp ON camp.name=p.name COLLATE utf8_general_ci
-  WHERE c.external_identifier REGEXP '^cc_[0-9]+$'
+  WHERE c.external_identifier REGEXP '^cc[a-z_]+[0-9]+$'
 ;
 
+-- Speakout actions
 INSERT INTO action
   (campaign_id, action_type, language, started_at, ended_at, external_id, external_system)
   SELECT
@@ -38,5 +40,25 @@ INSERT INTO action
   WHERE c.external_identifier NOT LIKE 'cc_%'
     AND a.activity_type_id IN (2, 3, 32, 54, 59, 67)
   GROUP BY c.id, camp.id, activity_type_id
+;
+
+-- CiviCRM contribution pages
+INSERT INTO action
+  (campaign_id, action_type, language, started_at, ended_at, external_id, external_system)
+  SELECT
+    camp.id,
+    'donate',
+    x.language_4,
+    IFNULL(dp.start_date, dp.created_date),
+    dp.end_date,
+    dp.id,
+    'civicrm_contrib'
+  FROM wemove_47.civicrm_contribution d
+  JOIN wemove_47.civicrm_contribution_page dp ON dp.id=d.contribution_page_id
+  JOIN wemove_47.civicrm_campaign c ON c.id=dp.campaign_id
+  JOIN wemove_47.civicrm_campaign p ON p.id=c.parent_id
+  JOIN campaign camp ON camp.name=p.name COLLATE utf8_general_ci
+  JOIN wemove_47.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
+  GROUP BY d.contribution_page_id, camp.id
 ;
 
