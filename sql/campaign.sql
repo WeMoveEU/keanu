@@ -1,3 +1,9 @@
+INSERT INTO campaign 
+(name,  started_at,  campaign_type)
+VALUES
+('Other Fundraising', '2015-01-01', 'placeholder'), -- null medium
+('Survey Fundraising', '2015-01-01', 'placeholder'); -- utm_medium=dupal-survey
+
 INSERT INTO campaign
   (name, started_at, ended_at, campaign_type, external_id, external_system)
   SELECT
