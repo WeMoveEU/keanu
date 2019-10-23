@@ -10,7 +10,7 @@ CASE
     WHEN utm.utm_medium = 'drupal-survey' THEN
      (SELECT id from campaign where name = 'Survey Fundraising')
     ELSE
-     (SELECT id from campaign where name = 'Other Fundraising')
+     (SELECT id from campaign where name = 'Unknown Fundraising')
    END
   ELSE c.id
 END as campaign_id,
