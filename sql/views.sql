@@ -15,6 +15,7 @@ CREATE VIEW contribution_recur_to_campaign AS
       ELSE c.id
     END as campaign_id,
     m.id as mailing_id,
+    language_4 as language,
     utm.utm_source,
     utm.utm_medium,
     utm.utm_campaign
@@ -30,6 +31,8 @@ CREATE VIEW contribution_recur_to_campaign AS
     ON (utm.utm_medium = 'speakout' AND SUBSTRING(utm.utm_source, 10) = c_speakout.external_identifier)
   LEFT JOIN campaign c
     ON c.external_id = COALESCE(m.campaign_id, c_speakout.id)
+  LEFT JOIN wemove_47.civicrm_value_speakout_integration_2 xc
+    ON xc.entity_id = COALESCE(m.campaign_id, c_speakout.id)
 
   WHERE rd.is_test = 0
 ;

@@ -28,10 +28,11 @@ INSERT INTO action
 
 -- Create donate action for every recurring contribution that can be tracked by utm
 -- the contribution_recur_to_campaign VIEW holds the logic 
+-- FIXME This should not be needed, as previous query should cover it, once campaign is properly attributed to activities
 INSERT INTO action
-  (campaign_id, action_type)
+  (campaign_id, action_type, language, external_id, external_system)
   SELECT
-    distinct c.id, 'donate'
+    distinct c.id, 'donate', rd2c.language, c.external_id, c.external_system
   FROM contribution_recur_to_campaign rd2c
   JOIN campaign c ON rd2c.campaign_id = c.id
 ;
