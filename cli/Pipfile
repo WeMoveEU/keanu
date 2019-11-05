@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 petl = "*"
+click = "*"
+sqlalchemy = "*"
+python-dotenv = "*"
+pymysql = "*"
 
 [dev-packages]
 
