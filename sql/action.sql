@@ -1,3 +1,4 @@
+-- ORDER: 30
 INSERT INTO action
     (campaign_id, action_type, language, external_id, external_system)
 SELECT
@@ -5,7 +6,7 @@ SELECT
     CASE
     WHEN activity_type_id = 2 THEN 'call'
     WHEN activity_type_id = 3 THEN 'email'
-    WHEN activity_type_id = 6 THEN 'donate'
+    WHEN activity_type_id = 6 THEN 'donation'
     WHEN activity_type_id = 32 THEN 'sign'
     WHEN activity_type_id = 54 THEN 'share'
     WHEN activity_type_id = 59 THEN 'tweet'

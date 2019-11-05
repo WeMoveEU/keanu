@@ -1,8 +1,10 @@
-INSERT INTO campaign 
+-- ORDER: 2
+INSERT INTO campaign
     (name,  started_at,  campaign_type)
     VALUES
-    ('Other Fundraising', '2015-01-01', 'placeholder'), -- null medium
-    ('Survey Fundraising', '2015-01-01', 'placeholder'); -- utm_medium=dupal-survey
+    ('Other Fundraising', '2015-01-01', 'wemove'), -- null medium
+    ('Survey Fundraising', '2015-01-01', 'wemove') -- utm_medium=dupal-survey
+;
 
 INSERT INTO campaign
     (name, started_at, ended_at, campaign_type, external_id, external_system)
@@ -19,5 +21,7 @@ SELECT
     'civicrm_campaign'
 FROM wemove_47.civicrm_campaign c
 WHERE c.id=c.parent_id
+-- BEGIN INCREMENTAL
+ AND c.id NOT IN (SELECT external_id FROM campaign WHERE external_system = 'civicrm_campaign')
+-- END INCREMENTAL
     ;
-

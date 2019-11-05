@@ -1,4 +1,4 @@
--- PREFERENCE: 10
+-- ORDER: 10
 -- Members: 42
 -- Country interest: 10 (perent)
 -- Languages: 32

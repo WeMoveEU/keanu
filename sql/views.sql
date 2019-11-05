@@ -1,5 +1,6 @@
+-- ORDER: 4
 -- Use this view to figure out which campaign id is assigned to a Civi CONTRIB RECUR id
-DROP VIEW contribution_recur_to_campaign;
+DROP VIEW IF EXISTS contribution_recur_to_campaign;
 
 CREATE VIEW contribution_recur_to_campaign AS
 SELECT
@@ -27,10 +28,10 @@ LEFT JOIN wemove_47.civicrm_value_recur_utm utm
 LEFT JOIN wemove_47.civicrm_mailing m
   ON (utm.utm_medium = 'email' AND
      substring_index(utm.utm_source, '-', -1) = m.id)
-LEFT JOIN wemove_47.civicrm_campaign c_speakout 
-  OR (utm.utm_medium = 'speakout' AND
+LEFT JOIN wemove_47.civicrm_campaign c_speakout
+  ON (utm.utm_medium = 'speakout' AND
      substring_index(utm.utm_source, '-', -1) = c_speakout.external_identifier)
 LEFT JOIN campaign c
   ON c.external_id = COALESCE(m.campaign_id, c_speakout.id)
 
-WHERE rd.is_test = 0
+WHERE rd.is_test = 0;

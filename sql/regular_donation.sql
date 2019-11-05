@@ -1,3 +1,4 @@
+-- ORDER: 35
 -- regular donations
 -- +-------------------+---------------+------+-----+---------+----------------+
 -- | Field             | Type          | Null | Key | Default | Extra          |
@@ -14,11 +15,30 @@
 -- | failure_count     | varchar(32)   | NO   |     | 0       |                |
 -- +-------------------+---------------+------+-----+---------+----------------+
 
+-- XXX because finrecon.stripe_payments is not UTF it will make this query super slow
+-- because a CONVERT(.. USING UTF8) will be inserted on JOIN with stripe_payments.
+DROP TABLE IF EXISTS stripe_payments;
+
+CREATE TABLE stripe_payments
+(
+`id` varchar(255) NOT NULL,
+`card_id` varchar(255) NOT NULL,
+`amount` decimal(20,2) NOT NULL,
+`created_date` datetime DEFAULT NULL,
+`status` varchar(255) DEFAULT NULL
+
+) ;
+INSERT INTO stripe_payments
+SELECT id,card_id,amount,created_date,status from finrecon.stripe_payments;
+
+CREATE INDEX stripe_payments_id ON stripe_payments (id);
+CREATE INDEX stripe_payments_card_id ON stripe_payments (card_id);
+
+
 
 INSERT INTO regular_donation
 (amount,total_amount,original_currency,original_amount,provider,contact_action_id, ended_at,
 payment_count,failure_count)
-
 SELECT
   amount,
   total_amount,
@@ -39,8 +59,7 @@ SELECT
   payment_count,
   failure_count
 
-FROM ( -- x 
----- FIRSTLY, NON-STRIPE
+FROM ( -- x
 SELECT
 ca.id as contact_action_id,
 rd.amount as original_amount,
@@ -79,6 +98,8 @@ max(sp.created_date) as last_payment_date
 FROM wemove_47.civicrm_contribution_recur rd
 JOIN contact_action ca ON rd.id = ca.external_id
 JOIN stripe_payments sp 
+    -- Here we take any contrib for this recur, and by its trxn_id we can reach stripe_payment record
+    -- We will return card_id, which we can use to select all payments for a particular regular_donation
     ON sp.card_id = (SELECT px.card_id FROM stripe_payments px
                      JOIN wemove_47.civicrm_contribution cx ON px.id = cx.trxn_id
                      WHERE cx.contribution_recur_id = rd.id
@@ -94,4 +115,3 @@ GROUP BY 1,2,3,4,5,6,7
 ) x
 
 ;
-

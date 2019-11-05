@@ -1,3 +1,5 @@
+-- IGNORE -- because I need a SUPER privilege to create a FUNCTION :<
+-- ORDER: 2
 DROP FUNCTION date_trunc_day;
 
 CREATE FUNCTION date_trunc_day (d DATETIME)

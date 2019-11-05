@@ -1,45 +1,45 @@
--- PREFERENCE: 11
---
+-- ORDER: 11
+    --
 -- MEMBERSHIP
-set @membership = (select id from segmentation where name = 'Membership');
+SET @membership = (select id from segmentation where name = 'Membership');
 
-insert into segment (name, segmentation_id, external_id) values ('Member', @membership, 42);
+INSERT INTO segment (name, segmentation_id, external_id) values ('Member', @membership, 42);
 
 -- LANGUAGE
-set @language = (select id from segmentation where name = 'Language');
+SET @language = (select id from segmentation where name = 'Language');
 
-insert into segment (name, segmentation_id, external_id)
+INSERT INTO segment (name, segmentation_id, external_id)
 SELECT
-  title,
-  @language,
-  id
+    title,
+    @language,
+    id
 FROM
-wemove_47.civicrm_group
+    wemove_47.civicrm_group
 WHERE
-parents = 32;
+    parents = 32;
 
-set @country_interest = (select id from segmentation where name = 'Country interest');
+SET @country_interest = (select id from segmentation where name = 'Country interest');
 
-insert into segment (name, segmentation_id, external_id)
+INSERT INTO segment (name, segmentation_id, external_id)
 SELECT
-title,
-@country_interest,
-id
+    title,
+    @country_interest,
+    id
 FROM
-wemove_47.civicrm_group
+    wemove_47.civicrm_group
 WHERE
-parents = 10;
+    parents = 10;
 
 -- COUNTRIES
 
-set @country = (select id from segmentation where name = 'Country');
+SET @country = (select id from segmentation where name = 'Country');
 
 -- Active
 
 INSERT INTO segment (name, segmentation_id, external_id)
 SELECT
-s.name,
-s.id,
-NULL
+    s.name,
+    s.id,
+    NULL
 FROM segmentation s
 WHERE s.name like 'Active%';

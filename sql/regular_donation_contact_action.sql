@@ -1,3 +1,4 @@
+-- ORDER: 33
 -- regular donation action
 INSERT INTO contact_action
 (contact_id, created_at, action_id, external_id, source_id)
@@ -18,8 +19,7 @@ JOIN action a ON
 
 WHERE
 rd.is_test = 0;
-
-
+-- IGNORE
 select count(*) from 
 wemove_47.civicrm_contribution_recur rd
 WHERE rd.is_test = 0;
