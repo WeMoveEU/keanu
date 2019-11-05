@@ -15,7 +15,8 @@ BEGIN;
       c.receive_date,
       CASE WHEN payment_instrument_id = 1 THEN 'paypal'
            WHEN payment_instrument_id = 2 THEN 'card'
-           WHEN payment_instrument_id in (6,7) THEN 'sepa'
+           WHEN payment_instrument_id = 5 THEN 'bank_transfer'
+           WHEN payment_instrument_id = 8 THEN 'sepa'
       END,
       ca.id as contact_action_id,
       0,
@@ -28,7 +29,7 @@ BEGIN;
     JOIN contact_action ca ON c.id = ca.external_id AND ca.external_system='civicrm_contribution'
 
     WHERE NOT c.is_test AND c.contribution_recur_id IS NULL
-      AND c.payment_instrument_id IN (1, 2, 6, 7)
+      AND c.payment_instrument_id IN (1, 2, 5, 8)
   ;
 
   INSERT INTO payment
