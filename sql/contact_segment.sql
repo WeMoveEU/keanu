@@ -1,4 +1,5 @@
 -- ORDER: 50
+-- DELETE FROM contact_segment 
 -- civicrm_group_contact
 -- based on groups (which)
 

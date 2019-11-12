@@ -1,4 +1,5 @@
 -- ORDER: 5
+-- DELETE FROM contact
 -- ID_MAPS_TO: CIVICRM
 -- From WM CiviCRM
 -- We base it on:

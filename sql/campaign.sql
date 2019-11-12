@@ -1,4 +1,5 @@
--- ORDER: 2
+-- ORDER: 9
+-- DELETE FROM campaign
 INSERT INTO campaign
     (name,  started_at,  campaign_type)
     VALUES
@@ -20,7 +21,9 @@ SELECT
     c.id,
     'civicrm_campaign'
 FROM wemove_47.civicrm_campaign c
-WHERE c.id=c.parent_id
+WHERE
+c.id IN (SELECT distinct(id) from goal_campaign)
+
 -- BEGIN INCREMENTAL
  AND c.id NOT IN (SELECT external_id FROM campaign WHERE external_system = 'civicrm_campaign')
 -- END INCREMENTAL

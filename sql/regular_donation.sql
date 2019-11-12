@@ -15,6 +15,7 @@
 -- | failure_count     | varchar(32)   | NO   |     | 0       |                |
 -- +-------------------+---------------+------+-----+---------+----------------+
 
+-- DELETE FROM regular_donation
 -- XXX because finrecon.stripe_payments is not UTF it will make this query super slow
 -- because a CONVERT(.. USING UTF8) will be inserted on JOIN with stripe_payments.
 DROP TABLE IF EXISTS stripe_payments;

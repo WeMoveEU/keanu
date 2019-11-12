@@ -5,6 +5,7 @@ import click
 
 class LoadScript:
     def __init__(_, filename, **options):
+        # filename and class options
         _.filename = filename
         _.options = {
             'incremental': False,
@@ -12,7 +13,11 @@ class LoadScript:
         }
         _.options.update(options)
 
+        # defaults
+        _.deleteSql = None
         _.order = 100
+
+        # parse SQL
         _.lines = _.parse(open(filename, 'r').readlines())
         _.statements = _.split_statements(_.lines)
 
@@ -25,6 +30,11 @@ class LoadScript:
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
                 _.order = int(m[1])
+                continue
+
+            m = re.match(r" *-- *(DELETE .*)$", l)
+            if m:
+                _.deleteSql = m[1]
                 continue
 
             m = re.match(r" *-- *BEGIN (\w+)", l)
@@ -77,6 +87,9 @@ class LoadScript:
             first =  first[0:trim_to] + '...'
         return first
 
+    def delete(_, connection):
+        if _.deleteSql:
+            return connection.execute(text(_.deleteSql))
 
 
     def execute(_, connection):

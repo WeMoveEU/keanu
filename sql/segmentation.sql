@@ -3,6 +3,7 @@
 -- Country interest: 10 (perent)
 -- Languages: 32
 -- XXX - what is 'UK members' (64)
+-- DELETE FROM segmentation
 
 INSERT INTO segmentation (name, external_id)
 VALUES

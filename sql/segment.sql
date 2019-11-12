@@ -1,4 +1,5 @@
 -- ORDER: 11
+-- DELETE FROM segment
     --
 -- MEMBERSHIP
 SET @membership = (select id from segmentation where name = 'Membership');

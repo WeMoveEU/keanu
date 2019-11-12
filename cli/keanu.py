@@ -19,9 +19,7 @@ def cli():
 @click.option('-d', is_flag=True, default=False, help='display SQL')
 def load(i=False, o=0, n=False, s=False, d=False):
     opts = { 'incremental': i, 'display': d }
-    files = glob('../sql/**/*.sql', recursive=True)
-    scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
-    LoadScript.sort(scripts)
+    scripts = get_scripts(opts)
     try:
         connection = db.engine.connect()
         for scr in scripts:
@@ -58,6 +56,45 @@ def load(i=False, o=0, n=False, s=False, d=False):
         t, v, tb = sys.exc_info()
         print("Unexpected error: {0}: {1}", t, v)
         traceback.print_tb(tb, limit=10)
+
+@cli.command()
+@click.option('-n', is_flag=True, default=False, help='dry run')
+@click.option('-o', default=0, help='go back until order number')
+@click.option('-s', is_flag=True, default=False, help='run just one SQL')
+@click.option('-d', is_flag=True, default=False, help='display SQL')
+def delete(o=0, d=False, n=False, s=False):
+    scripts = get_scripts()
+    scripts.reverse()
+
+    connection = db.engine.connect()
+
+    if s:
+        scripts = filter(lambda a: a.order == o, scripts)
+
+    for scr in scripts:
+        if scr.order < o:
+            break
+        with connection.begin() as transaction:
+            click.echo("{1}: {0} ({2})".format(
+                scr.filename, scr.order, scr.deleteSql or 'none'))
+            if not n:
+                try:
+                    scr.delete(connection)
+                except KeyboardInterrupt as ctrlc:
+                    transaction.rollback()
+                    raise ctrlc
+
+
+
+
+# helpers
+
+def get_scripts(opts={}):
+    files = glob('../sql/**/*.sql', recursive=True)
+    scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
+    LoadScript.sort(scripts)
+    return scripts
+
 
 if __name__ == '__main__':
     cli()
