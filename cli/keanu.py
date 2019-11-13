@@ -39,7 +39,7 @@ def load(i=False, o=0, n=False, s=False, d=False):
                     res = scr.execute(connection)
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
-                    raise ctrlc
+                    sys.exit(1)
             click.echo(scr.statement_abbrev(scr.statements[-1]) + ' ROWS: {0}'.format(res.rowcount))
 
             # stop after one.
