@@ -32,10 +32,11 @@ class LoadScript:
                 _.order = int(m[1])
                 continue
 
-            m = re.match(r" *-- *(DELETE .*)$", l)
+            m = re.match(r" *-- *((DELETE|TRUNCATE) .*)$", l)
             if m:
                 _.deleteSql = m[1]
                 continue
+
 
             m = re.match(r" *-- *BEGIN (\w+)", l)
             if m:
