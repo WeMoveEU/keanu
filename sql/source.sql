@@ -10,7 +10,7 @@ SELECT utm_source_30, utm_medium_31, utm_campaign_33
 FROM wemove_47.civicrm_value_utm_5
 ;
 
-INSERT IGNORE INTO source (source, source, campaign)
+INSERT IGNORE INTO source (source, medium, campaign)
 SELECT utm_source, utm_medium, utm_campaign
 FROM wemove_47.civicrm_value_recur_utm
 ;

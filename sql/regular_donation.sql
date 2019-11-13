@@ -1,4 +1,4 @@
--- ORDER: 35
+-- ORDER: 34
 -- regular donations
 -- +-------------------+---------------+------+-----+---------+----------------+
 -- | Field             | Type          | Null | Key | Default | Extra          |
@@ -74,7 +74,7 @@ count(c.id) as payment_count,
 max(c.receive_date) as last_payment_date
 
 FROM wemove_47.civicrm_contribution_recur rd
-JOIN contact_action ca ON rd.id = ca.external_id
+JOIN contact_action ca ON rd.id = ca.external_id AND ca.external_system = 'civicrm_contribution_recur'
 JOIN wemove_47.civicrm_contribution c ON c.contribution_recur_id = rd.id
 
 WHERE c.contribution_status_id = 1 and c.is_test = 0
@@ -97,7 +97,7 @@ count(sp.id) as payment_count,
 max(sp.created_date) as last_payment_date
 
 FROM wemove_47.civicrm_contribution_recur rd
-JOIN contact_action ca ON rd.id = ca.external_id
+JOIN contact_action ca ON rd.id = ca.external_id AND ca.external_system = 'civicrm_contribution_recur'
 JOIN stripe_payments sp 
     -- Here we take any contrib for this recur, and by its trxn_id we can reach stripe_payment record
     -- We will return card_id, which we can use to select all payments for a particular regular_donation

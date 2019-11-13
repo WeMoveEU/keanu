@@ -1,5 +1,5 @@
 -- ORDER: 51
--- DELETE FROM contact_segment
+-- TRUNCATE contact_segment
 -- X WHERE segmentation_id = (SELECT segmentation_id from segment where name = 'Active 3 month')
 -- Active segments
 -- create table activity_history

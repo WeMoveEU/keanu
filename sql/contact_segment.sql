@@ -1,5 +1,5 @@
 -- ORDER: 50
--- DELETE FROM contact_segment 
+-- TRUNCATE contact_segment 
 -- civicrm_group_contact
 -- based on groups (which)
 
@@ -45,6 +45,7 @@ FROM (
             ) subq2
 
         ) subq1
+        
 -- topmost query just filters the status changes (ignoring series of adds or removals)
 WHERE subq1.status_change = 1;
 
