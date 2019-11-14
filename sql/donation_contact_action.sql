@@ -26,4 +26,4 @@ JOIN action a2 ON a2.id = @fallback_action
 LEFT JOIN source s ON d2c.source = s.source AND d2c.medium = s.medium AND d2c.campaign = s.campaign
 
 WHERE
-c.is_test = 0 AND c.contribution_status_id = 1;
+c.is_test = 0 AND c.contribution_status_id = 1 AND c.contribution_recur_id IS NULL;

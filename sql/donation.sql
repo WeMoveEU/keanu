@@ -21,6 +21,6 @@ FROM
 wemove_47.civicrm_contribution c
 JOIN contact_action ca ON c.id = ca.external_id AND ca.external_system = 'civicrm_contribution'
 WHERE
-c.is_test = 0 AND c.contribution_status_id = 1
+c.is_test = 0 AND c.contribution_status_id = 1 and c.contribution_recur_id IS NULL
 
 
