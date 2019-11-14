@@ -27,11 +27,7 @@ INSERT INTO contact_action
     'civicrm_contribution_recur'
 
   FROM wemove_47.civicrm_contribution_recur rd
-  JOIN contribution_recur_to_campaign rd2c ON rd.id = rd2c.id
-  JOIN action a
-    ON a.action_type = 'donate'
-    AND a.campaign_id = rd2c.campaign_id
-    AND a.language = rd2c.language COLLATE utf8_general_ci
-
-  WHERE rd.is_test = 0
+  JOIN contact c ON c.id=rd.contact_id -- to discard deleted contacts
+  JOIN action a ON a.action_type='donate' AND a.external_id = rd.campaign_id AND a.external_system = 'civicrm_campaign'
+  WHERE NOT rd.is_test
 ;
