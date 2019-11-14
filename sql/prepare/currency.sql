@@ -1,5 +1,4 @@
--- IGNORE
-create table if not exists euro (currency varchar(3), day DATETIME, price decimal(8,4));
+create table euro (currency varchar(3), day DATETIME, price decimal(8,4));
 -- prepare the data
 -- rename 's/ /_/g' *.csv
 -- sed -ib 's/ [%]//g' *.csv

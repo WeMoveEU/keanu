@@ -1,4 +1,3 @@
--- IGNORE
 -- Identifies people with more than one primary email
 SELECT 
   c.id, c.display_name

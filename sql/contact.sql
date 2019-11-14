@@ -1,5 +1,4 @@
--- ORDER: 5
--- DELETE FROM contact
+-- PREFERENCE: 5
 -- ID_MAPS_TO: CIVICRM
 -- From WM CiviCRM
 -- We base it on:
@@ -25,19 +24,13 @@ INSERT INTO contact
     c.preferred_language,
     MIN(a.geo_code_1), MIN(a.geo_code_2)
 
-  FROM wemove_47.civicrm_contact c
+  FROM wemove_47.civicrm_contact c 
   LEFT JOIN wemove_47.civicrm_email e ON e.contact_id = c.id AND e.is_primary
   LEFT JOIN wemove_47.civicrm_address a ON a.contact_id = c.id AND a.is_primary
   LEFT JOIN wemove_47.civicrm_country ctr ON ctr.id = a.country_id
 
   WHERE c.contact_type = 'Individual'
-  -- We have contributions from deleted contacts, this tells us that in our world
-  -- that contact is existing; thus I can't exclude deleted contacts here.
-  -- AND NOT c.is_deleted
-
- -- BEGIN INCREMENTAL
- AND c.id NOT IN (SELECT id from contact)
- -- END INCREMENTAL
+  AND NOT c.is_deleted
 
   GROUP BY c.id
 ;

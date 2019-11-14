@@ -1,4 +1,3 @@
--- ORDER: 2
 drop table if exists calendar;
 
 create table calendar (
@@ -15,14 +14,12 @@ create table calendar (
        );
 
 
--- can't self-join a temporary table in mysql. duh!
-create table tmp_ints ( i tinyint );
-insert into tmp_ints values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
+
+create temporary table ints ( i tinyint ); insert into ints values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
 
 insert into calendar (dt) select date('2010-01-01') + interval a.i*10000 + b.i*1000 + c.i*100 + d.i*10 + e.i day
-from tmp_ints a join tmp_ints b join tmp_ints c join tmp_ints d join tmp_ints e
+from ints a join ints b join ints c join ints d join ints e
 where (a.i*10000 + b.i*1000 + c.i*100 + d.i*10 + e.i) <= 11322 order by 1;
-drop table tmp_ints;
 
 update calendar set
        isWeekday = case
@@ -38,10 +35,5 @@ update calendar set
        dayname = dayname(dt),
        w = week(dt);
    
--- TODO: indexes
 
-
-create index calendar_y ON calendar (y);
-create index calendar_q ON calendar (q);
-create index calendar_m ON calendar (m);
-create index calendar_d ON calendar (d);
+drop table ints;

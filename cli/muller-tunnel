@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ssh -L 4406:/var/run/mysqld/mysqld.sock marcin-koziej@muller.wemove.eu
