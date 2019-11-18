@@ -1,7 +1,10 @@
+-- ORDER: 36
+-- DELETE FROM donation
+
 -- One-off donations
 BEGIN;
   INSERT INTO donation (
-      euro_amount, original_currency, original_amount, frequency_unit,
+      amount, original_currency, original_amount, frequency_unit,
       started_at, payment_method, contact_action_id,
       total_amount, payment_count, failure_count,
       external_id, external_system
@@ -55,7 +58,7 @@ COMMIT;
 -- Recurring donations
 BEGIN;
   INSERT INTO donation (
-      euro_amount, original_currency, original_amount, frequency_unit, frequency_interval,
+      amount, original_currency, original_amount, frequency_unit, frequency_interval,
       started_at, payment_method, contact_action_id, ended_at,
       total_amount, payment_count, failure_count,
       external_id, external_system
