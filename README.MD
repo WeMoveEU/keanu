@@ -98,3 +98,28 @@ WHERE c.id NOT IN (SELECT external_id FROM jar)
 -- END INCREMENTAL
 
 ```
+
+Enviroment variable interpolation. Similar to shell, simple variable interpolation is supported. `${FOO}` will be interpolated into value of FOO environment variable. This is currently used to insert the source schema name with `${SOURCE}`.
+
+## Product vision
+
+Right now during initial development, we run keanu command from the source
+directory `cli`, and the SQL scripts are kept in `sql`. The vision for the
+future product is the following:
+
+Keanu will be a command installed gloablly into the system, with `pip install
+keanu`. It will work like git or heroku, a multi-tool to do everything
+conntected to common DB model, ETL, running AI logic, installing dashboards in
+Metabase (this last function fits this command least, but let's see).
+
+It will download a repository of SQL files, properly divided between general
+use, CiviCRM users, Identity users, etc, and be able to configure itself with
+`keanu setup` - saving information about source and target DBs. It will be able
+also to upload SQL files that were changed and verion manage them somehow, to
+help in collaboration (this could be done using git).
+
+Similarly, it will enable import and export of Metabase questions (called
+__cards_) and dashboards. Not only their SQL, but also their JSON configuration
+(using [python Metabase API client
+library](https://github.com/stunitas/metabase-py)).
+
