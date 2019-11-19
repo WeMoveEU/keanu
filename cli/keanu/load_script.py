@@ -93,13 +93,17 @@ class LoadScript(RunStatement):
         if _.options['display']:
             return statement
 
-        trim_to = 50
+        trim_to = max(50, int(os.get_terminal_size().columns / 2))
         lines = statement.split("\n")
         lines = filter(lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines)
-        first = next(lines)
-        if len(first) > trim_to:
-            first =  first[0:trim_to] + '...'
-        return first
+        try:
+            first = next(lines)
+            if len(first) > trim_to:
+                first =  first[0:trim_to] + '...'
+            return first
+        except StopIteration:
+            return ''
+        
 
     def delete(_, connection):
         result = None

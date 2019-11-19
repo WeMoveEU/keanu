@@ -70,7 +70,8 @@ def load(i=False, o=0, n=False, s=False, d=False):
 @click.option('-s', is_flag=True, default=False, help='run just one SQL')
 @click.option('-d', is_flag=True, default=False, help='display SQL')
 def delete(o=0, d=False, n=False, s=False):
-    scripts = get_scripts()
+    opts = { 'display': d }
+    scripts = get_scripts(opts)
     scripts.reverse()
 
     connection = db.engine.connect()
@@ -82,7 +83,7 @@ def delete(o=0, d=False, n=False, s=False):
         if scr.order < o:
             break
         with connection.begin() as transaction:
-            click.echo("️💣 [{:3d}] {} ({})".format(
+            click.echo("🚒️ [{:3d}] {} ({})".format(
                 scr.order,
                 scr.filename,
                 ', '.join(map(lambda s: s.rstrip(), map(util.highlight_sql, scr.deleteSql)))),
@@ -93,8 +94,6 @@ def delete(o=0, d=False, n=False, s=False):
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     raise ctrlc
-
-
 
 
 # helpers

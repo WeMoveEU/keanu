@@ -14,7 +14,7 @@ class RunStatement:
                 result = connection.execute(text(sql))
                 yield 'end', { 'sql': sql, 'time': time() - start_time, 'result': result }
         except KeyboardInterrupt as ki:
-            click.echo("🔫 Killing sql process {0}".format(connection_id))
+            click.echo("🔫 Killing sql process {0} 🔫".format(connection_id))
             kill_conn = engine.connect()
             kill_conn.execute('KILL {0}'.format(connection_id))
             raise ki
