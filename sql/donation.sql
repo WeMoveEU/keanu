@@ -1,5 +1,6 @@
 -- ORDER: 36
--- TRUNCATE donation
+-- DELETE FROM payment
+-- DELETE FROM donation
 
 -- One-off donations
 BEGIN;
@@ -28,7 +29,7 @@ BEGIN;
       c.id,
       'civicrm_contribution'
 
-    FROM wemove_47.civicrm_contribution c
+    FROM ${SOURCE}.civicrm_contribution c
     JOIN contact_action ca ON c.id = ca.external_id AND ca.external_system='civicrm_contribution'
 
     WHERE NOT c.is_test AND c.contribution_recur_id IS NULL
@@ -46,7 +47,7 @@ BEGIN;
            WHEN c.contribution_status_id IN (4, 7) THEN 'cancelled'
       END
 
-    FROM wemove_47.civicrm_contribution c
+    FROM ${SOURCE}.civicrm_contribution c
     JOIN donation d ON d.external_id=c.id AND d.external_system='civicrm_contribution'
 
     WHERE NOT c.is_test AND c.contribution_recur_id IS NULL
@@ -83,7 +84,7 @@ BEGIN;
       rd.id,
       'civicrm_contribution_recur'
 
-    FROM wemove_47.civicrm_contribution_recur rd
+    FROM ${SOURCE}.civicrm_contribution_recur rd
     JOIN contact_action ca ON rd.id = ca.external_id AND ca.external_system='civicrm_contribution_recur'
 
     WHERE NOT rd.is_test
@@ -103,8 +104,8 @@ BEGIN;
            WHEN c.contribution_status_id IN (4, 7) THEN 'cancelled'
       END
 
-    FROM wemove_47.civicrm_contribution c
-    JOIN wemove_47.civicrm_contribution_recur rd ON rd.id = c.contribution_recur_id
+    FROM ${SOURCE}.civicrm_contribution c
+    JOIN ${SOURCE}.civicrm_contribution_recur rd ON rd.id = c.contribution_recur_id
     JOIN donation d ON d.external_id=rd.id AND d.external_system='civicrm_contribution_recur'
 
     WHERE NOT rd.is_test AND NOT c.is_test
