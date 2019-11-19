@@ -1,4 +1,4 @@
--- ORDER: 51
+-- ORDER: 61
 -- TRUNCATE contact_segment
 -- Active segments
 -- create table activity_history
@@ -6,6 +6,7 @@
 SET @rank = 0;
 SET @prev_contact_id = NULL;
 
+DROP TABLE IF EXISTS action_history;
 
 CREATE TABLE action_history
 SELECT
