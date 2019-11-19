@@ -7,6 +7,17 @@ from .util import highlight_sql
 import os
 
 class LoadScript(RunStatement):
+    """
+    Class that runs load scripts, that is SQL that loads some data in keanu database.
+    It can read extra metadata from the script comments.
+
+    Pass path to file of SQL script.
+
+    options can be:
+    incremental - run incremental variant of the script (no by default)
+    display - displays full SQL while executing (no by default)
+    warn - do show warnings from mysql driver (no by default)
+    """
     def __init__(_, filename, **options):
         # filename and class options
         _.filename = filename
@@ -25,6 +36,10 @@ class LoadScript(RunStatement):
         _.lines = _.parse(open(filename, 'r').readlines())
         _.statements = _.split_statements(_.lines)
 
+    """
+    Parse script lines and load metadata. Returns list of lines after parsing (will be modified).
+    Has effects of setting fields on object.
+    """
     def parse(_, lines):
         out = []
         contexts = []
@@ -66,16 +81,26 @@ class LoadScript(RunStatement):
         out.reverse()
         return out
 
+    """
+    Performs interpolation on string, replacing ${FOO} with FOO environment variable.
+    """
     @staticmethod
     def interpolate_environ(line):
         def get_var(m):
             return os.environ[m[1]]
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
 
+    """
+    Predicate - is this line just a comment line?
+    """
     @staticmethod
     def noop_line(line):
         return re.match(r" *--", line) or re.match(r"^[\s;]*$", line)
 
+
+    """
+    Will split the lines of script into SQL statements (separated by semicolon)
+    """
     def split_statements(_, lines):
         out = []
         c = []

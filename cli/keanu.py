@@ -14,20 +14,20 @@ def cli():
     pass
 
 @cli.command()
-@click.option('-i', is_flag=True, default=False, help='incremental load')
-@click.option('-n', is_flag=True, default=False, help='dry run')
-@click.option('-o', default=0, help='start from order number')
-@click.option('-s', is_flag=True, default=False, help='run just one SQL')
-@click.option('-d', is_flag=True, default=False, help='display SQL')
-@click.option('-W', is_flag=True, default=False, help='display SQL warnings')
-def load(i=False, o=0, n=False, s=False, d=False, w=False):
-    opts = { 'incremental': i, 'display': d, 'warn': w }
+@click.option('-i', '--incremental', is_flag=True, default=False, help='incremental load')
+@click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
+@click.option('-o', '--order', default=0, help='start from order number')
+@click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
+@click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
+@click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
+def load(incremental=False, order=0, dry_run=False, single=False, display=False, warn=False):
+    opts = { 'incremental': incremental, 'display': display, 'warn': warn }
     scripts = get_scripts(opts)
     try:
         connection = db.engine.connect()
         for scr in scripts:
             # skip to order number if requested
-            if scr.order < o: continue
+            if scr.order < order: continue
 
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
@@ -35,7 +35,7 @@ def load(i=False, o=0, n=False, s=False, d=False, w=False):
                 len(scr.lines),
                 len(scr.statements)))
 
-            if n:  # dry run, skip
+            if dry_run:  # dry run, skip
                 continue
             if len(scr.statements) == 0:
                 continue
@@ -48,7 +48,7 @@ def load(i=False, o=0, n=False, s=False, d=False, w=False):
                     sys.exit(1)
 
             # stop after one.
-            if s:
+            if single:
                 break
 
     except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
@@ -66,23 +66,23 @@ def load(i=False, o=0, n=False, s=False, d=False, w=False):
         traceback.print_tb(tb, limit=10)
 
 @cli.command()
-@click.option('-n', is_flag=True, default=False, help='dry run')
-@click.option('-o', default=0, help='go back until order number')
-@click.option('-s', is_flag=True, default=False, help='run just one SQL')
-@click.option('-d', is_flag=True, default=False, help='display SQL')
-@click.option('-W', is_flag=True, default=False, help='display SQL warnings')
-def delete(o=0, d=False, n=False, s=False, w=False):
-    opts = { 'display': d, 'warn': w }
+@click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
+@click.option('-o', '--order', default=0, help='go back until order number')
+@click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
+@click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
+@click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
+def delete(order=0, display=False, dry_run=False, single=False, warn=False):
+    opts = { 'display': display, 'warn': warn }
     scripts = get_scripts(opts)
     scripts.reverse()
 
     connection = db.engine.connect()
 
-    if s:
-        scripts = filter(lambda a: a.order == o, scripts)
+    if single:
+        scripts = filter(lambda a: a.order == order, scripts)
 
     for scr in scripts:
-        if scr.order < o:
+        if scr.order < order:
             break
         with connection.begin() as transaction:
             click.echo("🚒️ [{:3d}] {} ({})".format(
@@ -90,12 +90,30 @@ def delete(o=0, d=False, n=False, s=False, w=False):
                 scr.filename,
                 ', '.join(map(lambda s: s.rstrip(), map(util.highlight_sql, scr.deleteSql)))),
                        color=True)
-            if not n:
+            if not dry_run:
                 try:
                     scr.delete(connection)
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     raise ctrlc
+
+@cli.command()
+@click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
+@click.option('-L', '--load', default=None, help='Load this SQL file')
+def schema(drop, load):
+    connection = db.engine.connect()
+
+    if drop:
+        for (table, _) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):
+            connection.execute('SET FOREIGN_KEY_CHECKS = 0')
+            click.echo('💥 Dropping table {}'.format(table))
+            connection.execute('DROP TABLE {}'.format(table))
+
+    if load:
+        script = LoadScript(load)
+        click.echo("🚚 Loading {}...".format(script.filename))
+        with connection.begin() as tx:
+            script.execute(connection)
 
 
 # helpers

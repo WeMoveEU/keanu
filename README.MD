@@ -31,6 +31,11 @@ Keanu command lives in `cli` directory. It can (incrementally) load data from Ci
 Keanu commands has a set of subcommands, similar to git or heroku.
 You need to enable the Pipenv, by running `pipenv shell`.
 
+### schema: manipulating database schema
+
+- `./keanu schema -L filename` - loads SQL schema file.
+- `./keanu schema -D` - drops all tables from the database.
+
 ### load: loading data
 
 `./keanu.py load` loads data from CiviCRM to keanu db in ordered steps. Every SQL file in `sql` directory has `-- ORDER: 12` comment which specifies an order. The default order is 100.
