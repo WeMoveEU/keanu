@@ -1,3 +1,5 @@
+-- ORDER: 9
+-- DELETE FROM campaign
 INSERT INTO campaign
   (name,  started_at, campaign_type)
   VALUES
@@ -18,7 +20,7 @@ INSERT INTO campaign
     END as campaign_type,
     c.id,
     'civicrm_campaign'
-  FROM wemove_47.civicrm_campaign c
-  WHERE c.id=c.parent_id
-;
+FROM ${SOURCE}.civicrm_campaign c
+WHERE c.id=c.parent_id
+    ;
 

@@ -1,4 +1,5 @@
--- PREFERENCE: 10
+-- ORDER: 10
+-- DELETE FROM segmentation
 -- Members: 42
 -- Country interest: 10 (perent)
 -- Languages: 32
@@ -10,6 +11,5 @@ VALUES
 ('Language', 32),
 ('Country interest', 10),
 ('Country', NULL),
-('Active 6 month', NULL),
 ('Active 3 month', NULL)
 ;

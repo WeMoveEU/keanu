@@ -1,5 +1,5 @@
 -- ORDER: 36
--- DELETE FROM donation
+-- TRUNCATE donation
 
 -- One-off donations
 BEGIN;

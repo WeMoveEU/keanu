@@ -1,4 +1,5 @@
--- PREFERENCE: 11
+-- ORDER: 11
+-- DELETE FROM segment
 --
 -- MEMBERSHIP
 set @membership = (select id from segmentation where name = 'Membership');
@@ -14,7 +15,7 @@ SELECT
   @language,
   id
 FROM
-wemove_47.civicrm_group
+${SOURCE}.civicrm_group
 WHERE
 parents = 32;
 
@@ -26,7 +27,7 @@ title,
 @country_interest,
 id
 FROM
-wemove_47.civicrm_group
+${SOURCE}.civicrm_group
 WHERE
 parents = 10;
 

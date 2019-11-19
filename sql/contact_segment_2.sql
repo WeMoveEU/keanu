@@ -1,3 +1,5 @@
+-- ORDER: 51
+-- TRUNCATE contact_segment
 -- Active segments
 -- create table activity_history
 
@@ -19,7 +21,7 @@ FROM (
   act.activity_date_time as created_at,
   act.activity_type_id,
   act.campaign_id
- FROM wemove_47.civicrm_activity act JOIN wemove_47.civicrm_activity_contact actcon ON
+ FROM ${SOURCE}.civicrm_activity act JOIN ${SOURCE}.civicrm_activity_contact actcon ON
    actcon.activity_id = act.id
 
  WHERE act.activity_type_id IN (32, 54, 59, 28)
