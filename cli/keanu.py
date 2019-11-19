@@ -7,6 +7,8 @@ from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, Data
 import sys
 import traceback
 
+SQLBASE='../sql/'
+
 @click.group()
 def cli():
     pass
@@ -23,11 +25,14 @@ def load(i=False, o=0, n=False, s=False, d=False):
     try:
         connection = db.engine.connect()
         for scr in scripts:
-            # skip to order
+            # skip to order number if requested
             if scr.order < o: continue
 
-            click.echo("🚚 [{: 3d}] ({} lines, {} statements)".format(
-                scr.order, scr.filename, len(scr.lines), len(scr.statements)))
+            click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
+                scr.order,
+                scr.filename[len(SQLBASE):] if scr.filename.startswith(SQLBASE) else scr.filename,
+                len(scr.lines),
+                len(scr.statements)))
 
             if n:  # dry run, skip
                 continue
@@ -93,7 +98,7 @@ def delete(o=0, d=False, n=False, s=False):
 # helpers
 
 def get_scripts(opts={}):
-    files = glob('../sql/**/*.sql', recursive=True)
+    files = glob(SQLBASE+'**/*.sql', recursive=True)
     scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
     LoadScript.sort(scripts)
     return scripts

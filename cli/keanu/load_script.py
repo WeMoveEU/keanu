@@ -79,8 +79,10 @@ class LoadScript(RunStatement):
 
         return list(map(lambda a: ''.join(a), out))
 
-    @staticmethod
-    def statement_abbrev(statement):
+    def statement_abbrev(_, statement):
+        if _.options['display']:
+            return statement
+
         trim_to = 50
         lines = statement.split("\n")
         lines = filter(lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines)
