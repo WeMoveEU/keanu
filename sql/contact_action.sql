@@ -1,3 +1,5 @@
+-- ORDER: 31
+-- DELETE FROM contact_action
 -- one-off donate actions
 INSERT INTO contact_action
   (contact_id, created_at, action_id, external_id, external_system)
@@ -9,7 +11,7 @@ INSERT INTO contact_action
     d.id,
     'civicrm_contribution'
 
-  FROM wemove_47.civicrm_contribution d
+  FROM ${SOURCE}.civicrm_contribution d
   JOIN contact c ON c.id=d.contact_id -- to discard deleted contacts
   JOIN action a ON a.action_type='donate' AND a.external_id = d.campaign_id AND a.external_system = 'civicrm_campaign'
   WHERE NOT d.is_test AND d.contribution_recur_id IS NULL
@@ -26,7 +28,7 @@ INSERT INTO contact_action
     rd.id,
     'civicrm_contribution_recur'
 
-  FROM wemove_47.civicrm_contribution_recur rd
+  FROM ${SOURCE}.civicrm_contribution_recur rd
   JOIN contact c ON c.id=rd.contact_id -- to discard deleted contacts
   JOIN action a ON a.action_type='donate' AND a.external_id = rd.campaign_id AND a.external_system = 'civicrm_campaign'
   WHERE NOT rd.is_test
