@@ -44,6 +44,10 @@ SET @days = 91; -- 3 months
 SET @segment_id = (SELECT id from segment where name = 'Active 3 month');
 SET @segmentation_id = (SELECT segmentation_id from segment where name = 'Active 3 month');
 
+-- BEGIN INCREMENTAL
+DELETE FROM contact_segment where segmentation_id = @segmentation_id;
+-- END INCREMENTAL
+
 INSERT into contact_segment (contact_id, segmentation_id, segment_id, joined_at, left_at)
 SELECT
   contact_id, @segmentation_id, @segment_id, joined_at, max(left_at) as left_at

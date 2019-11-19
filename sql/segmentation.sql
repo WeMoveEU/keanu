@@ -5,6 +5,7 @@
 -- Languages: 32
 -- XXX - what is 'UK members' (64)
 
+-- BEGIN INITIAL
 INSERT INTO segmentation (name, external_id)
 VALUES
 ('Membership', NULL),
@@ -13,3 +14,5 @@ VALUES
 ('Country', NULL),
 ('Active 3 month', NULL)
 ;
+
+-- END INITIAL

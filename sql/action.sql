@@ -23,6 +23,9 @@ INSERT INTO action
   JOIN ${SOURCE}.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
 
   WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67)
+-- BEGIN INCREMENTAL
+AND c.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_campaign')
+-- END INCREMENTAL
   GROUP BY c.id, camp.id, activity_type_id
 ;
 
@@ -43,6 +46,10 @@ INSERT INTO action
       FROM ${SOURCE}.civicrm_contribution_recur rd 
       ) d ON d.campaign_id=c.id
   JOIN ${SOURCE}.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
+-- BEGIN INCREMENTAL
+  WHERE c.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_campaign' AND action_type = 'donate')
+-- END INCREMENTAL
   GROUP BY c.id, camp.id
 ;
 
+-- other updates: can language change?

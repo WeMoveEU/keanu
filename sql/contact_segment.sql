@@ -56,6 +56,13 @@ CREATE INDEX group_history_group_id ON group_history (group_id);
 -- * --- * --- * -- 
 
 
+-- BEGIN INCREMENTAL
+DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id
+WHERE s.external_id IS NOT NULL -- AND s.external_system = 'civicrm_group' XXX 
+;
+-- END INCREMENTAL
+
+
 INSERT INTO contact_segment
     (segmentation_id, segment_id,
         contact_id, joined_at, left_at 

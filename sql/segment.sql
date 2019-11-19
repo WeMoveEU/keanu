@@ -2,6 +2,7 @@
 -- DELETE FROM segment
 --
 -- MEMBERSHIP
+-- BEGIN INITIAL
 set @membership = (select id from segmentation where name = 'Membership');
 
 insert into segment (name, segmentation_id, external_id) values ('Member', @membership, 42);
@@ -44,3 +45,5 @@ s.id,
 NULL
 FROM segmentation s
 WHERE s.name like 'Active%';
+
+-- END INITIAL

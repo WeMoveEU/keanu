@@ -4,6 +4,10 @@
 
 -- One-off donations
 BEGIN;
+-- BEGIN INCREMENTAL
+SET @last_donation_id = (SELECT max(id) FROM donation);
+-- END INCREMENTAL
+
   INSERT INTO donation (
       amount, original_currency, original_amount, frequency_unit,
       started_at, payment_method, contact_action_id,
@@ -29,11 +33,15 @@ BEGIN;
       c.id,
       'civicrm_contribution'
 
-    FROM ${SOURCE}.civicrm_contribution c
+  FROM ${SOURCE}.civicrm_contribution c
     JOIN contact_action ca ON c.id = ca.external_id AND ca.external_system='civicrm_contribution'
 
     WHERE NOT c.is_test AND c.contribution_recur_id IS NULL
       AND c.payment_instrument_id IN (1, 2, 5, 8)
+  -- BEGIN INCREMENTAL
+      AND c.id NOT IN (SELECT external_id FROM donation where external_system = 'civicrm_contribution')
+  -- END INCREMENTAL
+
   ;
 
   INSERT INTO payment
@@ -53,11 +61,18 @@ BEGIN;
     WHERE NOT c.is_test AND c.contribution_recur_id IS NULL
       AND c.payment_instrument_id IN (1, 2, 6, 7)
       AND c.contribution_status_id IN (1, 3, 4, 7)
+-- BEGIN INCREMENTAL
+AND d.id > @last_donation_id AND d.id <= LAST_INSERT_ID()
+-- END INCREMENTAL
   ;
 COMMIT;
 
 -- Recurring donations
 BEGIN;
+-- BEGIN INCREMENTAL
+SET @last_donation_id = (SELECT max(id) FROM donation);
+-- END INCREMENTAL
+
   INSERT INTO donation (
       amount, original_currency, original_amount, frequency_unit, frequency_interval,
       started_at, payment_method, contact_action_id, ended_at,
@@ -90,6 +105,10 @@ BEGIN;
     WHERE NOT rd.is_test
       AND rd.payment_instrument_id in (1, 2, 6, 7)
       AND rd.frequency_unit = 'month'
+  -- BEGIN INCREMENTAL
+      AND rd.id NOT IN (SELECT external_id FROM donation where external_system = 'civicrm_contribution_recur')
+  -- END INCREMENTAL
+
     GROUP BY contact_action_id, rd.id
   ;
 
@@ -112,5 +131,9 @@ BEGIN;
       AND c.contribution_status_id IN (1, 3, 4, 7)
       AND rd.payment_instrument_id in (1, 2, 6, 7)
       AND rd.frequency_unit = 'month'
+  -- BEGIN INCREMENTAL
+      AND d.id > @last_donation_id AND d.id <= LAST_INSERT_ID()
+  -- END INCREMENTAL
+
   ;
 COMMIT;
