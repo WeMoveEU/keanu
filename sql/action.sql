@@ -26,28 +26,23 @@ INSERT INTO action
   GROUP BY c.id, camp.id, activity_type_id
 ;
 
--- Create donate action for every contribution
-INSERT IGNORE INTO action
+-- Create donate action for every contribution and contribution recur
+INSERT INTO action
   (campaign_id, action_type, language, external_id, external_system)
   SELECT
+    DISTINCT
     camp.id, 'donate', x.language_4, c.id, 'civicrm_campaign'
   FROM ${SOURCE}.civicrm_campaign c
   JOIN ${SOURCE}.civicrm_campaign p ON p.id=c.parent_id
   JOIN campaign camp ON camp.external_id=p.id
-  JOIN ${SOURCE}.civicrm_contribution d ON d.campaign_id=c.id
+  JOIN (
+      SELECT d.campaign_id
+      FROM ${SOURCE}.civicrm_contribution d
+      UNION
+      SELECT rd.campaign_id 
+      FROM ${SOURCE}.civicrm_contribution_recur rd 
+      ) d ON d.campaign_id=c.id
   JOIN ${SOURCE}.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
   GROUP BY c.id, camp.id
 ;
 
--- Create donate action for every recurring contribution
-INSERT IGNORE INTO action
-  (campaign_id, action_type, language, external_id, external_system)
-  SELECT
-    camp.id, 'donate', x.language_4, c.id, 'civicrm_campaign'
-  FROM ${SOURCE}.civicrm_campaign c
-  JOIN ${SOURCE}.civicrm_campaign p ON p.id=c.parent_id
-  JOIN campaign camp ON camp.external_id=p.id
-  JOIN ${SOURCE}.civicrm_contribution_recur d ON d.campaign_id=c.id
-  JOIN ${SOURCE}.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
-  GROUP BY c.id, camp.id
-;
