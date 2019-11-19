@@ -12,7 +12,8 @@ class LoadScript(RunStatement):
         _.filename = filename
         _.options = {
             'incremental': False,
-            'display': False
+            'display': False,
+            'warn': False
         }
         _.options.update(options)
 
@@ -108,7 +109,7 @@ class LoadScript(RunStatement):
     def delete(_, connection):
         result = None
         if len(_.deleteSql) > 0:
-            for event, data in super().execute(connection, _.deleteSql):
+            for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
                 if event == 'start':
                     click.echo("🔥 {0}".format(highlight_sql(_.statement_abbrev(data['sql']))))
         return result
@@ -118,7 +119,7 @@ class LoadScript(RunStatement):
         # ses = connection.begin()
         res = None
         row_counts = []
-        for event, data in super().execute(connection, _.statements):
+        for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
             if event == 'start':
                 click.echo("📦 {0}...".format(
                     highlight_sql(

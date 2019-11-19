@@ -19,8 +19,9 @@ def cli():
 @click.option('-o', default=0, help='start from order number')
 @click.option('-s', is_flag=True, default=False, help='run just one SQL')
 @click.option('-d', is_flag=True, default=False, help='display SQL')
-def load(i=False, o=0, n=False, s=False, d=False):
-    opts = { 'incremental': i, 'display': d }
+@click.option('-W', is_flag=True, default=False, help='display SQL warnings')
+def load(i=False, o=0, n=False, s=False, d=False, w=False):
+    opts = { 'incremental': i, 'display': d, 'warn': w }
     scripts = get_scripts(opts)
     try:
         connection = db.engine.connect()
@@ -69,8 +70,9 @@ def load(i=False, o=0, n=False, s=False, d=False):
 @click.option('-o', default=0, help='go back until order number')
 @click.option('-s', is_flag=True, default=False, help='run just one SQL')
 @click.option('-d', is_flag=True, default=False, help='display SQL')
-def delete(o=0, d=False, n=False, s=False):
-    opts = { 'display': d }
+@click.option('-W', is_flag=True, default=False, help='display SQL warnings')
+def delete(o=0, d=False, n=False, s=False, w=False):
+    opts = { 'display': d, 'warn': w }
     scripts = get_scripts(opts)
     scripts.reverse()
 
