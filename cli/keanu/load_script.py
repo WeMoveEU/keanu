@@ -3,6 +3,8 @@ import re
 from sqlalchemy import text
 import click
 from .run_statement import RunStatement
+from .util import highlight_sql
+import os
 
 class LoadScript(RunStatement):
     def __init__(_, filename, **options):
@@ -26,6 +28,8 @@ class LoadScript(RunStatement):
         out = []
         contexts = []
         comment_line = lambda x: '-- ' + x
+
+        lines = map(_.interpolate_environ, lines)
 
         for l in lines:
             m = re.match(r" *-- *ORDER: (\d+)", l)
@@ -62,6 +66,12 @@ class LoadScript(RunStatement):
         return out
 
     @staticmethod
+    def interpolate_environ(line):
+        def get_var(m):
+            return os.environ[m[1]]
+        return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
+
+    @staticmethod
     def noop_line(line):
         return re.match(r" *--", line) or re.match(r"^[\s;]*$", line)
 
@@ -96,7 +106,7 @@ class LoadScript(RunStatement):
         if len(_.deleteSql) > 0:
             for event, data in super().execute(connection, _.deleteSql):
                 if event == 'start':
-                    click.echo("🎰 {0}".format(_.statement_abbrev(data['sql'])))
+                    click.echo("🔥 {0}".format(highlight_sql(_.statement_abbrev(data['sql']))))
         return result
 
 
@@ -106,9 +116,16 @@ class LoadScript(RunStatement):
         row_counts = []
         for event, data in super().execute(connection, _.statements):
             if event == 'start':
-                click.echo("🎰 {0}...".format(_.statement_abbrev(data['sql'])), nl=False)
+                click.echo("📦 {0}...".format(
+                    highlight_sql(
+                        _.statement_abbrev(data['sql']))),
+                           nl=False)
             elif event == 'end':
-                click.echo("\r☑️ in {:0.2f}s {:}".format(data['time'], _.statement_abbrev(data['sql'])))
+                click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
+                    data['result'].rowcount,
+                    data['time'],
+                    highlight_sql(_.statement_abbrev(data['sql']))
+                ))
                 res = data['result']
         return res
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import click
 from glob import glob
-from keanu import LoadScript, db
+from keanu import LoadScript, db, util
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 import sys
@@ -45,7 +45,6 @@ def load(i=False, o=0, n=False, s=False, d=False):
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     sys.exit(1)
-            click.echo(scr.statement_abbrev(scr.statements[-1]) + ' ROWS: {0}'.format(res.rowcount))
 
             # stop after one.
             if s:
@@ -83,8 +82,11 @@ def delete(o=0, d=False, n=False, s=False):
         if scr.order < o:
             break
         with connection.begin() as transaction:
-            click.echo("{1}: {0} ({2})".format(
-                scr.filename, scr.order, scr.deleteSql or 'none'))
+            click.echo("️💣 [{:3d}] {} ({})".format(
+                scr.order,
+                scr.filename,
+                ', '.join(map(lambda s: s.rstrip(), map(util.highlight_sql, scr.deleteSql)))),
+                       color=True)
             if not n:
                 try:
                     scr.delete(connection)

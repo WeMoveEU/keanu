@@ -9,6 +9,7 @@ click = "*"
 sqlalchemy = "*"
 python-dotenv = "*"
 pymysql = "*"
+pygments = "*"
 
 [dev-packages]
 
