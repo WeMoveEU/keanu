@@ -76,6 +76,10 @@ class LoadScript(RunStatement):
             if 'INCREMENTAL' in contexts and not _.options['incremental']:
                 l = comment_line(l)
 
+            if 'INITIAL' in contexts and _.options['incremental']:
+                l = comment_line(l)
+
+
             out.insert(0, l)
 
         out.reverse()

@@ -35,17 +35,20 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
                 len(scr.lines),
                 len(scr.statements)))
 
-            if dry_run:  # dry run, skip
-                continue
             if len(scr.statements) == 0:
                 continue
 
-            with connection.begin() as transaction:
-                try:
-                    res = scr.execute(connection)
-                except KeyboardInterrupt as ctrlc:
-                    transaction.rollback()
-                    sys.exit(1)
+            if not dry_run:
+                with connection.begin() as transaction:
+                    try:
+                        res = scr.execute(connection)
+                    except KeyboardInterrupt as ctrlc:
+                        transaction.rollback()
+                        sys.exit(1)
+            elif display:
+                # it's a dry run and display was requested. Print the script
+                for s in scr.statements:
+                    click.echo(util.highlight_sql(s))
 
             # stop after one.
             if single:
