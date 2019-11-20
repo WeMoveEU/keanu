@@ -1,6 +1,8 @@
 import os
+from urllib.parse import urlparse
 from sqlalchemy import create_engine
 
-engine = create_engine(os.getenv('DATABASE_URL'))
 
-#connection = engine.connect()
+database_url = os.getenv('DATABASE_URL')
+engine = create_engine(database_url)
+schema_name = urlparse(database_url).path[1:]

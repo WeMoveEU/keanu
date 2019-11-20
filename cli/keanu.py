@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from dotenv import load_dotenv
+load_dotenv()
 import click
 from glob import glob
 from keanu import LoadScript, db, util
@@ -114,6 +116,7 @@ def schema(drop, load):
 
     if load:
         script = LoadScript(load)
+        script.replace_sql_object('keanu', db.schema_name)
         click.echo("🚚 Loading {}...".format(script.filename))
         with connection.begin() as tx:
             script.execute(connection)
