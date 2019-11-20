@@ -1,13 +1,5 @@
 -- ORDER: 9
 -- DELETE FROM campaign
--- BEGIN INITIAL
-INSERT INTO campaign
-  (name,  started_at, campaign_type)
-  VALUES
-    ('Unknown Fundraising', '2015-01-01', 'wemove'), -- null medium
-    ('Survey Fundraising', '2015-01-01', 'wemove')   -- utm_medium=drupal-survey
-;
--- END INITIAL
 
 INSERT INTO campaign
   (name, started_at, ended_at, campaign_type, external_id, external_system)
