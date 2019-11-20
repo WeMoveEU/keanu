@@ -115,6 +115,11 @@ class LoadScript(RunStatement):
 
         return list(map(lambda a: ''.join(a), out))
 
+    def replace_sql_object(_, before, after):
+        before = "`{}`".format(before)
+        after = "`{}`".format(after)
+        _.statements = list(map(lambda st: st.replace(before, after), _.statements))
+
     def statement_abbrev(_, statement):
         if _.options['display']:
             return statement

@@ -113,6 +113,7 @@ def schema(drop, load):
 
     if load:
         script = LoadScript(load)
+        script.replace_sql_object('keanu', db.schema_name)
         click.echo("🚚 Loading {}...".format(script.filename))
         with connection.begin() as tx:
             script.execute(connection)
