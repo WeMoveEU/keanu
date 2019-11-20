@@ -50,23 +50,23 @@ class LoadScript(RunStatement):
         for l in lines:
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
-                _.order = int(m[1])
+                _.order = int(m.group(1))
                 continue
 
             m = re.match(r" *-- *((DELETE|TRUNCATE) .*)$", l)
             if m:
-                _.deleteSql.append(m[1])
+                _.deleteSql.append(m.group(1))
                 continue
 
 
             m = re.match(r" *-- *BEGIN (\w+)", l)
             if m:
-                contexts.append(m[1].upper())
+                contexts.append(m.group(1).upper())
                 continue
 
             m = re.match(r" *-- *END (\w+)", l)
             if m:
-                contexts.remove(m[1].upper())
+                contexts.remove(m.group(1).upper())
                 continue
 
             m = re.match(r" *-- *IGNORE", l)
@@ -87,7 +87,7 @@ class LoadScript(RunStatement):
     @staticmethod
     def interpolate_environ(line):
         def get_var(m):
-            return os.environ[m[1]]
+            return os.environ[m.group(1)]
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
 
     """
