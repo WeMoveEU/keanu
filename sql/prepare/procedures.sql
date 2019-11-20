@@ -1,3 +1,4 @@
+-- ORDER: 6
 DROP FUNCTION IF EXISTS date_trunc_day;
 
 CREATE FUNCTION date_trunc_day (d DATETIME)

@@ -1,3 +1,6 @@
+-- IGNORE
+-- to remove data:
+-- TRUNCATE calendar
 drop table if exists calendar;
 
 create table calendar (
