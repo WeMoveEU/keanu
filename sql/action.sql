@@ -1,5 +1,15 @@
 -- ORDER: 30
 -- DELETE FROM action
+
+-- BEGIN INITIAL
+SELECT @unattributed := id FROM campaign WHERE name = 'Unattributed';
+SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed donations';
+
+INSERT INTO action (campaign_id, action_type, external_id, external_system) VALUES
+  (@unattributed, 'donate', @unattributed_donations, 'civicrm_campaign')
+;
+-- END INITIAL
+
 INSERT INTO action
   (campaign_id, action_type, language, external_id, external_system)
   SELECT
