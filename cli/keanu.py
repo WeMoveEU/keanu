@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from dotenv import load_dotenv
+load_dotenv()
 import click
 from glob import glob
 from keanu import LoadScript, db, util
