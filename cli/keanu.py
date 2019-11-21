@@ -47,6 +47,12 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
                     except KeyboardInterrupt as ctrlc:
                         transaction.rollback()
                         sys.exit(1)
+                    except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                        transaction.rollback()
+                        msg = str(e.args[0])
+                        msg = msg.replace('\\n', "\n")
+                        click.echo(message=msg, err=True)
+                        sys.exit(1)
             elif display:
                 # it's a dry run and display was requested. Print the script
                 for s in scr.statements:
@@ -56,13 +62,8 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
             if single:
                 break
 
-    except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
-        msg = str(e.args[0])
-        msg = msg.replace('\\n', "\n")
-        click.echo(message=msg, err=True)
-        sys.exit(1)
-
     except SystemExit as e:
+        # rethrow it so it does not fall into unexpected block below:
         raise e
 
     except:
