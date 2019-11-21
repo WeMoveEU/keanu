@@ -21,8 +21,8 @@ SELECT
     WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
     END as payment_method,
     CASE WHEN c.contribution_status_id = 1 THEN 'success'
-    WHEN c.contribution_status_id = 3 THEN 'failed'
-    WHEN c.contribution_status_id IN (4, 7) THEN 'cancelled'
+    WHEN c.contribution_status_id = 4 THEN 'failed'
+    WHEN c.contribution_status_id IN (3, 7) THEN 'cancelled'
     END as status,
 -- Second info about recurring donation it belongs to
     c.contribution_recur_id,
