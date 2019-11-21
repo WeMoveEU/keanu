@@ -9,42 +9,42 @@
 CREATE TEMPORARY TABLE all_contributions AS
 SELECT
 -- First info about contribution
-c.id AS contribution_id,
-c.total_amount AS amount,
-c.currency AS original_currency,
-c.total_amount AS original_amount,
-c.receive_date,
+    c.id AS contribution_id,
+    c.total_amount AS amount,
+    c.currency AS original_currency,
+    c.total_amount AS original_amount,
+    c.receive_date,
 
-CASE WHEN c.payment_instrument_id = 1 THEN 'paypal'
-     WHEN c.payment_instrument_id = 2 THEN 'card'
-     WHEN c.payment_instrument_id = 5 THEN 'bank_transfer'
-     WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
-END as payment_method,
-CASE WHEN c.contribution_status_id = 1 THEN 'success'
-     WHEN c.contribution_status_id = 3 THEN 'failed'
-     WHEN c.contribution_status_id IN (4, 7) THEN 'cancelled'
-END as status,
+    CASE WHEN c.payment_instrument_id = 1 THEN 'paypal'
+    WHEN c.payment_instrument_id = 2 THEN 'card'
+    WHEN c.payment_instrument_id = 5 THEN 'bank_transfer'
+    WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
+    END as payment_method,
+    CASE WHEN c.contribution_status_id = 1 THEN 'success'
+    WHEN c.contribution_status_id = 3 THEN 'failed'
+    WHEN c.contribution_status_id IN (4, 7) THEN 'cancelled'
+    END as status,
 -- Second info about recurring donation it belongs to
-c.contribution_recur_id,
-rc.start_date as recur_start_date,
-COALESCE(rc.cancel_date, rc.end_date) AS recur_end_date,
-COALESCE(rc.frequency_unit, 'one-off') as frequency_unit,
-COALESCE(rc.frequency_interval, 1) as frequency_interval,
+    c.contribution_recur_id,
+    rc.start_date as recur_start_date,
+    COALESCE(rc.cancel_date, rc.end_date) AS recur_end_date,
+    COALESCE(rc.frequency_unit, 'one-off') as frequency_unit,
+    COALESCE(rc.frequency_interval, 1) as frequency_interval,
 -- Then the external_id/system pair we use in donation record
-CASE WHEN c.contribution_recur_id IS NULL THEN 'civicrm_contribution'
-ELSE 'civicrm_contribution_recur'
-END as external_system,
-COALESCE(rc.id, c.id) as external_id
+    CASE WHEN c.contribution_recur_id IS NULL THEN 'civicrm_contribution'
+    ELSE 'civicrm_contribution_recur'
+    END as external_system,
+    COALESCE(rc.id, c.id) as external_id
 
 FROM
-      ${SOURCE}.civicrm_contribution c
-      LEFT JOIN
-      ${SOURCE}.civicrm_contribution_recur rc
-      ON c.contribution_recur_id = rc.id
+    ${SOURCE}.civicrm_contribution c
+    LEFT JOIN
+    ${SOURCE}.civicrm_contribution_recur rc
+    ON c.contribution_recur_id = rc.id
 WHERE
     c.payment_instrument_id IN (1,2,5,6,7,8)
     AND c.contribution_status_id IN (1,3,4,7)
-;
+    ;
 
 -- Some indexes to speed up following operations
 CREATE INDEX all_contributions_status ON all_contributions (status);
@@ -56,84 +56,84 @@ CREATE INDEX all_contributions_external_ids ON all_contributions (external_id, e
 -- Insert donations both one-off and recurring in one go
 -- Use DISTINCT to get recurring donation just once
 INSERT INTO donation (
-       contact_action_id,
-       amount, total_amount, original_amount, original_currency,
-       started_at, ended_at, payment_method,
-       frequency_unit, frequency_interval,
-       payment_count, failure_count,
-       external_id, external_system
-)
+        contact_action_id,
+        amount, total_amount, original_amount, original_currency,
+        started_at, ended_at, payment_method,
+        frequency_unit, frequency_interval,
+        payment_count, failure_count,
+        external_id, external_system
+        )
 SELECT DISTINCT
-  ca.id,
-  -- total_amount will be updated for recurring donations below
-  ac.amount, 0, ac.original_amount, ac.original_currency,
-  -- start, end dates
-  COALESCE(ac.recur_start_date, ac.receive_date),
-  ac.recur_end_date,
-  ac.payment_method,
-  -- frequencies
-  ac.frequency_unit,
-  ac.frequency_interval,
-  -- agg count - zero for now
-  0, 0,
-  -- external references
-  ac.external_id,
-  ac.external_system
+    ca.id,
+-- total_amount will be updated for recurring donations below
+    ac.amount, 0, ac.original_amount, ac.original_currency,
+-- start, end dates
+    COALESCE(ac.recur_start_date, ac.receive_date),
+    ac.recur_end_date,
+    ac.payment_method,
+-- frequencies
+    ac.frequency_unit,
+    ac.frequency_interval,
+-- agg count - zero for now
+    0, 0,
+-- external references
+    ac.external_id,
+    ac.external_system
 FROM all_contributions ac
-JOIN contact_action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
+    JOIN contact_action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
 -- BEGIN INCREMENTAL
 -- exclude by contact_action references in donation table
 WHERE ca.id NOT IN (SELECT contact_action_id FROM donation)
 -- END INCREMENTAL
-;
+    ;
 
 
 -- Now update donations to set all aggregates for success payments
 SET @last_payment_in_db = (SELECT max(receive_date) FROM all_contributions);
 
 UPDATE donation d
-JOIN
-  (SELECT
-   d.id,
-   SUM(ac.amount) as total_amount,
-   count(ac.contribution_id) as payment_count,
-   max(ac.receive_date) as last_payment_date
-   FROM donation d
-   JOIN all_contributions ac
-   ON d.external_id = ac.external_id AND d.external_system = ac.external_system
-   WHERE ac.status = 'success'
+    JOIN
+    (SELECT
+        d.id,
+        SUM(ac.amount) as total_amount,
+        count(ac.contribution_id) as payment_count,
+        max(ac.receive_date) as last_payment_date
+    FROM donation d
+        JOIN all_contributions ac
+        ON d.external_id = ac.external_id AND d.external_system = ac.external_system
+    WHERE ac.status = 'success'
 
-   GROUP BY 1
-  ) succ ON d.id = succ.id
+    GROUP BY 1
+        ) succ ON d.id = succ.id
 
 SET
-  d.total_amount = succ.total_amount,
-  d.payment_count = succ.payment_count,
-  -- End stale recurring donations, that have no payments for 2 months
-  -- Because src db may be old, we take last payment date as 'now'
-  d.ended_at = CASE WHEN d.frequency_unit != 'one-off' AND
-                         d.ended_at IS NULL AND
-                         DATEDIFF(@last_payment_in_db, succ.last_payment_date) > 60
-                         THEN succ.last_payment_date
-                    ELSE d.ended_at
-               END
-;
+    d.total_amount = succ.total_amount,
+    d.payment_count = succ.payment_count,
+-- End stale recurring donations, that have no payments for 2 months
+-- Because src db may be old, we take last payment date as 'now'
+    d.ended_at = CASE WHEN d.frequency_unit != 'one-off' AND
+    d.ended_at IS NULL AND
+    DATEDIFF(@last_payment_in_db, succ.last_payment_date) > 60
+    THEN succ.last_payment_date
+    ELSE d.ended_at
+    END
+    ;
 
 -- Update donations with fialed_count
 UPDATE donation d
-JOIN
-(SELECT
-d.id,
-count(ac.contribution_id) as failed_count
-FROM donation d
-JOIN all_contributions ac
-ON d.external_id = ac.external_id AND d.external_system = ac.external_system
-WHERE ac.status = 'failed'
-GROUP BY 1
-) fail ON d.id = fail.id
+    JOIN
+    (SELECT
+        d.id,
+        count(ac.contribution_id) as failed_count
+    FROM donation d
+        JOIN all_contributions ac
+        ON d.external_id = ac.external_id AND d.external_system = ac.external_system
+    WHERE ac.status = 'failed'
+    GROUP BY 1
+        ) fail ON d.id = fail.id
 SET d.failure_count = fail.failed_count
-;
+    ;
 
 -- PAYMENTS -----------------------------------------------------------------
 -- BEGIN INCREMENTAL
@@ -141,28 +141,28 @@ SET @last_receive_date  = (SELECT max(receive_date) FROM payment);
 -- END INCREMENTAL
 
 INSERT INTO payment
-(donation_id, receive_date, status)
+    (donation_id, receive_date, status)
 SELECT
-  d.id, ac.receive_date, ac.status
+    d.id, ac.receive_date, ac.status
 FROM donation d
-JOIN
-all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
+    JOIN
+    all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
 -- BEGIN INCREMENTAL
 WHERE ac.receive_date > @last_receive_date;
 -- END INCREMENTAL
-;
+    ;
 
 -- BEGIN INCREMENTAL
 -- if we just inserted new payments, check if old payments did not change status
 UPDATE payment p -- update statuses
-JOIN donation d ON p.donation_id = d.id
-JOIN all_contributions ac
-     ON d.external_system = ac.external_system
-     AND d.external_id = ac.external_id
-     AND p.receive_date = ac.receive_date
+    JOIN donation d ON p.donation_id = d.id
+    JOIN all_contributions ac
+    ON d.external_system = ac.external_system
+    AND d.external_id = ac.external_id
+    AND p.receive_date = ac.receive_date
 SET p.status = ac.status
 WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
-;
+    ;
 -- END INCREMENTAL
 
 -- CLEANUP -------------------------------------------------------------------
