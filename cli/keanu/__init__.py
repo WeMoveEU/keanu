@@ -2,4 +2,6 @@
 import dotenv
 dotenv.load_dotenv()
 
-from .load_script import *
+
+from . import util
+from .load_script import LoadScript

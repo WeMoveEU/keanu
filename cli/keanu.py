@@ -6,10 +6,10 @@ from glob import glob
 from keanu import LoadScript, db, util
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
+import re
 import sys
 import traceback
 
-SQLBASE='../sql/'
 
 @click.group()
 def cli():
@@ -18,22 +18,25 @@ def cli():
 @cli.command()
 @click.option('-i', '--incremental', is_flag=True, default=False, help='incremental load')
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
-@click.option('-o', '--order', default=0, help='start from order number')
+@click.option('-o', '--order', default='0', help='start from order number')
 @click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def load(incremental=False, order=0, dry_run=False, single=False, display=False, warn=False):
+def load(incremental, order, dry_run, single, display, warn):
     opts = { 'incremental': incremental, 'display': display, 'warn': warn }
-    scripts = get_scripts(opts)
+    scripts = util.get_scripts(opts)
+
+    # without specifying -s, a single number order x means x:
+    if not single and re.match(r"\d+$", order):
+        order = order + ':'
+    scripts = util.filter_scripts_by_order(scripts, order)
+
     try:
         connection = db.engine.connect()
         for scr in scripts:
-            # skip to order number if requested
-            if scr.order < order: continue
-
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
-                scr.filename[len(SQLBASE):] if scr.filename.startswith(SQLBASE) else scr.filename,
+                scr.filename[len(util.SQLBASE):] if scr.filename.startswith(util.SQLBASE) else scr.filename,
                 len(scr.lines),
                 len(scr.statements)))
 
@@ -48,10 +51,6 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     sys.exit(1)
-
-            # stop after one.
-            if single:
-                break
 
     except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
         msg = str(e.args[0])
@@ -69,23 +68,23 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
 
 @cli.command()
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
-@click.option('-o', '--order', default=0, help='go back until order number')
+@click.option('-o', '--order', default='0', help='go back until order number')
 @click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def delete(order=0, display=False, dry_run=False, single=False, warn=False):
+def delete(order, display, dry_run, single, warn):
     opts = { 'display': display, 'warn': warn }
-    scripts = get_scripts(opts)
+    scripts = util.get_scripts(opts)
+
+    if not single and re.match(r"\d+$", order):
+        order = order + ':'
+    scripts = util.filter_scripts_by_order(scripts, order)
+
     scripts.reverse()
 
     connection = db.engine.connect()
 
-    if single:
-        scripts = filter(lambda a: a.order == order, scripts)
-
     for scr in scripts:
-        if scr.order < order:
-            break
         with connection.begin() as transaction:
             click.echo("🚒️ [{:3d}] {} ({})".format(
                 scr.order,
@@ -118,14 +117,6 @@ def schema(drop, load):
         with connection.begin() as tx:
             script.execute(connection)
 
-
-# helpers
-
-def get_scripts(opts={}):
-    files = glob(SQLBASE+'**/*.sql', recursive=True)
-    scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
-    LoadScript.sort(scripts)
-    return scripts
 
 
 if __name__ == '__main__':
