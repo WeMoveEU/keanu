@@ -89,51 +89,6 @@ WHERE ca.id NOT IN (SELECT contact_action_id FROM donation)
     ;
 
 
--- Now update donations to set all aggregates for success payments
-SET @last_payment_in_db = (SELECT max(receive_date) FROM all_contributions);
-
-UPDATE donation d
-    JOIN
-    (SELECT
-        d.id,
-        SUM(ac.amount) as total_amount,
-        count(ac.contribution_id) as payment_count,
-        max(ac.receive_date) as last_payment_date
-    FROM donation d
-        JOIN all_contributions ac
-        ON d.external_id = ac.external_id AND d.external_system = ac.external_system
-    WHERE ac.status = 'success'
-
-    GROUP BY 1
-        ) succ ON d.id = succ.id
-
-SET
-    d.total_amount = succ.total_amount,
-    d.payment_count = succ.payment_count,
--- End stale recurring donations, that have no payments for 2 months
--- Because src db may be old, we take last payment date as 'now'
-    d.ended_at = CASE WHEN d.frequency_unit != 'one-off' AND
-    d.ended_at IS NULL AND
-    DATEDIFF(@last_payment_in_db, succ.last_payment_date) > 60
-    THEN succ.last_payment_date
-    ELSE d.ended_at
-    END
-    ;
-
--- Update donations with fialed_count
-UPDATE donation d
-    JOIN
-    (SELECT
-        d.id,
-        count(ac.contribution_id) as failed_count
-    FROM donation d
-        JOIN all_contributions ac
-        ON d.external_id = ac.external_id AND d.external_system = ac.external_system
-    WHERE ac.status = 'failed'
-    GROUP BY 1
-        ) fail ON d.id = fail.id
-SET d.failure_count = fail.failed_count
-    ;
 
 -- PAYMENTS -----------------------------------------------------------------
 -- BEGIN INCREMENTAL
@@ -164,6 +119,37 @@ SET p.status = ac.status
 WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
     ;
 -- END INCREMENTAL
+
+-- AGGREGATIONS ------------------------------------------------------------
+-- Now update donations to set all aggregates for success payments
+UPDATE donation d
+    JOIN
+    (SELECT
+        d.id,
+        d.amount * count(p.id) as total_amount,
+        count(p.id) as payment_count
+    FROM donation d
+        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='success'
+
+    GROUP BY d.id
+        ) succ ON d.id = succ.id
+SET
+    d.total_amount = succ.total_amount,
+    d.payment_count = succ.payment_count
+    ;
+
+-- Update donations with fialed_count
+UPDATE donation d
+    JOIN
+    (SELECT
+        d.id,
+        count(p.id) as failed_count
+    FROM donation d
+        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='failed'
+    GROUP BY d.id
+        ) fail ON d.id = fail.id
+SET d.failure_count = fail.failed_count
+    ;
 
 -- CLEANUP -------------------------------------------------------------------
 DROP TABLE all_contributions;
