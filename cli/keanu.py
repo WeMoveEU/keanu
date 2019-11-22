@@ -18,17 +18,13 @@ def cli():
 @cli.command()
 @click.option('-i', '--incremental', is_flag=True, default=False, help='incremental load')
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
-@click.option('-o', '--order', default='0', help='specify order of files to run by. Can be single number to start with or a spec')
-@click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
+@click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def load(incremental, order, dry_run, single, display, warn):
+def load(incremental, order, dry_run, display, warn):
     opts = { 'incremental': incremental, 'display': display, 'warn': warn }
     scripts = util.get_scripts(opts)
 
-    # without specifying -s, a single number order x means x:
-    if not single and re.match(r"\d+$", order):
-        order = order + ':'
     scripts = util.filter_scripts_by_order(scripts, order)
 
     try:
@@ -72,16 +68,13 @@ def load(incremental, order, dry_run, single, display, warn):
 
 @cli.command()
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
-@click.option('-o', '--order', default='0', help='specify order of files to run by. Can be single number to start with or a spec')
-@click.option('-s', '--single', is_flag=True, default=False, help='run just one SQL')
+@click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def delete(order, display, dry_run, single, warn):
+def delete(order, display, dry_run, warn):
     opts = { 'display': display, 'warn': warn }
     scripts = util.get_scripts(opts)
 
-    if not single and re.match(r"\d+$", order):
-        order = order + ':'
     scripts = util.filter_scripts_by_order(scripts, order)
 
     scripts.reverse()

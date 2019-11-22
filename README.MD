@@ -42,8 +42,7 @@ You need to enable the Pipenv, by running `pipenv shell`.
 
 Options:
 
-- `-o 10` - _order_, start from SQL file with order 10 (also see order spec)
-- `-s` - _single_, run just one SQL file and exit
+- `-o 10:` - _order_, start from SQL file with order 10 (also see order spec)
 - `-n` - _dry run_, do not execute the SQL. Usefull to see the order of scripts
 - `-i` - _incremental_, also run the incremental parts of the SQL, normally deleted (they are marked by `-- BEGIN INCREMENTAL` and `-- END INCREMENTAL` comments)
 - `-d` - _display_ a whole SQL statement instead of abbreviation of first line
@@ -55,8 +54,7 @@ Options:
 Options:
 
 - `-n` - _dry run_, do not execute the SQL. Usefull to see the order of scripts
-- `-o 10` - delete data until the SQL file _order_ (inclusive) and stop
-- `-s` - _single_, run just one SQL file and exit
+- `-o 10:` - delete data until the SQL file _order_ (inclusive) and stop
 - `-d` - _display_ a whole SQL statement instead of abbreviation of first line
 
 ### Order spec
