@@ -104,6 +104,8 @@ WHERE c.id NOT IN (SELECT external_id FROM jar)
 
 ```
 
+- `BEGIN INITIAL` / `END INITIAL` - marks part of the SQL that will be removed in incremental `-i` mode.
+
 Enviroment variable interpolation. Similar to shell, simple variable interpolation is supported. `${FOO}` will be interpolated into value of FOO environment variable. This is currently used to insert the source schema name with `${SOURCE}`.
 
 ## Product vision

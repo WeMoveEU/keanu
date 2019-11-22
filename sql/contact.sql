@@ -31,6 +31,9 @@ INSERT INTO contact
 
   WHERE c.contact_type = 'Individual'
   AND NOT c.is_deleted
+-- BEGIN INCREMENTAL
+  AND c.id NOT IN (SELECT id FROM contact)
+-- END INCREMENTAL
 
   GROUP BY c.id
 ;

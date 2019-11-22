@@ -5,16 +5,6 @@ DROP VIEW IF EXISTS contribution_recur_to_campaign;
 CREATE VIEW contribution_recur_to_campaign AS
   SELECT
     rd.id,
-    CASE
-      WHEN c.id IS NULL THEN
-       CASE
-        WHEN utm.utm_medium = 'drupal-survey' THEN
-         (SELECT id from campaign where name = 'Survey Fundraising')
-        ELSE
-         (SELECT id from campaign where name = 'Unknown Fundraising')
-       END
-      ELSE c.id
-    END as campaign_id,
     m.id as mailing_id,
     language_4 as language,
     utm.utm_source,

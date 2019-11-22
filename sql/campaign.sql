@@ -1,11 +1,5 @@
 -- ORDER: 9
 -- DELETE FROM campaign
-INSERT INTO campaign
-  (name,  started_at, campaign_type)
-  VALUES
-    ('Unknown Fundraising', '2015-01-01', 'wemove'), -- null medium
-    ('Survey Fundraising', '2015-01-01', 'wemove')   -- utm_medium=drupal-survey
-;
 
 INSERT INTO campaign
   (name, started_at, ended_at, campaign_type, external_id, external_system)
@@ -22,5 +16,21 @@ INSERT INTO campaign
     'civicrm_campaign'
 FROM ${SOURCE}.civicrm_campaign c
 WHERE c.id=c.parent_id
+
+-- BEGIN INCREMENTAL
+AND c.id NOT IN (SELECT external_id FROM campaign WHERE external_system = 'civicrm_campaign')
+-- END INCREMENTAL
     ;
+
+
+-- BEGIN INCREMENTAL
+-- Update what could change:
+UPDATE campaign c
+    JOIN ${SOURCE}.civicrm_campaign civic
+    ON c.external_system = 'civicrm_campaign' AND c.external_id = civic.id
+SET
+    c.ended_at = civic.end_date,
+    c.name = civic.name
+;
+-- END INCREMENTAL
 

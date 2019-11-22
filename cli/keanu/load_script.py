@@ -76,6 +76,10 @@ class LoadScript(RunStatement):
             if 'INCREMENTAL' in contexts and not _.options['incremental']:
                 l = comment_line(l)
 
+            if 'INITIAL' in contexts and _.options['incremental']:
+                l = comment_line(l)
+
+
             out.insert(0, l)
 
         out.reverse()
@@ -95,8 +99,8 @@ class LoadScript(RunStatement):
     """
     @staticmethod
     def noop_line(line):
-        return re.match(r" *--", line) or re.match(r"^[\s;]*$", line)
-
+        return (re.match(r" *--", line)
+                or re.match(r"^[\s;]*$", line)) is not None
 
     """
     Will split the lines of script into SQL statements (separated by semicolon)
@@ -107,11 +111,9 @@ class LoadScript(RunStatement):
         for l in lines:
             c.append(l)
             if re.search(r";[\s]*($|--.*$)", l):
-                out.append(c)
+                if len(c) > 0 and any(map(lambda a: not _.noop_line(a), c)):
+                    out.append(c)
                 c = []
-
-        if len(c) > 0 and any(map(lambda a: not _.noop_line(a), c)):
-            out.append(c)
 
         return list(map(lambda a: ''.join(a), out))
 

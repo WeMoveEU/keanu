@@ -37,29 +37,33 @@ def load(incremental=False, order=0, dry_run=False, single=False, display=False,
                 len(scr.lines),
                 len(scr.statements)))
 
-            if dry_run:  # dry run, skip
-                continue
             if len(scr.statements) == 0:
                 continue
 
-            with connection.begin() as transaction:
-                try:
-                    res = scr.execute(connection)
-                except KeyboardInterrupt as ctrlc:
-                    transaction.rollback()
-                    sys.exit(1)
+            if not dry_run:
+                with connection.begin() as transaction:
+                    try:
+                        res = scr.execute(connection)
+                    except KeyboardInterrupt as ctrlc:
+                        transaction.rollback()
+                        sys.exit(1)
+                    except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                        transaction.rollback()
+                        msg = str(e.args[0])
+                        msg = msg.replace('\\n', "\n")
+                        click.echo(message=msg, err=True)
+                        sys.exit(1)
+            elif display:
+                # it's a dry run and display was requested. Print the script
+                for s in scr.statements:
+                    click.echo(util.highlight_sql(s))
 
             # stop after one.
             if single:
                 break
 
-    except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
-        msg = str(e.args[0])
-        msg = msg.replace('\\n', "\n")
-        click.echo(message=msg, err=True)
-        sys.exit(1)
-
     except SystemExit as e:
+        # rethrow it so it does not fall into unexpected block below:
         raise e
 
     except:
