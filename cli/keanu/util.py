@@ -1,3 +1,8 @@
+import re
+from functools import reduce
+from operator import setitem
+from glob import glob
+from .load_script import LoadScript
 import pygments
 import pygments.formatters
 import pygments.lexers
@@ -11,3 +16,38 @@ def highlight_sql(code):
     if not ends_with_nl:
         c = c.rstrip()
     return c
+
+
+SQLBASE='../sql/'
+
+def get_scripts(opts={}):
+    files = glob(SQLBASE+'**/*.sql', recursive=True)
+    scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
+    LoadScript.sort(scripts)
+    return scripts
+
+def filter_scripts_by_order(scripts, order):
+    if re.match(r"\d+(:\d*)?(,\d+(:\d*?)?)*$", order) is None:
+        raise click.ClickException('Incorrect order format. I need comma separted list of order numbers or ranges in format start:end (excluding end)')
+
+    max_order = max(scripts, key=lambda s: s.order).order
+    scripts_by_order = reduce(lambda d,s: setitem(d, s.order, d.get(s.order, []) + [s]) or d,
+                              scripts, {})
+    ol = order.split(',')
+    def order_numbers(o):
+        if ':' in o:
+            start, end = o.split(':')
+            if end == '':
+                end = max_order + 1
+            return list(range(int(start), int(end)))
+        else:
+            return [int(o)]
+
+    out = []
+    for o in reduce(lambda a,b: a+b, map(order_numbers, ol)):
+        try:
+            out += scripts_by_order.pop(o)
+        except KeyError:
+            pass
+
+    return out

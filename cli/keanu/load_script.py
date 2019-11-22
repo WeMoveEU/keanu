@@ -3,7 +3,7 @@ import re
 from sqlalchemy import text
 import click
 from .run_statement import RunStatement
-from .util import highlight_sql
+from . import util
 import os
 
 class LoadScript(RunStatement):
@@ -35,6 +35,9 @@ class LoadScript(RunStatement):
         # parse SQL
         _.lines = _.parse(open(filename, 'r').readlines())
         _.statements = _.split_statements(_.lines)
+
+    def __str__(_):
+        return '{} ({})'.format(_.filename, _.order)
 
     """
     Parse script lines and load metadata. Returns list of lines after parsing (will be modified).
@@ -143,7 +146,7 @@ class LoadScript(RunStatement):
         if len(_.deleteSql) > 0:
             for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
                 if event == 'start':
-                    click.echo("🔥 {0}".format(highlight_sql(_.statement_abbrev(data['sql']))))
+                    click.echo("🔥 {0}".format(util.highlight_sql(_.statement_abbrev(data['sql']))))
         return result
 
 
@@ -154,14 +157,14 @@ class LoadScript(RunStatement):
         for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
             if event == 'start':
                 click.echo("📦 {0}...".format(
-                    highlight_sql(
+                    util.highlight_sql(
                         _.statement_abbrev(data['sql']))),
                            nl=False)
             elif event == 'end':
                 click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
                     data['result'].rowcount,
                     data['time'],
-                    highlight_sql(_.statement_abbrev(data['sql']))
+                    util.highlight_sql(_.statement_abbrev(data['sql']))
                 ))
                 res = data['result']
         return res

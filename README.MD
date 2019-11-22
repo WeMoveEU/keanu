@@ -42,7 +42,7 @@ You need to enable the Pipenv, by running `pipenv shell`.
 
 Options:
 
-- `-o 10` - _order_, start from SQL file with order 10
+- `-o 10` - _order_, start from SQL file with order 10 (also see order spec)
 - `-s` - _single_, run just one SQL file and exit
 - `-n` - _dry run_, do not execute the SQL. Usefull to see the order of scripts
 - `-i` - _incremental_, also run the incremental parts of the SQL, normally deleted (they are marked by `-- BEGIN INCREMENTAL` and `-- END INCREMENTAL` comments)
@@ -58,6 +58,13 @@ Options:
 - `-o 10` - delete data until the SQL file _order_ (inclusive) and stop
 - `-s` - _single_, run just one SQL file and exit
 - `-d` - _display_ a whole SQL statement instead of abbreviation of first line
+
+### Order spec
+
+You can provide just a number to order (`-o`) option, but you can also provide:
+- a list of numbers such as `10,11,50` and scripts with respective order will be run
+- a range in python format such as `10:16` equal to `10,11,12,13,14,15` (excluding 16)
+- a mix of them: `10:13,31,50:52`
 
 
 ### SQL file reference:
