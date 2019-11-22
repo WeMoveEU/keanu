@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('source_db', help="The CiviCRM database to dump and reduce")
 parser.add_argument('-u', '--user', default=user, help="DB user to query the information schema")
 parser.add_argument('-p', '--password', help="DB password to query the information schema")
+parser.add_argument('-f', '--factor', default=17, help="Factor by which you mand to divide number of contacts")
 opts = parser.parse_args()
 
 def get_references(cursor, source_db, limit_table, column, table_pattern):
@@ -19,7 +20,7 @@ def get_references(cursor, source_db, limit_table, column, table_pattern):
   return single_col_values(cursor)
 
 def get_mailing_senders(cursor, source_db):
-  cursor.execute("SELECT DISTINCT scheduled_id FROM {}.civicrm_mailing WHERE scheduled_id IS NOT NULL".format(source_db))
+  cursor.execute("SELECT DISTINCT created_id FROM {}.civicrm_mailing WHERE created_id IS NOT NULL".format(source_db))
   return single_col_values(cursor)
 
 def single_col_values(result, col=0):
@@ -31,7 +32,7 @@ def column_condition(column, required_contacts, limit_factor):
     'cids': ','.join(map(str, required_contacts)),
     'modulo': limit_factor
   }
-  return '{c} < 100 OR {c} IN ({cids}) OR {c} % {modulo} = 0'.format(**params)
+  return '{c} IS NULL OR {c} < 100 OR {c} IN ({cids}) OR {c} % {modulo} = 0'.format(**params)
 
 def where(columns, required_contacts, limit_factor):
   conditions = map(lambda c: column_condition(c, required_contacts, limit_factor), columns)
@@ -45,14 +46,14 @@ def where(columns, required_contacts, limit_factor):
 source_db = opts.source_db
 table_pattern = 'civicrm%'
 limit_table = 'civicrm_contact'
-limit_factor = 11
 indirect_tables = {
-  'civicrm_activity': 'civicrm_activity_contact', 
-  'civicrm_mailing_event_delivered': 'civicrm_mailing_event_queue',
-  'civicrm_mailing_event_opened': 'civicrm_mailing_event_queue',
-  'civicrm_mailing_event_trackable_url_open': 'civicrm_mailing_event_queue',
-  'civicrm_mailing_event_unsubscribe': 'civicrm_mailing_event_queue',
-  'civicrm_mailing_event_bounce': 'civicrm_mailing_event_queue'
+  'civicrm_activity': ('id', 'civicrm_activity_contact.activity_id'),
+  'civicrm_value_action_source_4': ('entity_id', 'civicrm_activity_contact.activity_id'),
+  'civicrm_mailing_event_delivered': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
+  'civicrm_mailing_event_opened': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
+  'civicrm_mailing_event_trackable_url_open': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
+  'civicrm_mailing_event_unsubscribe': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
+  'civicrm_mailing_event_bounce': ('event_queue_id', 'civicrm_mailing_event_queue.id')
 }
 
 connection = pymysql.connect(host='localhost', user=opts.user, password=opts.password, db='information_schema', unix_socket='/var/run/mysqld/mysqld.sock')
@@ -64,11 +65,9 @@ with connection:
   cursor.execute("SELECT table_name FROM tables WHERE table_schema=%s AND table_name LIKE %s", [source_db, table_pattern])
   for table in single_col_values(cursor):
     if table in indirect_tables.keys():
-      link_table = indirect_tables[table]
-      if link_table == 'civicrm_activity_contact':
-        where_option = '--where "id IN (SELECT activity_id FROM civicrm_activity_contact WHERE {})"'.format(column_condition('contact_id', wemove_contacts, limit_factor))
-      elif link_table == 'civicrm_mailing_event_queue':
-        where_option = '--where "event_queue_id IN (SELECT id FROM civicrm_mailing_event_queue WHERE {})"'.format(column_condition('contact_id', wemove_contacts, limit_factor))
+      from_column, link_table = indirect_tables[table]
+      link_table = link_table.split('.')
+      where_option = '--where "{} IN (SELECT {} FROM {} WHERE {})"'.format(from_column, link_table[1], link_table[0], column_condition('contact_id', wemove_contacts, opts.factor))
 
     else:
       if table in contact_tables:
@@ -77,7 +76,7 @@ with connection:
           columns = ['id'] + columns
       else:
         columns = []
-      where_option = where(columns, wemove_contacts, limit_factor)
+      where_option = where(columns, wemove_contacts, opts.factor)
 
     print("mysqldump --single-transaction {} {} {} >> smalldump.sql".format(where_option, source_db, table))
 
