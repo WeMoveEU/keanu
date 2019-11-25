@@ -21,8 +21,8 @@ SELECT
     WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
     END as payment_method,
     CASE WHEN c.contribution_status_id = 1 THEN 'success'
-    WHEN c.contribution_status_id = 4 THEN 'failed'
-    WHEN c.contribution_status_id IN (3, 7) THEN 'cancelled'
+    WHEN c.contribution_status_id = 4 THEN 'fail'
+    WHEN c.contribution_status_id IN (3, 7) THEN 'cancel'
     END as status,
 -- Second info about recurring donation it belongs to
     c.contribution_recur_id,
@@ -60,7 +60,7 @@ INSERT INTO donation (
         amount, total_amount, original_amount, original_currency,
         started_at, ended_at, payment_method,
         frequency_unit, frequency_interval,
-        payment_count, failure_count,
+        payment_count, fail_count,
         external_id, external_system
         )
 SELECT DISTINCT
@@ -143,12 +143,12 @@ UPDATE donation d
     JOIN
     (SELECT
         d.id,
-        count(p.id) as failed_count
+        count(p.id) as fail_count
     FROM donation d
-        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='failed'
+        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='fail'
     GROUP BY d.id
         ) fail ON d.id = fail.id
-SET d.failure_count = fail.failed_count
+SET d.fail_count = fail.fail_count
     ;
 
 -- CLEANUP -------------------------------------------------------------------
