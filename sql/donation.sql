@@ -57,20 +57,18 @@ CREATE INDEX all_contributions_external_ids ON all_contributions (external_id, e
 -- Use DISTINCT to get recurring donation just once
 INSERT INTO donation (
         contact_action_id,
-        amount, total_amount, original_amount, original_currency,
-        started_at, ended_at, payment_method,
+        started_at, ended_at, 
         frequency_unit, frequency_interval,
         payment_count, fail_count,
-        external_id, external_system
+        external_id, external_system,
+        original_currency, amount, total_amount, original_amount,
+        payment_method
         )
-SELECT DISTINCT
+SELECT
     ca.id,
--- total_amount will be updated for recurring donations below
-    ac.amount, 0, ac.original_amount, ac.original_currency,
 -- start, end dates
     COALESCE(ac.recur_start_date, ac.receive_date),
     ac.recur_end_date,
-    ac.payment_method,
 -- frequencies
     ac.frequency_unit,
     ac.frequency_interval,
@@ -78,14 +76,26 @@ SELECT DISTINCT
     0, 0,
 -- external references
     ac.external_id,
-    ac.external_system
+    ac.external_system,
+    -- total_amount will be updated for recurring donations below
+    -- we use a min(amounts) as a defensive measure against bad data (varying recurring payments)
+    ac.original_currency, min(ac.amount), 0, min(ac.original_amount),
+    -- we use a min(payment_method) as a defensive measure against bad data (varying payment_method)
+    min(ac.payment_method)
+
 FROM all_contributions ac
     JOIN contact_action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
+WHERE ac.status = 'success'
 -- BEGIN INCREMENTAL
 -- exclude by contact_action references in donation table
-WHERE ca.id NOT IN (SELECT contact_action_id FROM donation)
+AND ca.id NOT IN (SELECT contact_action_id FROM donation)
 -- END INCREMENTAL
+
+-- It would be better to use DISTINCT but we have to do min(amount)
+-- to handle the recurring donations with changing amounts...
+-- we grup by all columns untill original_currency (inclusive)
+GROUP BY 1,2,3,4,5,6,7,8,9,10
     ;
 
 

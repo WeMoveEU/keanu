@@ -1,7 +1,7 @@
 -- ORDER: 31
 -- DELETE FROM contact_action
 
-SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed donations';
+SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed_donations';
 SELECT @unattributed_donations := id FROM action WHERE external_id = @unattributed_donations;
 
 -- one-off donate actions
