@@ -1,7 +1,7 @@
 -- ORDER: 31
 -- DELETE FROM action
 
-SELECT @unattributed_donations := id FROM campaign where name = 'Unattributed_donations';
+SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
 
 -- one-off donate actions
 INSERT INTO action
