@@ -70,10 +70,10 @@ with connection:
       where_option = '--where "{} IN (SELECT {} FROM {} WHERE {})"'.format(from_column, link_table[1], link_table[0], column_condition('contact_id', wemove_contacts, opts.factor))
 
     else:
-      if table in contact_tables:
+      if table == limit_table:
+        columns = ['id']
+      elif table in contact_tables:
         columns = get_references(cursor, source_db, limit_table, 'column_name', table)
-        if table == limit_table:
-          columns = ['id'] + columns
       else:
         columns = []
       where_option = where(columns, wemove_contacts, opts.factor)
