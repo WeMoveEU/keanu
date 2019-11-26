@@ -2,8 +2,8 @@
 -- DELETE FROM action_page
 
 -- BEGIN INITIAL
-SELECT @unattributed := id FROM campaign WHERE name = 'Unattributed';
-SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed donations';
+SELECT @unattributed := id FROM campaign WHERE name = 'Unattributed_donations';
+SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed_donations';
 
 INSERT INTO action_page (campaign_id, action_type, external_id, external_system) VALUES
   (@unattributed, 'donate', @unattributed_donations, 'civicrm_campaign')

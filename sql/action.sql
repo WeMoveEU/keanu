@@ -1,8 +1,7 @@
 -- ORDER: 31
 -- DELETE FROM action
 
-SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed donations';
-SELECT @unattributed_donations := id FROM action WHERE external_id = @unattributed_donations;
+SELECT @unattributed_donations := id FROM campaign where name = 'Unattributed_donations';
 
 -- one-off donate actions
 INSERT INTO action

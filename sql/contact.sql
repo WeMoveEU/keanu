@@ -29,8 +29,7 @@ INSERT INTO contact
   LEFT JOIN ${SOURCE}.civicrm_address a ON a.contact_id = c.id AND a.is_primary
   LEFT JOIN ${SOURCE}.civicrm_country ctr ON ctr.id = a.country_id
 
-  WHERE c.contact_type = 'Individual'
-  AND NOT c.is_deleted
+  WHERE NOT c.is_deleted
 -- BEGIN INCREMENTAL
   AND c.id NOT IN (SELECT id FROM contact)
 -- END INCREMENTAL
