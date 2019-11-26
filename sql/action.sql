@@ -3,7 +3,7 @@
 
 -- BEGIN INITIAL
 SELECT @unattributed := id FROM campaign WHERE name = 'Unattributed';
-SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed donations';
+SELECT @unattributed_donations := id FROM ${SOURCE}.civicrm_campaign WHERE name = 'Unattributed_donations';
 
 INSERT INTO action (campaign_id, action_type, external_id, external_system) VALUES
   (@unattributed, 'donate', @unattributed_donations, 'civicrm_campaign')
