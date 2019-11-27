@@ -56,7 +56,7 @@ CREATE INDEX all_contributions_external_ids ON all_contributions (external_id, e
 -- Insert donations both one-off and recurring in one go
 -- Use DISTINCT to get recurring donation just once
 INSERT INTO donation (
-        contact_action_id,
+        action_id,
         started_at, ended_at, 
         frequency_unit, frequency_interval,
         payment_count, fail_count,
@@ -84,12 +84,12 @@ SELECT
     min(ac.payment_method)
 
 FROM all_contributions ac
-    JOIN contact_action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
+    JOIN action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
 WHERE ac.status = 'success'
 -- BEGIN INCREMENTAL
--- exclude by contact_action references in donation table
-AND ca.id NOT IN (SELECT contact_action_id FROM donation)
+-- exclude by action references in donation table
+WHERE ca.id NOT IN (SELECT action_id FROM donation)
 -- END INCREMENTAL
 
 -- It would be better to use DISTINCT but we have to do min(amount)
