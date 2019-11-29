@@ -109,16 +109,36 @@ class LoadScript(RunStatement):
     Will split the lines of script into SQL statements (separated by semicolon)
     """
     def split_statements(_, lines):
+        def non_empty_block(statements):
+            return len(statements) > 0 and any(map(lambda a: not _.noop_line(a), statements))
+
+        # output list of statement lists, and current list
         out = []
         c = []
+
+        # current delimiter
+        delimiter = ';'
+
         for l in lines:
-            c.append(l)
-            if re.search(r";[\s]*($|--.*$)", l):
-                if len(c) > 0 and any(map(lambda a: not _.noop_line(a), c)):
+            # For delimiter MySQL client command, change the regex and continue
+            m = re.match(r"DELIMITER (.+)\s*$", l)
+            if m:
+                delimiter = re.escape(m.group(1))
+                continue
+
+            # For end of statement block (according to delimiter), store in out
+            m = re.search(r"(.*)" + delimiter + r"\s*($|--.*$)", l)
+            if m:
+                c.append(m.group(1))
+
+                if non_empty_block(c):
                     out.append(c)
                 c = []
+            else:
+                c.append(l)
 
-        return list(map(lambda a: ''.join(a), out))
+        # join lines into str for each statement
+        return list(map(lambda a: ''.join(a).lstrip(), out))
 
     def replace_sql_object(_, before, after):
         before = "`{}`".format(before)
