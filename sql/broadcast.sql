@@ -15,3 +15,17 @@ INSERT INTO broadcast
   AND m.id NOT IN (SELECT external_id FROM broadcast WHERE external_system = 'civicrm_mailing')
 -- END INCREMENTAL
 ;
+
+UPDATE broadcast b JOIN (
+    SELECT
+      j.mailing_id,
+      SUM(s.bounce_type_id NOT IN (10, 15)) AS bounces,
+      SUM(s.bounce_type_id IN (10, 15)) AS spams
+    FROM ${SOURCE}.civicrm_mailing_job j
+    JOIN ${SOURCE}.civicrm_mailing_event_queue q ON q.job_id = j.id
+    JOIN ${SOURCE}.civicrm_mailing_event_bounce s ON s.event_queue_id = q.id
+    WHERE NOT j.is_test
+    GROUP BY j.mailing_id
+  ) t ON t.mailing_id = b.external_id AND b.external_system = 'civicrm_mailing'
+  SET b.bounce_count = bounces, b.spam_count = t.spams
+;
