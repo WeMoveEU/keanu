@@ -49,6 +49,7 @@ limit_table = 'civicrm_contact'
 indirect_tables = {
   'civicrm_activity': ('id', 'civicrm_activity_contact.activity_id'),
   'civicrm_value_action_source_4': ('entity_id', 'civicrm_activity_contact.activity_id'),
+  'civicrm_value_share_params_6': ('entity_id', 'civicrm_activity_contact.activity_id'),
   'civicrm_mailing_event_delivered': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
   'civicrm_mailing_event_opened': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
   'civicrm_mailing_event_trackable_url_open': ('event_queue_id', 'civicrm_mailing_event_queue.id'),
