@@ -4,12 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-petl = "*"
 click = "*"
-sqlalchemy = "*"
+metabase = "*"
+petl = "*"
 python-dotenv = "*"
 pymysql = "*"
 pygments = "*"
+requests = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
