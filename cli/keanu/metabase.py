@@ -42,6 +42,13 @@ class Client:
       raise Exception("Could not create card {}".format(card['name']))
     return result
 
+  def add_dashboard(self, dashboard, collection_id):
+    dashboard['collection_id'] = collection_id
+    status, result = self.client.post('/dashboard/', json=dashboard)
+    if not status:
+      raise Exception("Could not create dashboard {}".format(dashboard['name']))
+    return result
+
   def add_collection(self, collection, parent_id):
     params = {k: collection[k] for k in ['name', 'description', 'color']}
     params['parent_id'] = parent_id
@@ -76,6 +83,9 @@ def add_items(client, items, collection_id, mappings):
       elif item['model'] == 'card':
         card = deref_card(item, mappings)
         result.append(client.add_card(item, collection_id))
+      elif item['model'] == 'dashboard':
+        dashboard = deref_dashboard(item, mappings)
+        result.append(client.add_dashboard(item, collection_id))
     return result
 
 def add_card_mappings(client, card, mappings):
@@ -126,14 +136,23 @@ def deref_card(card, mappings):
                   factor[1] = mappings['fields'][factor[1]]
   return card
 
+def add_dashboard_mappings(client, dashboard, mappings):
+  pass
+
+def deref_dashboard(dashboard, mappings):
+  dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position']}
+  return dashboard
+
 def source_mappings(client, items, result = None):
   if result is None:
     result = {'databases': {}}
   for item in items:
     if item['model'] == 'collection':
-      result = mappings(client, item['items'], result)
+      source_mappings(client, item['items'], result)
     elif item['model'] == 'card':
       add_card_mappings(client, item, result)
+    elif item['model'] == 'dashboard':
+      add_dashboard_mappings(client, item, result)
   return result
 
 def dest_mappings(client, source_map):
