@@ -6,14 +6,13 @@ SET @last_open = 0;
 SET @last_open = (SELECT MAX(external_id) FROM open WHERE external_system = 'civicrm_mailing_event_opened');
 -- END INCREMENTAL
 
-INSERT INTO open (broadcast_id, recipient_id, created_at, external_system, external_id)
+INSERT INTO open (broadcast_id, contact_id, created_at, external_system, external_id)
   SELECT
-    b.id, r.id, o.time_stamp, 'civicrm_mailing_event_opened', o.id
+    b.id, q.contact_id, o.time_stamp, 'civicrm_mailing_event_opened', o.id
   FROM ${SOURCE}.civicrm_mailing_event_opened o
   JOIN ${SOURCE}.civicrm_mailing_event_queue q ON q.id=o.event_queue_id
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast b ON b.external_system='civicrm_mailing' AND b.external_id=j.mailing_id
-  JOIN recipient r ON r.broadcast_id=b.id AND r.contact_id=q.contact_id
   WHERE NOT j.is_test
 -- BEGIN INCREMENTAL
   AND o.id > @last_open
@@ -25,13 +24,28 @@ CREATE TEMPORARY TABLE updated_broadcast AS
   SELECT DISTINCT broadcast_id AS id FROM open WHERE external_system = 'civicrm_mailing_event_opened' AND external_id > @last_open
 ;
 
-UPDATE broadcast b JOIN (
-    SELECT bt.id AS id, COUNT(DISTINCT o.recipient_id) AS opens
-    FROM updated_broadcast bt
-    JOIN open o ON bt.id = o.broadcast_id
-    GROUP BY bt.id
-  ) t ON b.id=t.id
-  SET b.open_count = t.opens
+SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'openers', COUNT(DISTINCT contact_id)
+  FROM open o
+  JOIN broadcast b ON b.id = o.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'opens', COUNT(o.id)
+  FROM open o
+  JOIN broadcast b ON b.id = o.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
 DROP TABLE updated_broadcast;

@@ -8,27 +8,30 @@ CREATE TEMPORARY TABLE updated_broadcast AS
   WHERE u.id IS NULL
 ;
 
-INSERT INTO unsub (broadcast_id, recipient_id, created_at, external_system, external_id)
+INSERT INTO unsub (broadcast_id, contact_id, created_at, external_system, external_id)
   SELECT
-    b.id, r.id, u.time_stamp, 'civicrm_mailing_event_unsubscribe', u.id
+    b.id, q.contact_id, u.time_stamp, 'civicrm_mailing_event_unsubscribe', u.id
   FROM ${SOURCE}.civicrm_mailing_event_unsubscribe u
   JOIN ${SOURCE}.civicrm_mailing_event_queue q ON q.id=u.event_queue_id
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast b ON b.external_system='civicrm_mailing' AND b.external_id=j.mailing_id
-  JOIN recipient r ON r.broadcast_id=b.id AND r.contact_id=q.contact_id
   WHERE NOT j.is_test
 -- BEGIN INCREMENTAL
   AND u.id NOT IN (SELECT external_id FROM unsub WHERE external_system = 'civicrm_mailing_event_unsubscribe')
 -- END INCREMENTAL
 ;
 
-UPDATE broadcast b JOIN (
-    SELECT bt.id AS id, COUNT(DISTINCT u.recipient_id) AS unsubs
-    FROM updated_broadcast bt
-    JOIN unsub u ON bt.id = u.broadcast_id
-    GROUP BY bt.id
-  ) t ON b.id=t.id
-  SET b.unsub_count = t.unsubs
+SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'unsubs', COUNT(DISTINCT contact_id)
+  FROM unsub u
+  JOIN broadcast b ON b.id = u.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
 DROP TABLE updated_broadcast;
