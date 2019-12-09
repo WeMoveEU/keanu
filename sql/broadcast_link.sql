@@ -1,4 +1,4 @@
--- ORDER: 55
+-- ORDER: 52
 -- DELETE FROM broadcast_link
 
 INSERT INTO broadcast_link (broadcast_id, url, source_id, external_system, external_id)

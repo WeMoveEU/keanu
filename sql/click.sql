@@ -1,4 +1,4 @@
--- ORDER: 56
+-- ORDER: 55
 -- DELETE FROM click
 
 SET @last_click = 0;

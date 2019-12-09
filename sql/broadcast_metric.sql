@@ -1,4 +1,4 @@
--- ORDER: 52
+-- ORDER: 56
 -- DELETE FROM broadcast_metric WHERE metric = 'recipients'
 
 -- Store which broadcasts are going to be added to recipients table to then update recipient counts
