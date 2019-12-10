@@ -2,8 +2,8 @@
 -- DELETE FROM segment
 
 -- Special Everyone segment
-SET @none = (SELECT id FROM segmentation WHERE name = 'None');
-INSERT INTO segment (name, segmentation_id) VALUES ('Everyone', @none);
+SET @everyone = (SELECT id FROM segmentation WHERE name = 'Everyone');
+INSERT INTO segment (name, segmentation_id) VALUES ('Everyone', @everyone);
 
 -- MEMBERSHIP
 -- BEGIN INITIAL
