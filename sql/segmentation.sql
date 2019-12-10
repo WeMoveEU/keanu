@@ -8,6 +8,7 @@
 -- BEGIN INITIAL
 INSERT INTO segmentation (name, external_id)
 VALUES
+('Everyone', NULL),
 ('Membership', NULL),
 ('Language', 32),
 ('Country interest', 10),
