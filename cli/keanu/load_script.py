@@ -175,18 +175,28 @@ class LoadScript(RunStatement):
         res = None
         row_counts = []
         for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+
             if event == 'start':
                 click.echo("📦 {0}...".format(
                     util.highlight_sql(
                         _.statement_abbrev(data['sql']))),
                            nl=False)
+
             elif event == 'end':
+                code = util.highlight_sql(_.statement_abbrev(data['sql']))
+
+                # If display (-d) is set, the code was already shown on start,
+                # and we are not overwriting the same line
+                if _.options['display']:
+                    code = ''
+
                 click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
                     data['result'].rowcount,
                     data['time'],
-                    util.highlight_sql(_.statement_abbrev(data['sql']))
+                    code
                 ))
                 res = data['result']
+
         return res
 
 
