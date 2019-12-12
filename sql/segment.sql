@@ -1,7 +1,12 @@
 -- ORDER: 11
 -- DELETE FROM segment
---
+
 -- BEGIN INITIAL
+-- Special Everyone segment
+SET @everyone = (SELECT id FROM segmentation WHERE name = 'Everyone');
+INSERT INTO segment (name, segmentation_id) VALUES ('Everyone', @everyone);
+
+-- MEMBERSHIP
 -- Membership
 set @seg = (select id from segmentation where name = 'Membership');
 set @ext_id = (select external_id from segmentation where name = 'Membership');

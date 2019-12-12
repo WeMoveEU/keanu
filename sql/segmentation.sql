@@ -8,6 +8,7 @@
 -- BEGIN INITIAL
 INSERT INTO segmentation (name, external_id, external_system)
 VALUES
+('Everyone', NULL, NULL),
 ('Membership', 42, 'civicrm_group'),
 ('Mailing list', 32, 'civicrm_group'),
 ('Preferred language', 77, 'civicrm_option_group'),
