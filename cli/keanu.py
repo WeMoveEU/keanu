@@ -29,7 +29,7 @@ def load(incremental, order, dry_run, display, warn):
     scripts = util.filter_scripts_by_order(scripts, order)
 
     try:
-        connection = db.engine().connect()
+        connection = db.get_engine().connect()
         for scr in scripts:
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
@@ -80,7 +80,7 @@ def delete(order, display, dry_run, warn):
 
     scripts.reverse()
 
-    connection = db.engine().connect()
+    connection = db.get_engine().connect()
 
     for scr in scripts:
         with connection.begin() as transaction:
@@ -100,7 +100,7 @@ def delete(order, display, dry_run, warn):
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
 @click.option('-L', '--load', default=None, help='Load this SQL file')
 def schema(drop, load):
-    connection = db.engine().connect()
+    connection = db.get_engine().connect()
 
     if drop:
         for (table, _) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):

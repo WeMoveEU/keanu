@@ -1,6 +1,6 @@
 import warnings
 from sqlalchemy import text
-from .db import engine
+from .db import get_engine
 import click
 from time import time
 
@@ -20,6 +20,6 @@ class RunStatement:
                     yield 'end', { 'sql': sql, 'time': time() - start_time, 'result': result }
             except KeyboardInterrupt as ki:
                 click.echo("🔫 Killing sql process {0} 🔫".format(connection_id))
-                kill_conn = engine.connect()
+                kill_conn = get_engine().connect()
                 kill_conn.execute('KILL {0}'.format(connection_id))
                 raise ki
