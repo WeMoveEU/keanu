@@ -29,9 +29,6 @@ class Client:
 
     return models[0]
 
-  def collection_items(self, cid):
-    return self.get('collection', cid, 'items')
-
   def add_card(self, card, collection_id):
     card['collection_id'] = collection_id
     status, result = self.client.post('/card/', json=card)
@@ -62,7 +59,7 @@ class Client:
 
 def get_items(client, collection_id):
     result = []
-    items = client.collection_items(collection_id)
+    items = client.get('collection', collection_id, 'items')
 
     for i in items:
       item = client.get(i['model'], i['id'])

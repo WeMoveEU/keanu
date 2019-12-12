@@ -137,7 +137,7 @@ def metabase_export(collection):
 def metabase_import(collection, json_file):
     client = metabase.Client()
     destination = client.get_by_name('collection', collection)
-    if len(client.collection_items(destination['id'])) > 0:
+    if len(client.get('collection', destination['id'], 'items')) > 0:
         raise Exception("The destination collection is not empty")
     
     with open(json_file, 'r') as f:
