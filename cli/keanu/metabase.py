@@ -1,14 +1,23 @@
 from metabase import Metabase
 
 class Client:
+  """
+    Wrapper around Metabase client for not having to deal with response status
+    and to provide shorcut methods
+  """
+
   def __init__(self):
     self.client = Metabase()
 
   def get(self, model, model_id, subquery = None):
+    """
+      Generic get method to retrieve a specific object or sub-objects
+    """
     if subquery is None:
       query = '/{}/{}'.format(model, model_id)
     else:
       query = '/{}/{}/{}'.format(model, model_id, subquery)
+
     status, item = self.client.get(query)
     if not status:
       if subquery is None:
@@ -16,9 +25,14 @@ class Client:
       else:
         msg = "Error while retrieving {} for {} {}".format(subquery, model, model_id)
       raise Exception(msg)
+
     return item
 
   def get_by_name(self, model, name):
+    """
+      Retrieve an object by name.
+      Search done on the client side, so watch out if there are many objects of that model
+    """
     status, models = self.client.get('/{}/'.format(model))
     if not status:
       raise Exception("Error while retrieving {}s".format(model))
@@ -58,40 +72,54 @@ class Client:
     return result
 
 def get_items(client, collection_id):
-    result = []
-    items = client.get('collection', collection_id, 'items')
+  """
+    Recursively retrieve the items of a collection and return the nested list of items.
+    Make sure each item has a model and collection_id properties
+  """
+  result = []
+  items = client.get('collection', collection_id, 'items')
 
-    for i in items:
-      item = client.get(i['model'], i['id'])
-      item['model'] = i['model']
-      if item['model'] == 'collection':
-        item['items'] = get_items(client, item['id'])
-      if 'collection_id' not in item:
-        item['collection_id'] = collection_id
-      result.append(item)
+  for i in items:
+    item = client.get(i['model'], i['id'])
+    item['model'] = i['model']
+    if item['model'] == 'collection':
+      item['items'] = get_items(client, item['id'])
+    if 'collection_id' not in item:
+      item['collection_id'] = collection_id
+    result.append(item)
 
-    return result
+  return result
 
 
 def add_items(client, items, collection_id, mappings):
-    result = []
-    for item in items:
-      if item['model'] == 'collection':
-        c = client.add_collection(item, collection_id)
-        c['items'] = add_items(client, item['items'], c['id'], mappings)
-        result.append(c)
-      elif item['model'] == 'card':
-        card = deref_card(item, mappings)
-        created_card = client.add_card(card, collection_id)
-        if item['id'] in mappings['cards']:
-          mappings['cards'][item['id']] = created_card['id']
-        result.append(created_card)
-      elif item['model'] == 'dashboard':
-        dashboard = deref_dashboard(item, mappings)
-        d = client.add_dashboard(item, collection_id)
-        d = add_dashboard_cards(client, dashboard['ordered_cards'], d)
-        result.append(d)
-    return result
+  """
+    Create the given items into the given collection.
+    Collections are created recursively.
+    The `mappings` parameter holds the information to translate db, table, field and card ids
+    in the context of current Metabase instance. The object may be modified with ids of card created during the process.
+    Return the nested list of created items.
+  """
+  result = []
+  for item in items:
+    if item['model'] == 'collection':
+      c = client.add_collection(item, collection_id)
+      c['items'] = add_items(client, item['items'], c['id'], mappings)
+      result.append(c)
+
+    elif item['model'] == 'card':
+      card = deref_card(item, mappings)
+      created_card = client.add_card(card, collection_id)
+      if item['id'] in mappings['cards']:
+        mappings['cards'][item['id']] = created_card['id']
+      result.append(created_card)
+
+    elif item['model'] == 'dashboard':
+      dashboard = deref_dashboard(item, mappings)
+      d = client.add_dashboard(item, collection_id)
+      d = add_dashboard_cards(client, dashboard['ordered_cards'], d)
+      result.append(d)
+
+  return result
 
 def add_dashboard_cards(client, cards, dashboard):
   dashboard['ordered_cards'] = []
@@ -100,8 +128,28 @@ def add_dashboard_cards(client, cards, dashboard):
     dashboard['ordered_cards'].append(c)
   return dashboard
 
-def deref(obj, prop, mapping):
-  obj[prop] = mapping[obj[prop]]
+
+### Functions to record all the ids that will need to be translated during import ###
+
+def source_mappings(client, items, result = None):
+  """
+    Browse recursively a nested list of items and record into `result` the ids
+    that will need to be translated during import.
+    If `result` is not given, a new dictionary is created.
+    Return the updated result.
+  """
+  if result is None:
+    result = {'databases': {}, 'cards': {}}
+
+  for item in items:
+    if item['model'] == 'collection':
+      source_mappings(client, item['items'], result)
+    elif item['model'] == 'card':
+      add_card_mappings(client, item, result)
+    elif item['model'] == 'dashboard':
+      add_dashboard_mappings(client, item, result)
+
+  return result
 
 def add_table_mapping(client, db_id, table_id, mappings):
   if table_id not in mappings['databases'][db_id]['tables']:
@@ -155,6 +203,52 @@ def add_card_mappings(client, card, mappings):
         add_fields_mapping(client, query.get('filter', []), mappings)
         add_fields_mapping(client, query.get('order-by', []), mappings)
 
+def add_dashboard_mappings(client, dashboard, mappings):
+  for card in dashboard['ordered_cards']:
+    if card['card_id'] not in mappings['cards']:
+      mappings['cards'][card['card_id']] = 'to_be_created'
+
+    for pm in card['parameter_mappings']:
+      pm['card_id'] = card['card_id']
+      for target_spec in pm['target']:
+        if isinstance(target_spec, list):
+          add_fields_mapping(client, target_spec, mappings)
+
+        
+### Functions to translate ids referenced by imported items ###
+
+def dest_mappings(client, source_map):
+  """
+    Translates all the ids found in source_map into corresponding ids for the current Metabase instance
+    Return a dictionary { model => { source_id => translated_id } }
+  """
+  result = {'databases': {}, 'tables': {}, 'fields': {}}
+
+  for db_id, db in source_map['databases'].items():
+    dest_db = client.get_by_name('database', db['name'])
+    result['databases'][int(db_id)] = dest_db['id']
+
+    db_data = client.get('database', dest_db['id'], 'metadata')
+    for table_id, table in db['tables'].items():
+      dest_table = list(filter(lambda t: t['name'] == table['name'], db_data['tables']))
+      if len(dest_table) == 0:
+        raise Exception("Table {} could not be mapped".format(table['name']))
+      dest_table = dest_table[0]
+      result['tables'][int(table_id)] = dest_table['id']
+
+      for field_id, field_name in table['fields'].items():
+        dest_field = list(filter(lambda f: f['name'] == field_name, dest_table['fields']))
+        if len(dest_field) == 0:
+          raise Exception("Field {} could not be mapped".format(field_name))
+        result['fields'][int(field_id)] = dest_field[0]['id']
+
+  result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
+
+  return result
+
+def deref(obj, prop, mapping):
+  obj[prop] = mapping[obj[prop]]
+
 def deref_fields(expression, mappings):
   for factor in expression:
     if isinstance(factor, list):
@@ -189,17 +283,6 @@ def deref_card(card, mappings):
             
   return card
 
-def add_dashboard_mappings(client, dashboard, mappings):
-  for card in dashboard['ordered_cards']:
-    if card['card_id'] not in mappings['cards']:
-      mappings['cards'][card['card_id']] = 'to_be_created'
-
-    for pm in card['parameter_mappings']:
-      pm['card_id'] = card['card_id']
-      for target_spec in pm['target']:
-        if isinstance(target_spec, list):
-          add_fields_mapping(client, target_spec, mappings)
-
 def deref_dashboard(dashboard, mappings):
   dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
   for c, card in enumerate(dashboard['ordered_cards']):
@@ -215,40 +298,4 @@ def deref_dashboard(dashboard, mappings):
 
     dashboard['ordered_cards'][c] = card
   return dashboard
-
-def source_mappings(client, items, result = None):
-  if result is None:
-    result = {'databases': {}, 'cards': {}}
-  for item in items:
-    if item['model'] == 'collection':
-      source_mappings(client, item['items'], result)
-    elif item['model'] == 'card':
-      add_card_mappings(client, item, result)
-    elif item['model'] == 'dashboard':
-      add_dashboard_mappings(client, item, result)
-  return result
-
-def dest_mappings(client, source_map):
-  result = {'databases': {}, 'tables': {}, 'fields': {}}
-  for db_id, db in source_map['databases'].items():
-    dest_db = client.get_by_name('database', db['name'])
-    result['databases'][int(db_id)] = dest_db['id']
-
-    db_data = client.get('database', dest_db['id'], 'metadata')
-    for table_id, table in db['tables'].items():
-      dest_table = list(filter(lambda t: t['name'] == table['name'], db_data['tables']))
-      if len(dest_table) == 0:
-        raise Exception("Table {} could not be mapped".format(table['name']))
-      dest_table = dest_table[0]
-      result['tables'][int(table_id)] = dest_table['id']
-
-      for field_id, field_name in table['fields'].items():
-        dest_field = list(filter(lambda f: f['name'] == field_name, dest_table['fields']))
-        if len(dest_field) == 0:
-          raise Exception("Field {} could not be mapped".format(field_name))
-        result['fields'][int(field_id)] = dest_field[0]['id']
-
-  result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
-
-  return result
 
