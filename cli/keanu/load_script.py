@@ -69,7 +69,13 @@ class LoadScript(RunStatement):
 
             m = re.match(r" *-- *END (\w+)", l)
             if m:
-                contexts.remove(m.group(1).upper())
+                try:
+                    contexts.remove(m.group(1).upper())
+                except ValueError:
+                    raise ValueError("{}: found END {} but context stack is {}".format(
+                        _.filename,
+                        m.group(1),
+                        ', '.join(contexts)))
                 continue
 
             m = re.match(r" *-- *IGNORE", l)
