@@ -87,7 +87,8 @@ class MetabaseIO:
     result = {
         'items': self.get_items(source['id']),
     }
-    result['mappings'] = source_mappings(self.client, result['items'])
+    mapper = Mapper(self.client)
+    result['mappings'] = mapper.add_items(result['items'])
     return result
 
   def import_json(self, source, collection):
@@ -98,7 +99,8 @@ class MetabaseIO:
     if len(self.client.get('collection', destination['id'], 'items')) > 0:
         raise Exception("The destination collection is not empty")
 
-    mappings = dest_mappings(self.client, source['mappings'])
+    mapper = Mapper(self.client)
+    mappings = mapper.resolved_mappings(source['mappings'])
     self.add_items(source['items'], destination['id'], mappings)
     
   def get_items(self, collection_id):
@@ -158,128 +160,132 @@ class MetabaseIO:
     return dashboard
 
 
-### Functions to record all the ids that will need to be translated during import ###
-
-def source_mappings(client, items, result = None):
+class Mapper:
   """
-    Browse recursively a nested list of items and record into `result` the ids
-    that will need to be translated during import.
-    If `result` is not given, a new dictionary is created.
-    Return the updated result.
+    Functions to record and translate all the ids of an export file
   """
-  if result is None:
-    result = {'databases': {}, 'cards': {}}
+  def __init__(self, client):
+    self.client = client
 
-  for item in items:
-    if item['model'] == 'collection':
-      source_mappings(client, item['items'], result)
-    elif item['model'] == 'card':
-      add_card_mappings(client, item, result)
-    elif item['model'] == 'dashboard':
-      add_dashboard_mappings(client, item, result)
+  def add_items(self, items, result = None):
+    """
+      Browse recursively a nested list of items and record into `result` the ids
+      that will need to be translated during import.
+      If `result` is not given, a new dictionary is created.
+      Return the updated result.
+    """
+    if result is None:
+      result = {'databases': {}, 'cards': {}}
 
-  return result
+    for item in items:
+      if item['model'] == 'collection':
+        self.add_items(item['items'], result)
+      elif item['model'] == 'card':
+        self.add_card(item, result)
+      elif item['model'] == 'dashboard':
+        self.add_dashboard(item, result)
 
-def add_table_mapping(client, db_id, table_id, mappings):
-  if table_id not in mappings['databases'][db_id]['tables']:
-    table = client.get('table', table_id)
-    mappings['databases'][db_id]['tables'][table_id] = {
-      'name': table['name'],
-      'fields': {}
-    }
+    return result
 
-def add_fields_mapping(client, expression, mappings):
-  if isinstance(expression, list):
-    if len(expression) == 2 and expression[0] == 'field-id':
-      field_id = expression[1]
-      field = client.get('field', field_id)
-      db_id = field['table']['db_id']
-      table_id = field['table_id']
-      if db_id not in mappings['databases']:
-        mappings['databases'][db_id] = { 'name': field['table']['db']['name'], 'tables': {} }
-      if table_id not in mappings['databases'][db_id]['tables']:
-        mappings['databases'][db_id]['tables'][table_id] = { 'name': field['table']['name'], 'fields': {} }
-      mappings['databases'][db_id]['tables'][table_id]['fields'][field_id] = field['name']
-    else:
-      for factor in expression:
-        add_fields_mapping(client, factor, mappings)
+  def add_table(self, db_id, table_id, mappings):
+    if table_id not in mappings['databases'][db_id]['tables']:
+      table = self.client.get('table', table_id)
+      mappings['databases'][db_id]['tables'][table_id] = {
+        'name': table['name'],
+        'fields': {}
+      }
 
-def add_card_mappings(client, card, mappings):
-  if 'dataset_query' in card:
-    dquery = card['dataset_query']
-    if 'database' in dquery:
-      db_id = dquery['database']
-      if db_id not in mappings['databases']:
-        mappings['databases'][db_id] = {
-          'name': client.get('database', db_id)['name'],
-          'tables': {}
-        }
+  def add_fields(self, expression, mappings):
+    if isinstance(expression, list):
+      if len(expression) == 2 and expression[0] == 'field-id':
+        field_id = expression[1]
+        field = self.client.get('field', field_id)
+        db_id = field['table']['db_id']
+        table_id = field['table_id']
+        if db_id not in mappings['databases']:
+          mappings['databases'][db_id] = { 'name': field['table']['db']['name'], 'tables': {} }
+        if table_id not in mappings['databases'][db_id]['tables']:
+          mappings['databases'][db_id]['tables'][table_id] = { 'name': field['table']['name'], 'fields': {} }
+        mappings['databases'][db_id]['tables'][table_id]['fields'][field_id] = field['name']
+      else:
+        for factor in expression:
+          self.add_fields(factor, mappings)
 
-      if 'query' in dquery:
-        query = dquery['query']
-        if 'source-table' in query:
-          table_id = query['source-table']
-          add_table_mapping(client, db_id, table_id, mappings)
+  def add_card(self, card, mappings):
+    if 'dataset_query' in card:
+      dquery = card['dataset_query']
+      if 'database' in dquery:
+        db_id = dquery['database']
+        if db_id not in mappings['databases']:
+          mappings['databases'][db_id] = {
+            'name': self.client.get('database', db_id)['name'],
+            'tables': {}
+          }
 
-        for exp in query.get('expressions', {}).values():
-          add_fields_mapping(client, exp, mappings)
+        if 'query' in dquery:
+          query = dquery['query']
+          if 'source-table' in query:
+            table_id = query['source-table']
+            self.add_table(db_id, table_id, mappings)
 
-        for join in query.get('joins', []):
-          table_id = join['source-table']
-          add_table_mapping(client, db_id, table_id, mappings)
-          add_fields_mapping(client, join['condition'], mappings)
+          for exp in query.get('expressions', {}).values():
+            self.add_fields(exp, mappings)
 
-        add_fields_mapping(client, query.get('filter', []), mappings)
-        add_fields_mapping(client, query.get('order-by', []), mappings)
-        
-      if 'native' in dquery and 'template-tags' in dquery['native']:
-        for tag in dquery['native']['template-tags'].values():
-          add_fields_mapping(client, tag['dimension'], mappings)
+          for join in query.get('joins', []):
+            table_id = join['source-table']
+            self.add_table(db_id, table_id, mappings)
+            self.add_fields(join['condition'], mappings)
 
-def add_dashboard_mappings(client, dashboard, mappings):
-  for card in dashboard['ordered_cards']:
-    if 'card_id' not in card or card['card_id'] is None:
-      card['card_id'] = card['id']
-    if card['card_id'] not in mappings['cards']:
-      mappings['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
+          self.add_fields(query.get('filter', []), mappings)
+          self.add_fields(query.get('order-by', []), mappings)
+          
+        if 'native' in dquery and 'template-tags' in dquery['native']:
+          for tag in dquery['native']['template-tags'].values():
+            self.add_fields(tag['dimension'], mappings)
 
-    for pm in card['parameter_mappings']:
-      pm['card_id'] = card['card_id']
-      for target_spec in pm['target']:
-        if isinstance(target_spec, list):
-          add_fields_mapping(client, target_spec, mappings)
+  def add_dashboard(self, dashboard, mappings):
+    for card in dashboard['ordered_cards']:
+      if 'card_id' not in card or card['card_id'] is None:
+        card['card_id'] = card['id']
+      if card['card_id'] not in mappings['cards']:
+        mappings['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
 
-        
-### Functions to translate ids referenced by imported items ###
+      for pm in card['parameter_mappings']:
+        pm['card_id'] = card['card_id']
+        for target_spec in pm['target']:
+          if isinstance(target_spec, list):
+            self.add_fields(target_spec, mappings)
 
-def dest_mappings(client, source_map):
-  """
-    Translates all the ids found in source_map into corresponding ids for the current Metabase instance
-    Return a dictionary { model => { source_id => translated_id } }
-  """
-  result = {'databases': {}, 'tables': {}, 'fields': {}}
+          
+  def resolved_mappings(self, source_map):
+    """
+      Translates all the ids found in source_map into corresponding ids for the current Metabase instance
+      Return a dictionary { model => { source_id => translated_id } }
+      Cards are not resolved because they can only be resolved while creating them
+    """
+    result = {'databases': {}, 'tables': {}, 'fields': {}}
 
-  for db_id, db in source_map['databases'].items():
-    dest_db = client.get_by_name('database', db['name'])
-    result['databases'][int(db_id)] = dest_db['id']
+    for db_id, db in source_map['databases'].items():
+      dest_db = self.client.get_by_name('database', db['name'])
+      result['databases'][int(db_id)] = dest_db['id']
 
-    db_data = client.get('database', dest_db['id'], 'metadata')
-    for table_id, table in db['tables'].items():
-      dest_table = list(filter(lambda t: t['name'] == table['name'], db_data['tables']))
-      if len(dest_table) == 0:
-        raise Exception("Table {} could not be mapped".format(table['name']))
-      dest_table = dest_table[0]
-      result['tables'][int(table_id)] = dest_table['id']
+      db_data = self.client.get('database', dest_db['id'], 'metadata')
+      for table_id, table in db['tables'].items():
+        dest_table = list(filter(lambda t: t['name'] == table['name'], db_data['tables']))
+        if len(dest_table) == 0:
+          raise Exception("Table {} could not be mapped".format(table['name']))
+        dest_table = dest_table[0]
+        result['tables'][int(table_id)] = dest_table['id']
 
-      for field_id, field_name in table['fields'].items():
-        dest_field = list(filter(lambda f: f['name'] == field_name, dest_table['fields']))
-        if len(dest_field) == 0:
-          raise Exception("Field {} could not be mapped".format(field_name))
-        result['fields'][int(field_id)] = dest_field[0]['id']
+        for field_id, field_name in table['fields'].items():
+          dest_field = list(filter(lambda f: f['name'] == field_name, dest_table['fields']))
+          if len(dest_field) == 0:
+            raise Exception("Field {} could not be mapped".format(field_name))
+          result['fields'][int(field_id)] = dest_field[0]['id']
 
-  result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
+    result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
 
-  return result
+    return result
 
 def deref(obj, prop, mapping):
   obj[prop] = mapping[obj[prop]]
