@@ -216,9 +216,10 @@ def add_card_mappings(client, card, mappings):
 
 def add_dashboard_mappings(client, dashboard, mappings):
   for card in dashboard['ordered_cards']:
+    if 'card_id' not in card or card['card_id'] is None:
+      card['card_id'] = card['id']
     if card['card_id'] not in mappings['cards']:
-      card_id = card['card_id'] or card['id']
-      mappings['cards'][card_id] = 'to_be_created'
+      mappings['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
 
     for pm in card['parameter_mappings']:
       pm['card_id'] = card['card_id']
