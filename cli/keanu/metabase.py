@@ -237,6 +237,7 @@ class Mapper:
             self.add_fields(join['condition'], mappings)
 
           self.add_fields(query.get('filter', []), mappings)
+          self.add_fields(query.get('breakout', []), mappings)
           self.add_fields(query.get('order-by', []), mappings)
           
         if 'native' in dquery and 'template-tags' in dquery['native']:
@@ -291,11 +292,11 @@ def deref(obj, prop, mapping):
   obj[prop] = mapping[obj[prop]]
 
 def deref_fields(expression, mappings):
-  for factor in expression:
-    if isinstance(factor, list):
-      if factor[0] == 'field-id':
-        factor[1] = mappings['fields'][factor[1]]
-      else:
+  if isinstance(expression, list):
+    if len(expression) == 2 and expression[0] == 'field-id':
+      expression[1] = mappings['fields'][expression[1]]
+    else:
+      for factor in expression:
         deref_fields(factor, mappings)
 
 def deref_card(card, mappings):
@@ -320,7 +321,12 @@ def deref_card(card, mappings):
           deref_fields(join['condition'], mappings)
 
         deref_fields(query.get('filter', []), mappings)
+        deref_fields(query.get('breakout', []), mappings)
         deref_fields(query.get('order-by', []), mappings)
+
+      if 'native' in dquery and 'template-tags' in dquery['native']:
+        for tag in dquery['native']['template-tags'].values():
+          deref_fields(tag['dimension'], mappings)
             
   return card
 
