@@ -71,62 +71,69 @@ class Client:
       raise Exception("Could not create collection {}".format(params['name']))
     return result
 
-def get_items(client, collection_id):
+
+class MetabaseIO:
   """
-    Recursively retrieve the items of a collection and return the nested list of items.
-    Make sure each item has a model and collection_id properties
+    This class holds the logic to export and import metabase objects to/from a JSON file
   """
-  result = []
-  items = client.get('collection', collection_id, 'items')
+  def __init__(self, client):
+    self.client = client
 
-  for i in items:
-    item = client.get(i['model'], i['id'])
-    item['model'] = i['model']
-    if item['model'] == 'collection':
-      item['items'] = get_items(client, item['id'])
-    if 'collection_id' not in item:
-      item['collection_id'] = collection_id
-    result.append(item)
+  def get_items(self, collection_id):
+    """
+      Recursively retrieve the items of a collection and return the nested list of items.
+      Make sure each item has a model and collection_id properties
+    """
+    result = []
+    items = self.client.get('collection', collection_id, 'items')
 
-  return result
+    for i in items:
+      item = self.client.get(i['model'], i['id'])
+      item['model'] = i['model']
+      if item['model'] == 'collection':
+        item['items'] = self.get_items(item['id'])
+      if 'collection_id' not in item:
+        item['collection_id'] = collection_id
+      result.append(item)
 
+    return result
 
-def add_items(client, items, collection_id, mappings):
-  """
-    Create the given items into the given collection.
-    Collections are created recursively.
-    The `mappings` parameter holds the information to translate db, table, field and card ids
-    in the context of current Metabase instance. The object may be modified with ids of card created during the process.
-    Return the nested list of created items.
-  """
-  result = []
-  for item in items:
-    if item['model'] == 'collection':
-      c = client.add_collection(item, collection_id)
-      c['items'] = add_items(client, item['items'], c['id'], mappings)
-      result.append(c)
+  def add_items(self, items, collection_id, mappings):
+    """
+      Create the given items into the given collection.
+      Collections are created recursively.
+      The `mappings` parameter holds the information to translate db, table, field and card ids
+      in the context of current Metabase instance. The object may be modified with ids of card created during the process.
+      Return the nested list of created items.
+    """
+    result = []
+    for item in items:
+      if item['model'] == 'collection':
+        c = self.client.add_collection(item, collection_id)
+        c['items'] = self.add_items(item['items'], c['id'], mappings)
+        result.append(c)
 
-    elif item['model'] == 'card':
-      card = deref_card(item, mappings)
-      created_card = client.add_card(card, collection_id)
-      if item['id'] in mappings['cards']:
-        mappings['cards'][item['id']] = created_card['id']
-      result.append(created_card)
+      elif item['model'] == 'card':
+        card = deref_card(item, mappings)
+        created_card = self.client.add_card(card, collection_id)
+        if item['id'] in mappings['cards']:
+          mappings['cards'][item['id']] = created_card['id']
+        result.append(created_card)
 
-    elif item['model'] == 'dashboard':
-      dashboard = deref_dashboard(item, mappings)
-      d = client.add_dashboard(item, collection_id)
-      d = add_dashboard_cards(client, dashboard['ordered_cards'], d)
-      result.append(d)
+      elif item['model'] == 'dashboard':
+        dashboard = deref_dashboard(item, mappings)
+        d = client.add_dashboard(item, collection_id)
+        d = self.add_dashboard_cards(dashboard['ordered_cards'], d)
+        result.append(d)
 
-  return result
+    return result
 
-def add_dashboard_cards(client, cards, dashboard):
-  dashboard['ordered_cards'] = []
-  for card in cards:
-    c = client.add_dashboard_card(card, dashboard['id'])
-    dashboard['ordered_cards'].append(c)
-  return dashboard
+  def add_dashboard_cards(self, cards, dashboard):
+    dashboard['ordered_cards'] = []
+    for card in cards:
+      c = self.client.add_dashboard_card(card, dashboard['id'])
+      dashboard['ordered_cards'].append(c)
+    return dashboard
 
 
 ### Functions to record all the ids that will need to be translated during import ###

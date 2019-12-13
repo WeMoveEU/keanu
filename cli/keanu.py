@@ -125,8 +125,9 @@ def metabase_cli():
 def metabase_export(collection):
     client = metabase.Client()
     source = client.get_by_name('collection', collection)
+    mio = metabase.MetabaseIO(client)
     result = {
-        'items': metabase.get_items(client, source['id']),
+        'items': mio.get_items(source['id']),
     }
     result['mappings'] = metabase.source_mappings(client, result['items'])
     print(json.dumps(result, indent=2))
@@ -144,7 +145,8 @@ def metabase_import(collection, json_file):
         source = json.loads(f.read())
 
     mappings = metabase.dest_mappings(client, source['mappings'])
-    metabase.add_items(client, source['items'], destination['id'], mappings)
+    mio = metabase.MetabaseIO(client)
+    mio.add_items(source['items'], destination['id'], mappings)
 
 
 if __name__ == '__main__':
