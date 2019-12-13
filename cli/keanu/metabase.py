@@ -321,9 +321,10 @@ def deref_card(card, mappings):
 def deref_dashboard(dashboard, mappings):
   dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
   for c, card in enumerate(dashboard['ordered_cards']):
-    card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY']}
+    card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY', 'visualization_settings']}
     card['card_id'] = mappings['cards'][card['card_id']]
-    card['cardId'] = card['card_id']  # Inconsistency in dashboard API
+    if not is_virtual_card(card):
+      card['cardId'] = card['card_id']  # Inconsistency in dashboard API
 
     for pm in card['parameter_mappings']:
       pm['card_id'] = card['card_id']
@@ -333,4 +334,10 @@ def deref_dashboard(dashboard, mappings):
 
     dashboard['ordered_cards'][c] = card
   return dashboard
+
+def is_virtual_card(card):
+  """
+    Tell whether the given card object represents a virtual dashboard card (text cards)
+  """
+  return 'visualization_settings' in card and 'virtual_card' in card['visualization_settings']
 
