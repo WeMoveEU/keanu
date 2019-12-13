@@ -2,14 +2,15 @@
 from dotenv import load_dotenv
 load_dotenv()
 import click
+import json
 from glob import glob
-from keanu import LoadScript, db, util
+from keanu import db, util, metabase
+from keanu.load_script import LoadScript
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 import re
 import sys
 import traceback
-
 
 @click.group()
 def cli():
@@ -28,7 +29,7 @@ def load(incremental, order, dry_run, display, warn):
     scripts = util.filter_scripts_by_order(scripts, order)
 
     try:
-        connection = db.engine.connect()
+        connection = db.get_engine().connect()
         for scr in scripts:
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
@@ -79,7 +80,7 @@ def delete(order, display, dry_run, warn):
 
     scripts.reverse()
 
-    connection = db.engine.connect()
+    connection = db.get_engine().connect()
 
     for scr in scripts:
         with connection.begin() as transaction:
@@ -99,7 +100,7 @@ def delete(order, display, dry_run, warn):
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
 @click.option('-L', '--load', default=None, help='Load this SQL file')
 def schema(drop, load):
-    connection = db.engine.connect()
+    connection = db.get_engine().connect()
 
     if drop:
         for (table, _) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):
@@ -114,6 +115,28 @@ def schema(drop, load):
         with connection.begin() as tx:
             script.execute(connection)
 
+
+@cli.group('metabase')
+def metabase_cli():
+  pass
+
+@metabase_cli.command('export')
+@click.option('-c', '--collection', help="Name of the collection to export")
+def metabase_export(collection):
+    client = metabase.Client()
+    mio = metabase.MetabaseIO(client)
+    result = mio.export_json(collection)
+    print(json.dumps(result, indent=2))
+
+@metabase_cli.command('import')
+@click.option('-c', '--collection', help="Name of the collection to import into")
+@click.option('-j', '--json-file', help="path to JSON file to import")
+def metabase_import(collection, json_file):
+    client = metabase.Client()
+    mio = metabase.MetabaseIO(client)
+    with open(json_file, 'r') as f:
+        source = json.loads(f.read())
+        mio.import_json(source, collection)
 
 
 if __name__ == '__main__':
