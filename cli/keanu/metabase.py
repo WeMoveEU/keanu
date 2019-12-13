@@ -167,19 +167,19 @@ def add_table_mapping(client, db_id, table_id, mappings):
     }
 
 def add_fields_mapping(client, expression, mappings):
-  for factor in expression:
-    if isinstance(factor, list):
-      if factor[0] == 'field-id':
-        field_id = factor[1]
-        field = client.get('field', field_id)
-        db_id = field['table']['db_id']
-        table_id = field['table_id']
-        if db_id not in mappings['databases']:
-          mappings['databases'][db_id] = { 'name': field['table']['db']['name'], 'tables': {} }
-        if table_id not in mappings['databases'][db_id]['tables']:
-          mappings['databases'][db_id]['tables'][table_id] = { 'name': field['table']['name'], 'fields': {} }
-        mappings['databases'][db_id]['tables'][table_id]['fields'][field_id] = field['name']
-      else:
+  if isinstance(expression, list):
+    if len(expression) == 2 and expression[0] == 'field-id':
+      field_id = expression[1]
+      field = client.get('field', field_id)
+      db_id = field['table']['db_id']
+      table_id = field['table_id']
+      if db_id not in mappings['databases']:
+        mappings['databases'][db_id] = { 'name': field['table']['db']['name'], 'tables': {} }
+      if table_id not in mappings['databases'][db_id]['tables']:
+        mappings['databases'][db_id]['tables'][table_id] = { 'name': field['table']['name'], 'fields': {} }
+      mappings['databases'][db_id]['tables'][table_id]['fields'][field_id] = field['name']
+    else:
+      for factor in expression:
         add_fields_mapping(client, factor, mappings)
 
 def add_card_mappings(client, card, mappings):
@@ -209,6 +209,10 @@ def add_card_mappings(client, card, mappings):
 
         add_fields_mapping(client, query.get('filter', []), mappings)
         add_fields_mapping(client, query.get('order-by', []), mappings)
+        
+      if 'native' in dquery and 'template-tags' in dquery['native']:
+        for tag in dquery['native']['template-tags'].values():
+          add_fields_mapping(client, tag['dimension'], mappings)
 
 def add_dashboard_mappings(client, dashboard, mappings):
   for card in dashboard['ordered_cards']:
