@@ -14,8 +14,7 @@ VALUES
 ('Preferred language', 77, 'civicrm_option_group'),
 ('Active status', 122, 'civicrm_option_group'),
 ('Recurring donors', 121, 'civicrm_option_group'),
-('Country', NULL, NULL),
-('Active 3 month', NULL, NULL)
+('Country', NULL, NULL)
 ;
 
 -- END INITIAL

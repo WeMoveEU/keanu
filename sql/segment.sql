@@ -34,14 +34,14 @@ set @ext_id = (select external_id from segmentation where name = 'Preferred lang
 
 insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-ov.value,
+ov.name,
 @seg,
 ov.id,
 'civicrm_option_value'
 FROM
 ${SOURCE}.civicrm_option_group og
 JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id COLLATE utf8_general_ci
-JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.value = pf.preferred_language COLLATE utf8_general_ci
+JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.value = SUBSTRING(pf.preferred_language, 1, 2) COLLATE utf8_general_ci
 WHERE og.id = @ext_id;
 
 
@@ -89,13 +89,5 @@ ${SOURCE}.civicrm_option_group og
 JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id
 WHERE og.id = @ext_id;
 
-
-
-INSERT INTO segment (name, segmentation_id)
-SELECT
-s.name,
-s.id
-FROM segmentation s
-WHERE s.name like 'Active%month';
 
 -- END INITIAL

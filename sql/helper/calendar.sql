@@ -1,8 +1,8 @@
 -- to remove data:
 -- TRUNCATE calendar
--- ORDER: 80
-drop table if exists calendar;
+-- ORDER: 2
 
+drop table if exists calendar;
 create table calendar (
         dt date not null primary key,
         y smallint not null,
@@ -18,7 +18,8 @@ create table calendar (
         );
 
 DROP PROCEDURE IF EXISTS fill_calendar;
-    DELIMITER //
+
+DELIMITER //
 CREATE PROCEDURE fill_calendar(IN startdate DATE, IN stopdate DATE)
     BEGIN
     DECLARE currentdate DATE;
@@ -40,9 +41,16 @@ SET currentdate = ADDDATE(currentdate,INTERVAL 1 DAY);
     END WHILE;
     END
     //
-    DELIMITER ;
+DELIMITER ;
 
-
-TRUNCATE TABLE calendar;
-
+-- BEGIN INITIAL
 CALL fill_calendar('2015-01-01','2021-01-01');
+
+CREATE INDEX calendar_d ON calendar (d);
+CREATE INDEX calendar_m ON calendar (m);
+CREATE INDEX calendar_q ON calendar (q);
+CREATE INDEX calendar_w ON calendar (w);
+CREATE INDEX calendar_dw ON calendar (dw);
+CREATE INDEX calendar_y ON calendar (y);
+
+-- END INITIAL
