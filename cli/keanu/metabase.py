@@ -79,6 +79,28 @@ class MetabaseIO:
   def __init__(self, client):
     self.client = client
 
+  def export_json(self, collection):
+    """
+      Generate dictionary representation of JSON export file for all the items of the given collection name
+    """
+    source = self.client.get_by_name('collection', collection)
+    result = {
+        'items': self.get_items(source['id']),
+    }
+    result['mappings'] = source_mappings(self.client, result['items'])
+    return result
+
+  def import_json(self, source, collection):
+    """
+      Create in the given collection name all the items of the source data (dictionary representation of JSON export)
+    """
+    destination = self.client.get_by_name('collection', collection)
+    if len(self.client.get('collection', destination['id'], 'items')) > 0:
+        raise Exception("The destination collection is not empty")
+
+    mappings = dest_mappings(self.client, source['mappings'])
+    self.add_items(source['items'], destination['id'], mappings)
+    
   def get_items(self, collection_id):
     """
       Recursively retrieve the items of a collection and return the nested list of items.
@@ -122,7 +144,7 @@ class MetabaseIO:
 
       elif item['model'] == 'dashboard':
         dashboard = deref_dashboard(item, mappings)
-        d = client.add_dashboard(item, collection_id)
+        d = self.client.add_dashboard(item, collection_id)
         d = self.add_dashboard_cards(dashboard['ordered_cards'], d)
         result.append(d)
 

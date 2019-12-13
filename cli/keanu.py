@@ -124,12 +124,8 @@ def metabase_cli():
 @click.option('-c', '--collection', help="Name of the collection to export")
 def metabase_export(collection):
     client = metabase.Client()
-    source = client.get_by_name('collection', collection)
     mio = metabase.MetabaseIO(client)
-    result = {
-        'items': mio.get_items(source['id']),
-    }
-    result['mappings'] = metabase.source_mappings(client, result['items'])
+    result = mio.export_json(collection)
     print(json.dumps(result, indent=2))
 
 @metabase_cli.command('import')
@@ -137,16 +133,10 @@ def metabase_export(collection):
 @click.option('-j', '--json-file', help="path to JSON file to import")
 def metabase_import(collection, json_file):
     client = metabase.Client()
-    destination = client.get_by_name('collection', collection)
-    if len(client.get('collection', destination['id'], 'items')) > 0:
-        raise Exception("The destination collection is not empty")
-    
+    mio = metabase.MetabaseIO(client)
     with open(json_file, 'r') as f:
         source = json.loads(f.read())
-
-    mappings = metabase.dest_mappings(client, source['mappings'])
-    mio = metabase.MetabaseIO(client)
-    mio.add_items(source['items'], destination['id'], mappings)
+        mio.import_json(source, collection)
 
 
 if __name__ == '__main__':
