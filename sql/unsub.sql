@@ -1,5 +1,6 @@
 -- ORDER: 54
 -- DELETE FROM unsub
+-- DELETE FROM broadcast_metric WHERE metric IN ('unsubs')
 
 -- Store which broadcasts are going to be added to unsub table to then update unsub counts
 CREATE TEMPORARY TABLE updated_broadcast AS

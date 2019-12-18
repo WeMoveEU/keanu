@@ -1,53 +1,93 @@
 -- ORDER: 11
 -- DELETE FROM segment
 
+-- BEGIN INITIAL
 -- Special Everyone segment
 SET @everyone = (SELECT id FROM segmentation WHERE name = 'Everyone');
 INSERT INTO segment (name, segmentation_id) VALUES ('Everyone', @everyone);
 
 -- MEMBERSHIP
--- BEGIN INITIAL
-set @membership = (select id from segmentation where name = 'Membership');
+-- Membership
+set @seg = (select id from segmentation where name = 'Membership');
+set @ext_id = (select external_id from segmentation where name = 'Membership');
 
-insert into segment (name, segmentation_id, external_id) values ('Member', @membership, 42);
+insert into segment (name, segmentation_id, external_id, external_system)
+            values ('Member', @seg, @ext_id, 'civicrm_group');
 
--- LANGUAGE
-set @language = (select id from segmentation where name = 'Language');
+-- Mailing list
+set @seg = (select id from segmentation where name = 'Mailing list');
+set @ext_id = (select external_id from segmentation where name = 'Mailing list');
 
-insert into segment (name, segmentation_id, external_id)
+insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
   title,
-  @language,
-  id
+  @seg,
+  id, 'civicrm_group'
 FROM
 ${SOURCE}.civicrm_group
 WHERE
-parents = 32;
+parents = @ext_id;
 
-set @country_interest = (select id from segmentation where name = 'Country interest');
+-- Preferred language
+set @seg = (select id from segmentation where name = 'Preferred language');
+set @ext_id = (select external_id from segmentation where name = 'Preferred language');
 
-insert into segment (name, segmentation_id, external_id)
+insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-title,
-@country_interest,
-id
+ov.name,
+@seg,
+ov.id,
+'civicrm_option_value'
 FROM
-${SOURCE}.civicrm_group
-WHERE
-parents = 10;
+${SOURCE}.civicrm_option_group og
+JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id COLLATE utf8_general_ci
+JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.value = SUBSTRING(pf.preferred_language, 1, 2) COLLATE utf8_general_ci
+WHERE og.id = @ext_id;
+
 
 -- COUNTRIES
 
-set @country = (select id from segmentation where name = 'Country');
+set @seg = (select id from segmentation where name = 'Country');
+
+insert into segment (name, segmentation_id, external_id, external_system)
+SELECT
+c.name,
+@seg,
+c.id, 'civicrm_country'
+FROM
+(SELECT DISTINCT country FROM contact WHERE country is not null) ctr
+JOIN ${SOURCE}.civicrm_country c ON ctr.country = c.iso_code COLLATE utf8_general_ci
+;
 
 -- Active
+set @seg = (select id from segmentation where name = 'Active status');
+set @ext_id = (select external_id from segmentation where name = 'Active status');
 
-INSERT INTO segment (name, segmentation_id, external_id)
+insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-s.name,
-s.id,
-NULL
-FROM segmentation s
-WHERE s.name like 'Active%';
+ov.name,
+@seg,
+ov.id,
+'civicrm_option_value'
+FROM
+${SOURCE}.civicrm_option_group og
+JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id
+WHERE og.id = @ext_id;
+
+-- Recurring donors
+set @seg = (select id from segmentation where name = 'Recurring donors');
+set @ext_id = (select external_id from segmentation where name = 'Recurring donors');
+
+insert into segment (name, segmentation_id, external_id, external_system)
+SELECT
+ov.name,
+@seg,
+ov.id,
+'civicrm_option_value'
+FROM
+${SOURCE}.civicrm_option_group og
+JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id
+WHERE og.id = @ext_id;
+
 
 -- END INITIAL

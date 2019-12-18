@@ -89,7 +89,7 @@ FROM all_contributions ac
 WHERE ac.status = 'success'
 -- BEGIN INCREMENTAL
 -- exclude by action references in donation table
-WHERE ca.id NOT IN (SELECT action_id FROM donation)
+AND ca.id NOT IN (SELECT action_id FROM donation)
 -- END INCREMENTAL
 
 -- It would be better to use DISTINCT but we have to do min(amount)

@@ -1,5 +1,5 @@
 -- ORDER: 56
--- DELETE FROM broadcast_metric WHERE metric = 'recipients'
+-- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted')
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
