@@ -1,5 +1,6 @@
 -- ORDER: 55
 -- DELETE FROM click
+-- DELETE FROM broadcast_metric WHERE metric IN ('clicks', 'clickers')
 
 SET @last_click = 0;
 -- BEGIN INCREMENTAL
