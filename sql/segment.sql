@@ -12,7 +12,9 @@ set @seg = (select id from segmentation where name = 'Membership');
 set @ext_id = (select external_id from segmentation where name = 'Membership');
 
 insert into segment (name, segmentation_id, external_id, external_system)
-            values ('Member', @seg, @ext_id, 'civicrm_group');
+            values ('Member', @seg, @ext_id, 'civicrm_group'),
+                   ('Expiring', @seg, NULL, NULL),
+                   ('Expired', @seg, NULL, NULL);
 
 -- Mailing list
 set @seg = (select id from segmentation where name = 'Mailing list');

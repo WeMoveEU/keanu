@@ -91,6 +91,10 @@ class LoadScript(RunStatement):
 
             out.insert(0, l)
 
+        if len(contexts) > 0:
+            raise VelueError("Script {} ended with contexts {} unclosed",
+                             _.filename, ', '.join(contexts))
+
         out.reverse()
         return out
 
