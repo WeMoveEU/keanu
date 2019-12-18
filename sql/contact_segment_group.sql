@@ -85,18 +85,3 @@ WHERE ghj.status = 'Added' AND (ghl.date IS NULL OR DATEDIFF(ghl.date, ghj.date)
 
 DROP TABLE group_history;
 
-UPDATE contact_segment cs JOIN -- add trigger actions to group based segments
-(
-SELECT DISTINCT
-cs.id, a.id as action_id
-FROM
-contact_segment cs
-LEFT JOIN action a ON cs.contact_id = a.contact_id AND CONVERT(cs.joined_at, DATE) = CONVERT(a.created_at, DATE)
-
-WHERE
-cs.segment_id in (SELECT s.id FROM segment s JOIN segmentation sn ON s.segmentation_id = sn.id WHERE sn.name IN ('Membership', 'Language', 'Country interest'))
-AND
-a.id is not null
-ORDER BY id, action_id
-) trig ON trig.id = cs.id
-SET cs.trigger_action_id = trig.action_id;
