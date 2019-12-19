@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import setuptools
 
 with open("../README.MD", "r") as fh:
