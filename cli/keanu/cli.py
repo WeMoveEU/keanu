@@ -22,19 +22,19 @@ def cli():
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def load(incremental, order, dry_run, display, warn):
+@click.argument('sqldir')
+def load(incremental, order, dry_run, display, warn, sqldir):
     opts = { 'incremental': incremental, 'display': display, 'warn': warn }
-    scripts = util.get_scripts(opts)
+    scripts = util.get_scripts(sqldir, opts)
 
     scripts = util.filter_scripts_by_order(scripts, order)
 
     try:
-        if not dry_run:
-            connection = db.get_engine().connect()
+        connection = db.get_engine(dry_run=dry_run).connect()
         for scr in scripts:
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
-                scr.filename[len(util.SQLBASE):] if scr.filename.startswith(util.SQLBASE) else scr.filename,
+                scr.filename[len(sqldir):] if scr.filename.startswith(sqldir) else scr.filename,
                 len(scr.lines),
                 len(scr.statements)))
 
@@ -73,15 +73,16 @@ def load(incremental, order, dry_run, display, warn):
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-def delete(order, display, dry_run, warn):
+@click.argument('sqldir')
+def delete(order, display, dry_run, warn, sqldir):
     opts = { 'display': display, 'warn': warn }
-    scripts = util.get_scripts(opts)
+    scripts = util.get_scripts(sqldir, opts)
 
     scripts = util.filter_scripts_by_order(scripts, order)
 
     scripts.reverse()
 
-    connection = db.get_engine().connect()
+    connection = db.get_engine(dry_run=dry_run).connect()
 
     for scr in scripts:
         with connection.begin() as transaction:
