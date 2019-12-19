@@ -47,6 +47,10 @@ repository = https://upload.pypi.org/legacy/
 username = pypi-username
 ```
 
+To install the package locally:
+
+```pip install --upgrade dist/keanu-0.1-py3-none-any.whl```
+
 2. Use `python -m twine upload dist/*`.
 
 ### SQL commands
