@@ -76,3 +76,45 @@ INSERT INTO action
     AND a.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_activity')
   -- END INCREMENTAL
 ;
+
+-- Consents
+-- BEGIN INCREMENTAL
+SET @last_action_id = (SELECT MAX(id) FROM action);
+-- END INCREMENTAL
+
+INSERT INTO action
+  (contact_id, created_at, action_page_id, source_id, external_id, external_system)
+
+  SELECT
+    ac.contact_id, activity_date_time, ap.id, s.id, a.id, 'civicrm_activity'
+  FROM ${SOURCE}.civicrm_activity a
+  JOIN ${SOURCE}.civicrm_activity_contact ac ON ac.activity_id = a.id AND ac.record_type_id = 2
+  JOIN action_page ap ON ap.external_id = a.campaign_id AND ap.external_system = 'civicrm_campaign' AND ap.action_type = 'consent'
+  LEFT JOIN ${SOURCE}.civicrm_value_action_source_4 utm ON utm.entity_id = a.id
+  LEFT JOIN source s ON s.source = utm.source_27 COLLATE utf8_general_ci
+                    AND s.medium = utm.media_28 COLLATE utf8_general_ci
+                    AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
+  WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67) AND a.status_id IN (1, 4, 9)
+  -- BEGIN INCREMENTAL
+    AND a.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_activity')
+  -- END INCREMENTAL
+;
+
+INSERT INTO consent
+  (action_id, status)
+
+  SELECT
+    a.id,
+    CASE
+    WHEN status_id = 1 THEN 'pending'
+    WHEN status_id = 4 THEN 'rejected'
+    WHEN status_id = 9 THEN 'accepted'
+    END AS action_type
+  FROM action a 
+  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'consent'
+  JOIN ${SOURCE}.civicrm_activity act ON a.external_id = act.id AND a.external_system = 'civicrm_activity'
+  -- BEGIN INCREMENTAL
+  WHERE a.id > @last_action_id
+  -- END INCREMENTAL
+;
+

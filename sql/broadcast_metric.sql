@@ -58,6 +58,7 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   SELECT
     b.id, b.name, @Everyone, 'converted', COUNT(DISTINCT contact_id)
   FROM action a
+  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
   JOIN broadcast_link l ON l.source_id = a.source_id
   JOIN broadcast b ON b.id = l.broadcast_id
   GROUP BY b.id
@@ -69,6 +70,7 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   SELECT
     b.id, b.name, @Everyone, 'conversions', COUNT(a.id)
   FROM action a
+  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
   JOIN broadcast_link l ON l.source_id = a.source_id
   JOIN broadcast b ON b.id = l.broadcast_id
   GROUP BY b.id
