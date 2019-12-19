@@ -32,6 +32,27 @@ Keanu command lives in `cli` directory. It can (incrementally) load data from Ci
 Keanu commands has a set of subcommands, similar to git or heroku.
 You need to enable the Pipenv, by running `pipenv shell`.
 
+## Package building
+
+To build the package use `python setup.py bdist_wheel`.
+
+To upload it to PyPI:
+
+1. Create a `~/.pypirc` file:
+```
+[distutils] 
+index-servers=pypi
+[pypi] 
+repository = https://upload.pypi.org/legacy/ 
+username = pypi-username
+```
+
+To install the package locally:
+
+```pip install --upgrade dist/keanu-0.1-py3-none-any.whl```
+
+2. Use `python -m twine upload dist/*`.
+
 ### SQL commands
 
 These are the commands related to creating and filling in the Keanu schema (from CiviCRM DB).

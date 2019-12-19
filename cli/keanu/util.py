@@ -1,4 +1,6 @@
 import re
+import os
+import click
 from functools import reduce
 from operator import setitem
 from glob import glob
@@ -17,11 +19,10 @@ def highlight_sql(code):
         c = c.rstrip()
     return c
 
-
-SQLBASE='../sql/'
-
-def get_scripts(opts={}):
-    files = glob(SQLBASE+'**/*.sql', recursive=True)
+def get_scripts(sqldir, opts={}):
+    files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
+    if len(files) == 0:
+        raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='sqldir')
     scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
     LoadScript.sort(scripts)
     return scripts
