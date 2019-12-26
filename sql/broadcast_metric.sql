@@ -7,7 +7,7 @@ SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 -- Store which broadcasts are going to be added to recipients table to then update recipient counts
 CREATE TEMPORARY TABLE updated_broadcast AS
   SELECT DISTINCT b.id
-  FROM broadcast b LEFT JOIN broadcast_metric m ON m.broadcast_id = b.id
+  FROM broadcast b LEFT JOIN broadcast_metric m ON m.broadcast_id = b.id AND m.metric = 'recipients'
   WHERE m.id IS NULL
 ;
 
