@@ -59,12 +59,12 @@ These are the commands related to creating and filling in the Keanu schema (from
 
 #### schema: manipulating database schema
 
-- `keanu.py schema -L filename` - loads SQL schema file.
+- `keanu.py schema -L FILENAME` - loads SQL schema file.
 - `keanu.py schema -D` - drops all tables from the database.
 
 #### load: loading data
 
-`keanu.py load` loads data from CiviCRM to keanu db in ordered steps. Every SQL file in `sql` directory has `-- ORDER: 12` comment which specifies an order. The default order is 100.
+`keanu.py load SQLDIR` loads data from CiviCRM to keanu db in ordered steps. Every SQL file in `SQLDIR` directory has `-- ORDER: 12` comment which specifies an order. The default order is 100.
 
 Options:
 
@@ -75,7 +75,7 @@ Options:
 
 #### delete: deleting data
 
-`keanu.py delete` will go through the SQL scripts in _reverse order_ and execute the commented `DELETE` and `TRUNCATE` statements in the scripts. 
+`keanu.py delete SQLDIR` will go through the SQL scripts in _reverse order_ and execute the commented `DELETE` and `TRUNCATE` statements in the scripts. 
 
 Options:
 
