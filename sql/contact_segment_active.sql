@@ -10,6 +10,7 @@ CREATE TEMPORARY TABLE event_history (
   create_date DATETIME NOT NULL,
   event_type ENUM('0_join', '1_leave', '2_action', '3_expiry'),
   event_date DATETIME,
+  action_id INT UNSIGNED,
   INDEX order_idx (contact_id, event_date, event_type)
 );
 
@@ -20,7 +21,8 @@ INSERT INTO event_history
     contact_id,
     c.created_at,
     '0_join',
-    joined_at
+    joined_at,
+    NULL
   FROM contact c
   JOIN contact_segment cs ON cs.contact_id = c.id AND segment_id = @segid
 ;
@@ -30,7 +32,8 @@ INSERT INTO event_history
     contact_id,
     c.created_at,
     '1_leave',
-    left_at
+    left_at,
+    NULL
   FROM contact c
   JOIN contact_segment cs ON cs.contact_id = c.id AND segment_id = @segid
   WHERE left_at IS NOT NULL
@@ -41,7 +44,8 @@ INSERT INTO event_history
     c.id AS contact_id, 
     c.created_at,
     '2_action',
-    a.created_at AS event_date
+    a.created_at AS event_date,
+    a.id
   FROM contact c 
   LEFT JOIN action a ON a.contact_id = c.id
   LEFT JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
@@ -52,7 +56,8 @@ INSERT INTO event_history
     c.id AS contact_id, 
     c.created_at,
     '3_expiry',
-    DATE_ADD(a.created_at, INTERVAL 3 MONTH)
+    DATE_ADD(a.created_at, INTERVAL 3 MONTH),
+    NULL
   FROM contact c
   JOIN action a ON a.contact_id = c.id AND a.created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
@@ -66,6 +71,7 @@ DROP TABLE IF exists segment_history;
 CREATE TABLE segment_history (
   contact_id INT UNSIGNED NOT NULL,
   event_date DATETIME,
+  trigger_action_id INT UNSIGNED,
   is_member TINYINT NOT NULL,
   leaved INT UNSIGNED REFERENCES segment(id),
   joined INT UNSIGNED NOT NULL REFERENCES segment(id),
@@ -84,6 +90,7 @@ INSERT INTO segment_history
   SELECT
     contact_id,
     COALESCE(event_date, create_date),
+    action_id,
 
     @is_member := CASE
       WHEN event_type = '0_join' THEN 1
@@ -119,15 +126,15 @@ INSERT INTO segment_history
 ;
 
 INSERT INTO contact_segment
-  (segmentation_id, segment_id, contact_id, joined_at, left_at)
+  (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
 
   SELECT 
-    s.segmentation_id, s.id, j.contact_id, j.event_date, MIN(l.event_date)
+    s.segmentation_id, s.id, j.contact_id, j.event_date, MIN(l.event_date), j.trigger_action_id
   FROM segment s
   JOIN segment_history j ON j.joined = s.id AND (j.leaved IS NULL OR j.leaved != j.joined)
   LEFT JOIN segment_history l ON l.leaved = s.id AND l.contact_id = j.contact_id AND l.leaved != l.joined AND l.event_date >= j.event_date
   WHERE s.segmentation_id = @active_status
-  GROUP BY s.id, j.contact_id, j.event_date
+  GROUP BY s.id, j.contact_id, j.event_date, j.trigger_action_id
 ;
 
 DROP TABLE event_history;
