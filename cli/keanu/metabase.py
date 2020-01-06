@@ -358,6 +358,13 @@ def deref_dashboard(dashboard, mappings):
     if not is_virtual_card(card):
       card['cardId'] = card['card_id']  # Inconsistency in dashboard API
 
+    if 'series' in card:
+      for s, serie in enumerate(card['series']):
+        card_id = mappings['cards'][serie['id']]
+        serie = deref_card(serie, mappings)
+        serie['id'] = card_id
+        card['series'][s] = serie
+
     for pm in card['parameter_mappings']:
       pm['card_id'] = card['card_id']
       for target_spec in pm['target']:
