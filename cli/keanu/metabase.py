@@ -122,7 +122,7 @@ class MetabaseIO:
 
     return result
 
-  def add_items(self, items, collection_id, mappings):
+  def add_items(self, items, collection_id, mappings, only_model='all', result=[]):
     """
       Create the given items into the given collection.
       Collections are created recursively.
@@ -130,25 +130,33 @@ class MetabaseIO:
       in the context of current Metabase instance. The object may be modified with ids of card created during the process.
       Return the nested list of created items.
     """
-    result = []
-    for item in items:
-      if item['model'] == 'collection':
-        c = self.client.add_collection(item, collection_id)
-        c['items'] = self.add_items(item['items'], c['id'], mappings)
-        result.append(c)
+    if only_model == 'all':
+      self.add_items(items, collection_id, mappings, 'collection', result)
+      self.add_items(items, collection_id, mappings, 'card', result)
+      self.add_items(items, collection_id, mappings, 'dashboard', result)
+    else:
+      for item in items:
+        if item['model'] == 'collection':
+          if only_model == 'collection':
+            c = self.client.add_collection(item, collection_id)
+            mappings['collections'][item['id']] = c['id']
+            c['items'] = []
+            result.append(c)
+          else:
+            c = next(filter(lambda r: r['id'] == mappings['collections'][item['id']], result))
+          self.add_items(item['items'], c['id'], mappings, only_model, c['items'])
 
-      elif item['model'] == 'card':
-        card = deref_card(item, mappings)
-        created_card = self.client.add_card(card, collection_id)
-        if item['id'] in mappings['cards']:
+        elif item['model'] == 'card' and only_model == 'card':
+          card = deref_card(item, mappings)
+          created_card = self.client.add_card(card, collection_id)
           mappings['cards'][item['id']] = created_card['id']
-        result.append(created_card)
+          result.append(created_card)
 
-      elif item['model'] == 'dashboard':
-        dashboard = deref_dashboard(item, mappings)
-        d = self.client.add_dashboard(item, collection_id)
-        d = self.add_dashboard_cards(dashboard['ordered_cards'], d)
-        result.append(d)
+        elif item['model'] == 'dashboard' and only_model == 'dashboard':
+          dashboard = deref_dashboard(item, mappings)
+          d = self.client.add_dashboard(item, collection_id)
+          d = self.add_dashboard_cards(dashboard['ordered_cards'], d)
+          result.append(d)
 
     return result
 
@@ -285,6 +293,7 @@ class Mapper:
           result['fields'][int(field_id)] = dest_field[0]['id']
 
     result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
+    result['collections'] = {}
 
     return result
 
