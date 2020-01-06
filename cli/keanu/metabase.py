@@ -249,6 +249,7 @@ class Mapper:
             self.add_table(db_id, table_id, mappings)
             self.add_fields(join['condition'], mappings)
 
+          self.add_fields(query.get('fields', []), mappings)
           self.add_fields(query.get('filter', []), mappings)
           self.add_fields(query.get('breakout', []), mappings)
           self.add_fields(query.get('order-by', []), mappings)
@@ -340,6 +341,7 @@ def deref_card(card, mappings):
           join['source-table'] = deref_table(join['source-table'], mappings)
           deref_fields(join['condition'], mappings)
 
+        deref_fields(query.get('fields', []), mappings)
         deref_fields(query.get('filter', []), mappings)
         deref_fields(query.get('breakout', []), mappings)
         deref_fields(query.get('order-by', []), mappings)
