@@ -196,7 +196,12 @@ class Mapper:
     return result
 
   def add_table(self, db_id, table_id, mappings):
-    if table_id not in mappings['databases'][db_id]['tables']:
+    if str(table_id).startswith('card__'):
+      # The table is actually a saved question
+      card_id = int(table_id[6:])
+      if card_id not in mappings['cards']:
+        mappings['cards'][card_id] = 'source_card_' + str(card_id)
+    elif table_id not in mappings['databases'][db_id]['tables']:
       table = self.client.get('table', table_id)
       mappings['databases'][db_id]['tables'][table_id] = {
         'name': table['name'],
@@ -300,6 +305,12 @@ class Mapper:
 def deref(obj, prop, mapping):
   obj[prop] = mapping[obj[prop]]
 
+def deref_table(table_id, mappings):
+  if str(table_id).startswith('card__'):
+    return mappings['cards'][int(table_id[6:])]
+  else:
+    return mappings['tables'][table_id]
+
 def deref_fields(expression, mappings):
   if isinstance(expression, list):
     if len(expression) == 2 and expression[0] == 'field-id':
@@ -320,13 +331,13 @@ def deref_card(card, mappings):
       if 'query' in dquery:
         query = dquery['query']
         if 'source-table' in query:
-          query['source-table'] = mappings['tables'][query['source-table']]
+          query['source-table'] = deref_table(query['source-table'], mappings)
 
           for exp in query.get('expressions', {}).values():
             deref_fields(exp, mappings)
 
         for join in query.get('joins', []):
-          join['source-table'] = mappings['tables'][join['source-table']]
+          join['source-table'] = deref_table(join['source-table'], mappings)
           deref_fields(join['condition'], mappings)
 
         deref_fields(query.get('filter', []), mappings)
