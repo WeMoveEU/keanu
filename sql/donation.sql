@@ -10,7 +10,7 @@ CREATE TEMPORARY TABLE all_contributions AS
 SELECT
 -- First info about contribution
     c.id AS contribution_id,
-    c.total_amount AS amount,
+    c.total_amount * currency.rate AS amount,
     c.currency AS original_currency,
     c.total_amount AS original_amount,
     c.receive_date,
@@ -41,6 +41,7 @@ FROM
     LEFT JOIN
     ${SOURCE}.civicrm_contribution_recur rc
     ON c.contribution_recur_id = rc.id
+    JOIN currency ON currency.code = c.currency COLLATE utf8_general_ci
 WHERE
     c.payment_instrument_id IN (1,2,5,6,7,8)
     AND c.contribution_status_id IN (1,3,4,7)
