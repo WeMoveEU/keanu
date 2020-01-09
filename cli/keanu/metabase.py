@@ -87,8 +87,9 @@ class MetabaseIO:
     result = {
         'items': self.get_items(source['id']),
     }
+    result['datamodel'] = self.get_datamodel(result['items'])
     mapper = Mapper(self.client)
-    result['mappings'] = mapper.add_items(result['items'])
+    result['mappings'] = mapper.add_cards(result['items'])
     return result
 
   def import_json(self, source, collection):
@@ -100,7 +101,7 @@ class MetabaseIO:
         raise Exception("The destination collection is not empty")
 
     mapper = Mapper(self.client)
-    mappings = mapper.resolved_mappings(source['mappings'])
+    mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'])
     self.add_items(source['items'], destination['id'], mappings)
     
   def get_items(self, collection_id):
@@ -167,6 +168,36 @@ class MetabaseIO:
       dashboard['ordered_cards'].append(c)
     return dashboard
 
+  def get_datamodel(self, items):
+    db_ids = self.get_database_ids(items)
+    result = { 'databases': {} }
+    for db_id in db_ids:
+      result['databases'][db_id] = self.filter_db_data(self.client.get('database', db_id, 'metadata'))
+    return result
+
+  def get_database_ids(self, items, result = None):
+    if result is None:
+      result = set()
+
+    for item in items:
+      if item['model'] == 'collection':
+        self.get_database_ids(item['items'], result)
+      elif item['model'] == 'card':
+        result.add(item['database_id'])
+
+    return result
+
+  def filter_db_data(seld, db):
+    f_db = { k: db[k] for k in db.keys() & ['id', 'name'] }
+    f_db['tables'] = {}
+    for table in db['tables']:
+      f_table = { k: table[k] for k in table.keys() & ['id', 'name'] }
+      f_table['fields'] = {}
+      for field in table['fields']:
+        f_field = { k: field[k] for k in field.keys() & ['id', 'name'] }
+        f_table['fields'][field['id']] = f_field
+      f_db['tables'][table['id']] = f_table
+    return f_db
 
 class Mapper:
   """
@@ -175,7 +206,7 @@ class Mapper:
   def __init__(self, client):
     self.client = client
 
-  def add_items(self, items, result = None):
+  def add_cards(self, items, result = None):
     """
       Browse recursively a nested list of items and record into `result` the ids
       that will need to be translated during import.
@@ -183,15 +214,17 @@ class Mapper:
       Return the updated result.
     """
     if result is None:
-      result = {'databases': {}, 'cards': {}}
+      result = {'cards': {}}
 
     for item in items:
       if item['model'] == 'collection':
-        self.add_items(item['items'], result)
-      elif item['model'] == 'card':
-        self.add_card(item, result)
+        self.add_cards(item['items'], result)
       elif item['model'] == 'dashboard':
-        self.add_dashboard(item, result)
+        for card in item['ordered_cards']:
+          if 'card_id' not in card or card['card_id'] is None:
+            card['card_id'] = card['id']
+          if card['card_id'] not in result['cards']:
+            result['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
 
     return result
 
@@ -272,7 +305,7 @@ class Mapper:
             self.add_fields(target_spec, mappings)
 
           
-  def resolved_mappings(self, source_map):
+  def resolved_mappings(self, source_map, datamodel):
     """
       Translates all the ids found in source_map into corresponding ids for the current Metabase instance
       Return a dictionary { model => { source_id => translated_id } }
@@ -280,7 +313,7 @@ class Mapper:
     """
     result = {'databases': {}, 'tables': {}, 'fields': {}}
 
-    for db_id, db in source_map['databases'].items():
+    for db_id, db in datamodel['databases'].items():
       dest_db = self.client.get_by_name('database', db['name'])
       result['databases'][int(db_id)] = dest_db['id']
 
@@ -292,10 +325,10 @@ class Mapper:
         dest_table = dest_table[0]
         result['tables'][int(table_id)] = dest_table['id']
 
-        for field_id, field_name in table['fields'].items():
-          dest_field = list(filter(lambda f: f['name'] == field_name, dest_table['fields']))
+        for field_id, field in table['fields'].items():
+          dest_field = list(filter(lambda f: f['name'] == field['name'], dest_table['fields']))
           if len(dest_field) == 0:
-            raise Exception("Field {} could not be mapped".format(field_name))
+            raise Exception("Field {} could not be mapped".format(field['name']))
           result['fields'][int(field_id)] = dest_field[0]['id']
 
     result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
