@@ -10,7 +10,7 @@ CREATE TEMPORARY TABLE all_contributions AS
 SELECT
 -- First info about contribution
     c.id AS contribution_id,
-    c.total_amount / currency.rate AS amount,
+    c.total_amount * currency.rate AS amount,
     c.currency AS original_currency,
     c.total_amount AS original_amount,
     c.receive_date,
