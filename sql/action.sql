@@ -1,4 +1,5 @@
 -- ORDER: 31
+-- DELETE FROM consent
 -- DELETE FROM action
 
 SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
