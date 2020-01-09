@@ -133,11 +133,12 @@ def metabase_export(collection):
 @metabase_cli.command('import')
 @click.option('-c', '--collection', help="Name of the collection to import into")
 @click.option('-j', '--json-file', help="path to JSON file to import")
-def metabase_import(collection, json_file):
+@click.option('-m', '--metadata', is_flag=True, help="Also import metadata before importing the collection")
+def metabase_import(collection, json_file, metadata):
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
     with open(json_file, 'r') as f:
         source = json.loads(f.read())
-        mio.import_json(source, collection)
+        mio.import_json(source, collection, metadata)
 
 

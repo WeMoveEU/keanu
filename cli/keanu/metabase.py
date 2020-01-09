@@ -71,6 +71,17 @@ class Client:
       raise Exception("Could not create collection {}".format(params['name']))
     return result
 
+  def add_dimension(self, dimension, field_id):
+    status, result = self.client.post('/field/{}/dimension'.format(field_id), json=dimension)
+    if not status:
+      raise Exception("Could not add dimension to field {}".format(field_id))
+    return result
+
+  def update_field(self, field_id, params):
+    status = self.client.put('/field/{}'.format(field_id), json=params)
+    if not status:
+      raise Exception("Could not update field {}".format(field_id))
+
 
 class MetabaseIO:
   """
@@ -92,17 +103,24 @@ class MetabaseIO:
     result['mappings'] = mapper.add_cards(result['items'])
     return result
 
-  def import_json(self, source, collection):
+  def import_json(self, source, collection, with_metadata=False):
     """
-      Create in the given collection name all the items of the source data (dictionary representation of JSON export)
+      Create in the given collection name all the items of the source data (dictionary representation of JSON export).
+      If `with_metadata` is True, the extra metadata about the model is also imported
     """
-    destination = self.client.get_by_name('collection', collection)
-    if len(self.client.get('collection', destination['id'], 'items')) > 0:
-        raise Exception("The destination collection is not empty")
+    has_items = len(source['items']) > 0
+    if has_items:
+      destination = self.client.get_by_name('collection', collection)
+      if len(self.client.get('collection', destination['id'], 'items')) > 0:
+          raise Exception("The destination collection is not empty")
 
-    mapper = Mapper(self.client)
-    mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'])
-    self.add_items(source['items'], destination['id'], mappings)
+    if has_items or with_metadata:
+      mapper = Mapper(self.client)
+      mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'])
+      if with_metadata:
+        self.import_metadata(source['datamodel'], mappings)
+      if has_items:
+        self.add_items(source['items'], destination['id'], mappings)
     
   def get_items(self, collection_id):
     """
@@ -122,6 +140,21 @@ class MetabaseIO:
       result.append(item)
 
     return result
+
+  def import_metadata(self, datamodel, mappings):
+    for db in datamodel['databases'].values():
+      for table in db['tables'].values():
+        for field in table['fields'].values():
+          dest_field_id = mappings['fields'][field['id']]
+
+          field_values = field.get('has_field_values', 'none')
+          if field_values != 'none':
+            self.client.update_field(dest_field_id, { 'has_field_values': field_values })
+
+          if 'dimensions' in field:
+            dest_field = self.client.get('field', dest_field_id)
+            if 'dimensions' not in dest_field:
+              self.client.add_dimension(field['dimensions'], dest_field_id)
 
   def add_items(self, items, collection_id, mappings, only_model='all', result=[]):
     """
@@ -172,7 +205,7 @@ class MetabaseIO:
     db_ids = self.get_database_ids(items)
     result = { 'databases': {} }
     for db_id in db_ids:
-      result['databases'][db_id] = self.filter_db_data(self.client.get('database', db_id, 'metadata'))
+      result['databases'][db_id] = self.db_data(self.client.get('database', db_id, 'metadata'))
     return result
 
   def get_database_ids(self, items, result = None):
@@ -187,16 +220,26 @@ class MetabaseIO:
 
     return result
 
-  def filter_db_data(seld, db):
-    f_db = { k: db[k] for k in db.keys() & ['id', 'name'] }
+  def db_data(self, db):
+    f_db = { k: db[k] for k in ['id', 'name'] }
     f_db['tables'] = {}
+
     for table in db['tables']:
-      f_table = { k: table[k] for k in table.keys() & ['id', 'name'] }
+      f_table = { k: table[k] for k in ['id', 'name'] }
       f_table['fields'] = {}
-      for field in table['fields']:
-        f_field = { k: field[k] for k in field.keys() & ['id', 'name'] }
-        f_table['fields'][field['id']] = f_field
       f_db['tables'][table['id']] = f_table
+
+      for field in table['fields']:
+        if field['special_type'] == 'type/FK':
+          # If the field may have dimensions, retrieve the fields to get them
+          field = self.client.get('field', field['id'])
+
+        f_field = { k: field[k] for k in ['id', 'name', 'has_field_values'] }
+        if 'dimensions' in field and len(field['dimensions']) > 0:
+          f_field['dimensions'] = { k: field['dimensions'][k] for k in ['type', 'name', 'human_readable_field_id'] }
+
+        f_table['fields'][field['id']] = f_field
+
     return f_db
 
 class Mapper:
