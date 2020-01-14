@@ -19,7 +19,7 @@ def highlight_sql(code):
         c = c.rstrip()
     return c
 
-def get_scripts(sqldir, opts={}):
+def get_scripts(sqldir, mode, source, destination):
     files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
     if len(files) == 0:
         raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='sqldir')

@@ -12,6 +12,7 @@ pymysql = "*"
 pygments = "*"
 requests = "*"
 sqlalchemy = "*"
+pyaml = "*"
 
 [dev-packages]
 setuptools = "*"

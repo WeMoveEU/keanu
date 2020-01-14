@@ -4,13 +4,16 @@ load_dotenv()
 import click
 import json
 from glob import glob
-from . import db, util, metabase
+from os import environ
+from . import db, util, metabase, config
 from .load_script import LoadScript
+from .db_destination import DBDestination
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 import re
 import sys
 import traceback
+
 
 @click.group()
 def cli():
@@ -22,87 +25,83 @@ def cli():
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-@click.argument('sqldir')
-def load(incremental, order, dry_run, display, warn, sqldir):
-    opts = { 'incremental': incremental, 'display': display, 'warn': warn }
-    scripts = util.get_scripts(sqldir, opts)
+@click.argument('config_or_dir', default='keanu.yaml', type=click.Path(exists=True))
+def load(incremental, order, dry_run, display, warn, config_or_dir):
+    mode = { 'incremental': incremental,
+             'order': order,
+             'display': display,
+             'warn': warn,
+             'order': order,
+             'rewind': False }
 
-    scripts = util.filter_scripts_by_order(scripts, order)
+    configuration = config.configuration_from_argument(config_or_dir)
+    batch = config.build_batch(mode, configuration)
 
-    try:
-        connection = db.get_engine(dry_run=dry_run).connect()
-        for scr in scripts:
+    for event, data in batch.execute():
+        scr = data['script']
+        if event.startswith('sql.script.start'):
             click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
                 scr.order,
-                scr.filename[len(sqldir):] if scr.filename.startswith(sqldir) else scr.filename,
+                scr.filename,
                 len(scr.lines),
                 len(scr.statements)))
 
-            if len(scr.statements) == 0:
-                continue
+        elif event.startswith('sql.statement.start'):
+                click.echo("📦 {0}...".format(
+                    util.highlight_sql(
+                        scr.statement_abbrev(data['sql']))),
+                           nl=display)
 
-            if not dry_run:
-                with connection.begin() as transaction:
-                    try:
-                        res = scr.execute(connection)
-                    except KeyboardInterrupt as ctrlc:
-                        transaction.rollback()
-                        sys.exit(1)
-                    except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
-                        transaction.rollback()
-                        msg = str(e.args[0])
-                        msg = msg.replace('\\n', "\n")
-                        click.echo(message=msg, err=True)
-                        sys.exit(1)
-            elif display:
-                # it's a dry run and display was requested. Print the script
-                for s in scr.statements:
-                    click.echo(util.highlight_sql(s))
+        elif event.startswith('sql.statement.end'):
+            code = util.highlight_sql(scr.statement_abbrev(data['sql']))
 
-    except SystemExit as e:
-        # rethrow it so it does not fall into unexpected block below:
-        raise e
+            # If display (-d) is set, the code was already shown on start,
+            # and we are not overwriting the same line
+            if display:
+                code = ''
 
-    except:
-        t, v, tb = sys.exc_info()
-        print("Unexpected error: {0}: {1}", t, v)
-        traceback.print_tb(tb, limit=10)
+            click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
+                data['result'].rowcount,
+                data['time'],
+                code
+            ))
+
+
 
 @cli.command()
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
-@click.argument('sqldir')
-def delete(order, display, dry_run, warn, sqldir):
-    opts = { 'display': display, 'warn': warn }
-    scripts = util.get_scripts(sqldir, opts)
+@click.argument('config_or_dir', default='keanu.yaml', type=click.Path(exists=True))
+def delete(order, display, dry_run, warn, config_or_dir):
+    mode = {
+        'order': order,
+        'display': display,
+        'warn': warn,
+        'rewind': True }
+    configuration = config.configuration_from_argument(config_or_dir)
+    batch = config.build_batch(mode, configuration)
 
-    scripts = util.filter_scripts_by_order(scripts, order)
-
-    scripts.reverse()
-
-    connection = db.get_engine(dry_run=dry_run).connect()
-
-    for scr in scripts:
-        with connection.begin() as transaction:
+    for event, data in batch.execute():
+        scr = data['script']
+        if event.startswith('sql.script.start'):
             click.echo("🚒️ [{:3d}] {} ({})".format(
                 scr.order,
                 scr.filename,
                 ', '.join(map(lambda s: s.rstrip(), map(util.highlight_sql, scr.deleteSql)))),
                        color=True)
-            if not dry_run:
-                try:
-                    scr.delete(connection)
-                except KeyboardInterrupt as ctrlc:
-                    transaction.rollback()
-                    raise ctrlc
+        elif event.startswith('sql.statement.start'):
+            click.echo("🔥 {0}".format(util.highlight_sql(scr.statement_abbrev(data['sql']))))
+
 
 @cli.command()
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
 @click.option('-L', '--load', default=None, help='Load this SQL file')
-def schema(drop, load):
-    connection = db.get_engine().connect()
+@click.argument('database_url')
+def schema(drop, load, database_url):
+    dest = DBDestination({'url': environ['DATABASE_URL']})
+    connection = dest.connection()
 
     if drop:
         for (table, _) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):
@@ -111,11 +110,23 @@ def schema(drop, load):
             connection.execute('DROP TABLE {}'.format(table))
 
     if load:
-        script = LoadScript(load)
-        script.replace_sql_object('keanu', db.schema_name)
+        script = LoadScript(load, {}, None, dest)
+        script.replace_sql_object('keanu', dest.schema)
         click.echo("🚚 Loading {}...".format(script.filename))
         with connection.begin() as tx:
-            script.execute(connection)
+            for event, data in script.execute():
+                scr = data['script']
+                if event.startswith('sql.statement.start'):
+                    click.echo("📦 {0}...".format(
+                        util.highlight_sql(
+                            scr.statement_abbrev(data['sql']))),
+                               nl=False)
+                elif event.startswith('sql.statement.end'):
+                    click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
+                        data['result'].rowcount,
+                        data['time'],
+                        util.highlight_sql(scr.statement_abbrev(data['sql']))
+                    ))
 
 
 @cli.group('metabase')
