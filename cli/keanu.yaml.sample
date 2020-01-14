@@ -11,8 +11,8 @@
     db:
       url: ${DATABASE_URL}
 - transform:
+    source: rates
     sql:
-      source: rates
       directory: currency_sql
 - transform:
     sql:
