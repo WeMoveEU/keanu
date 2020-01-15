@@ -13,6 +13,6 @@ CREATE INDEX currency_code_unique ON currency (code);
 
 INSERT INTO currency (code, rate)
 SELECT name, value
-FROM ${RATE_SOURCE}.civicrm_option_value where option_group_id = (
-       SELECT id FROM ${RATE_SOURCE}.civicrm_option_group WHERE name = 'euro_rates'
+FROM ${SOURCE}.civicrm_option_value where option_group_id = (
+       SELECT id FROM ${SOURCE}.civicrm_option_group WHERE name = 'euro_rates'
        );

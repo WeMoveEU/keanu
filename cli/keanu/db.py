@@ -4,10 +4,10 @@ from urllib.parse import urlparse
 from sqlalchemy import create_engine
 
 
-database_url = os.getenv('DATABASE_URL')
-schema_name = urlparse(database_url).path[1:]
+def url_to_schema(url):
+  return urlparse(url).path[1:]
 
-def get_engine(url = database_url, dry_run=False):
+def get_engine(url, dry_run=False):
   """dry_run - if true, use DryRunEngine
   """
   if dry_run:

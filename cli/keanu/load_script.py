@@ -1,10 +1,14 @@
 import operator
+import click
+from glob import glob
 import re
 from sqlalchemy import text
 import click
 from .run_statement import RunStatement
 from . import util
 import os
+from pymysql.err import MySQLError
+from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 
 class LoadScript(RunStatement):
     """
@@ -18,7 +22,7 @@ class LoadScript(RunStatement):
     display - displays full SQL while executing (no by default)
     warn - do show warnings from mysql driver (no by default)
     """
-    def __init__(_, filename, **options):
+    def __init__(_, filename, mode, source, destination):
         # filename and class options
         _.filename = filename
         _.options = {
@@ -26,7 +30,9 @@ class LoadScript(RunStatement):
             'display': False,
             'warn': False
         }
-        _.options.update(options)
+        _.options.update(mode)
+        _.source = source
+        _.destination = destination
 
         # defaults
         _.deleteSql = []
@@ -35,6 +41,14 @@ class LoadScript(RunStatement):
         # parse SQL
         _.lines = _.parse(open(filename, 'r').readlines())
         _.statements = _.split_statements(_.lines)
+
+    @staticmethod
+    def from_directory(sqldir, mode, source, destination):
+        files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
+        if len(files) == 0:
+            raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='config_or_dir')
+        scripts = list(map(lambda fn: LoadScript(fn, mode, source, destination), files))
+        return scripts
 
     def __str__(_):
         return '{} ({})'.format(_.filename, _.order)
@@ -101,10 +115,13 @@ class LoadScript(RunStatement):
     """
     Performs interpolation on string, replacing ${FOO} with FOO environment variable.
     """
-    @staticmethod
-    def interpolate_environ(line):
+    def interpolate_environ(_, line):
+        env = {}
+        if _.source:
+            env.update(_.source.environ())
+        env.update(_.destination.environ())
         def get_var(m):
-            return os.environ[m.group(1)]
+            return env[m.group(1)]
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
 
     """
@@ -169,45 +186,43 @@ class LoadScript(RunStatement):
             return first
         except StopIteration:
             return ''
-        
 
-    def delete(_, connection):
-        result = None
-        if len(_.deleteSql) > 0:
-            for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
-                if event == 'start':
-                    click.echo("🔥 {0}".format(util.highlight_sql(_.statement_abbrev(data['sql']))))
-        return result
+    def delete(_):
+        if len(_.deleteSql) == 0:
+            return
+
+        connection = _.destination.connection()
+        with connection.begin() as transaction:
+            yield 'sql.script.start.delete', { 'script': _ }
+            try:
+                for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
+                    yield event, data
+            except KeyboardInterrupt as ctrlc:
+                transaction.rollback()
+                raise ctrlc
+            yield 'sql.script.end.delete', { 'script': _ }
 
 
-    def execute(_, connection):
-        # ses = connection.begin()
-        res = None
-        row_counts = []
-        for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+    def execute(_):
+        if len(_.statements) == 0:
+            return
 
-            if event == 'start':
-                click.echo("📦 {0}...".format(
-                    util.highlight_sql(
-                        _.statement_abbrev(data['sql']))),
-                           nl=False)
-
-            elif event == 'end':
-                code = util.highlight_sql(_.statement_abbrev(data['sql']))
-
-                # If display (-d) is set, the code was already shown on start,
-                # and we are not overwriting the same line
-                if _.options['display']:
-                    code = ''
-
-                click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
-                    data['result'].rowcount,
-                    data['time'],
-                    code
-                ))
-                res = data['result']
-
-        return res
+        connection = _.destination.connection()
+        with connection.begin() as transaction:
+            try:
+                yield 'sql.script.start', { 'script': _ }
+                for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+                    yield event, data
+                yield 'sql.script.end', { 'script': _ }
+            except KeyboardInterrupt as ctrlc:
+                transaction.rollback()
+                raise click.Abort("aborted.")
+            except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                transaction.rollback()
+                msg = str(e.args[0])
+                msg = msg.replace('\\n', "\n")
+                click.echo(message=msg, err=True)
+                raise click.Abort(msg)
 
 
     @staticmethod

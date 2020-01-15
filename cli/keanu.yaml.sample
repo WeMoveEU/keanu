@@ -1,0 +1,19 @@
+---
+- source:
+    name: rates
+    db:
+      schema: civicrm_subset
+- source:
+    name: civi
+    db:
+      schema: civicrm_subset
+- destination:
+    db:
+      url: ${DATABASE_URL}
+- transform:
+    source: rates
+    sql:
+      directory: currency_sql
+- transform:
+    sql:
+      directory: sql
