@@ -32,6 +32,7 @@ def load(incremental, order, dry_run, display, warn, config_or_dir):
              'display': display,
              'warn': warn,
              'order': order,
+             'dry_run': dry_run,
              'rewind': False }
 
     configuration = config.configuration_from_argument(config_or_dir)
@@ -78,6 +79,7 @@ def delete(order, display, dry_run, warn, config_or_dir):
     mode = {
         'order': order,
         'display': display,
+        'dry_run': dry_run,
         'warn': warn,
         'rewind': True }
     configuration = config.configuration_from_argument(config_or_dir)
