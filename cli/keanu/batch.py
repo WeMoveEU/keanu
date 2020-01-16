@@ -28,6 +28,10 @@ class Batch:
         _.destination = None
         _.scripts = []
 
+    @property
+    def is_dry_run(_):
+        return _.mode['dry_run']
+
     def add_source(_, source):
         _.sources.append(source)
 

@@ -44,14 +44,14 @@ def build_batch(mode, configuration):
         if 'source' in step:
             step = step['source']
             if 'db' in step:
-                source = DBSource(step['db'], name=step.get('name'))
+                source = DBSource(step['db'], name=step.get('name'), dry_run=batch.is_dry_run)
                 batch.add_source(source)
             else:
                 raise ConfigError("config file: source without db spec")
         elif 'destination' in step:
             step = step['destination']
             if 'db' in step:
-                destination = DBDestination(step['db'], name=step.get('name'))
+                destination = DBDestination(step['db'], name=step.get('name'), dry_run=batch.is_dry_run)
                 batch.add_destination(destination)
             else:
                 raise ConfigError("config file: destination without db spec")
