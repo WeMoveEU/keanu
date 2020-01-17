@@ -34,6 +34,7 @@ class LoadScript(RunStatement):
         _.options.update(mode)
         _.source = source
         _.destination = destination
+        _.script_tracer_tags = {}
 
         # defaults
         _.deleteSql = []
@@ -69,6 +70,15 @@ class LoadScript(RunStatement):
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
                 _.order = int(m.group(1))
+                continue
+
+            m = re.match(r" *-- *TAGS: ?(.+)$", l)
+            if m:
+                kv = {x.group(1) : x.group(2)
+                      for x in
+                      re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))}
+                _.script_tracer_tags.update(kv)
+
                 continue
 
             m = re.match(r" *-- *((DELETE|TRUNCATE) .*)$", l)
@@ -120,7 +130,8 @@ class LoadScript(RunStatement):
         env = {}
         if _.source:
             env.update(_.source.environ())
-        env.update(_.destination.environ())
+        if _.destination:
+            env.update(_.destination.environ())
         def get_var(m):
             return env[m.group(1)]
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
@@ -238,8 +249,13 @@ class LoadScript(RunStatement):
 
     @property
     def tracer_tags(_):
-        return {
+        t = {
             'incremental': _.options['incremental'] == True,
-            'source_name': _.source.name,
-            'destination_name': _.destination.name,
-        }
+            }
+        if _.source:
+            t['source_name'] = _.source.name
+        if _.destination:
+            t['destination_name'] = _.destination.name
+        t.update(_.script_tracer_tags)
+        return t
+
