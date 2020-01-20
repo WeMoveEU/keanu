@@ -1,5 +1,6 @@
 import operator
 from . import util
+from .tracing import tracer
 
 class Batch:
     def __init__(_, mode):
@@ -49,13 +50,14 @@ class Batch:
             _.scripts.reverse()
 
     def execute(_):
-        for scr in _.scripts:
-            if _.mode['rewind'] == False:
-                for e,d in scr.execute():
-                    yield e, d
-            else:
-                for e,d in scr.delete():
-                    yield e, d
+        with tracer.start_active_span('batch', tags=_.tracer_tags):
+            for scr in _.scripts:
+                if _.mode['rewind'] == False:
+                    for e,d in scr.execute():
+                        yield e, d
+                else:
+                    for e,d in scr.delete():
+                        yield e, d
 
     def find_source(_, criteria):
         for s in reversed(_.sources):
@@ -68,3 +70,9 @@ class Batch:
         scripts.sort(key=operator.attrgetter('order'))
         return scripts
 
+    @property
+    def tracer_tags(_):
+        return {
+            'mode': 'delete' if _.mode['rewind'] else 'load',
+            'incremental': _.mode['incremental'] == True
+        }
