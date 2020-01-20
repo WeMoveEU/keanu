@@ -99,10 +99,21 @@ CREATE TABLE segment_history (
   contact_id INT UNSIGNED NOT NULL,
   event_date DATETIME,
   trigger_action_id INT UNSIGNED,
-  leaved INT UNSIGNED REFERENCES segment(id),
-  joined INT UNSIGNED NOT NULL REFERENCES segment(id),
+  leaved INT,
+  joined INT NOT NULL,
   prev_contact INT UNSIGNED NOT NULL,
-  INDEX (contact_id, event_date)
+  INDEX (contact_id, event_date),
+  CONSTRAINT `fk_segment_history_leaved`
+    FOREIGN KEY (`leaved`)
+    REFERENCES `segment` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_segment_history_joined`
+    FOREIGN KEY (`joined`)
+    REFERENCES `segment` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+
 );
 
 SELECT @prev_contact := NULL;
