@@ -9,6 +9,7 @@ from . import util
 import os
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
+from .tracing import tracer
 
 class LoadScript(RunStatement):
     """
@@ -33,6 +34,7 @@ class LoadScript(RunStatement):
         _.options.update(mode)
         _.source = source
         _.destination = destination
+        _.script_tracer_tags = {}
 
         # defaults
         _.deleteSql = []
@@ -68,6 +70,15 @@ class LoadScript(RunStatement):
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
                 _.order = int(m.group(1))
+                continue
+
+            m = re.match(r" *-- *TAGS: ?(.+)$", l)
+            if m:
+                kv = {x.group(1) : x.group(2)
+                      for x in
+                      re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))}
+                _.script_tracer_tags.update(kv)
+
                 continue
 
             m = re.match(r" *-- *((DELETE|TRUNCATE) .*)$", l)
@@ -119,7 +130,8 @@ class LoadScript(RunStatement):
         env = {}
         if _.source:
             env.update(_.source.environ())
-        env.update(_.destination.environ())
+        if _.destination:
+            env.update(_.destination.environ())
         def get_var(m):
             return env[m.group(1)]
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
@@ -192,15 +204,18 @@ class LoadScript(RunStatement):
             return
 
         connection = _.destination.connection()
-        with connection.begin() as transaction:
-            yield 'sql.script.start.delete', { 'script': _ }
-            try:
-                for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
-                    yield event, data
-            except KeyboardInterrupt as ctrlc:
-                transaction.rollback()
-                raise ctrlc
-            yield 'sql.script.end.delete', { 'script': _ }
+        with tracer.start_active_span(
+                'delete.{}'.format(_.filename.replace('/', '.')),
+                tags=_.tracer_tags):
+            with connection.begin() as transaction:
+                yield 'sql.script.start.delete', { 'script': _ }
+                try:
+                    for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
+                        yield event, data
+                except KeyboardInterrupt as ctrlc:
+                    transaction.rollback()
+                    raise ctrlc
+                yield 'sql.script.end.delete', { 'script': _ }
 
 
     def execute(_):
@@ -208,23 +223,39 @@ class LoadScript(RunStatement):
             return
 
         connection = _.destination.connection()
-        with connection.begin() as transaction:
-            try:
-                yield 'sql.script.start', { 'script': _ }
-                for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
-                    yield event, data
-                yield 'sql.script.end', { 'script': _ }
-            except KeyboardInterrupt as ctrlc:
-                transaction.rollback()
-                raise click.Abort("aborted.")
-            except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
-                transaction.rollback()
-                msg = str(e.args[0])
-                msg = msg.replace('\\n', "\n")
-                click.echo(message=msg, err=True)
-                raise click.Abort(msg)
-
+        with tracer.start_active_span(
+                'script.{}'.format(_.filename.replace('/', '.')),
+                tags=_.tracer_tags):
+            with connection.begin() as transaction:
+                try:
+                    yield 'sql.script.start', { 'script': _ }
+                    for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+                        yield event, data
+                    yield 'sql.script.end', { 'script': _ }
+                except KeyboardInterrupt as ctrlc:
+                    transaction.rollback()
+                    raise click.Abort("aborted.")
+                except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                    transaction.rollback()
+                    msg = str(e.args[0])
+                    msg = msg.replace('\\n', "\n")
+                    click.echo(message=msg, err=True)
+                    raise click.Abort(msg)
+            
 
     @staticmethod
     def sort(scripts):
         return scripts.sort(key=operator.attrgetter('order'))
+
+    @property
+    def tracer_tags(_):
+        t = {
+            'incremental': _.options['incremental'] == True,
+            }
+        if _.source:
+            t['source_name'] = _.source.name
+        if _.destination:
+            t['destination_name'] = _.destination.name
+        t.update(_.script_tracer_tags)
+        return t
+
