@@ -81,7 +81,7 @@ CREATE TABLE segment_history (
 );
 
 SET @active_status := (SELECT id FROM segmentation WHERE name = 'Active status');
-SET @notmember := (SELECT id FROM segment WHERE name = 'Not_a_member');
+SET @notmember := (SELECT id FROM segment WHERE name = 'Not a member');
 SET @inactive := (SELECT id FROM segment WHERE name = 'Inactive');
 SET @active := (SELECT id FROM segment WHERE name = 'Active');
 

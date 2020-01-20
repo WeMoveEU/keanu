@@ -67,7 +67,7 @@ set @ext_id = (select external_id from segmentation where name = 'Active status'
 
 insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-ov.name,
+ov.label,
 @seg,
 ov.id,
 'civicrm_option_value'
@@ -82,7 +82,7 @@ set @ext_id = (select external_id from segmentation where name = 'Recurring dono
 
 insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-ov.name,
+ov.label,
 @seg,
 ov.id,
 'civicrm_option_value'
