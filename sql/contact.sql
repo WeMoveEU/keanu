@@ -4,6 +4,10 @@
 -- We base it on:
 -- civicrm_contact
 
+-- BEGIN INCREMENTAL
+SET @last_contact = (SELECT MAX(id) FROM contact);
+-- END INCREMENTAL
+
 INSERT INTO contact
   (
     id,
@@ -30,8 +34,25 @@ INSERT INTO contact
   LEFT JOIN ${SOURCE}.civicrm_country ctr ON ctr.id = a.country_id
 
 -- BEGIN INCREMENTAL
-  WHERE c.id NOT IN (SELECT id FROM contact)
+  WHERE c.id > @last_contact
 -- END INCREMENTAL
 
   GROUP BY c.id
+;
+
+-- Use MIN(created_date, MIN(activity_date_time)) as contact creation date,
+-- as a contact record may be created much later than the first activity date, in some ciscurmstances.
+-- This is done in a separate query to limit the size of the overall JOIN
+UPDATE contact c
+  JOIN (
+    SELECT contact_id, MIN(activity_date_time) AS date_time
+      FROM ${SOURCE}.civicrm_activity_contact ac
+      JOIN ${SOURCE}.civicrm_activity a ON a.id = ac.activity_id AND ac.record_type_id = 2
+      GROUP BY contact_id
+  ) min_act ON min_act.contact_id = c.id
+  SET c.created_at = min_act.date_time
+  WHERE c.created_at > min_act.date_time
+-- BEGIN INCREMENTAL
+    AND c.id > @last_contact
+-- END INCREMENTAL
 ;
