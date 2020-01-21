@@ -53,7 +53,7 @@ set @seg = (select id from segmentation where name = 'Country');
 
 insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
-c.name,
+substring_index(c.name, ',', 1) as name, -- strip "X, republic of", etc.
 @seg,
 c.id, 'civicrm_country'
 FROM
