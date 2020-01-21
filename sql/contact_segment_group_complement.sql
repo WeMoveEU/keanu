@@ -114,7 +114,7 @@ NOT left_at = 0  -- remove continuations (0 is speacial value and means that con
 
 DROP TABLE membership_ranked;
 
-UPDATE contact_segments cs SET left_at = NULL
+UPDATE contact_segment cs SET left_at = NULL
 WHERE
 cs.segment_id = @seg_expiring AND cs.left_at > NOW();
 ;
@@ -152,7 +152,10 @@ m2.joined_at as left_at
 
 FROM membership_ranked m1 LEFT JOIN
 membership_ranked m2 ON m1.contact_id = m2.contact_id AND m1.rank + 1 = m2.rank
-WHERE NOT m1.left_at = m2.joined_at -- remove the adjacent spans
+WHERE
+  (m1.left_at IS NOT NULL AND m2.joined_at is NULL) -- only finished spans
+  OR
+  (m1.left_at IS NOT NULL AND m2.joined_at IS NOT NULL AND m1.left_at != m2.joined_at) -- or spans that do not touch
 ;
 
 
