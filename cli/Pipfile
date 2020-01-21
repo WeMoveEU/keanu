@@ -13,6 +13,7 @@ pygments = "*"
 requests = "*"
 sqlalchemy = "*"
 pyaml = "*"
+jaeger-client = "*"
 
 [dev-packages]
 setuptools = "*"
