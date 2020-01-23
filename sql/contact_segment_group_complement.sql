@@ -107,7 +107,7 @@ FROM
         c.id, c.created_at, c.created_at, FALSE as is_member, NULL as trigger_action_id
       FROM contact c
 -- BEGIN INCREMENTAL
-      JOIN activated ON c.contact_id = activated.contact_id
+      JOIN activated ON c.id = activated.contact_id
 -- END INCREMENTAL
 
       ) x
