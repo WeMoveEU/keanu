@@ -59,6 +59,14 @@ FROM
            a.contact_id = cs.contact_id AND
            cs.joined_at <= a.created_at AND (a.created_at < cs.left_at OR cs.left_at IS NULL)
       WHERE cs.id IS NULL
+      UNION
+      SELECT
+        c.id, c.created_at, c.created_at, FALSE as is_member, NULL as trigger_action_id
+      FROM contact c
+-- BEGIN INCREMENTAL
+      JOIN activated ON c.contact_id = activated.contact_id
+-- END INCREMENTAL
+
       ) x
 
     ORDER BY contact_id, joined_at
