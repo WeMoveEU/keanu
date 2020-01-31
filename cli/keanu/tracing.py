@@ -22,6 +22,9 @@ tracer = config.initialize_tracer()
 
 def close_tracer(*a):
     sleep(2)
-    tracer.close()
+    try:
+        tracer.close()
+    except RuntimeError:
+        pass
 
 register(close_tracer)
