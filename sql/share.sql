@@ -1,10 +1,6 @@
 -- ORDER: 32
 -- DELETE FROM share
 
--- BEGIN INCREMENTAL
-DELETE FROM share;
--- END INCREMENTAL
-
 INSERT INTO share (action_id, shared_source_id, conversion_count, share_count, new_member_count)
   SELECT
     a.id, utm.id, 0, 0, 0
@@ -13,7 +9,13 @@ INSERT INTO share (action_id, shared_source_id, conversion_count, share_count, n
   LEFT JOIN source utm ON utm.source = sh.utm_source_37 COLLATE utf8_general_ci
                        AND utm.medium = sh.utm_medium_38 COLLATE utf8_general_ci
                        AND utm.campaign = sh.utm_campaign_39 COLLATE utf8_general_ci
+-- BEGIN INCREMENTAL
+WHERE sh.id > last_sync_id('share', 'civicrm_value_share_params_6')
+-- END INCREMENTAL
 ;
+
+SELECT save_last_sync_id('share', 'civicrm_value_share_params_6',
+  (SELECT max(id) FROM ${SOURCE}.civicrm_value_share_params_6));
 
 UPDATE share sh JOIN (
     SELECT utm.id AS source_id, COUNT(DISTINCT v.contact_id) AS converted
