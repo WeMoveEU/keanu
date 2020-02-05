@@ -17,34 +17,77 @@ WHERE sh.id > last_sync_id('share', 'civicrm_value_share_params_6')
 SELECT save_last_sync_id('share', 'civicrm_value_share_params_6',
   (SELECT max(id) FROM ${SOURCE}.civicrm_value_share_params_6));
 
+-- BEGIN INCREMENTAL
+SELECT @last_id = last_sync_id('share', 'conversion_count');
+-- END INCREMENTAL
 UPDATE share sh JOIN (
     SELECT utm.id AS source_id, COUNT(DISTINCT v.contact_id) AS converted
     FROM source utm
     JOIN action v ON v.source_id = utm.id
     JOIN action_page ap ON v.action_page_id = ap.id
                         AND ap.action_type IN ('call', 'email', 'sign', 'tweet', 'facebook')
+-- BEGIN INCREMENTAL
+    WHERE v.id > @last_id
+-- END INCREMENTAL
+
     GROUP BY source_id
   ) tmp ON tmp.source_id = sh.shared_source_id
-  SET sh.conversion_count = tmp.converted
+  SET sh.conversion_count = sh.conversion_count + tmp.converted
 ;
 
+SELECT save_last_sync_id('share', 'conversion_count',
+       (SELECT max(v.id) FROM action v JOIN action_page ap
+                       ON v.action_page_id = ap.id 
+                       AND ap.action_type IN ('call', 'email', 'sign', 'tweet', 'facebook')
+));
+
+
+-- BEGIN INCREMENTAL
+SELECT @last_id = last_sync_id('share', 'share_count');
+-- END INCREMENTAL
 UPDATE share sh JOIN (
     SELECT utm.id AS source_id, COUNT(DISTINCT v.contact_id) AS converted
     FROM source utm
     JOIN action v ON v.source_id = utm.id
     JOIN action_page ap ON v.action_page_id = ap.id AND ap.action_type = 'share'
+
+-- BEGIN INCREMENTAL
+    WHERE v.id > @last_id
+-- END INCREMENTAL
+
     GROUP BY source_id
   ) tmp ON tmp.source_id = sh.shared_source_id
-  SET sh.share_count = tmp.converted
+  SET sh.share_count = sh.share_count + tmp.converted
 ;
 
+SELECT save_last_sync_id('share', 'share_count',
+     (SELECT max(v.id) FROM action v JOIN action_page ap
+                ON v.action_page_id = ap.id 
+                AND ap.action_type  = 'share'
+));
+
+
+-- BEGIN INCREMENTAL
+SELECT @last_id = last_sync_id('share', 'new_member_count');
+-- END INCREMENTAL
 UPDATE share sh JOIN (
     SELECT utm.id AS source_id, COUNT(DISTINCT v.contact_id) AS converted
     FROM source utm
     JOIN action v ON v.source_id = utm.id
     JOIN action_page ap ON v.action_page_id = ap.id AND ap.action_type = 'consent'
     JOIN consent c ON c.action_id = v.id AND c.status = 'accepted'
+-- BEGIN INCREMENTAL
+    WHERE v.id > @last_id
+-- END INCREMENTAL
+ 
     GROUP BY source_id
   ) tmp ON tmp.source_id = sh.shared_source_id
-  SET sh.new_member_count = tmp.converted
+  SET sh.new_member_count = sh.new_member_count + tmp.converted
 ;
+
+SELECT save_last_sync_id('share', 'new_member_count',
+   (SELECT max(v.id) FROM action v
+                   JOIN action_page ap
+                   ON v.action_page_id = ap.id AND ap.action_type  = 'consent'
+                   JOIN consent c ON c.action_id = v.id AND c.status = 'accepted'
+));
