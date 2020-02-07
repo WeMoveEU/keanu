@@ -1,141 +1,288 @@
 -- ORDER: 64
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Active status'
 
--- BEGIN INCREMENTAL
-DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Active status';
--- END INCREMENTAL
+-- TAGS: strategy=group_reduce
 
-CREATE TEMPORARY TABLE event_history (
-  contact_id INT UNSIGNED NOT NULL,
-  create_date DATETIME NOT NULL,
-  event_type ENUM('0_join', '1_leave', '2_action', '3_expiry'),
-  event_date DATETIME,
-  action_id INT UNSIGNED,
-  INDEX order_idx (contact_id, event_date, event_type)
-);
-
-SET @segid := (SELECT id FROM segment WHERE name = 'Member');
-
-INSERT INTO event_history
-  SELECT
-    contact_id,
-    c.created_at,
-    '0_join',
-    joined_at,
-    NULL
-  FROM contact c
-  JOIN contact_segment cs ON cs.contact_id = c.id AND segment_id = @segid
-;
-
-INSERT INTO event_history
-  SELECT
-    contact_id,
-    c.created_at,
-    '1_leave',
-    left_at,
-    NULL
-  FROM contact c
-  JOIN contact_segment cs ON cs.contact_id = c.id AND segment_id = @segid
-  WHERE left_at IS NOT NULL
-;
-
-INSERT INTO event_history
-  SELECT
-    c.id AS contact_id, 
-    c.created_at,
-    '2_action',
-    a.created_at AS event_date,
-    a.id
-  FROM contact c 
-  LEFT JOIN action a ON a.contact_id = c.id
-  LEFT JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
-;
-
-INSERT INTO event_history
-  SELECT
-    c.id AS contact_id, 
-    c.created_at,
-    '3_expiry',
-    DATE_ADD(a.created_at, INTERVAL 3 MONTH),
-    NULL
-  FROM contact c
-  JOIN action a ON a.contact_id = c.id AND a.created_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
-  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
-  LEFT JOIN action oa ON oa.contact_id = c.id 
-                      AND oa.created_at > a.created_at 
-                      AND oa.created_at < DATE_ADD(a.created_at, INTERVAL 3 MONTH)
-  WHERE oa.id IS NULL
-;
-
-DROP TABLE IF exists segment_history;
-CREATE TABLE segment_history (
-  contact_id INT UNSIGNED NOT NULL,
-  event_date DATETIME,
-  trigger_action_id INT UNSIGNED,
-  is_member TINYINT NOT NULL,
-  leaved INT UNSIGNED REFERENCES segment(id),
-  joined INT UNSIGNED NOT NULL REFERENCES segment(id),
-  last_action DATETIME,
-  prev_contact INT UNSIGNED NOT NULL,
-  INDEX (contact_id, event_date)
-);
+-- SET @membership := (SELECT id FROM segmentation WHERE name = 'Membership');
+SET @membership := (SELECT id FROM segmentation WHERE name = 'Membership');
+SET @membership_member := (SELECT id FROM segment
+                             WHERE segmentation_id = @membership AND name = 'Member');
+SET @membership_expiring := (SELECT id FROM segment
+                              WHERE segmentation_id = @membership AND name = 'Expiring');
+SET @membership_expired := (SELECT id FROM segment
+                              WHERE segmentation_id = @membership AND name = 'Expired');
 
 SET @active_status := (SELECT id FROM segmentation WHERE name = 'Active status');
-SET @notmember := (SELECT id FROM segment WHERE name = 'Not a member');
-SET @inactive := (SELECT id FROM segment WHERE name = 'Inactive');
-SET @active := (SELECT id FROM segment WHERE name = 'Active');
+SET @active_notmember := (SELECT id FROM segment WHERE name = 'Not a member');
+SET @active_inactive := (SELECT id FROM segment WHERE name = 'Inactive');
+SET @active_active := (SELECT id FROM segment WHERE name = 'Active');
 
-SELECT @prev_contact := NULL, @is_member := 0, @last_action := NULL, @joined := @notmember;
-INSERT INTO segment_history
-  SELECT
-    contact_id,
-    COALESCE(event_date, create_date),
-    action_id,
+-- BEGIN INCREMENTAL
+DELETE cs FROM contact_segment cs WHERE segmentation_id = @active_status;
+-- END INCREMENTAL
 
-    @is_member := CASE
-      WHEN event_type = '0_join' THEN 1
-      WHEN event_type = '1_leave' THEN 0
-      WHEN @prev_contact != contact_id THEN 0
-      ELSE @is_member
-    END,
 
-    IF (@prev_contact != contact_id, NULL, @joined),
+-- grouping = contact_id INT
+-- new_grouping BOOL
+-- sequence = engage_at DATETIME -- member join or action
+-- accumulators:
+--     acc_start_at DATETIME -- last pair start
+--     acc_opt_end_at DATETIME -- last pair end
+--     acc_trigger_action_id INT -- last target_action_id
+--     acc_last_closed BOOLEAN --  retro look it if carryover are closed
+-- current:
+--    notmember_at DATETIME -- when is the end of membership for this engagement
+-- emit:
+--    joined_at = acc_start_at 
+--    max(left_at) = acc_opt_end_at
+--    => group by 1
 
-    @joined := CASE
-      WHEN event_type = '0_join' THEN @inactive
-      WHEN event_type = '1_leave' THEN @notmember
-      WHEN event_type = '2_action' 
-        AND @is_member
-        AND event_date >= DATE_ADD(create_date, INTERVAL 1 DAY)
-        THEN @active
-      WHEN event_type = '2_action' THEN IF(@is_member, @inactive, @notmember)
-      WHEN event_type = '3_expiry' AND @joined = @active THEN @inactive
-      ELSE @joined
-    END,
+-- ACCUMULATOR FUNCATIONS ---
+DROP FUNCTION IF EXISTS acc_start_at;
+DROP FUNCTION IF EXISTS acc_opt_end_at;
+DROP FUNCTION IF EXISTS acc_last_closed;
 
-    @last_action := CASE
-      WHEN @prev_contact != contact_id THEN NULL
-      WHEN event_type = '2_action' THEN event_date
-      ELSE @last_action
-    END,
+DELIMITER //
+CREATE FUNCTION acc_start_at (new_grouping BOOLEAN,
+                              engaged_at DATETIME,
+                              closed BOOLEAN,
+                              start_at DATETIME)
+RETURNS DATETIME
+BEGIN
 
-    @prev_contact := contact_id
+IF new_grouping OR closed THEN
+   RETURN engaged_at;
+ELSE
+   RETURN start_at;
+END IF;
 
-  FROM event_history
-  ORDER BY contact_id, event_date, event_type
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION acc_opt_end_at (engaged_at DATETIME,
+                                notmember_at DATETIME)
+RETURNS DATETIME
+BEGIN
+DECLARE expiry DATETIME;
+SET expiry := DATE_ADD(engaged_at, INTERVAL 3 MONTH);
+
+IF notmember_at < expiry THEN
+   RETURN notmember_at;
+ELSE
+   RETURN expiry;
+END IF;
+
+END
+//
+DELIMITER ;
+
+-- retro accumulator --- 
+DELIMITER //
+CREATE FUNCTION acc_last_closed (engaged_at DATETIME,
+                            opt_end_at DATETIME,
+                            new_grouping BOOLEAN)
+RETURNS BOOLEAN
+BEGIN
+
+IF new_grouping OR opt_end_at < engaged_at THEN
+  RETURN TRUE;
+ELSE
+  RETURN FALSE;
+END IF;
+
+END
+//
+DELIMITER ;
+
+
+-- INITIALIZE
+SET @grouping := NULL, @new_grouping := NULL;
+SET @acc_last_closed := FALSE, @acc_start_at := NULL, @acc_opt_end_at := NULL, @acc_trigger_action_id := NULL;
+
+INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
+SELECT @active_status, @active_active, contact_id, joined_at, left_at, trigger_action_id
+FROM
+(
+SELECT
+  -- helper var 
+  @new_grouping := IF (@grouping = contact_id, FALSE, TRUE),
+  -- retro accumulators / emit or close flag
+  @acc_last_closed := acc_last_closed(engaged_at, @acc_opt_end_at, @new_grouping) as insert_it,
+  -- emiters
+  @grouping AS contact_id,
+  @acc_start_at as joined_at,
+  @acc_opt_end_at as left_at,
+  @acc_trigger_action_id AS trigger_action_id,
+  -- carry over accumulators
+  @acc_start_at := acc_start_at(@new_grouping, engaged_at, @acc_last_closed, @acc_start_at),
+  @acc_opt_end_at := acc_opt_end_at(engaged_at, notmember_at),
+  @acc_trigger_action_id := trigger_action_id,
+
+  -- update grouping vars
+  @grouping := contact_id
+
+FROM -- ordered_engagement_moments
+(
+SELECT
+ contact_id, engaged_at, notmember_at, trigger_action_id
+FROM
+(
+-- lets take
+-- joins to Membership.Member
+-- and Actions done when Contact was a member
+SELECT
+ cs.contact_id,
+ cs.joined_at as engaged_at,
+ cs.left_at AS notmember_at,
+ NULL as trigger_action_id
+FROM contact_segment cs WHERE
+ cs.segment_id = @membership_member
+UNION
+SELECT
+ a.contact_id,
+ a.created_at as engaged_at,
+ cs.left_at as notmember_at,
+ a.id as trigger_action_id
+FROM
+ action a JOIN action_page ap ON ap.id = a.action_page_id
+          JOIN contact_segment cs ON cs.contact_id = a.contact_id
+                                  AND cs.segment_id = @membership_member
+                                  AND cs.joined_at <= a.created_at
+                                  AND (cs.left_at > a.created_at OR cs.left_at IS NULL)
+WHERE ap.action_type != 'consent'
+) engagment_moments
+ORDER BY contact_id, engaged_at
+) ordered
+) cs
+WHERE contact_id IS NOT NULL AND insert_it
 ;
 
-INSERT INTO contact_segment
-  (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
+-- FINALIZE
+INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
+VALUES (@active_status, @active_active,
+       @grouping,
+       @acc_start_at, @acc_opt_end_at,
+       @acc_trigger_action_id);
 
-  SELECT 
-    s.segmentation_id, s.id, j.contact_id, j.event_date, MIN(l.event_date), j.trigger_action_id
-  FROM segment s
-  JOIN segment_history j ON j.joined = s.id AND (j.leaved IS NULL OR j.leaved != j.joined)
-  LEFT JOIN segment_history l ON l.leaved = s.id AND l.contact_id = j.contact_id AND l.leaved != l.joined AND l.event_date >= j.event_date
-  WHERE s.segmentation_id = @active_status
-  GROUP BY s.id, j.contact_id, j.event_date, j.trigger_action_id
+
+UPDATE contact_segment cs SET left_at = NULL
+WHERE
+cs.segment_id = @active_active AND cs.left_at > NOW();
 ;
 
-DROP TABLE event_history;
-DROP TABLE segment_history;
+
+-- CLEANUP
+DROP FUNCTION IF EXISTS acc_start_at;
+DROP FUNCTION IF EXISTS acc_opt_end_at;
+DROP FUNCTION IF EXISTS acc_last_closed;
+
+
+-- -----------------------------------------------------------------
+-- - Not a member segment -- just copy from the Membership - glueing expiring and expired (if exists)
+-- -----------------------------------------------------------------
+INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
+SELECT
+ @active_status, 
+ @active_notmember, 
+ expiring.contact_id, 
+ expiring.joined_at, 
+ IF(expired.id IS NOT NULL, expired.left_at, expiring.left_at), 
+ expiring.trigger_action_id
+FROM contact_segment expiring LEFT JOIN contact_segment expired
+ON expiring.contact_id = expired.contact_id AND expired.segment_id = @membership_expired
+AND expiring.left_at = expired.joined_at 
+WHERE  expiring.segment_id = @membership_expiring 
+;
+
+-- ----------------------------------------------------------------
+-- - Inactive -----------------------------------------------------
+-- ----------------------------------------------------------------
+
+DROP FUNCTION IF EXISTS acc_last_left_at;
+DROP FUNCTION IF EXISTS emit_start;
+DROP FUNCTION IF EXISTS emit_end;
+
+
+DELIMITER //
+CREATE FUNCTION acc_last_left_at (new_grouping BOOLEAN, segment_id INT, left_at DATETIME)
+RETURNS DATETIME
+BEGIN
+
+IF new_grouping OR segment_id = @active_notmember
+THEN RETURN NULL;
+ELSE RETURN left_at;
+END IF;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION emit_start (new_grouping BOOLEAN, acc_last_left_at DATETIME, joined_at DATETIME)
+RETURNS DATETIME
+BEGIN
+  IF new_grouping OR joined_at IS NULL
+  THEN
+     RETURN acc_last_left_at;
+  ELSE
+     IF acc_last_left_at != joined_at -- does this span touch the previous?
+      THEN RETURN acc_last_left_at;
+      ELSE RETURN NULL;
+     END IF;
+  END IF;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION emit_end (new_grouping BOOLEAN, joined_at DATETIME)
+RETURNS DATETIME
+BEGIN
+  IF new_grouping
+  THEN RETURN NULL;
+  ELSE RETURN joined_at;
+  END IF;
+END
+//
+DELIMITER ;
+
+
+SET @grouping := -1, @new_grouping := FALSE;
+SET @acc_last_left_at := NULL;
+
+INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at)
+SELECT @active_status, @active_inactive, contact_id, joined_at, left_at
+FROM (
+SELECT
+@new_grouping := IF (@grouping = contact_id, FALSE, TRUE),
+
+@grouping as contact_id,
+emit_start(@new_grouping, @acc_last_left_at, joined_at) as joined_at,
+emit_end(@new_grouping, joined_at) as left_at,
+
+@acc_last_left_at := acc_last_left_at(@new_grouping, segment_id, left_at),
+
+@grouping := contact_id
+
+FROM (
+SELECT
+  cs.contact_id, cs.joined_at, cs.left_at, cs.segment_id
+FROM contact_segment cs
+WHERE cs.segment_id IN (@active_notmember, @active_active)
+ORDER BY cs.contact_id, cs.joined_at
+) ord
+) res
+WHERE joined_at IS NOT NULL
+;
+
+INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at)
+SELECT * FROM
+(SELECT
+@active_status, @active_inactive,
+@grouping as contact_id,
+emit_start(TRUE, @acc_last_left_at, NULL) as joined_at,
+emit_end(TRUE, NULL) as left_at
+) x
+WHERE
+joined_at is not null;
