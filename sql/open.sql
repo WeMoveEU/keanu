@@ -14,7 +14,6 @@ INSERT INTO open (broadcast_id, contact_id, created_at, external_system, externa
   JOIN ${SOURCE}.civicrm_mailing_event_queue q ON q.id=o.event_queue_id
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast b ON b.external_system='civicrm_mailing' AND b.external_id=j.mailing_id
-  JOIN contact c ON c.id = q.contact_id
   WHERE NOT j.is_test
 -- BEGIN INCREMENTAL
   AND o.id > @last_open
