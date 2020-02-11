@@ -1,10 +1,6 @@
 -- ORDER: 61
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = cs.segmentation_id WHERE sn.name = 'Membership' AND s.name IN ('Expiring', 'Expired')
 
--- BEGIN INCREMENTAL
-DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = cs.segmentation_id WHERE sn.name = 'Membership' AND s.name IN ('Expiring', 'Expired');
-
--- END INCREMENTAL
 
 -- Get the ids of segments for easier use and initialize variables
 SET @sn = (SELECT id FROM segmentation sn WHERE sn.name = 'Membership');
@@ -18,6 +14,45 @@ SET @seg_expired = (SELECT s.id FROM segment s JOIN segmentation sn ON s.segment
 SET @seg_expiring = (SELECT s.id FROM segment s JOIN segmentation sn ON s.segmentation_id = sn.id
     WHERE sn.name = 'Membership' AND s.name = 'Expiring');
 
+-- BEGIN INCREMENTAL
+-- Create a table with nonactive contacts
+-- For sure we can say these are contacts that started to be expiring, and then
+-- they did not enter member segment again, nor they had any action.
+DROP TABLE IF EXISTS activated;
+
+SET @last_expiring_happened = (SELECT max(cs.joined_at)
+                               FROM contact_segment cs
+                               WHERE cs.segment_id = @seg_expiring);
+CREATE TABLE activated
+SELECT distinct(contact_id) FROM
+(
+SELECT mcs.contact_id
+FROM contact_segment mcs 
+WHERE mcs.segment_id = @seg_member AND
+      (mcs.joined_at > @last_expiring_happened OR mcs.left_at > @last_expiring_happened)
+UNION
+SELECT a.contact_id
+FROM action a
+WHERE a.created_at > @last_expiring_happened
+) x
+;
+
+CREATE INDEX activated_id ON activated (contact_id);
+
+-- Remove just the activated contact segments
+DELETE cs
+FROM contact_segment cs
+JOIN activated ON cs.contact_id = activated.contact_id
+JOIN segment s ON cs.segment_id = s.id
+JOIN segmentation sn ON sn.id = cs.segmentation_id
+WHERE sn.name = 'Membership'
+  AND s.name IN ('Expiring', 'Expired');
+
+-- END INCREMENTAL
+
+
+
+
 SET @cc = NULL; -- track current contact
 SET @rank = 0;
 
@@ -26,6 +61,8 @@ SET @rank = 0;
 -- numbered (ranked by order)
 -- This is so we can later iterate over pairs of such membership eccurances.
 DROP TABLE IF EXISTS membership_ranked;
+
+--SELECT SLEEP(10);
 
 CREATE TABLE membership_ranked
 SELECT
@@ -47,6 +84,9 @@ FROM
         cs.contact_id, cs.joined_at, cs.left_at, TRUE as is_member, NULL as trigger_action_id
       FROM contact_segment cs
            JOIN segment s ON cs.segment_id = s.id
+-- BEGIN INCREMENTAL
+           JOIN activated ON cs.contact_id = activated.contact_id
+-- END INCREMENTAL
       WHERE s.id = @seg_member
 
       UNION
@@ -54,7 +94,10 @@ FROM
       SELECT
         a.contact_id, a.created_at, a.created_at, FALSE as is_member, a.id as trigger_action_id
       FROM action a
-           LEFT JOIN contact_segment cs ON
+-- BEGIN INCREMENTAL
+         JOIN activated ON a.contact_id = activated.contact_id
+-- END INCREMENTAL
+         LEFT JOIN contact_segment cs ON
            cs.segment_id = @seg_member AND 
            a.contact_id = cs.contact_id AND
            cs.joined_at <= a.created_at AND (a.created_at < cs.left_at OR cs.left_at IS NULL)
@@ -64,11 +107,10 @@ FROM
         c.id, c.created_at, c.created_at, FALSE as is_member, NULL as trigger_action_id
       FROM contact c
 -- BEGIN INCREMENTAL
-      JOIN activated ON c.contact_id = activated.contact_id
+      JOIN activated ON c.id = activated.contact_id
 -- END INCREMENTAL
 
       ) x
-
     ORDER BY contact_id, joined_at
     ) ordered;
 
@@ -140,13 +182,17 @@ SELECT
 FROM
     (
     SELECT
-      contact_id, joined_at, left_at
+      cs.contact_id, cs.joined_at, cs.left_at
     FROM
       contact_segment cs
+-- BEGIN INCREMENTAL
+      JOIN activated ON cs.contact_id = activated.contact_id
+-- END INCREMENTAL
     WHERE cs.segment_id IN (@seg_member, @seg_expiring)
 
-    ORDER BY contact_id, joined_at
-    ) ordered;
+    ORDER BY cs.contact_id, cs.joined_at
+    ) ordered
+;
 
 CREATE INDEX membership_ranked_idx ON membership_ranked (contact_id, rank);
 
@@ -169,3 +215,7 @@ WHERE
 
 
 DROP TABLE membership_ranked;
+
+-- BEGIN INCREMENTAL
+DROP TABLE activated;
+-- END INCREMENTAL
