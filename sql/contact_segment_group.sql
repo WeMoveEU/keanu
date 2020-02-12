@@ -34,9 +34,12 @@ FROM (
 
     FROM (
         -- Subquery that generates SORTED data
-        SELECT group_id, contact_id, date, status
+        SELECT csh.group_id, csh.contact_id, csh.date, csh.status
         FROM
-            ${SOURCE}.civicrm_subscription_history
+            ${SOURCE}.civicrm_subscription_history csh
+-- BEGIN INCREMENTAL
+         JOIN hot_contact hc ON hc.id = csh.contact_id
+-- END INCREMENTAL
         WHERE
             status in ('Added', 'Removed')
             AND group_id IN (SELECT external_id FROM segment WHERE external_system = 'civicrm_group')
@@ -54,10 +57,12 @@ CREATE INDEX group_history_contact_id ON group_history (contact_id);
 CREATE INDEX group_history_group_id ON group_history (group_id);
 -- * --- * --- * -- 
 
-
 -- BEGIN INCREMENTAL
-DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id
-WHERE s.external_id IS NOT NULL AND s.external_system = 'civicrm_group'
+DELETE cs FROM contact_segment cs
+          JOIN segment s ON cs.segment_id = s.id
+               AND s.external_id IS NOT NULL
+               AND s.external_system = 'civicrm_group'
+          JOIN hot_contact hc ON cs.contact_id = hc.id AND hc.group_change
 ;
 -- END INCREMENTAL
 

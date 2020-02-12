@@ -11,7 +11,8 @@ CREATE TABLE hot_contact (
        id INT not null,
        new_actions BOOLEAN NOT NULL,
        new_consents BOOLEAN NOT NULL,
-       group_change BOOLEAN NOT NULL
+       group_change BOOLEAN NOT NULL,
+       modified BOOLEAN NOT NULL
 );
 
 SET @recent := last_sync_dt('hot_contact', 'civicrm');
@@ -22,10 +23,12 @@ SELECT
 c.id,
 count(a.id) > 0 as new_actions,
 count(cons.id) > 0 as new_consents,
-count(grp_io.id) >0 as group_change
+count(grp_io.id) > 0 as group_change,
+cc.modified_date > @recent as modified
 
 FROM
 contact c
+JOIN ${SOURCE}.civicrm_contact cc ON c.id = cc.id
 
 LEFT JOIN action a ON c.id = a.contact_id AND a.created_at > @recent
 LEFT JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type <> 'consent'
@@ -41,11 +44,9 @@ LEFT JOIN ${SOURCE}.civicrm_subscription_history grp_io
                           (SELECT external_id FROM segment WHERE external_system = 'civicrm_group')
 
 
-group by c.id
+group by c.id, modified
 HAVING
-count(a.id) > 0 OR
-count(cons.id) > 0 OR
-count(grp_io.id) > 0
+new_actions OR new_consents OR group_change OR modified
 ;
 
 CREATE INDEX hot_contact_id on hot_contact (id);

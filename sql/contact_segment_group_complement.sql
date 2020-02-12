@@ -15,34 +15,11 @@ SET @seg_expiring = (SELECT s.id FROM segment s JOIN segmentation sn ON s.segmen
     WHERE sn.name = 'Membership' AND s.name = 'Expiring');
 
 -- BEGIN INCREMENTAL
--- Create a table with nonactive contacts
--- For sure we can say these are contacts that started to be expiring, and then
--- they did not enter member segment again, nor they had any action.
-DROP TABLE IF EXISTS activated;
-
-SET @last_expiring_happened = (SELECT max(cs.joined_at)
-                               FROM contact_segment cs
-                               WHERE cs.segment_id = @seg_expiring);
-CREATE TABLE activated
-SELECT distinct(contact_id) FROM
-(
-SELECT mcs.contact_id
-FROM contact_segment mcs 
-WHERE mcs.segment_id = @seg_member AND
-      (mcs.joined_at > @last_expiring_happened OR mcs.left_at > @last_expiring_happened)
-UNION
-SELECT a.contact_id
-FROM action a
-WHERE a.created_at > @last_expiring_happened
-) x
-;
-
-CREATE INDEX activated_id ON activated (contact_id);
 
 -- Remove just the activated contact segments
 DELETE cs
 FROM contact_segment cs
-JOIN activated ON cs.contact_id = activated.contact_id
+JOIN hot_contact ON cs.contact_id = hot_contact.id AND hot_contact.group_change
 JOIN segment s ON cs.segment_id = s.id
 JOIN segmentation sn ON sn.id = cs.segmentation_id
 WHERE sn.name = 'Membership'
@@ -85,7 +62,7 @@ FROM
       FROM contact_segment cs
            JOIN segment s ON cs.segment_id = s.id
 -- BEGIN INCREMENTAL
-           JOIN activated ON cs.contact_id = activated.contact_id
+           JOIN hot_contact ON cs.contact_id = hot_contact.id AND hot_contact.group_change
 -- END INCREMENTAL
       WHERE s.id = @seg_member
 
@@ -95,7 +72,7 @@ FROM
         a.contact_id, a.created_at, a.created_at, FALSE as is_member, a.id as trigger_action_id
       FROM action a
 -- BEGIN INCREMENTAL
-         JOIN activated ON a.contact_id = activated.contact_id
+         JOIN hot_contact ON a.contact_id = hot_contact.id AND hot_contact.group_change
 -- END INCREMENTAL
          LEFT JOIN contact_segment cs ON
            cs.segment_id = @seg_member AND 
@@ -107,7 +84,7 @@ FROM
         c.id, c.created_at, c.created_at, FALSE as is_member, NULL as trigger_action_id
       FROM contact c
 -- BEGIN INCREMENTAL
-      JOIN activated ON c.id = activated.contact_id
+      JOIN hot_contact ON c.id = hot_contact.id AND hot_contact.group_change
 -- END INCREMENTAL
 
       ) x
@@ -186,7 +163,7 @@ FROM
     FROM
       contact_segment cs
 -- BEGIN INCREMENTAL
-      JOIN activated ON cs.contact_id = activated.contact_id
+      JOIN hot_contact ON cs.contact_id = hot_contact.id AND hot_contact.group_change
 -- END INCREMENTAL
     WHERE cs.segment_id IN (@seg_member, @seg_expiring)
 
@@ -213,9 +190,5 @@ WHERE
 ;
 
 
-
 DROP TABLE membership_ranked;
 
--- BEGIN INCREMENTAL
-DROP TABLE activated;
--- END INCREMENTAL

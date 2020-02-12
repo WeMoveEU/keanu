@@ -1,4 +1,4 @@
--- ORDER: 2
+-- ORDER: 3
 -- TRUNCATE last_sync
 -- Just overwrite the rows with INSERT IGNORE INTO
 -- BEGIN INITIAL
