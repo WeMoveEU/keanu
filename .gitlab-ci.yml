@@ -1,0 +1,15 @@
+image: docker:18-git
+services:
+  - docker:18-dind
+
+variables:
+  CONTAINER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+before_script:
+   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build:
+ stage: build
+ script:
+   - docker build -t $CONTAINER_IMAGE .
+   - docker push $CONTAINER_IMAGE
