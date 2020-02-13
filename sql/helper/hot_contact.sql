@@ -50,6 +50,10 @@ new_actions OR new_consents OR group_change OR modified
 ;
 
 CREATE INDEX hot_contact_id on hot_contact (id);
+CREATE INDEX hot_contact_new_actions on hot_contact (new_actions);
+CREATE INDEX hot_contact_new_consents on hot_contact (new_consents);
+CREATE INDEX hot_contact_group_change on hot_contact (group_change);
+CREATE INDEX hot_contact_modified on hot_contact (modified);
 
 SELECT save_last_sync_dt('hot_contact', 'civicrm', @hot_contact_now);
 -- END INCREMENTAL
