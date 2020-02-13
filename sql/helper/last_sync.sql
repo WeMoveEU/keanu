@@ -2,6 +2,8 @@
 -- TRUNCATE last_sync
 -- Just overwrite the rows with INSERT IGNORE INTO
 -- BEGIN INITIAL
+
+-- LAST SYNC ID
 DROP TABLE IF EXISTS last_sync;
 
 CREATE TABLE last_sync (
@@ -46,4 +48,51 @@ RETURN last_id2;
 END
 //
 DELIMITER ;
+
+-- LAST SYNC DATE TIME
+DROP TABLE IF EXISTS last_sync_dt;
+
+CREATE TABLE last_sync_dt (
+dst VARCHAR(64) not null,
+src VARCHAR(64) not null,
+last_dt DATETIME not null
+);
+
+CREATE UNIQUE INDEX last_sync_tables_unique ON last_sync_dt (dst, src);
+
+
+DROP FUNCTION IF EXISTS last_sync_dt;
+
+DELIMITER //
+CREATE FUNCTION last_sync_dt (destination varchar(32), source varchar(32))
+RETURNS DATETIME
+BEGIN
+DECLARE ldt DATETIME;
+SET ldt = (SELECT last_dt from last_sync_dt WHERE dst=destination AND src=source);
+
+IF ldt IS NULL THEN
+RETURN CAST(0 AS DATETIME);
+ELSE
+RETURN ldt;
+END IF;
+END
+//
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS save_last_sync_dt;
+
+DELIMITER //
+CREATE FUNCTION save_last_sync_dt (destination varchar(32), source varchar(32), last_dt2 DATETIME)
+RETURNS DATETIME
+BEGIN
+INSERT INTO last_sync_dt (dst, src, last_dt)
+SELECT destination, source, last_dt2
+ON DUPLICATE KEY UPDATE last_dt = last_dt2;
+
+RETURN last_dt2;
+
+END
+//
+DELIMITER ;
+
 -- END INITIAL
