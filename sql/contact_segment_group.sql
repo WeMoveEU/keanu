@@ -38,7 +38,7 @@ FROM (
         FROM
             ${SOURCE}.civicrm_subscription_history csh
 -- BEGIN INCREMENTAL
-         JOIN hot_contact hc ON hc.id = csh.contact_id
+         JOIN hot_contact hc ON hc.id = csh.contact_id AND hc.group_change
 -- END INCREMENTAL
         WHERE
             status in ('Added', 'Removed')
