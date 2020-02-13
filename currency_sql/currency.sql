@@ -1,5 +1,5 @@
 -- TRUNCATE currency
--- ORDER: 2
+-- ORDER: 1
 
 drop table if exists currency;
 
