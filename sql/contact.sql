@@ -5,7 +5,7 @@
 -- civicrm_contact
 
 -- BEGIN INCREMENTAL
-SET @last_contact = (SELECT MAX(id) FROM contact);
+SET @last_contact := (SELECT MAX(id) FROM contact);
 -- END INCREMENTAL
 
 DROP VIEW IF EXISTS civicrm_contact_to_contact;
@@ -39,14 +39,16 @@ INSERT INTO contact
   )
 SELECT *
 FROM civicrm_contact_to_contact c
-
 -- BEGIN INCREMENTAL
   WHERE c.id > @last_contact
 -- END INCREMENTAL
 ;
 
 -- BEGIN INCREMENTAL
+SET @last_update_dt := (SELECT last_sync_dt('contact', 'civicrm_contact'));
+
 UPDATE contact dc
+JOIN ${SOURCE}.civicrm_contact cc ON dc.id = cc.id AND cc.modified_date > @last_sync_dt
 JOIN civicrm_contact_to_contact sc ON dc.id = sc.id
 SET
  dc.email_domain = sc.email_domain,
@@ -55,13 +57,6 @@ SET
  dc.preferred_language = sc.preferred_language,
  dc.latitude = sc.latitude,
  dc.longitude = sc.longitude
-WHERE
- dc.email_domain != sc.email_domain  COLLATE utf8_general_ci OR
- dc.postal_code != sc.postal_code  COLLATE utf8_general_ci OR
- dc.country != sc.country  COLLATE utf8_general_ci OR
- dc.preferred_language != sc.preferred_language  COLLATE utf8_general_ci OR
- dc.latitude != sc.latitude OR
- dc.longitude != sc.longitude
 ;
 -- END INCREMENTAL
 
@@ -87,3 +82,6 @@ UPDATE contact c
 ;
 
 DROP VIEW IF EXISTS civicrm_contact_to_contact;
+
+SELECT save_last_sync_dt('contact', 'civicrm_contact',
+       (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact));
