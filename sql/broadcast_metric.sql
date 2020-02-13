@@ -33,6 +33,9 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   JOIN broadcast b ON b.external_id = j.mailing_id AND b.external_system = 'civicrm_mailing'
   WHERE NOT j.is_test
     AND s.bounce_type_id NOT IN (10, 15)
+-- BEGIN INCREMENTAL
+    AND DATEDIFF(NOW(), b.sent_at) <= 10
+-- END INCREMENTAL
   GROUP BY b.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
@@ -48,6 +51,9 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   JOIN broadcast b ON b.external_id = j.mailing_id AND b.external_system = 'civicrm_mailing'
   WHERE NOT j.is_test
     AND s.bounce_type_id IN (10, 15)
+-- BEGIN INCREMENTAL
+    AND DATEDIFF(NOW(), b.sent_at) <= 10
+-- END INCREMENTAL
   GROUP BY b.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
@@ -61,6 +67,10 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
   JOIN broadcast_link l ON l.source_id = a.source_id
   JOIN broadcast b ON b.id = l.broadcast_id
+-- BEGIN INCREMENTAL
+  AND DATEDIFF(NOW(), b.sent_at) <= 10
+-- END INCREMENTAL
+
   GROUP BY b.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
@@ -73,6 +83,9 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type != 'consent'
   JOIN broadcast_link l ON l.source_id = a.source_id
   JOIN broadcast b ON b.id = l.broadcast_id
+-- BEGIN INCREMENTAL
+  WHERE DATEDIFF(NOW(), b.sent_at) <= 10
+-- END INCREMENTAL
   GROUP BY b.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
