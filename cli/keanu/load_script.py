@@ -188,7 +188,7 @@ class LoadScript(RunStatement):
         if _.options['display']:
             return statement
 
-        trim_to = max(50, int(os.get_terminal_size().columns / 2))
+        trim_to = 50
         lines = statement.split("\n")
         lines = filter(lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines)
         try:
