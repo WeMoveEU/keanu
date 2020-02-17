@@ -11,8 +11,8 @@ before_script:
 build:
  stage: build
  rules:
-   if: $CI_COMMIT_TAG != null
-   when: release
+   - if: $CI_COMMIT_TAG != null
+     when: release
  script:
    - docker build -t $CONTAINER_IMAGE .
    - docker push $CONTAINER_IMAGE
