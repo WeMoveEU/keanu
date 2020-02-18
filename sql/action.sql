@@ -5,6 +5,7 @@
 SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
 
 -- one-off donate actions
+SET @last_id := (SELECT last_sync_id('action', 'civicrm_contribution'));
 INSERT INTO action
   (contact_id, created_at, action_page_id, source_id, external_id, external_system)
 
@@ -24,11 +25,15 @@ INSERT INTO action
                     AND s.campaign = utm.utm_campaign_33 COLLATE utf8_general_ci
   WHERE NOT d.is_test AND d.contribution_recur_id IS NULL
 -- BEGIN INCREMENTAL
-  AND d.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_contribution')
+  AND d.id > @last_id
 -- END INCREMENTAL
 ;
 
+SELECT save_last_sync_id('action', 'civicrm_contribution',
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_contribution'));
+
 -- recurring donation action
+SET @last_id := (SELECT last_sync_id('action', 'civicrm_contribution_recur'));
 INSERT INTO action
   (contact_id, created_at, action_page_id, source_id, external_id, external_system)
 
@@ -48,11 +53,14 @@ INSERT INTO action
                     AND s.campaign = utm.utm_campaign COLLATE utf8_general_ci
   WHERE NOT rd.is_test
   -- BEGIN INCREMENTAL
-    AND rd.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_contribution_recur')
+  AND rd.id > @last_id
   -- END INCREMENTAL
 ;
+SELECT save_last_sync_id('action', 'civicrm_contribution_recur',
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_contribution_recur'));
 
 -- Activities
+SET @last_id := (SELECT last_sync_id('action', 'civicrm_activity'));
 INSERT INTO action
   (contact_id, created_at, action_page_id, source_id, external_id, external_system)
 
@@ -74,13 +82,15 @@ INSERT INTO action
                     AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
   WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67)
   -- BEGIN INCREMENTAL
-    AND a.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_activity')
+  AND a.id > @last_id
   -- END INCREMENTAL
 ;
+SELECT save_last_sync_id('action', 'civicrm_activity',
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
 
 -- Consents
 -- BEGIN INCREMENTAL
-SET @last_action_id = (SELECT MAX(id) FROM action);
+SET @last_id := (SELECT last_sync_id('action', 'civicrm_activity.consent'));
 -- END INCREMENTAL
 
 INSERT INTO action
@@ -97,7 +107,7 @@ INSERT INTO action
                     AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
   WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67) AND a.status_id IN (1, 4, 9)
   -- BEGIN INCREMENTAL
-    AND a.id NOT IN (SELECT external_id FROM action WHERE external_system = 'civicrm_activity')
+  AND a.id > @last_id
   -- END INCREMENTAL
 ;
 
@@ -115,7 +125,9 @@ INSERT INTO consent
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'consent'
   JOIN ${SOURCE}.civicrm_activity act ON a.external_id = act.id AND a.external_system = 'civicrm_activity'
   -- BEGIN INCREMENTAL
-  WHERE a.id > @last_action_id
+  WHERE a.external_id > @last_id
   -- END INCREMENTAL
 ;
 
+SELECT save_last_sync_id('action', 'civicrm_activity.consent',
+(SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
