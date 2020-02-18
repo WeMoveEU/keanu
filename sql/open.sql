@@ -1,5 +1,5 @@
 -- ORDER: 53
--- DELETE FROM open
+-- TRUNCATE open
 -- DELETE FROM broadcast_metric WHERE metric IN ('openers', 'opens')
 
 SET @last_open = 0;

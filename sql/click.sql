@@ -1,5 +1,5 @@
 -- ORDER: 55
--- DELETE FROM click
+-- TRUNCATE click
 -- DELETE FROM broadcast_metric WHERE metric IN ('clicks', 'clickers')
 
 SET @last_click = 0;
