@@ -2,8 +2,9 @@
 -- DELETE FROM broadcast;
 
 INSERT INTO broadcast 
-  (name, broadcast_type, sent_at, broadcast_test_id, campaign_id, external_id, external_system)
+  (id, name, broadcast_type, sent_at, broadcast_test_id, campaign_id, external_id, external_system)
   SELECT
+    m.id, -- identity with source
     m.name, 'email', scheduled_date, t.id, camp.id, m.id, 'civicrm_mailing'
   FROM ${SOURCE}.civicrm_mailing m
   JOIN ${SOURCE}.civicrm_campaign c ON c.id=m.campaign_id
