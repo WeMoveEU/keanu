@@ -18,7 +18,10 @@ SET @active_inactive := (SELECT id FROM segment WHERE name = 'Inactive');
 SET @active_active := (SELECT id FROM segment WHERE name = 'Active');
 
 -- BEGIN INCREMENTAL
-DELETE cs FROM contact_segment cs WHERE segmentation_id = @active_status;
+DELETE cs FROM contact_segment cs
+JOIN hot_contact hc ON cs.contact_id = hc.id
+     AND (hc.new_actions OR hc.new_consents OR hc.group_change)
+WHERE segmentation_id = @active_status;
 -- END INCREMENTAL
 
 
@@ -137,7 +140,12 @@ SELECT
  cs.joined_at as engaged_at,
  cs.left_at AS notmember_at,
  NULL as trigger_action_id
-FROM contact_segment cs WHERE
+FROM contact_segment cs
+-- BEGIN INCREMENTAL
+JOIN hot_contact hc ON cs.contact_id = hc.id AND (hc.new_actions OR hc.new_consents OR hc.group_change)
+-- END INCREMENTAL
+
+WHERE
  cs.segment_id = @membership_member
 UNION
 SELECT
@@ -146,7 +154,11 @@ SELECT
  cs.left_at as notmember_at,
  a.id as trigger_action_id
 FROM
- action a JOIN action_page ap ON ap.id = a.action_page_id
+ action a
+ -- BEGIN INCREMENTAL
+ JOIN hot_contact hc ON a.contact_id = hc.id AND (hc.new_actions OR hc.new_consents OR hc.group_change)
+ -- END INCREMENTAL
+          JOIN action_page ap ON ap.id = a.action_page_id
           JOIN contact_segment cs ON cs.contact_id = a.contact_id
                                   AND cs.segment_id = @membership_member
                                   AND cs.joined_at <= a.created_at
@@ -161,10 +173,13 @@ WHERE contact_id IS NOT NULL AND insert_it
 
 -- FINALIZE
 INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
-VALUES (@active_status, @active_active,
-       @grouping,
+SELECT * FROM
+(SELECT
+       @active_status, @active_active,
+       @grouping as contact_id,
        @acc_start_at, @acc_opt_end_at,
-       @acc_trigger_action_id);
+       @acc_trigger_action_id
+) x WHERE contact_id IS NOT NULL;
 
 
 UPDATE contact_segment cs SET left_at = NULL
@@ -190,7 +205,11 @@ SELECT
  expiring.joined_at, 
  IF(expired.id IS NOT NULL, expired.left_at, expiring.left_at), 
  expiring.trigger_action_id
-FROM contact_segment expiring LEFT JOIN contact_segment expired
+FROM contact_segment expiring
+-- BEGIN INCREMENTAL
+JOIN hot_contact hc ON expiring.contact_id = hc.id AND (hc.new_actions OR hc.new_consents OR hc.group_change)
+-- END INCREMENTAL
+LEFT JOIN contact_segment expired
 ON expiring.contact_id = expired.contact_id AND expired.segment_id = @membership_expired
 AND expiring.left_at = expired.joined_at 
 WHERE  expiring.segment_id = @membership_expiring 
@@ -269,6 +288,9 @@ FROM (
 SELECT
   cs.contact_id, cs.joined_at, cs.left_at, cs.segment_id
 FROM contact_segment cs
+-- BEGIN INCREMENTAL
+JOIN hot_contact hc ON cs.contact_id = hc.id AND (hc.new_actions OR hc.new_consents OR hc.group_change)
+-- END INCREMENTAL
 WHERE cs.segment_id IN (@active_notmember, @active_active)
 ORDER BY cs.contact_id, cs.joined_at
 ) ord
