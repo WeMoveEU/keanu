@@ -30,7 +30,7 @@ INSERT INTO action
 ;
 
 SELECT save_last_sync_id('action', 'civicrm_contribution',
-  (SELECT max(id) from action WHERE external_system = 'civicrm_contribution'));
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_contribution'));
 
 -- recurring donation action
 SET @last_id := (SELECT last_sync_id('action', 'civicrm_contribution_recur'));
@@ -57,7 +57,7 @@ INSERT INTO action
   -- END INCREMENTAL
 ;
 SELECT save_last_sync_id('action', 'civicrm_contribution_recur',
-  (SELECT max(id) from action WHERE external_system = 'civicrm_contribution_recur'));
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_contribution_recur'));
 
 -- Activities
 SET @last_id := (SELECT last_sync_id('action', 'civicrm_activity'));
@@ -86,7 +86,7 @@ INSERT INTO action
   -- END INCREMENTAL
 ;
 SELECT save_last_sync_id('action', 'civicrm_activity',
-  (SELECT max(id) from action WHERE external_system = 'civicrm_activity'));
+  (SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
 
 -- Consents
 -- BEGIN INCREMENTAL
@@ -130,4 +130,4 @@ INSERT INTO consent
 ;
 
 SELECT save_last_sync_id('action', 'civicrm_activity.consent',
-(SELECT max(id) from action WHERE external_system = 'civicrm_activity'));
+(SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
