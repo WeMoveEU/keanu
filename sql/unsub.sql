@@ -2,6 +2,8 @@
 -- DELETE FROM unsub
 -- DELETE FROM broadcast_metric WHERE metric IN ('unsubs')
 
+SET @last_contact := (SELECT MAX(id) FROM contact);
+
 -- Store which broadcasts are going to be added to unsub table to then update unsub counts
 CREATE TEMPORARY TABLE updated_broadcast AS
   SELECT b.id
@@ -17,6 +19,7 @@ INSERT INTO unsub (broadcast_id, contact_id, created_at, external_system, extern
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast b ON b.external_system='civicrm_mailing' AND b.external_id=j.mailing_id
   WHERE NOT j.is_test
+  AND q.contact_id <= @last_contact
 -- BEGIN INCREMENTAL
   AND u.id NOT IN (SELECT external_id FROM unsub WHERE external_system = 'civicrm_mailing_event_unsubscribe')
 -- END INCREMENTAL

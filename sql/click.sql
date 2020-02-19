@@ -3,6 +3,7 @@
 -- DELETE FROM broadcast_metric WHERE metric IN ('clicks', 'clickers')
 
 SET @last_click = 0;
+SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
 SET @last_click = (SELECT MAX(external_id) FROM unsub WHERE external_system = 'civicrm_mailing_event_trackable_url_open');
 -- END INCREMENTAL
@@ -15,6 +16,7 @@ INSERT INTO click (mailing_link_id, contact_id, created_at, external_system, ext
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast_link l ON l.external_system='civicrm_mailing_trackable_url' AND l.external_id=c.trackable_url_id
   WHERE NOT j.is_test
+  AND q.contact_id <= @last_contact
 -- BEGIN INCREMENTAL
   AND c.id > @last_click
 -- END INCREMENTAL
