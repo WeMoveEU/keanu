@@ -9,6 +9,8 @@
 -- Using variables requires to nest the queries, so I produce 1. Sorted data -> 2. Ranked data -> 3. Filtered data
 -- in this order.
 
+SET @last_contact := (SELECT MAX(id) FROM contact);
+
 DROP TABLE IF EXISTS group_history;
 
 CREATE TABLE group_history -- temporary table to track group join and leave
@@ -63,9 +65,7 @@ WHERE s.external_id IS NOT NULL AND s.external_system = 'civicrm_group'
 
 
 INSERT INTO contact_segment -- insert contacts' segments based on groups
-    (segmentation_id, segment_id,
-        contact_id, joined_at, left_at 
-        )
+    (segmentation_id, segment_id, contact_id, joined_at, left_at)
 SELECT DISTINCT
     s.segmentation_id,
     s.id,
@@ -73,15 +73,15 @@ SELECT DISTINCT
     ghj.date,
     ghl.date
 FROM group_history ghj
--- only take contacts we still process
-    JOIN contact c ON ghj.contact_id = c.id
 -- find the ending time of this group membership
     LEFT JOIN group_history ghl
     ON ghj.group_id = ghl.group_id AND ghj.contact_id = ghl.contact_id AND ghj.order_rank + 1 = ghl.order_rank
     JOIN
     segment s ON ghj.group_id = s.external_id AND s.external_system = 'civicrm_group'
 
-WHERE ghj.status = 'Added' AND (ghl.date IS NULL OR DATEDIFF(ghl.date, ghj.date) > 0);
+WHERE ghj.status = 'Added' AND (ghl.date IS NULL OR DATEDIFF(ghl.date, ghj.date) > 0)
+  AND ghj.contact_id <= @last_contact
+;
 
 DROP TABLE group_history;
 

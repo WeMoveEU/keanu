@@ -3,6 +3,7 @@
 -- DELETE FROM broadcast_metric WHERE metric IN ('openers', 'opens')
 
 SET @last_open = 0;
+SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
 SET @last_open = (SELECT MAX(external_id) FROM open WHERE external_system = 'civicrm_mailing_event_opened');
 -- END INCREMENTAL
@@ -15,6 +16,7 @@ INSERT INTO open (broadcast_id, contact_id, created_at, external_system, externa
   JOIN ${SOURCE}.civicrm_mailing_job j ON j.id=q.job_id
   JOIN broadcast b ON b.external_system='civicrm_mailing' AND b.external_id=j.mailing_id
   WHERE NOT j.is_test
+  AND q.contact_id <= @last_contact
 -- BEGIN INCREMENTAL
   AND o.id > @last_open
 -- END INCREMENTAL

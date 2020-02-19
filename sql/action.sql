@@ -3,6 +3,7 @@
 -- DELETE FROM action
 
 SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
+SET @last_contact := (SELECT MAX(id) FROM contact);
 
 -- one-off donate actions
 SET @last_id := (SELECT last_sync_id('action', 'civicrm_contribution'));
@@ -24,6 +25,7 @@ INSERT INTO action
                     AND s.medium = utm.utm_medium_31 COLLATE utf8_general_ci
                     AND s.campaign = utm.utm_campaign_33 COLLATE utf8_general_ci
   WHERE NOT d.is_test AND d.contribution_recur_id IS NULL
+  AND d.contact_id <= @last_contact
 -- BEGIN INCREMENTAL
   AND d.id > @last_id
 -- END INCREMENTAL
@@ -52,6 +54,7 @@ INSERT INTO action
                     AND s.medium = utm.utm_medium COLLATE utf8_general_ci
                     AND s.campaign = utm.utm_campaign COLLATE utf8_general_ci
   WHERE NOT rd.is_test
+  AND rd.contact_id <= @last_contact
   -- BEGIN INCREMENTAL
   AND rd.id > @last_id
   -- END INCREMENTAL
@@ -81,6 +84,7 @@ INSERT INTO action
                     AND s.medium = utm.media_28 COLLATE utf8_general_ci
                     AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
   WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67)
+  AND ac.contact_id <= @last_contact
   -- BEGIN INCREMENTAL
   AND a.id > @last_id
   -- END INCREMENTAL
@@ -106,6 +110,7 @@ INSERT INTO action
                     AND s.medium = utm.media_28 COLLATE utf8_general_ci
                     AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
   WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67) AND a.status_id IN (1, 4, 9)
+  AND ac.contact_id <= @last_contact
   -- BEGIN INCREMENTAL
   AND a.id > @last_id
   -- END INCREMENTAL
