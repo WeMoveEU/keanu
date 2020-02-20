@@ -2,8 +2,9 @@
 -- DELETE FROM campaign
 
 INSERT INTO campaign
-  (name, started_at, ended_at, campaign_type, external_id, external_system)
+  (id, name, started_at, ended_at, campaign_type, external_id, external_system)
   SELECT
+    c.id, -- Introducing identity with source
     c.name,
     c.start_date,
     c.end_date,
