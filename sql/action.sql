@@ -134,5 +134,25 @@ INSERT INTO consent
   -- END INCREMENTAL
 ;
 
+
+-- Update consents that changed their status (but are below @last_id and hence skipped)
+-- BEGIN INCREMENTAL
+UPDATE consent
+JOIN action
+  ON consent.action_id = action.id
+JOIN ${SOURCE}.civicrm_activity a
+  ON action.external_system = 'civicrm_activity' AND action.external_id = a.id
+  SET consent.status = CASE
+      WHEN a.status_id = 1 THEN 'pending'
+      WHEN a.status_id = 4 THEN 'rejected'
+      WHEN a.status_id = 9 THEN 'accepted'
+                       END,
+      action.created_at = a.activity_date_time
+WHERE a.activity_date_time > action.created_at
+;
+
+-- END INCREMENTAL
+
+
 SELECT save_last_sync_id('action', 'civicrm_activity.consent',
 (SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
