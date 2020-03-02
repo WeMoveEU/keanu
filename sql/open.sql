@@ -51,4 +51,21 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    id, name, @Everyone, 'likely_forwarders', COUNT(contact_id)
+  FROM
+  (SELECT
+     b.id, b.name, o.contact_id
+   FROM open o
+   JOIN broadcast b ON b.id = o.broadcast_id
+   JOIN updated_broadcast ub ON ub.id = b.id
+   GROUP BY b.id, b.name, o.contact_id
+   HAVING count(o.id) >= 3
+  ) forwarders
+  GROUP BY id, name
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
 DROP TABLE updated_broadcast;
