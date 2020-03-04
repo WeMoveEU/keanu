@@ -9,9 +9,10 @@ INSERT INTO campaign
     c.start_date,
     c.end_date,
     CASE
-     WHEN c.campaign_type_id IN (1,2,3,4,5,7,8,11) THEN 'wemove'
+     WHEN c.campaign_type_id IN (1,2,3,4,5,7,8,11,12,13) THEN 'wemove'
      WHEN c.campaign_type_id IN (6) THEN 'youmove'
      WHEN c.campaign_type_id IN (9,10) THEN 'eci'
+     ELSE 'wemove'
     END as campaign_type,
     c.id,
     'civicrm_campaign'
