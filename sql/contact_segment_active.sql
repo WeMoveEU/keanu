@@ -318,4 +318,6 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
 ;
 
 SELECT save_last_sync_dt('hot_contact', 'civicrm', @hot_contact_now);
+-- BEGIN INCREMENTAL
 DROP TABLE hot_contact;
+-- END INCREMENTAL
