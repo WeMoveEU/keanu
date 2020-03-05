@@ -16,9 +16,9 @@ SET @active_notmember := (SELECT id FROM segment WHERE name = 'Not a member');
 SET @active_inactive := (SELECT id FROM segment WHERE name = 'Inactive');
 SET @active_active := (SELECT id FROM segment WHERE name = 'Active');
 
+SET @hot_contact_now := NOW();
 -- BEGIN INCREMENTAL
 SET @recent := last_sync_dt('hot_contact', 'civicrm');
-SET @hot_contact_now := NOW();
 
 -- Create list of contacts who did something recently or who may have become inactive recently
 CREATE TABLE hot_contact (
