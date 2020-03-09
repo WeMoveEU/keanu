@@ -147,8 +147,8 @@ JOIN ${SOURCE}.civicrm_activity a
       WHEN a.status_id = 4 THEN 'rejected'
       WHEN a.status_id = 9 THEN 'accepted'
                        END,
-      action.created_at = a.activity_date_time
-WHERE a.activity_date_time > action.created_at
+      action.created_at = a.modified_date
+WHERE a.modified_date > action.created_at
 ;
 
 -- END INCREMENTAL
