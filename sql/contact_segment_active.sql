@@ -147,20 +147,7 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
         SELECT
          contact_id, engaged_at, notmember_at, trigger_action_id
         FROM (
-          -- lets take
-          -- joins to Membership.Member
-          -- and Actions done when Contact was a member
-          SELECT
-            cs.contact_id,
-            cs.joined_at as engaged_at,
-            cs.left_at AS notmember_at,
-            NULL as trigger_action_id
-          FROM contact_segment cs
-          -- BEGIN INCREMENTAL
-          JOIN hot_contact h ON cs.contact_id = h.id
-          -- END INCREMENTAL
-          WHERE cs.segment_id = @membership_member
-        UNION
+          -- lets take actions done when Contact was a member
           SELECT
             a.contact_id,
             a.created_at as engaged_at,
