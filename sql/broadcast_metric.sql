@@ -1,5 +1,5 @@
 -- ORDER: 56
--- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted')
+-- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted', 'sharers', 'shares')
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
@@ -90,3 +90,36 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
+
+
+-- CONVERSIONS
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+SELECT
+  b.id, b.name, @Everyone, 'sharers', COUNT(DISTINCT contact_id)
+  FROM action a
+         JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
+         JOIN broadcast_link l ON l.source_id = a.source_id
+         JOIN broadcast b ON b.id = l.broadcast_id
+  -- BEGIN INCREMENTAL
+             AND DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+
+ GROUP BY b.id
+
+          ON DUPLICATE KEY UPDATE value=VALUES(value)
+          ;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+SELECT
+  b.id, b.name, @Everyone, 'shares', COUNT(a.id)
+  FROM action a
+         JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
+         JOIN broadcast_link l ON l.source_id = a.source_id
+         JOIN broadcast b ON b.id = l.broadcast_id
+  -- BEGIN INCREMENTAL
+ WHERE DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+ GROUP BY b.id
+
+          ON DUPLICATE KEY UPDATE value=VALUES(value)
+          ;
