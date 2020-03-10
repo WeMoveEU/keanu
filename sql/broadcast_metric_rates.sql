@@ -42,7 +42,7 @@ SELECT
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'likely_forwarders_rate',
-  b1.metric / b2.metric
+  b1.value / b2.value
   FROM broadcast_metric b1
          JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
              AND b1.metric = 'likely_forwarders' AND b2.metric = 'recipients'
