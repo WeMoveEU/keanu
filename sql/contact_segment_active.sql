@@ -143,29 +143,25 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
         -- update grouping vars
         @grouping := contact_id
 
-      FROM ( -- ordered_engagement_moments
+      FROM ( -- ordered_engagement_moments = actions done when Contact was a member
         SELECT
-         contact_id, engaged_at, notmember_at, trigger_action_id
-        FROM (
-          -- lets take actions done when Contact was a member
-          SELECT
-            a.contact_id,
-            a.created_at as engaged_at,
-            cs.left_at as notmember_at,
-            a.id as trigger_action_id
-          FROM action a
-          JOIN action_page ap ON ap.id = a.action_page_id
-          JOIN contact_segment cs ON cs.contact_id = a.contact_id
-                                  AND cs.segment_id = @membership_member
-                                  AND cs.joined_at <= a.created_at
-                                  AND (cs.left_at > a.created_at OR cs.left_at IS NULL)
-          -- BEGIN INCREMENTAL
-          JOIN hot_contact h ON a.contact_id = h.id
-          -- END INCREMENTAL
-          WHERE ap.action_type != 'consent'
-        ) engagment_moments
+          a.contact_id,
+          a.created_at as engaged_at,
+          cs.left_at as notmember_at,
+          a.id as trigger_action_id
+        FROM action a
+        JOIN action_page ap ON ap.id = a.action_page_id
+        JOIN contact c ON c.id = a.contact_id
+        JOIN contact_segment cs ON cs.contact_id = a.contact_id
+                                AND cs.segment_id = @membership_member
+                                AND cs.joined_at <= a.created_at
+                                AND (cs.left_at > a.created_at OR cs.left_at IS NULL)
+        -- BEGIN INCREMENTAL
+        JOIN hot_contact h ON a.contact_id = h.id
+        -- END INCREMENTAL
+        WHERE ap.action_type != 'consent' AND a.created_at >= DATE_ADD(c.created_at, INTERVAL 24 HOUR)
         ORDER BY contact_id, engaged_at
-      ) ordered
+      ) ordered_engagement_moments
     ) cs
   WHERE contact_id IS NOT NULL AND insert_it
 ;
