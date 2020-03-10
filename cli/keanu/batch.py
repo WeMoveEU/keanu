@@ -33,9 +33,11 @@ class Batch:
         return _.mode['dry_run']
 
     def add_source(_, source):
+        source.batch = _
         _.sources.append(source)
 
     def add_destination(_, destination):
+        destination.batch = _
         _.destination = destination
 
     def add_transform(_, transform):

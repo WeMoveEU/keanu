@@ -14,6 +14,7 @@ requests = "*"
 sqlalchemy = "*"
 pyaml = "*"
 jaeger-client = "*"
+pandas = "*"
 
 [dev-packages]
 setuptools = "*"

@@ -20,3 +20,9 @@ class DBSource(DataStore):
         if _.schema:
             env['SOURCE'] = _.schema
         return env
+
+    def table(_, table):
+        if _.schema:
+            return '{}.{}'.format(_.schema, table)
+        else:
+            return table

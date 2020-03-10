@@ -6,7 +6,7 @@ import json
 from glob import glob
 from os import environ
 from . import db, util, metabase, config
-from .load_script import LoadScript
+from .sql_loader import SqlLoader
 from .db_destination import DBDestination
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
@@ -67,6 +67,20 @@ def load(incremental, order, dry_run, display, warn, config_or_dir):
                 code
             ))
 
+        elif event.startswith('py.script.start'):
+            click.echo("🐍 [{:3d}] {}".format(
+                scr.order,
+                scr.filename),
+                       nl=(display or dry_run))
+
+        elif event.startswith('py.script.end'):
+            click.echo("\r✅ [{:3d}] {} in {:0.2f}s".format(
+                scr.order,
+                scr.filename,
+                data['time']
+            ))
+
+
 
 
 @cli.command()
@@ -95,6 +109,11 @@ def delete(order, display, dry_run, warn, config_or_dir):
                        color=True)
         elif event.startswith('sql.statement.start'):
             click.echo("🔥 {0}".format(util.highlight_sql(scr.statement_abbrev(data['sql']))))
+        elif event.startswith('py.script.start'):
+            click.echo("💨 [{:3d}] {}".format(
+                scr.order,
+                scr.filename))
+
 
 
 @cli.command()
@@ -112,7 +131,7 @@ def schema(drop, load, database_url):
             connection.execute('DROP TABLE {}'.format(table))
 
     if load:
-        script = LoadScript(load, {}, None, dest)
+        script = SqlLoader(load, {}, None, dest)
         script.replace_sql_object('keanu', dest.schema)
         click.echo("🚚 Loading {}...".format(script.filename))
         with connection.begin() as tx:
