@@ -111,7 +111,7 @@ FROM
 -- END INCREMENTAL
 
       ) x
-    ORDER BY contact_id, joined_at
+    ORDER BY contact_id, joined_at, IFNULL(left_at, NOW())
     ) ordered;
 
 CREATE INDEX membership_ranked_idx ON membership_ranked (contact_id, rank);
