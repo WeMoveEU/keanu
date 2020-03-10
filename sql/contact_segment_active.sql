@@ -211,23 +211,9 @@ WHERE  expiring.segment_id = @membership_expiring
 -- - Inactive -----------------------------------------------------
 -- ----------------------------------------------------------------
 
-DROP FUNCTION IF EXISTS acc_last_left_at;
 DROP FUNCTION IF EXISTS emit_start;
 DROP FUNCTION IF EXISTS emit_end;
 
-
-DELIMITER //
-CREATE FUNCTION acc_last_left_at (new_grouping BOOLEAN, segment_id INT, left_at DATETIME)
-RETURNS DATETIME
-BEGIN
-
-IF new_grouping OR segment_id = @active_notmember
-THEN RETURN NULL;
-ELSE RETURN left_at;
-END IF;
-END
-//
-DELIMITER ;
 
 DELIMITER //
 CREATE FUNCTION emit_start (new_grouping BOOLEAN, acc_last_left_at DATETIME, joined_at DATETIME)
@@ -235,12 +221,12 @@ RETURNS DATETIME
 BEGIN
   IF new_grouping OR joined_at IS NULL
   THEN
-     RETURN acc_last_left_at;
+    RETURN acc_last_left_at;
   ELSE
-     IF acc_last_left_at != joined_at -- does this span touch the previous?
+    IF acc_last_left_at != joined_at -- does this span touch the previous?
       THEN RETURN acc_last_left_at;
       ELSE RETURN NULL;
-     END IF;
+    END IF;
   END IF;
 END
 //
@@ -272,18 +258,29 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
       emit_start(@new_grouping, @acc_last_left_at, joined_at) as joined_at,
       emit_end(@new_grouping, joined_at) as left_at,
 
-      @acc_last_left_at := acc_last_left_at(@new_grouping, segment_id, left_at),
+      @acc_last_left_at := left_at,
 
       @grouping := contact_id
     FROM (
-      SELECT
-        cs.contact_id, cs.joined_at, cs.left_at, cs.segment_id
-      FROM contact_segment cs
-      -- BEGIN INCREMENTAL
-      JOIN hot_contact h ON cs.contact_id = h.id
-      -- END INCREMENTAL
-      WHERE cs.segment_id IN (@active_notmember, @active_active)
-      ORDER BY cs.contact_id, cs.joined_at
+      SELECT 
+        contact_id, joined_at, left_at, segment_id
+      FROM (
+        SELECT
+          cs.contact_id, cs.joined_at, cs.left_at, cs.segment_id
+        FROM contact_segment cs
+        -- BEGIN INCREMENTAL
+        JOIN hot_contact h ON cs.contact_id = h.id
+        -- END INCREMENTAL
+        WHERE cs.segment_id IN (@active_notmember, @active_active)
+      UNION
+        SELECT -- Fake record for contact creation
+          id AS contact_id, created_at AS joined_at, created_at AS left_at, 0 AS segment_id
+        FROM contact c
+        -- BEGIN INCREMENTAL
+        JOIN hot_contact h ON c.id = h.id
+        -- END INCREMENTAL
+      ) moments
+      ORDER BY contact_id, joined_at, IFNULL(left_at, NOW())
     ) ord
   ) res
   WHERE joined_at IS NOT NULL
