@@ -274,7 +274,7 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
         WHERE cs.segment_id IN (@active_notmember, @active_active)
       UNION
         SELECT -- Fake record for contact creation
-          id AS contact_id, created_at AS joined_at, created_at AS left_at, 0 AS segment_id
+          c.id AS contact_id, created_at AS joined_at, created_at AS left_at, 0 AS segment_id
         FROM contact c
         -- BEGIN INCREMENTAL
         JOIN hot_contact h ON c.id = h.id
