@@ -49,7 +49,7 @@ class PyLoader(tracing.Tags):
         if _.defines('IGNORE'):
             _.ignore = _.module.IGNORE
         else:
-            _.ignore = False
+            _.ignore = not _.defines('execute')
 
     @staticmethod
     def import_module(filename):
