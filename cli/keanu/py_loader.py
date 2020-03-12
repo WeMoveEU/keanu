@@ -3,18 +3,18 @@ import sys
 from pathlib import Path
 from glob import glob
 from importlib import import_module
-from .trace import Trace
+from . import tracing
 from time import time
 import click
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 
-class PyLoader(Trace):
+class PyLoader(tracing.Tags):
     """
     Class that runs load modules, that is Python modules that load some data in keanu database.
     """
     def __init__(_, filename, mode, source, destination):
-        Trace.__init__(_)
+        super().__init__()
         _.filename = filename
         
         _.module = PyLoader.import_module(filename)
@@ -32,11 +32,11 @@ class PyLoader(Trace):
 
         if _.defines('TAGS'):
             if isinstance(_.module.TAGS, dict):
-                _.script_tracer_tags = _.module.TAGS
+                _.tracing_tags = _.module.TAGS
             else:
                 raise click.ClickException("TAGS in {} should be a dict".format(_.filename))
         else:
-            _.script_tracer_tags = {}
+            _.tracing_tags = {}
 
         if _.defines('ORDER'):
             if isinstance(_.module.ORDER, int):
@@ -77,7 +77,6 @@ class PyLoader(Trace):
         return '{} ({})'.format(_.filename, _.order)
 
 
-    @Trace.trace(lambda _: 'delete.{}'.format(_.filename.replace('/', '.')))
     def delete(_):
         if _.ignore or not _.defines('delete'):
             return
@@ -87,15 +86,17 @@ class PyLoader(Trace):
 
             if _.options['dry_run']:
                 return
-
-            _.module.delete(_)
+            with tracing.tracer.start_active_span(
+                    'delete.{}'.format(_.filename.replace('/', '.')),
+                    tags=_.tracing_tags
+                    ):
+                _.module.delete(_)
             yield 'py.script.end.delete', { 'script': _, 'time': time() - start_time }
 
         except KeyboardInterrupt as ctrlc:
             raise ctrlc
 
 
-    @Trace.trace(lambda _: 'script.{}'.format(_.filename.replace('/', '.')))
     def execute(_):
         if _.ignore:
             return
@@ -106,7 +107,12 @@ class PyLoader(Trace):
 
             if _.options['dry_run']:
                 return
-            result = _.module.execute(_)
+
+            with tracing.tracer.start_active_span(
+                    'script.{}'.format(_.filename.replace('/', '.')),
+                    tags=_.tracing_tags
+                    ):
+                result = _.module.execute(_)
 
             yield 'py.script.end', {
                 'script': _,

@@ -5,13 +5,13 @@ import re
 from sqlalchemy import text
 import click
 from .run_statement import RunStatement
-from .trace import Trace
 from . import util
+from . import tracing
 import os
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 
-class SqlLoader(RunStatement, Trace):
+class SqlLoader(RunStatement, tracing.Tags):
     """
     Class that runs load scripts, that is SQL that loads some data in keanu database.
     It can read extra metadata from the script comments.
@@ -78,7 +78,7 @@ class SqlLoader(RunStatement, Trace):
                 kv = {x.group(1) : x.group(2)
                       for x in
                       re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))}
-                _.script_tracer_tags.update(kv)
+                _.tracing_tags.update(kv)
 
                 continue
 
@@ -200,41 +200,45 @@ class SqlLoader(RunStatement, Trace):
         except StopIteration:
             return ''
 
-    @Trace.trace(lambda _: 'delete.{}'.format(_.filename.replace('/', '.')))
     def delete(_):
         if len(_.deleteSql) == 0:
             return
 
         connection = _.destination.connection()
-        with connection.begin() as transaction:
-            yield 'sql.script.start.delete', { 'script': _ }
-            try:
-                for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
-                    yield event, data
-            except KeyboardInterrupt as ctrlc:
-                transaction.rollback()
-                raise ctrlc
-            yield 'sql.script.end.delete', { 'script': _ }
+        with tracing.tracer.start_active_span(
+                'delete.{}'.format(_.filename.replace('/', '.')),
+                tags=_.tracing_tags):
+            with connection.begin() as transaction:
+                yield 'sql.script.start.delete', { 'script': _ }
+                try:
+                    for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
+                        yield event, data
+                except KeyboardInterrupt as ctrlc:
+                    transaction.rollback()
+                    raise ctrlc
+                yield 'sql.script.end.delete', { 'script': _ }
 
-    @Trace.trace(lambda _: 'script.{}'.format(_.filename.replace('/', '.')))
     def execute(_):
         if len(_.statements) == 0:
             return
 
         connection = _.destination.connection()
-        with connection.begin() as transaction:
-            try:
-                yield 'sql.script.start', { 'script': _ }
-                for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
-                    yield event, data
-                yield 'sql.script.end', { 'script': _ }
-            except KeyboardInterrupt as ctrlc:
-                transaction.rollback()
-                raise click.Abort("aborted.")
-            except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
-                transaction.rollback()
-                msg = str(e.args[0])
-                msg = msg.replace('\\n', "\n")
-                click.echo(message=msg, err=True)
-                raise click.Abort(msg)
+        with tracing.tracer.start_active_span(
+                'script.{}'.format(_.filename.replace('/', '.')),
+                tags=_.tracing_tags):
+            with connection.begin() as transaction:
+                try:
+                    yield 'sql.script.start', { 'script': _ }
+                    for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+                        yield event, data
+                    yield 'sql.script.end', { 'script': _ }
+                except KeyboardInterrupt as ctrlc:
+                    transaction.rollback()
+                    raise click.Abort("aborted.")
+                except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                    transaction.rollback()
+                    msg = str(e.args[0])
+                    msg = msg.replace('\\n', "\n")
+                    click.echo(message=msg, err=True)
+                    raise click.Abort(msg)
 
