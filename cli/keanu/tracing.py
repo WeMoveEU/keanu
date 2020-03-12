@@ -23,8 +23,8 @@ tracer = config.initialize_tracer()
 def close_tracer(*a):
     try:
         tracer.close()
-    except dRuntimeError:
-        print("tracer.close error")
+    except RuntimeError:
+        pass
     sleep(1) # this is unfortunately needed as silly jaeger does not let to sync flush spans :(
 
 
