@@ -85,7 +85,7 @@ def build_batch(mode, configuration):
 
                 if 'directory' in step['py']:
                     transform = PyTransform(mode, src, dst, directory=step['py']['directory'])
-                elif 'file' in step['pt']:
+                elif 'file' in step['py']:
                     transform = PyTransform(mode, src, dst, filename=step['py']['file'])
                 else:
                     raise ConfigError("config file: py transform without directory or file field")
