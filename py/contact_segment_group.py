@@ -50,10 +50,8 @@ def execute(_):
 
         hist = group_history(_, src, contact_range, group_ids)
 
-        for (group_id, contact_id), event_idx in \
-            hist.groupby(['group_id', 'contact_id']).groups.items():
+        for (group_id, contact_id), events in hist.groupby(['group_id', 'contact_id']):
 
-            events = hist.iloc[event_idx]
             segment_id = group_id_to_segment_id[group_id]
             cs = group_history_to_segments(events, contact_id, segment_id)
             acc.append(cs)
