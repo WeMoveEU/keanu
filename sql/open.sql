@@ -1,6 +1,6 @@
 -- ORDER: 53
 -- TRUNCATE open
--- DELETE FROM broadcast_metric WHERE metric IN ('openers', 'opens')
+-- DELETE FROM broadcast_metric WHERE metric IN ('openers', 'opens', 'likely_forwarders')
 
 SET @last_open = 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);

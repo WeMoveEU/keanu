@@ -59,6 +59,9 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
+-- OPENS and LIKELY FORWARDERS in open.sql
+-- CLICKS in click.sql
+
 -- CONVERSIONS
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
@@ -75,6 +78,7 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
+
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
