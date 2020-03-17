@@ -1,5 +1,5 @@
 -- ORDER: 57
--- DELETE FROM broadcast_metric WHERE metric IN ('openers_rate', 'clickers_rate', 'sharers_rate', 'likely_forwarders_rate', 'clickers_to_openers', 'converted_to_clickers', 'bounce_rate', 'spam_rate')
+-- DELETE FROM broadcast_metric WHERE metric IN ('openers_rate', 'clickers_rate', 'clickers_to_openers', 'converted_to_clickers', 'sharers_rate', 'likely_forwarders_rate', 'bounce_rate', 'spam_rate')
 
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
@@ -34,6 +34,17 @@ SELECT
   FROM broadcast_metric b1
          JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
              AND b1.metric = 'clickers' AND b2.metric = 'openers'
+             AND b1.segment_id = b2.segment_id
+             ON DUPLICATE KEY UPDATE value=VALUES(value)
+         ;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+SELECT
+  b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'converted_to_clickers',
+  b1.value / b2.value
+  FROM broadcast_metric b1
+         JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
+             AND b1.metric = 'converted' AND b2.metric = 'clickers'
              AND b1.segment_id = b2.segment_id
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
