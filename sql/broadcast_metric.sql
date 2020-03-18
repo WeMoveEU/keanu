@@ -1,5 +1,5 @@
 -- ORDER: 56
--- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted', 'sharers', 'shares')
+-- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted', 'sharers', 'shares', 'oneoff_donations', 'oneoff_amount', 'monthly_donations', 'monthly_amount')
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
@@ -130,32 +130,96 @@ INSERT INTO broadcast_metric -- sharers
 SELECT
   b.id, b.name, @Everyone, 'sharers', COUNT(DISTINCT contact_id)
   FROM action a
-         JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
-         JOIN broadcast_link l ON l.source_id = a.source_id
-         JOIN broadcast b ON b.id = l.broadcast_id
+  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
   -- BEGIN INCREMENTAL
-             AND DATEDIFF(NOW(), b.sent_at) <= 10
+  WHERE DATEDIFF(NOW(), b.sent_at) <= 10
   -- END INCREMENTAL
+  GROUP BY b.id
 
- GROUP BY b.id
-
-          ON DUPLICATE KEY UPDATE value=VALUES(value)
-          ;
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
 
 INSERT INTO broadcast_metric -- shares
             (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b.id, b.name, @Everyone, 'shares', COUNT(a.id)
   FROM action a
-         JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
-         JOIN broadcast_link l ON l.source_id = a.source_id
-         JOIN broadcast b ON b.id = l.broadcast_id
+  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
   -- BEGIN INCREMENTAL
- WHERE DATEDIFF(NOW(), b.sent_at) <= 10
+  WHERE DATEDIFF(NOW(), b.sent_at) <= 10
   -- END INCREMENTAL
- GROUP BY b.id
+  GROUP BY b.id
 
-          ON DUPLICATE KEY UPDATE value=VALUES(value)
-          ;
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+-- DONATIONS
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'oneoff_donations', COUNT(d.id)
+  FROM donation d
+  JOIN action a ON d.action_id = a.id
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
+  WHERE d.frequency_unit = 'one-off'
+  -- BEGIN INCREMENTAL
+   AND DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'oneoff_amount', SUM(d.amount)
+  FROM donation d
+  JOIN action a ON d.action_id = a.id
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
+  WHERE d.frequency_unit = 'one-off'
+  -- BEGIN INCREMENTAL
+   AND DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'monthly_donations', COUNT(d.id)
+  FROM donation d
+  JOIN action a ON d.action_id = a.id
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
+  WHERE d.frequency_unit = 'month'
+  -- BEGIN INCREMENTAL
+   AND DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, @Everyone, 'monthly_amount', SUM(d.amount)
+  FROM donation d
+  JOIN action a ON d.action_id = a.id
+  JOIN broadcast_link l ON l.source_id = a.source_id
+  JOIN broadcast b ON b.id = l.broadcast_id
+  WHERE d.frequency_unit = 'month'
+  -- BEGIN INCREMENTAL
+   AND DATEDIFF(NOW(), b.sent_at) <= 10
+  -- END INCREMENTAL
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
 
 DROP TABLE bm_segment;

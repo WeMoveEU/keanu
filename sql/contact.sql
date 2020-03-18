@@ -15,7 +15,7 @@ SELECT
   MIN(SUBSTRING(e.email FROM LOCATE('@', e.email) + 1)) as email_domain,
   COALESCE(c.created_date, c.modified_date) as created_at,
   SUBSTR(MIN(a.postal_code), 1, 10) as postal_code,
-  LOWER(MIN(ctr.iso_code)) as country,
+  substring_index(ctr.name, ',', 1) as country, -- strip "X, republic of", etc.
   c.preferred_language,
   MIN(a.geo_code_1) as latitude,
   MIN(a.geo_code_2) as longitude
@@ -23,7 +23,8 @@ FROM ${SOURCE}.civicrm_contact c
 LEFT JOIN ${SOURCE}.civicrm_email e ON e.contact_id = c.id AND e.is_primary
 LEFT JOIN ${SOURCE}.civicrm_address a ON a.contact_id = c.id AND a.is_primary
 LEFT JOIN ${SOURCE}.civicrm_country ctr ON ctr.id = a.country_id
-GROUP BY c.id
+
+GROUP BY c.id, country
 ;
 
 

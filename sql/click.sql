@@ -5,7 +5,7 @@
 SET @last_click = 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
-SET @last_click = (SELECT MAX(external_id) FROM unsub WHERE external_system = 'civicrm_mailing_event_trackable_url_open');
+SET @last_click = (SELECT MAX(external_id) FROM click WHERE external_system = 'civicrm_mailing_event_trackable_url_open');
 -- END INCREMENTAL
 
 INSERT INTO click (mailing_link_id, contact_id, created_at, external_system, external_id)
