@@ -115,3 +115,5 @@ SELECT
              AND b1.segment_id = b2.segment_id
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
+
+DROP TABLE bm_segment;
