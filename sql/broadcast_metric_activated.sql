@@ -1,5 +1,5 @@
 -- ORDER: 80
--- DELETE FROM broadcast_metric WHERE metric IN ('activated')
+-- DELETE FROM broadcast_metric WHERE metric IN ('activated', 'activated_rate')
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 SET @active = (SELECT id FROM segment WHERE name = 'Active');
@@ -15,3 +15,15 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
+
+
+INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+SELECT
+  b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'activated_rate',
+  b1.value / b2.value
+  FROM broadcast_metric b1
+         JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
+             AND b1.metric = 'activated' AND b2.metric = 'recipients'
+             AND b1.segment_id = b2.segment_id
+             ON DUPLICATE KEY UPDATE value=VALUES(value)
+         ;

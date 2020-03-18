@@ -20,5 +20,3 @@ RUN set -ex && pipenv install --deploy --system
 ADD erd/keanu-schema.sql /queries/
 ADD currency_sql /queries/currency
 ADD sql /queries/civicrm
-
-ADD keanu.yaml /app
