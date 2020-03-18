@@ -1,5 +1,8 @@
--- ORDER: 80
+-- ORDER: 58
 -- DELETE FROM broadcast_metric WHERE metric IN ('activated', 'activated_rate')
+
+-- Country breakdown also for metrics:
+-- activated_rate - depends on: activated
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 SET @active = (SELECT id FROM segment WHERE name = 'Active');

@@ -2,6 +2,9 @@
 -- DELETE FROM unsub
 -- DELETE FROM broadcast_metric WHERE metric IN ('unsubs', 'unsub_rate')
 
+-- Country breakdown also for metrics:
+-- unsub_rate
+
 SET @last_contact := (SELECT MAX(id) FROM contact);
 
 -- Store which broadcasts are going to be added to unsub table to then update unsub counts
@@ -26,14 +29,27 @@ INSERT INTO unsub (broadcast_id, contact_id, created_at, external_system, extern
 ;
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
+CREATE TEMPORARY TABLE bm_segment AS
+  SELECT @everyone AS id
+  UNION
+  SELECT s.id from segment s JOIN segmentation sn ON sn.id = s.segmentation_id
+  WHERE sn.name = 'Country';
+CREATE INDEX bm_segment_id ON bm_segment (id);
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
-  SELECT
-    b.id, b.name, @Everyone, 'unsubs', COUNT(DISTINCT contact_id)
+SELECT
+  b.id, b.name, seg.id, 'unsubs', COUNT(DISTINCT u.contact_id)
   FROM unsub u
-  JOIN broadcast b ON b.id = u.broadcast_id
-  JOIN updated_broadcast ub ON ub.id = b.id
-  GROUP BY b.id
+         JOIN broadcast b ON b.id = u.broadcast_id
+         JOIN updated_broadcast ub ON ub.id = b.id
+         JOIN bm_segment seg
+         JOIN contact_segment cs
+             ON u.contact_id = cs.contact_id
+             AND cs.segment_id = seg.id
+             AND cs.joined_at <= b.sent_at
+             AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
+
+  GROUP BY b.id, seg.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
@@ -50,3 +66,5 @@ SELECT
              AND b1.segment_id = b2.segment_id
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
+
+DROP TABLE bm_segment;

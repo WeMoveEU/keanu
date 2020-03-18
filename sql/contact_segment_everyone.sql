@@ -1,4 +1,4 @@
--- ORDER: 63
+-- ORDER: 43
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Everyone'
 
 -- BEGIN INCREMENTAL

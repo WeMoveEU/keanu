@@ -1,4 +1,4 @@
--- ORDER: 66
+-- ORDER: 46
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.external_system = 'civicrm_option_group' AND sn.name != 'Active status'
 
 -- BEGIN INCREMENTAL
