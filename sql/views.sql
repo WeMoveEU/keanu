@@ -27,3 +27,25 @@ CREATE VIEW contribution_recur_to_campaign AS
 
   WHERE rd.is_test = 0
 ;
+
+-- Broadcast info and main metrics displayed in broadcast lists
+DROP VIEW IF EXISTS broadcast_summary;
+
+CREATE VIEW broadcast_summary AS
+  SELECT
+    b.id, b.name, b.ask_type, b.language, b.broadcast_test_id, b.sent_at, b.campaign_id,
+    r.segment_id,
+    r.value AS recipients,
+    o.value AS openers,
+    c.value AS clickers,
+    u.value AS unsubs,
+    a.value AS converted,
+    f.value AS likely_forwarders
+  FROM broadcast b
+  JOIN broadcast_metric r ON r.broadcast_id = b.id AND r.metric = 'recipients'
+  JOIN broadcast_metric o ON o.broadcast_id = b.id AND o.segment_id = r.segment_id AND o.metric = 'openers'
+  JOIN broadcast_metric c ON c.broadcast_id = b.id AND c.segment_id = r.segment_id AND c.metric = 'clickers'
+  JOIN broadcast_metric u ON u.broadcast_id = b.id AND u.segment_id = r.segment_id AND u.metric = 'unsubs'
+  JOIN broadcast_metric a ON a.broadcast_id = b.id AND a.segment_id = r.segment_id AND a.metric = 'converted'
+  JOIN broadcast_metric f ON f.broadcast_id = b.id AND f.segment_id = r.segment_id AND f.metric = 'likely_forwarders'
+;
