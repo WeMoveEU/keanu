@@ -8,6 +8,8 @@ SET @last_contact := (SELECT MAX(id) FROM contact);
 SET @last_open = (SELECT MAX(external_id) FROM open WHERE external_system = 'civicrm_mailing_event_opened');
 -- END INCREMENTAL
 
+
+
 INSERT INTO open (broadcast_id, contact_id, created_at, external_system, external_id)
   SELECT
     b.id, q.contact_id, o.time_stamp, 'civicrm_mailing_event_opened', o.id
@@ -29,18 +31,37 @@ CREATE TEMPORARY TABLE updated_broadcast AS
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
-  SELECT
-    b.id, b.name, @Everyone, 'openers', COUNT(DISTINCT contact_id)
+-- We need Country breakdown for openers_to_recipients, so we need openers
+CREATE TEMPORARY TABLE bm_segment AS
+  SELECT @everyone AS id
+  UNION
+  SELECT s.id from segment s JOIN segmentation sn ON sn.id = s.segmentation_id
+  WHERE sn.name = 'Country';
+CREATE INDEX bm_segment_id ON bm_segment (id);
+
+-- OPENERS
+INSERT INTO broadcast_metric -- openers
+            (broadcast_id, broadcast_name, segment_id, metric, value)
+SELECT
+  b.id, b.name, seg.id, 'openers', COUNT(DISTINCT o.contact_id)
   FROM open o
-  JOIN broadcast b ON b.id = o.broadcast_id
-  JOIN updated_broadcast ub ON ub.id = b.id
-  GROUP BY b.id
+         JOIN broadcast b ON b.id = o.broadcast_id
+         JOIN updated_broadcast ub ON ub.id = b.id
+         JOIN contact_segment cs
+             ON cs.contact_id = o.contact_id
+             AND cs.joined_at <= b.sent_at
+             AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
+         JOIN bm_segment seg
+             ON cs.segment_id = seg.id
+
+  GROUP BY b.id, seg.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+-- OPENS
+INSERT INTO broadcast_metric -- opens
+            (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
     b.id, b.name, @Everyone, 'opens', COUNT(o.id)
   FROM open o
@@ -51,7 +72,9 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+-- LIKELY FORWARDERS
+INSERT INTO broadcast_metric -- likely_forwarders
+            (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
     id, name, @Everyone, 'likely_forwarders', COUNT(contact_id)
   FROM
@@ -69,3 +92,5 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 ;
 
 DROP TABLE updated_broadcast;
+
+DROP TABLE bm_segment;

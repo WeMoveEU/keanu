@@ -1,8 +1,22 @@
 -- ORDER: 57
 -- DELETE FROM broadcast_metric WHERE metric IN ('openers_rate', 'clickers_rate', 'clickers_to_openers', 'converted_to_clickers', 'sharers_rate', 'likely_forwarders_rate', 'bounce_rate', 'spam_rate')
 
+SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+CREATE TEMPORARY TABLE bm_segment AS
+  SELECT @everyone AS id
+  UNION
+  SELECT s.id from segment s JOIN segmentation sn ON sn.id = s.segmentation_id
+  WHERE sn.name = 'Country';
+
+CREATE INDEX bm_segment_id ON bm_segment (id);
+-- Country breakdown also for metrics:
+-- openers_rate - depends on: openers (open.sql) and recipients (broadcast_metric.sql)
+-- clickers_to_openers - depends on: clickers (click.sql) and openers
+-- converted_to_clickers - depends on: converted (broadcast_metric.sql) and clickers
+
+INSERT INTO broadcast_metric -- openers_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'openers_rate',
   b1.value / b2.value
@@ -14,8 +28,8 @@ SELECT
          ;
 
 
-
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- clickers_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'clickers_rate',
   b1.value / b2.value
@@ -27,7 +41,8 @@ SELECT
          ;
 
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- clickers_to_openers
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'clickers_to_openers',
   b1.value / b2.value
@@ -38,7 +53,8 @@ SELECT
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- converted_to_clickers
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'converted_to_clickers',
   b1.value / b2.value
@@ -50,7 +66,8 @@ SELECT
          ;
 
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- sharers_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'sharers_rate',
   b1.value / b2.value
@@ -62,7 +79,8 @@ SELECT
          ;
 
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- likely_forwarders_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'likely_forwarders_rate',
   b1.value / b2.value
@@ -74,7 +92,8 @@ SELECT
          ;
 
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- bounce_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'bounce_rate',
   b1.value / b2.value
@@ -85,7 +104,8 @@ SELECT
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
 
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
+INSERT INTO broadcast_metric -- spam_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
   b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'spam_rate',
   b1.value / b2.value
@@ -95,3 +115,5 @@ SELECT
              AND b1.segment_id = b2.segment_id
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
+
+DROP TABLE bm_segment;

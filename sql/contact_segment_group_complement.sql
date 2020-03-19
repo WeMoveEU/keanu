@@ -1,4 +1,4 @@
--- ORDER: 61
+-- ORDER: 41
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = cs.segmentation_id WHERE sn.name = 'Membership' AND s.name IN ('Expiring', 'Expired')
 
 
