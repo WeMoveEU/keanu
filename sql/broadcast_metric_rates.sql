@@ -27,7 +27,6 @@ SELECT
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
 
-
 INSERT INTO broadcast_metric -- clickers_rate
             (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
@@ -40,6 +39,17 @@ SELECT
              ON DUPLICATE KEY UPDATE value=VALUES(value)
          ;
 
+INSERT INTO broadcast_metric -- unsub_rate
+            (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'unsub_rate',
+    b1.value / b2.value
+  FROM broadcast_metric b1
+  JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
+   AND b1.metric = 'unsubs' AND b2.metric = 'recipients' AND b1.segment_id = b2.segment_id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
 
 INSERT INTO broadcast_metric -- clickers_to_openers
             (broadcast_id, broadcast_name, segment_id, metric, value)
