@@ -1,15 +1,13 @@
 import os
-import pandas as pd
 import click
 import collections
 import itertools
 # >>> list(itertools.chain(l1, l2, l3))
 from sqlalchemy import text, bindparam
-from time import time
+from sqlalchemy.schema import Table, MetaData
+from datetime import datetime, timedelta
 
-# import ipdb
-
-ORDER = 70
+ORDER = 60
 
 # Calculate membership
 # Member -> civicrm group subscription on Mamber
@@ -33,15 +31,27 @@ DELETE cs
     WHERE sn.name = 'Membership'
     """)
 
+# named tuple resembling hte contact_segment table row
+# its a tuple but with attribute access, makes code more readable.
+ContactSegment = collections.namedtuple(
+    "ContactSegment",
+    ['segmentation_id', 'segment_id', 'contact_id', 'joined_at', 'left_at'])
+
+Segment = collections.namedtuple(
+    "Segment",
+    ["segmentation_id", "segment_id"])
 
 def execute(_):
     src = _.source.connection()
     dst = _.destination.connection()
+    meta = MetaData(dst)
+    table = Table("contact_segment", meta, autoload=True)
 
     member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
     expiring_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expiring'").fetchone()[0]
     expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
     max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
+
 
     # batch until max_contact_id
     # get history for group in question
@@ -59,88 +69,98 @@ def execute(_):
 
         cont = contacts(src, contact_range)
 
-        for contact_id, event_idx in hist.groupby("contact_id").groups.items():
-            events = hist.iloc[event_idx]
-            mem_segment = group_history_to_segments(events, contact_id, member_segment_id)
+        for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
+            mem_segment = group_history_to_segments(list(events), contact_id,
+                                                    Segment(membership_sn_id, member_segment_id))
 
             exp_segments = add_expiring_segments(mem_segment,
                                                  contact_id,
-                                                 cont.loc[contact_id,"created_at"],
-                                                 expiring_segment_id, expired_segment_id)
+                                                 cont[contact_id]["created_at"],
+                                                 Segment(membership_sn_id, expiring_segment_id),
+                                                 Segment(membership_sn_id, expired_segment_id))
 
             acc.append(mem_segment)
             acc.append(exp_segments)
         
-        all_cs = pd.DataFrame(itertools.chain(*acc), columns=["segment_id", "contact_id", "joined_at", "left_at"])
-        all_cs.insert(0, "segmentation_id", membership_sn_id)
-
-        all_cs.to_sql("contact_segment", dst, index=False, if_exists='append')
+        all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
+        dst.execute(table.insert(), all_cs)
     click.echo("\r🐰 Done.")
 
-def group_history_to_segments(events, contact_id, segment_id):
+def group_history_to_segments(events, contact_id, segment):
+    """
+events - list of subscription events from CiviCRM, returned by group_history(...)
+contact_id
+segment - the segment this gorup maps to
+    """
     cs = []
 
-    ct = len(events)
     NON_MEMBER = 0
     MEMBER = 1
     state = NON_MEMBER
     last_join = None
 
-    for i in range(0, ct):
-        e = events.iloc[i]
+    for e in events:
 
         if state == NON_MEMBER and e["is_join"]:
             state = MEMBER
             last_join = e["date"]
         elif state == MEMBER and not e["is_join"]:
             state = NON_MEMBER
-            cs.append((segment_id, contact_id, last_join, e["date"]))
+            cs.append(ContactSegment(segment.segmentation_id, segment.segment_id, contact_id, last_join, e["date"]))
+        elif state == MEMBER and e["is_join"]:
+            pass
+        elif state == NON_MEMBER and not e["is_join"]:
+            pass
+
 
     if state == MEMBER:
-        cs.append((segment_id, contact_id, last_join, None))
+        cs.append(ContactSegment(segment.segmentation_id, segment.segment_id, contact_id, last_join, None))
     return cs
 
-def fill_interval(from_time, to_time, expiration, contact_id, seg1_id, seg2_id):
+def fill_interval(from_time, to_time, expiration, contact_id, seg1, seg2):
     acc = []
-    now = pd.Timestamp.now()
+    now = datetime.utcnow()
     would_expire = from_time + expiration
 
     if would_expire < (to_time or now):
-        acc.append((seg1_id, contact_id, from_time, would_expire))
-        acc.append((seg2_id, contact_id, would_expire, to_time)) # to_time can be nil
+        acc.append(ContactSegment(seg1.segmentation_id, seg1.segment_id, contact_id, from_time, would_expire))
+        acc.append(ContactSegment(seg2.segmentation_id, seg2.segment_id, contact_id, would_expire, to_time)) # to_time can be nil
     else:
-        acc.append((seg1_id, contact_id, from_time, to_time)) # to_time can be nil
+        acc.append(ContactSegment(seg1.segmentation_id, seg1.segment_id, contact_id, from_time, to_time)) # to_time can be nil
     return acc
 
-EXPIRATION = pd.Timedelta('1Y')
+EXPIRATION = timedelta(days=365)
 
-def add_expiring_segments(member_segments, contact_id, created_at, expiring_seg_id, expired_seg_id):
-    now = pd.Timestamp.now()
+def add_expiring_segments(member_segments, contact_id, created_at, expiring_seg, expired_seg):
+    now = datetime.utcnow()
     cs = []
 
     # when a contact is created, they are expiring
     # if they did not become members at the same time
 
-    if len(member_segments) > 0:
+    try:
         # this was a member at least once
-        mem_at = member_segments[0][2]
+        mem_at = member_segments[0].joined_at
 
         if mem_at > created_at:
-            cs += fill_interval(created_at, mem_at, EXPIRATION, contact_id, expiring_seg_id, expired_seg_id)
+            cs += fill_interval(created_at, mem_at, EXPIRATION, contact_id, expiring_seg, expired_seg)
         else:
             pass # There is no expiring period before being a member
 
         # now, after each member period
-        for i in range(0, len(member_segments)):
-            mem_from = member_segments[i][3]
+        for i, member_segment in enumerate(member_segments):
+            mem_from = member_segment.left_at
 
             if mem_from is None:  # this membership still continues
                 break
 
-            mem_to = i + 1 < len(member_segments) and member_segments[i+1][2] or None
-            cs += fill_interval(mem_from, mem_to, EXPIRATION, contact_id, expiring_seg_id, expired_seg_id)
-    else:
-        cs += fill_interval(created_at, None, EXPIRATION, contact_id, expiring_seg_id, expired_seg_id)
+            try:
+                mem_to = member_segments[i+1].joined_at
+            except IndexError:
+                mem_to = None
+            cs += fill_interval(mem_from, mem_to, EXPIRATION, contact_id, expiring_seg, expired_seg)
+    except IndexError:
+        cs += fill_interval(created_at, None, EXPIRATION, contact_id, expiring_seg, expired_seg)
 
     return cs
 
@@ -149,13 +169,19 @@ def contacts(conn, contact_id_range):
     sql = """
     SELECT * FROM contact WHERE id >= :contact_min AND id < :contact_max
     """
-    return pd.read_sql(text(sql), conn,
-                       index_col="id",
-                       params={ "contact_min": contact_id_range[0],
-                                "contact_max": contact_id_range[1] })
+    return {
+        row[0]: row
+        for
+        row in conn.execute(text(sql),
+                            contact_min=contact_id_range[0],
+                            contact_max=contact_id_range[1])
+    }
 
 
 def group_history(_, conn, contact_range, group_id):
+    """Selects subscription history from CiviCRM, for contact_range and for
+group_id or a list of group ids, if group_id is list.
+    """
     sql = """
     SELECT
       group_id,
@@ -174,13 +200,11 @@ def group_history(_, conn, contact_range, group_id):
         subscription_history=_.source.table('civicrm_subscription_history')
     )
 
-    return pd.read_sql(text(sql).bindparams(bindparam('gid', expanding=True)),
-                       conn, params={
-                           'gid': isinstance(group_id, int)
-                           and [group_id]
-                           or list(map(str, group_id)),
-                           'contact_min': contact_range[0], 'contact_max': contact_range[1]
-                       })
+    return conn.execute(text(sql).bindparams(bindparam('gid', expanding=True)),
+                        gid=isinstance(group_id, int) and [group_id] or list(map(str, group_id)),
+                        contact_min=contact_range[0],
+                        contact_max=contact_range[1])
+
 
 
 def prop_loader():
