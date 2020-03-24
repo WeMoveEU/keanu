@@ -3,11 +3,15 @@ import sys
 from pathlib import Path
 from glob import glob
 from importlib import import_module
-from . import tracing
+from . import tracing, db
 from time import time
 import click
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
+from threading import Thread
+from collections import namedtuple
+
+ThreadInfo = namedtuple('ThreadInfo', ['index', 'count'])
 
 class PyLoader(tracing.Tags):
     """
@@ -23,7 +27,8 @@ class PyLoader(tracing.Tags):
             'incremental': False,
             'display': False,
             'warn': False,
-            'dry_run': False
+            'dry_run': False,
+            'threads': 1
         }
         _.options.update(mode)
 
@@ -49,7 +54,7 @@ class PyLoader(tracing.Tags):
         if _.defines('IGNORE'):
             _.ignore = _.module.IGNORE
         else:
-            _.ignore = not _.defines('execute')
+            _.ignore = not (_.defines('execute') or _.defines('execute_parallel'))
 
     @staticmethod
     def import_module(filename):
@@ -112,7 +117,22 @@ class PyLoader(tracing.Tags):
                     'script.{}'.format(_.filename.replace('/', '.')),
                     tags=_.tracing_tags
                     ):
-                result = _.module.execute(_)
+
+                if _.defines('execute') and _.options['threads'] == 1:
+                    result = _.module.execute(_)
+                if _.defines('execute_parallel') and _.options['threads'] >= 1:
+                    thr_ct = _.options['threads']
+                    def execute_then_close_connections(this, thr):
+                        try:
+                            return _.module.execute_parallel(this, thr)
+                        finally:
+                            db.close_connections()
+
+                    threads = [Thread(target=execute_then_close_connections, args=(_, ThreadInfo(i, thr_ct)))
+                               for i in range(thr_ct)]
+                    [t.start() for t in threads]
+                    [t.join() for t in threads]
+                    result = None
 
             yield 'py.script.end', {
                 'script': _,
@@ -126,6 +146,16 @@ class PyLoader(tracing.Tags):
             msg = msg.replace('\\n', "\n")
             click.echo(message=msg, err=True)
             raise click.Abort(msg)
+
+    @staticmethod
+    def batch_for_thread(iterable, thread):
+        for i, v in enumerate(iterable):
+            if i % thread.count == thread.index:
+                yield v
+
+    @staticmethod
+    def thread_info(thread_index, thread_count):
+        return ThreadInfo(thread_index, thread_count)
 
     def defines(_, varname):
         return varname in dir(_.module)
