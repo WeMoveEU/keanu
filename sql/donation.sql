@@ -1,6 +1,7 @@
 -- ORDER: 36
 -- DELETE FROM payment
 -- DELETE FROM donation
+-- DELETE FROM campaign_metric WHERE metric = 'donations_total_amount'
 
 -- PREPARATION -----------------------------------------------------------------
 -- I create a temporary table all_contributions that keeps all the logic of
@@ -160,6 +161,19 @@ UPDATE donation d
     GROUP BY d.id
   ) fail ON d.id = fail.id
   SET d.fail_count = fail.fail_count
+;
+
+-- Update campaign aggregate
+INSERT INTO campaign_metric
+            (campaign_id, segment_id, metric, value)
+  SELECT
+    ap.campaign_id, @everyone, 'donations_total_amount', SUM(d.total_amount)
+  FROM donation d
+  JOIN action a ON a.id = d.action_id
+  JOIN action_page ap ON ap.id = a.action_page_id
+  GROUP BY ap.campaign_id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
 -- CLEANUP -------------------------------------------------------------------

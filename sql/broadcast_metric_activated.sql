@@ -1,5 +1,6 @@
 -- ORDER: 58
 -- DELETE FROM broadcast_metric WHERE metric IN ('activated', 'activated_rate')
+-- DELETE FROM campaign_metric WHERE metric = 'activated'
 
 -- Country breakdown also for metrics:
 -- activated_rate - depends on: activated
@@ -46,6 +47,18 @@ INSERT INTO broadcast_metric -- activated rate
   JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
    AND b1.metric = 'activated' AND b2.metric = 'recipients'
    AND b1.segment_id = b2.segment_id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO campaign_metric
+            (campaign_id, segment_id, metric, value)
+  SELECT
+    ap.campaign_id, @everyone, 'activated', COUNT(DISTINCT a.contact_id)
+  FROM action a
+  JOIN action_page ap ON ap.id = a.action_page_id
+  JOIN contact_segment act_cs ON act_cs.trigger_action_id = a.id AND act_cs.segment_id = @active
+  GROUP BY ap.campaign_id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
