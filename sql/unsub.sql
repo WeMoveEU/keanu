@@ -57,3 +57,4 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 ;
 
 DROP TABLE updated_broadcast;
+DROP TABLE bm_segment;
