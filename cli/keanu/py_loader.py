@@ -133,6 +133,8 @@ class PyLoader(tracing.Tags):
                     [t.start() for t in threads]
                     [t.join() for t in threads]
                     result = None
+                else:
+                    result = _.module.execute(_)
 
             yield 'py.script.end', {
                 'script': _,
