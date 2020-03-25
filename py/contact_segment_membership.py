@@ -89,50 +89,6 @@ def execute_parallel(_, thread):
 
 
 
-def execute(_):
-    src = _.source.connection()
-    dst = _.destination.connection()
-    meta = MetaData(dst)
-    table = Table("contact_segment", meta, autoload=True)
-
-    member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
-    expiring_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expiring'").fetchone()[0]
-    expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
-    max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
-
-
-    # batch until max_contact_id
-    # get history for group in question
-    # group by contact_id
-    # for each contact_id, story
-    # calculate tuples for join leave
-    # join them and put into DT
-
-    for start in range(0, max_contact_id + 1, BATCH_SIZE):
-        contact_range = (start, start + BATCH_SIZE)
-        click.echo("\033[2K\r🚀 range {}/{}\b".format(start, max_contact_id), nl=False)
-        acc = []
-
-        hist = group_history(_, src, contact_range, member_group_id)
-
-        cont = contacts(src, contact_range)
-
-        for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
-            mem_segment = group_history_to_segments(list(events), contact_id,
-                                                    Segment(membership_sn_id, member_segment_id))
-
-            exp_segments = add_expiring_segments(mem_segment,
-                                                 contact_id,
-                                                 cont[contact_id]["created_at"],
-                                                 Segment(membership_sn_id, expiring_segment_id),
-                                                 Segment(membership_sn_id, expired_segment_id))
-
-            acc.append(mem_segment)
-            acc.append(exp_segments)
-        
-        all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
-        dst.execute(table.insert(), all_cs)
-    click.echo("\r🐰 Done.")
 
 
 def group_history_to_segments(events, contact_id, segment):
