@@ -134,33 +134,33 @@ WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
 -- AGGREGATIONS ------------------------------------------------------------
 -- Now update donations to set all aggregates for success payments
 UPDATE donation d
-    JOIN
-    (SELECT
-        d.id,
-        d.amount * count(p.id) as total_amount,
-        count(p.id) as payment_count
+  JOIN (
+    SELECT
+      d.id,
+      d.amount * count(p.id) as total_amount,
+      count(p.id) as payment_count
     FROM donation d
-        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='success'
+    LEFT JOIN payment p ON p.donation_id = d.id AND p.status='success'
 
     GROUP BY d.id
-        ) succ ON d.id = succ.id
-SET
+  ) succ ON d.id = succ.id
+  SET
     d.total_amount = succ.total_amount,
     d.payment_count = succ.payment_count
-    ;
+;
 
--- Update donations with fialed_count
+-- Update donations with failed_count
 UPDATE donation d
-    JOIN
-    (SELECT
-        d.id,
-        count(p.id) as fail_count
+  JOIN (
+    SELECT
+      d.id,
+      count(p.id) as fail_count
     FROM donation d
-        LEFT JOIN payment p ON p.donation_id = d.id AND p.status='fail'
+    LEFT JOIN payment p ON p.donation_id = d.id AND p.status='fail'
     GROUP BY d.id
-        ) fail ON d.id = fail.id
-SET d.fail_count = fail.fail_count
-    ;
+  ) fail ON d.id = fail.id
+  SET d.fail_count = fail.fail_count
+;
 
 -- CLEANUP -------------------------------------------------------------------
 DROP TABLE all_contributions;

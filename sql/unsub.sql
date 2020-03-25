@@ -39,17 +39,17 @@ CREATE TEMPORARY TABLE bm_segment AS
 CREATE INDEX bm_segment_id ON bm_segment (id);
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
-SELECT
-  b.id, b.name, seg.id, 'unsubs', COUNT(DISTINCT u.contact_id)
+  SELECT
+    b.id, b.name, seg.id, 'unsubs', COUNT(DISTINCT u.contact_id)
   FROM unsub u
-         JOIN broadcast b ON b.id = u.broadcast_id
-         JOIN updated_broadcast ub ON ub.id = b.id
-         JOIN bm_segment seg
-         JOIN contact_segment cs
-             ON u.contact_id = cs.contact_id
-             AND cs.segment_id = seg.id
-             AND cs.joined_at <= b.sent_at
-             AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
+  JOIN broadcast b ON b.id = u.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  JOIN bm_segment seg
+  JOIN contact_segment cs
+    ON u.contact_id = cs.contact_id
+    AND cs.segment_id = seg.id
+    AND cs.joined_at <= b.sent_at
+    AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
 
   GROUP BY b.id, seg.id
 
