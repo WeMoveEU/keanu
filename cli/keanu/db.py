@@ -14,7 +14,7 @@ def get_engine(url, dry_run=False):
   if dry_run:
     return DryRunEngine()
   else:
-    return create_engine(url)
+    return create_engine(url, pool_size=2, max_overflow=30)
 
 def get_connection(engine):
   tl = threading.local()
