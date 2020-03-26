@@ -1,4 +1,3 @@
--- IGNORE
 -- ORDER: 60
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id WHERE s.external_id IS NOT NULL AND s.external_system = 'civicrm_group'
 
