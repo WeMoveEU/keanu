@@ -74,5 +74,4 @@ INSERT INTO broadcast_metric -- clicks
 ;
 
 DROP TABLE updated_broadcast;
-
 DROP TABLE bm_segment;

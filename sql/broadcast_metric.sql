@@ -1,5 +1,6 @@
 -- ORDER: 56
 -- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted', 'sharers', 'shares', 'oneoff_donations', 'oneoff_amount', 'monthly_donations', 'monthly_amount')
+-- DELETE FROM campaign_metric WHERE metric IN ('messages')
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
@@ -9,6 +10,11 @@ CREATE TEMPORARY TABLE updated_broadcast AS
   SELECT DISTINCT b.id
   FROM broadcast b LEFT JOIN broadcast_metric m ON m.broadcast_id = b.id AND m.metric = 'recipients'
   WHERE m.id IS NULL
+;
+
+CREATE TEMPORARY TABLE updated_campaign AS
+  SELECT DISTINCT campaign_id AS id
+  FROM broadcast b JOIN updated_broadcast ub ON ub.id = b.id
 ;
 
 -- Country breakdown also for metrics:
@@ -37,7 +43,20 @@ SELECT
   GROUP BY b.id, seg.id
 ;
 
+INSERT INTO campaign_metric -- campaign messages
+            (campaign_id, segment_id, metric, value)
+  SELECT
+    camp.id, bm.segment_id, 'messages', SUM(bm.value)
+  FROM updated_campaign camp
+  JOIN broadcast b ON b.campaign_id = camp.id
+  JOIN broadcast_metric bm ON bm.broadcast_id = b.id AND bm.segment_id = @everyone AND bm.metric = 'recipients'
+  GROUP BY camp.id, bm.segment_id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
 DROP TABLE updated_broadcast;
+DROP TABLE updated_campaign;
 
 -- BOUNCES
 INSERT INTO broadcast_metric -- bounces
