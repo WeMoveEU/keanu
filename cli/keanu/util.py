@@ -4,7 +4,7 @@ import click
 from functools import reduce
 from operator import setitem
 from glob import glob
-from .load_script import LoadScript
+from .sql_loader import SqlLoader
 import pygments
 import pygments.formatters
 import pygments.lexers
@@ -23,9 +23,13 @@ def get_scripts(sqldir, mode, source, destination):
     files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
     if len(files) == 0:
         raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='sqldir')
-    scripts = list(map(lambda fn: LoadScript(fn, **opts), files))
-    LoadScript.sort(scripts)
+    scripts = list(map(lambda fn: SqlLoader(fn, **opts), files))
+    SqlLoader.sort(scripts)
     return scripts
+
+def sort_scripts(scripts):
+    return scripts.sort(key=operator.attrgetter('order'))
+
 
 def filter_scripts_by_order(scripts, order):
     if re.match(r"\d+(:\d*)?(,\d+(:\d*?)?)*$", order) is None:

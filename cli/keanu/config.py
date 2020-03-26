@@ -6,6 +6,7 @@ from .batch import Batch
 from .db_source import DBSource
 from .db_destination import DBDestination
 from .sql_transform import SQLTransform
+from .py_transform import PyTransform
 
 class ConfigError(click.ClickException):
     pass
@@ -73,7 +74,25 @@ def build_batch(mode, configuration):
                     raise ConfigError("config file: sql transform without directory or file field")
 
                 batch.add_transform(transform)
+
+            elif 'py' in step:
+                dst = batch.destination
+                if 'source' in step:
+                    source_spec = lambda s: s.name == step['source']
+                else:
+                    source_spec = lambda s: true
+                src = batch.find_source(source_spec)
+
+                if 'directory' in step['py']:
+                    transform = PyTransform(mode, src, dst, directory=step['py']['directory'])
+                elif 'file' in step['py']:
+                    transform = PyTransform(mode, src, dst, filename=step['py']['file'])
+                else:
+                    raise ConfigError("config file: py transform without directory or file field")
+
+                batch.add_transform(transform)
+
             else:
-                raise ConfigError("config file: not an sql transform")
+                raise ConfigError("config file: not a sql or py transform")
     return batch
 

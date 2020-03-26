@@ -14,4 +14,3 @@ class DataStore:
 
     def set_batch(_, b):
         _.batch = b
-

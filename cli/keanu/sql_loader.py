@@ -6,12 +6,12 @@ from sqlalchemy import text
 import click
 from .run_statement import RunStatement
 from . import util
+from . import tracing
 import os
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
-from .tracing import tracer
 
-class LoadScript(RunStatement):
+class SqlLoader(RunStatement, tracing.Tags):
     """
     Class that runs load scripts, that is SQL that loads some data in keanu database.
     It can read extra metadata from the script comments.
@@ -24,6 +24,8 @@ class LoadScript(RunStatement):
     warn - do show warnings from mysql driver (no by default)
     """
     def __init__(_, filename, mode, source, destination):
+        super().__init__()
+
         # filename and class options
         _.filename = filename
         _.options = {
@@ -34,7 +36,6 @@ class LoadScript(RunStatement):
         _.options.update(mode)
         _.source = source
         _.destination = destination
-        _.script_tracer_tags = {}
 
         # defaults
         _.deleteSql = []
@@ -49,7 +50,7 @@ class LoadScript(RunStatement):
         files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
         if len(files) == 0:
             raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='config_or_dir')
-        scripts = list(map(lambda fn: LoadScript(fn, mode, source, destination), files))
+        scripts = list(map(lambda fn: SqlLoader(fn, mode, source, destination), files))
         return scripts
 
     def __str__(_):
@@ -77,7 +78,7 @@ class LoadScript(RunStatement):
                 kv = {x.group(1) : x.group(2)
                       for x in
                       re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))}
-                _.script_tracer_tags.update(kv)
+                _.tracing_tags.update(kv)
 
                 continue
 
@@ -204,9 +205,9 @@ class LoadScript(RunStatement):
             return
 
         connection = _.destination.connection()
-        with tracer.start_active_span(
+        with tracing.tracer.start_active_span(
                 'delete.{}'.format(_.filename.replace('/', '.')),
-                tags=_.tracer_tags):
+                tags=_.tracing_tags):
             with connection.begin() as transaction:
                 yield 'sql.script.start.delete', { 'script': _ }
                 try:
@@ -217,15 +218,14 @@ class LoadScript(RunStatement):
                     raise ctrlc
                 yield 'sql.script.end.delete', { 'script': _ }
 
-
     def execute(_):
         if len(_.statements) == 0:
             return
 
         connection = _.destination.connection()
-        with tracer.start_active_span(
+        with tracing.tracer.start_active_span(
                 'script.{}'.format(_.filename.replace('/', '.')),
-                tags=_.tracer_tags):
+                tags=_.tracing_tags):
             with connection.begin() as transaction:
                 try:
                     yield 'sql.script.start', { 'script': _ }
@@ -241,21 +241,4 @@ class LoadScript(RunStatement):
                     msg = msg.replace('\\n', "\n")
                     click.echo(message=msg, err=True)
                     raise click.Abort(msg)
-            
-
-    @staticmethod
-    def sort(scripts):
-        return scripts.sort(key=operator.attrgetter('order'))
-
-    @property
-    def tracer_tags(_):
-        t = {
-            'incremental': _.options['incremental'] == True,
-            }
-        if _.source:
-            t['source_name'] = _.source.name
-        if _.destination:
-            t['destination_name'] = _.destination.name
-        t.update(_.script_tracer_tags)
-        return t
 
