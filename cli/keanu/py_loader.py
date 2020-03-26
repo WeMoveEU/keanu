@@ -8,7 +8,7 @@ from time import time
 import click
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
-from threading import Thread
+from threading import Thread, Lock
 from collections import namedtuple
 
 ThreadInfo = namedtuple('ThreadInfo', ['index', 'count'])
@@ -22,6 +22,7 @@ class PyLoader(tracing.Tags):
         _.filename = filename
         
         _.module = PyLoader.import_module(filename)
+        _.lock = Lock()
 
         _.options = {
             'incremental': False,
@@ -55,6 +56,8 @@ class PyLoader(tracing.Tags):
             _.ignore = _.module.IGNORE
         else:
             _.ignore = not (_.defines('execute') or _.defines('execute_parallel'))
+
+        _.checkpoint = None
 
     @staticmethod
     def import_module(filename):
@@ -175,3 +178,16 @@ class PyLoader(tracing.Tags):
         m = '.'.join(map(lambda a: strip_py(a), p.parts))
 
         return m
+
+    def get_checkpoint(_, checkpoint):
+        """
+Used to synchronize the checkpoint, which will be max processed id of imput data, between all processing threads. Because input data can grow realtime, we would run into problems if some threads would use a different input boundary.
+        This is the value that should also be saved to last_sync tables.
+        """
+        try:
+            _.lock.acquire()
+            if _.checkpoint is None:
+                _.checkpoint = checkpoint
+            return _.checkpoint
+        finally:
+            _.lock.release()

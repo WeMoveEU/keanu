@@ -2,10 +2,12 @@ import os
 import click
 import collections
 import itertools
+import last_sync
 # >>> list(itertools.chain(l1, l2, l3))
 from sqlalchemy import text, bindparam
 from sqlalchemy.schema import Table, MetaData
 from datetime import datetime, timedelta
+from civicrm import group_history, group_history_max_id
 
 ORDER = 60
 
@@ -41,6 +43,9 @@ Segment = collections.namedtuple(
     "Segment",
     ["segmentation_id", "segment_id"])
 
+
+
+
 def execute_parallel(_, thread):
     src = _.source.connection()
     dst = _.destination.connection()
@@ -50,8 +55,9 @@ def execute_parallel(_, thread):
     member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
     expiring_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expiring'").fetchone()[0]
     expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
-    max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
 
+    max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
+    max_contact_id = _.get_checkpoint(max_contact_id)
 
     # batch until max_contact_id
     # get history for group in question
@@ -86,7 +92,6 @@ def execute_parallel(_, thread):
         all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
         dst.execute(table.insert(), all_cs)
     # click.echo("\r🐰 Done.")
-
 
 
 
@@ -170,45 +175,32 @@ def add_expiring_segments(member_segments, contact_id, created_at, expiring_seg,
     return cs
 
 
-def contacts(conn, contact_id_range):
+def contacts(conn, contact_range=None, contact_select=None):
+    if contact_range is not None:
+        contact_sql = """
+        id >= {min} AND id < {max}
+        """.format(min=contact_range[0], max=contact_range[1])
+        extra_bindings = []
+    elif contact_select is not None:
+        contact_sql = """
+        contact.id IN ({contact_select})
+        """.format(contact_select=contact_select)
+        extra_bindings = contact_select.get_children()
+
     sql = """
-    SELECT * FROM contact WHERE id >= :contact_min AND id < :contact_max
-    """
+    SELECT * FROM contact WHERE {contact_sql}
+    """.format(contact_sql=contact_sql)
+
+    sql = text(sql)
+    sql = sql.bindparams(bindparam('gid', expanding=True))
+    sql = sql.bindparams(*extra_bindings)
     return {
         row[0]: row
         for
-        row in conn.execute(text(sql),
-                            contact_min=contact_id_range[0],
-                            contact_max=contact_id_range[1])
+        row in conn.execute(sql)
     }
 
 
-def group_history(_, conn, contact_range, group_id):
-    """Selects subscription history from CiviCRM, for contact_range and for
-group_id or a list of group ids, if group_id is list.
-    """
-    sql = """
-    SELECT
-      group_id,
-      contact_id,
-      date,
-      CASE WHEN status = 'Added' THEN true
-                                 ELSE false
-      END as is_join
-    FROM {subscription_history}
-          WHERE group_id IN :gid
-                AND status IN ('Added', 'Removed')
-                AND contact_id >= :contact_min
-                AND contact_id < :contact_max
-    ORDER by group_id, contact_id, date
-    """.format(
-        subscription_history=_.source.table('civicrm_subscription_history')
-    )
-
-    return conn.execute(text(sql).bindparams(bindparam('gid', expanding=True)),
-                        gid=isinstance(group_id, int) and [group_id] or list(map(str, group_id)),
-                        contact_min=contact_range[0],
-                        contact_max=contact_range[1])
 
 
 
