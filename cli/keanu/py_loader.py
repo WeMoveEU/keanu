@@ -10,6 +10,7 @@ from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 from threading import Thread, Lock
 from collections import namedtuple
+import itertools
 
 ThreadInfo = namedtuple('ThreadInfo', ['index', 'count'])
 
@@ -55,7 +56,7 @@ class PyLoader(tracing.Tags):
         if _.defines('IGNORE'):
             _.ignore = _.module.IGNORE
         else:
-            _.ignore = not (_.defines('execute') or _.defines('execute_parallel'))
+            _.ignore = not _.defines('execute')
 
         _.checkpoint = None
 
@@ -121,23 +122,7 @@ class PyLoader(tracing.Tags):
                     tags=_.tracing_tags
                     ):
 
-                if _.defines('execute') and _.options['threads'] == 1:
-                    result = _.module.execute(_)
-                if _.defines('execute_parallel') and _.options['threads'] >= 1:
-                    thr_ct = _.options['threads']
-                    def execute_then_close_connections(this, thr):
-                        try:
-                            return _.module.execute_parallel(this, thr)
-                        finally:
-                            db.close_connections()
-
-                    threads = [Thread(target=execute_then_close_connections, args=(_, ThreadInfo(i, thr_ct)))
-                               for i in range(thr_ct)]
-                    [t.start() for t in threads]
-                    [t.join() for t in threads]
-                    result = None
-                else:
-                    result = _.module.execute(_)
+                result = _.module.execute(_)
 
             yield 'py.script.end', {
                 'script': _,
@@ -153,7 +138,7 @@ class PyLoader(tracing.Tags):
             raise click.Abort(msg)
 
     @staticmethod
-    def batch_for_thread(iterable, thread):
+    def slice_for_thread(iterable, thread):
         for i, v in enumerate(iterable):
             if i % thread.count == thread.index:
                 yield v
@@ -178,6 +163,41 @@ class PyLoader(tracing.Tags):
         m = '.'.join(map(lambda a: strip_py(a), p.parts))
 
         return m
+
+    def threaded(_, function):
+        if _.options['threads'] > 1:
+            def execute_then_close_connections(thr):
+                try:
+                    r = function(thr)
+                    return ("ok", r)
+                except Exception as exc:
+                    click.echo(exc)
+                    return ("error", exc.__class__.__name__, exc.args)
+                finally:
+                    db.close_connections()
+
+            thr_ct  = _.options['threads']
+            threads = [Thread(target=execute_then_close_connections, args=(ThreadInfo(i, thr_ct),))
+                       for i in range(thr_ct)]
+
+            [t.start() for t in threads]
+
+            [t.join() for t in threads]
+            # Python multi-threading is very lame.
+            # Can't get return value with oh-so-basic threading.Thread :-<
+            #  concurrent.futures.ThreadPoolExecutor crashes with SIGSEGV (even official docs examples)
+            # TODO: test: from multiprocessing.pool import ThreadPool
+            # failures = list(itertools.filterfalse(lambda a: a[0] == 'ok', results))
+            # if len(failures) > 0:
+            #     f = failures[0]
+            #     raise click.Abort("Exception (in thread): {ex} with {args}".format(
+            #         ex=f[1], args=f[2]))
+            # else:
+            #     return list(map(lambda a: a[1], results))
+
+        else:
+            return function(ThreadInfo(0,1))
+
 
     def get_checkpoint(_, checkpoint):
         """

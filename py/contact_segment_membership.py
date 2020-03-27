@@ -3,11 +3,12 @@ import click
 import collections
 import itertools
 import last_sync
+from util import ranges, nest_sql
 # >>> list(itertools.chain(l1, l2, l3))
 from sqlalchemy import text, bindparam
 from sqlalchemy.schema import Table, MetaData
 from datetime import datetime, timedelta
-from civicrm import group_history, group_history_max_id
+from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed
 
 ORDER = 60
 
@@ -21,7 +22,7 @@ ORDER = 60
 # update will check existing rows
 
 
-BATCH_SIZE = 100000
+BATCH_SIZE = 1000000
 
 def delete(_):
     dst = _.destination.connection()
@@ -45,8 +46,7 @@ Segment = collections.namedtuple(
 
 
 
-
-def execute_parallel(_, thread):
+def execute(_):
     src = _.source.connection()
     dst = _.destination.connection()
     meta = MetaData(dst)
@@ -57,7 +57,6 @@ def execute_parallel(_, thread):
     expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
 
     max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
-    max_contact_id = _.get_checkpoint(max_contact_id)
 
     # batch until max_contact_id
     # get history for group in question
@@ -66,33 +65,54 @@ def execute_parallel(_, thread):
     # calculate tuples for join leave
     # join them and put into DT
 
-    batches = range(0, max_contact_id + 1, BATCH_SIZE)
-    for start in _.batch_for_thread(batches, thread):
-        contact_range = (start, start + BATCH_SIZE)
-        #click.echo("\033[2K\r🚀 range {}/{}\b".format(start, max_contact_id), nl=False)
-        acc = []
+    def full_load(thread):
+        src = _.source.connection()
+        dst = _.destination.connection()
 
-        hist = group_history(_, src, contact_range, member_group_id)
+        batches = ranges(range(0, max_contact_id + 1, BATCH_SIZE), last=(max_contact_id+1))
+        for contact_range in _.slice_for_thread(batches, thread):
 
-        cont = contacts(src, contact_range)
+            acc = []
 
-        for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
-            mem_segment = group_history_to_segments(list(events), contact_id,
-                                                    Segment(membership_sn_id, member_segment_id))
+            hist = group_history(_, src, member_group_id, contact_range=contact_range)
 
-            exp_segments = add_expiring_segments(mem_segment,
-                                                 contact_id,
-                                                 cont[contact_id]["created_at"],
-                                                 Segment(membership_sn_id, expiring_segment_id),
-                                                 Segment(membership_sn_id, expired_segment_id))
+            cont = contacts(src, contact_range=contact_range)
 
-            acc.append(mem_segment)
-            acc.append(exp_segments)
+            for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
+                mem_segment = group_history_to_segments(list(events), contact_id,
+                                                        Segment(membership_sn_id, member_segment_id))
 
-        all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
-        dst.execute(table.insert(), all_cs)
-    # click.echo("\r🐰 Done.")
+                exp_segments = add_expiring_segments(mem_segment,
+                                                     contact_id,
+                                                     cont[contact_id]["created_at"],
+                                                     Segment(membership_sn_id, expiring_segment_id),
+                                                     Segment(membership_sn_id, expired_segment_id))
 
+                acc.append(mem_segment)
+                acc.append(exp_segments)
+
+            all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
+            dst.execute(table.insert(), all_cs)
+
+
+    # FULL
+    if _.options['incremental'] == False:
+        _.threaded(full_load)
+    
+        last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', max_contact_id)
+
+    else:
+    # INCREMENTAL
+        next_to_sync_history_id = lasts.sync_last_sync_id(
+            dst, 'contact_segment', 'civicrm_subscription_history.member') + 1
+
+        contacts_which_changed = sql_for_contacts_who_changed(_, member_group_id,
+                                                             next_to_sync_history_id)
+
+        hist = group_history(_, src, member_group_id, contact_select=contacts_which_changed)
+
+
+        
 
 
 
@@ -177,23 +197,18 @@ def add_expiring_segments(member_segments, contact_id, created_at, expiring_seg,
 
 def contacts(conn, contact_range=None, contact_select=None):
     if contact_range is not None:
-        contact_sql = """
-        id >= {min} AND id < {max}
-        """.format(min=contact_range[0], max=contact_range[1])
-        extra_bindings = []
+        sql = text("""
+        SELECT * FROM contact WHERE
+        id >= :min AND id < :max
+        """).bindparams(min=contact_range[0], max=contact_range[1])
+
     elif contact_select is not None:
-        contact_sql = """
+        sql = """
+        SELECT * FROM contact WHERE
         contact.id IN ({contact_select})
-        """.format(contact_select=contact_select)
-        extra_bindings = contact_select.get_children()
+        """
+        sql = nest_sql(sql, contact_select=contact_select)
 
-    sql = """
-    SELECT * FROM contact WHERE {contact_sql}
-    """.format(contact_sql=contact_sql)
-
-    sql = text(sql)
-    sql = sql.bindparams(bindparam('gid', expanding=True))
-    sql = sql.bindparams(*extra_bindings)
     return {
         row[0]: row
         for
