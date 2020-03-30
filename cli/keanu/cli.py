@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, Data
 import re
 import sys
 import traceback
+import logging
 
 
 @click.group()
@@ -33,8 +34,9 @@ def positive_int(ctx, param, value):
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
 @click.option('-t', '--threads', default=1, callback=positive_int, help='Number of threads for parallel python scripts')
+@click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
 @click.argument('config_or_dir', default='keanu.yaml', type=click.Path(exists=True))
-def load(incremental, order, dry_run, display, warn, threads, config_or_dir):
+def load(incremental, order, dry_run, display, warn, threads, config_or_dir, verbose):
     mode = { 'incremental': incremental,
              'order': order,
              'display': display,
@@ -183,3 +185,7 @@ def metabase_import(collection, json_file, metadata):
         mio.import_json(source, collection, metadata)
 
 
+def set_verbose(verbose):
+    if verbose:
+        logging.basicConfig()
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)

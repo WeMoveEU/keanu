@@ -1,4 +1,7 @@
 from sqlalchemy import text, bindparam
+from sqlalchemy.schema import Table, MetaData
+IGNORE=True
+
 
 def ranges(points_gen, last=None):
     try:
@@ -39,3 +42,11 @@ def nest_sql(container, **nested):
     
     return merged
 
+
+def get_table(conn, table_name):
+    """
+Fetches SQLAlchemy Table objects used to bulk insert.
+    """
+    meta = MetaData(conn)
+    table = Table(table_name, meta, autoload=True)
+    return table

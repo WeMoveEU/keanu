@@ -9,11 +9,8 @@ from sqlalchemy import text, bindparam
 from sqlalchemy.schema import Table, MetaData
 from datetime import datetime, timedelta
 from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed
+from segment import ContactSegment, Segment, update_segments
 
-# SQLAlchemy debug
-import logging
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 ORDER = 60
 
@@ -39,16 +36,6 @@ DELETE cs
     WHERE sn.name = 'Membership'
     """)
 
-# named tuple resembling hte contact_segment table row
-# its a tuple but with attribute access, makes code more readable.
-ContactSegment = collections.namedtuple(
-    "ContactSegment",
-    ['segmentation_id', 'segment_id', 'contact_id', 'joined_at', 'left_at'])
-
-Segment = collections.namedtuple(
-    "Segment",
-    ["segmentation_id", "segment_id"])
-
 
 
 def execute(_):
@@ -64,10 +51,7 @@ def execute(_):
 
     max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
 
-    if _.options['incremental']:
-        hist_max_id = group_history_max_id(_, member_group_id)
-    else:
-        hist_max_id = 93077748 - 10000 # XXX for testing
+    hist_max_id = group_history_max_id(_, member_group_id)
 
 
     # given the member group join/leave history from civicrm, and cont-act info (needed to have created_at date)
@@ -87,8 +71,7 @@ def execute(_):
             acc.append(mem_segment)
             acc.append(exp_segments)
 
-        all_cs = map(lambda r: r._asdict(), itertools.chain(*acc))
-        return all_cs
+        return itertools.chain(*acc)
 
     # Full load algorithm (to be run in thread)
     def full_load(thread):
@@ -104,7 +87,7 @@ def execute(_):
             cont = contacts(src, contact_range=contact_range)
 
             all_cs = history_to_segments(hist, cont)
-
+            all_cs = map(lambda r: r._asdict(), all_cs)
             dst.execute(table.insert(), list(all_cs))
 
 
@@ -124,13 +107,15 @@ def execute(_):
                                                               hist_max_id)
 
         hist = group_history(_, src, member_group_id, hist_max_id, contact_select=contacts_which_changed)
+        if hist.rowcount > 0:
 
-        cont = contacts(src, contact_select=contacts_which_changed)
-        print(len(cont))
-
-        cs = history_to_segments(hist, cont)
-
-        print(list(cs))
+            cont = contacts(src, contact_select=contacts_which_changed)
+            # print(len(cont))
+            
+            cs = history_to_segments(hist, cont)
+            
+            update_segments(dst, cs, list(cont.keys()),
+                            [member_segment_id, expiring_segment_id, expired_segment_id])
 
         last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', hist_max_id)
 
