@@ -10,6 +10,11 @@ from sqlalchemy.schema import Table, MetaData
 from datetime import datetime, timedelta
 from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed
 
+# SQLAlchemy debug
+import logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
 ORDER = 60
 
 # Calculate membership
@@ -52,19 +57,40 @@ def execute(_):
     meta = MetaData(dst)
     table = Table("contact_segment", meta, autoload=True)
 
+    # Get all reveland segment and group ids
     member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
     expiring_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expiring'").fetchone()[0]
     expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
 
     max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
 
-    # batch until max_contact_id
-    # get history for group in question
-    # group by contact_id
-    # for each contact_id, story
-    # calculate tuples for join leave
-    # join them and put into DT
+    if _.options['incremental']:
+        hist_max_id = group_history_max_id(_, member_group_id)
+    else:
+        hist_max_id = 93077748 - 10000 # XXX for testing
 
+
+    # given the member group join/leave history from civicrm, and cont-act info (needed to have created_at date)
+    # generate contact segments for membership segmentation
+    def history_to_segments(hist, cont):
+        acc = []
+        for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
+            mem_segment = group_history_to_segments(list(events), contact_id,
+                                                    Segment(membership_sn_id, member_segment_id))
+
+            exp_segments = add_expiring_segments(mem_segment,
+                                                 contact_id,
+                                                 cont[contact_id]["created_at"],
+                                                 Segment(membership_sn_id, expiring_segment_id),
+                                                 Segment(membership_sn_id, expired_segment_id))
+
+            acc.append(mem_segment)
+            acc.append(exp_segments)
+
+        all_cs = map(lambda r: r._asdict(), itertools.chain(*acc))
+        return all_cs
+
+    # Full load algorithm (to be run in thread)
     def full_load(thread):
         src = _.source.connection()
         dst = _.destination.connection()
@@ -72,48 +98,41 @@ def execute(_):
         batches = ranges(range(0, max_contact_id + 1, BATCH_SIZE), last=(max_contact_id+1))
         for contact_range in _.slice_for_thread(batches, thread):
 
-            acc = []
 
-            hist = group_history(_, src, member_group_id, contact_range=contact_range)
+            hist = group_history(_, src, member_group_id, hist_max_id, contact_range=contact_range)
 
             cont = contacts(src, contact_range=contact_range)
 
-            for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
-                mem_segment = group_history_to_segments(list(events), contact_id,
-                                                        Segment(membership_sn_id, member_segment_id))
+            all_cs = history_to_segments(hist, cont)
 
-                exp_segments = add_expiring_segments(mem_segment,
-                                                     contact_id,
-                                                     cont[contact_id]["created_at"],
-                                                     Segment(membership_sn_id, expiring_segment_id),
-                                                     Segment(membership_sn_id, expired_segment_id))
-
-                acc.append(mem_segment)
-                acc.append(exp_segments)
-
-            all_cs = list(map(lambda r: r._asdict(), itertools.chain(*acc)))
-            dst.execute(table.insert(), all_cs)
+            dst.execute(table.insert(), list(all_cs))
 
 
-    # FULL
+    # FULL LOAD 
     if _.options['incremental'] == False:
         _.threaded(full_load)
     
-        last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', max_contact_id)
+        last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', hist_max_id)
 
     else:
-    # INCREMENTAL
-        next_to_sync_history_id = lasts.sync_last_sync_id(
+    # INCREMENTAL LOAD
+        next_to_sync_history_id = last_sync.last_sync_id(
             dst, 'contact_segment', 'civicrm_subscription_history.member') + 1
 
         contacts_which_changed = sql_for_contacts_who_changed(_, member_group_id,
-                                                             next_to_sync_history_id)
+                                                              next_to_sync_history_id,
+                                                              hist_max_id)
 
-        hist = group_history(_, src, member_group_id, contact_select=contacts_which_changed)
+        hist = group_history(_, src, member_group_id, hist_max_id, contact_select=contacts_which_changed)
 
+        cont = contacts(src, contact_select=contacts_which_changed)
+        print(len(cont))
 
-        
+        cs = history_to_segments(hist, cont)
 
+        print(list(cs))
+
+        last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', hist_max_id)
 
 
 def group_history_to_segments(events, contact_id, segment):
