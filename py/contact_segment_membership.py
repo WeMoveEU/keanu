@@ -8,7 +8,7 @@ from util import ranges, nest_sql
 from sqlalchemy import text, bindparam
 from sqlalchemy.schema import Table, MetaData
 from datetime import datetime, timedelta
-from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed
+from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed_group
 from segment import ContactSegment, Segment, update_segments
 
 
@@ -82,7 +82,7 @@ def execute(_):
         for contact_range in _.slice_for_thread(batches, thread):
 
 
-            hist = group_history(_, src, member_group_id, hist_max_id, contact_range=contact_range)
+            hist = group_history(_, member_group_id, hist_max_id, contact_range=contact_range)
 
             cont = contacts(src, contact_range=contact_range)
 
@@ -102,11 +102,11 @@ def execute(_):
         next_to_sync_history_id = last_sync.last_sync_id(
             dst, 'contact_segment', 'civicrm_subscription_history.member') + 1
 
-        contacts_which_changed = sql_for_contacts_who_changed(_, member_group_id,
+        contacts_which_changed = sql_for_contacts_who_changed_group(_, member_group_id,
                                                               next_to_sync_history_id,
                                                               hist_max_id)
 
-        hist = group_history(_, src, member_group_id, hist_max_id, contact_select=contacts_which_changed)
+        hist = group_history(_, member_group_id, hist_max_id, contact_select=contacts_which_changed)
         if hist.rowcount > 0:
 
             cont = contacts(src, contact_select=contacts_which_changed)

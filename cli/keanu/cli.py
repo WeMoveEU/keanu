@@ -37,6 +37,7 @@ def positive_int(ctx, param, value):
 @click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
 @click.argument('config_or_dir', default='keanu.yaml', type=click.Path(exists=True))
 def load(incremental, order, dry_run, display, warn, threads, config_or_dir, verbose):
+    set_verbose(verbose)
     mode = { 'incremental': incremental,
              'order': order,
              'display': display,

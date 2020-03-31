@@ -23,7 +23,7 @@ def group_history_max_id(_, group_id):
     return _.source.connection().execute(sql).fetchone()[0]
 
 
-def group_history(_, conn, group_id, hist_max_id, contact_range=None, contact_select=None):
+def group_history(_, group_id, hist_max_id, contact_range=None, contact_select=None):
     """Selects subscription history from CiviCRM, for contact_range or contact_select and for
 group_id or a list of group ids, if group_id is list.
     """
@@ -66,10 +66,10 @@ group_id or a list of group ids, if group_id is list.
         sql = nest_sql(sql,  contact_select=contact_select)
 
     group_id=isinstance(group_id, int) and [group_id] or list(group_id)
-    return conn.execute(sql, gid=group_id, hist_max_id=hist_max_id)
+    return _.source.connection().execute(sql, gid=group_id, hist_max_id=hist_max_id)
 
 
-def sql_for_contacts_who_changed(_, group_id, since_id, until_id):
+def sql_for_contacts_who_changed_group(_, group_id, since_id, until_id):
     sql = """
     SELECT
     distinct(contact_id)

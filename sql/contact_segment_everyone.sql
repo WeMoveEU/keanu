@@ -5,7 +5,7 @@
 DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Everyone';
 -- END INCREMENTAL
 
-INSERT INTO contact_segment -- Everyone 
+INSERT INTO contact_segment -- Everyone
 (segmentation_id, segment_id, contact_id, joined_at, left_at)
 SELECT
 s.segmentation_id, s.id,
