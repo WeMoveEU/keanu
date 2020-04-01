@@ -24,7 +24,7 @@ ORDER = 60
 # update will check existing rows
 
 
-BATCH_SIZE = 1000000
+BATCH_SIZE = 100000
 
 def delete(_):
     dst = _.destination.connection()
@@ -52,7 +52,6 @@ def execute(_):
     max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
 
     hist_max_id = group_history_max_id(_, member_group_id)
-
 
     # given the member group join/leave history from civicrm, and cont-act info (needed to have created_at date)
     # generate contact segments for membership segmentation
@@ -88,7 +87,9 @@ def execute(_):
 
             all_cs = history_to_segments(hist, cont)
             all_cs = map(lambda r: r._asdict(), all_cs)
-            dst.execute(table.insert(), list(all_cs))
+            all_cs = list(all_cs)
+            if all_cs != []:
+                dst.execute(table.insert(), all_cs)
 
 
     # FULL LOAD 

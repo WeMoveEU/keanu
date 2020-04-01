@@ -35,13 +35,13 @@ def update_segments(conn, cs_list, contacts, segments):
 
     res = conn.execute(existing_cs_sql)
     existing = {(r["segment_id"], r["contact_id"], r["joined_at"]):  r for r in res.fetchall()}
-    # import ipdb; ipdb.set_trace()
 
     to_insert = []
     to_update = []
     for cs in cs_list:
         try:
-            excs = existing[(cs.segment_id, cs.contact_id, cs.joined_at)]
+            key = (cs.segment_id, cs.contact_id, cs.joined_at)
+            excs = existing.pop(key)
             # exists
             if excs['left_at'] != cs.left_at:
                 # needs update
@@ -49,6 +49,9 @@ def update_segments(conn, cs_list, contacts, segments):
         except KeyError:
             to_insert.insert(0, cs._asdict())
 
+    if len(existing):
+        dele = cs_table.delete().where(cs_table.c.id == bindparam('_id'))
+        conn.execute(dele, list(map(lambda e: {'_id': e['id']}, existing.values())))
 
     if len(to_update) > 0:
         upd = cs_table.update().where(cs_table.c.id == bindparam('_id')).\

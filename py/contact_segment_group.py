@@ -14,6 +14,9 @@ ORDER = 61
 BATCH_SIZE = 100000
 
 def non_member_group_segments(conn):
+    """Fetch segment rows for segments that are CiviCRM group based, but not
+Member list, because this one is handled by membership loader.
+    """
     return conn.execute("""
 SELECT id, external_id, segmentation_id
     FROM segment
@@ -22,20 +25,28 @@ SELECT id, external_id, segmentation_id
 
 
 def delete(_):
+    """Delete contact_segments for segments handled by this loader.
+    """
     src = _.source.connection()
     dst = _.destination.connection()
 
     group_segments = non_member_group_segments(dst)
+    segment_ids = list(map(lambda gs: gs[0], group_segments))
 
-    sql = """
+    sql = text("""
     DELETE FROM contact_segment where segment_id IN :ids
-    """
+    """).bindparams(ids=segment_ids)
 
-    return dst.execute(text(sql).bindparams(bindparam('ids', expanding=True)),
-                ids=list(map(lambda gs: gs[0], group_segments)))
-
+    return dst.execute(sql)
 
 def execute(_):
+    """Run the loader.
+
+    This method does:
+    1. Fetch segments with their external_id's - which are CiviCRM group ids
+    2. Find out the maximum civicrm group subscription history id and keanu contact id as well as - these will be bounds for current loading.
+    3. Run full load (threaded) or incremental
+    """
     src = _.source.connection()
     dst = _.destination.connection()
     table = get_table(dst, 'contact_segment')
@@ -46,13 +57,19 @@ def execute(_):
     group_ids = list(group_id_to_segment.keys())
     segment_ids = list(map(lambda s: s.segment_id, group_id_to_segment.values()))
 
-    max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
     hist_max_id = group_history_max_id(_, group_ids)
-
-    if _.options['incremental'] == False:
-        hist_max_id = int(hist_max_id /  2)
+    max_contact_id = dst.execute("SELECT max(id) FROM contact").fetchone()[0]
 
     def full_load(thread):
+        """
+        Does the full load:
+        1. fetch connections again. If these are new threads, new connections will be made
+        2. creates batches of contact id ranges to process, runs (possibly threaded) for every batch
+        3. fetch group subscription history for batch of contacts, for specified groups
+        4. for each group_id and contact_id, generate contact_segment records
+        5. insert all the contact_segment record for a batch
+        6. last, save last_sync_id equal to last process subscription history record
+        """
         src = _.source.connection()
         dst = _.destination.connection()
 
@@ -76,6 +93,14 @@ def execute(_):
                                     'civicrm_subscription_history.group', hist_max_id)
 
     def incremental_load():
+        """
+        Does the incremental load:
+        1. Fetch last processed history id, a checkpoint
+        2. get subquery SQL for selecting contacts that had some change in groups of interest, since checkpoint
+        3. get subscription history for these contacts, using the subquery
+        4. for each group_id, contact_id, create contact_segment records
+        5. 
+        """
         next_to_sync_history_id = last_sync.last_sync_id(
             dst, 'contact_segment', 'civicrm_subscription_history.group') + 1
 
@@ -84,7 +109,6 @@ def execute(_):
                                                               hist_max_id)
         hist = group_history(_, group_ids, hist_max_id, contact_select=contacts_which_changed)
 
-        print("history rows {}".format(hist.rowcount))
         if hist.rowcount > 0:
             acc = []
             contacts_seen = set()
