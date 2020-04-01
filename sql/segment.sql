@@ -51,14 +51,13 @@ WHERE og.id = @ext_id;
 
 set @seg = (select id from segmentation where name = 'Country');
 
-insert into segment (name, segmentation_id, external_id, external_system)
-SELECT
-substring_index(c.name, ',', 1) as name, -- strip "X, republic of", etc.
-@seg,
-c.id, 'civicrm_country'
-FROM
-(SELECT DISTINCT country FROM contact WHERE country is not null) ctr
-JOIN ${SOURCE}.civicrm_country c ON ctr.country = c.iso_code COLLATE utf8_general_ci
+INSERT INTO segment (name, segmentation_id, external_id, external_system)
+  SELECT
+    substring_index(c.name, ',', 1) as name, -- strip "X, republic of", etc.
+    @seg,
+    c.id, 'civicrm_country'
+  FROM (SELECT DISTINCT country FROM contact WHERE country is not null) ctr
+  JOIN ${SOURCE}.civicrm_country c ON ctr.country = substring_index(c.name, ',', 1) COLLATE utf8_general_ci
 ;
 
 -- Active
