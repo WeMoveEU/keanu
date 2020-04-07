@@ -76,7 +76,6 @@ def sql_for_contacts_who_changed_group(_, group_id, since_id, until_id):
     FROM {subscription_history}
     WHERE group_id IN :gid
     AND id >= :since_id AND id <= :until_id
-    AND status IN ('Added', 'Removed')
     """.format(
         subscription_history=_.source.table('civicrm_subscription_history')
         )
