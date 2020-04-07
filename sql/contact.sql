@@ -45,11 +45,12 @@ FROM civicrm_contact_to_contact c
 -- END INCREMENTAL
 ;
 
--- BEGIN INCREMENTAL
+SET @max_modified_dt := (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact); 
+-- BEGIN INCREMENTAl
 SET @last_update_dt := (SELECT last_sync_dt('contact', 'civicrm_contact'));
 
 UPDATE contact dc
-JOIN ${SOURCE}.civicrm_contact cc ON dc.id = cc.id AND cc.modified_date > @last_sync_dt
+JOIN ${SOURCE}.civicrm_contact cc ON dc.id = cc.id AND cc.modified_date > @last_update_dt
 JOIN civicrm_contact_to_contact sc ON dc.id = sc.id
 SET
  dc.email_domain = sc.email_domain,
@@ -84,5 +85,4 @@ UPDATE contact c
 
 DROP VIEW IF EXISTS civicrm_contact_to_contact;
 
-SELECT save_last_sync_dt('contact', 'civicrm_contact',
-       (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact));
+SELECT save_last_sync_dt('contact', 'civicrm_contact', @max_modified_dt);
