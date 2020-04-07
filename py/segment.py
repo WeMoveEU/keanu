@@ -62,3 +62,16 @@ def update_segments(conn, cs_list, contacts, segments):
         conn.execute(cs_table.insert(), to_insert)
 
 
+def get_segmentation(conn, segmentation_name):
+    sql = text("""
+    SELECT s.name, s.id, sn.id
+    FROM segment s
+    JOIN segmentation sn ON s.segmentation_id = sn.id
+    WHERE sn.name = :sn_name
+    """)
+    sql = sql.bindparams(sn_name=segmentation_name)
+
+
+    return {name: Segment(snid, sid) 
+            for (name, sid, snid)
+            in conn.execute(sql).fetchall()}
