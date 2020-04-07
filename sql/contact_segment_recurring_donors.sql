@@ -1,3 +1,4 @@
+-- IGNORE
 -- ORDER: 65
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Recurring donors'
 
