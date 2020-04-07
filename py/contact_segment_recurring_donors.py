@@ -5,7 +5,7 @@ from contact_segment_membership import contacts
 import itertools
 import last_sync
 
-ORDER = 65
+ORDER = 45
 
 SEGMENTATION_NAME = 'Recurring donors'
 def delete(_):

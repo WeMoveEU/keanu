@@ -1,15 +1,16 @@
 -- ORDER: 54
 -- DELETE FROM unsub
 -- DELETE FROM broadcast_metric WHERE metric IN ('unsubs', 'unsub_rate')
+-- DELETE FROM campaign_metric WHERE metric IN ('unsubs')
 
+-- Country breakdown also for metrics:
+-- unsub_rate
+
+SET @last_unsub := 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);
-
--- Store which broadcasts are going to be added to unsub table to then update unsub counts
-CREATE TEMPORARY TABLE updated_broadcast AS
-  SELECT b.id
-  FROM broadcast b LEFT JOIN unsub u ON u.broadcast_id = b.id
-  WHERE u.id IS NULL
-;
+-- BEGIN INCREMENTAL
+SET @last_unsub := (SELECT MAX(external_id) FROM unsub WHERE external_system = 'civicrm_mailing_event_unsubscribe');
+-- END INCREMENTAL
 
 INSERT INTO unsub (broadcast_id, contact_id, created_at, external_system, external_id)
   SELECT
@@ -21,32 +22,59 @@ INSERT INTO unsub (broadcast_id, contact_id, created_at, external_system, extern
   WHERE NOT j.is_test
   AND q.contact_id <= @last_contact
 -- BEGIN INCREMENTAL
-  AND u.id NOT IN (SELECT external_id FROM unsub WHERE external_system = 'civicrm_mailing_event_unsubscribe')
+  AND u.id > @last_unsub
 -- END INCREMENTAL
 ;
 
+-- Store broadcasts and campaigns with new unsubs to update unsub counts
+CREATE TEMPORARY TABLE updated_broadcast AS
+  SELECT DISTINCT broadcast_id AS id FROM unsub WHERE external_system = 'civicrm_mailing_event_unsubscribe' AND external_id > @last_unsub
+;
+
+CREATE TEMPORARY TABLE updated_campaign AS
+  SELECT DISTINCT campaign_id AS id
+  FROM broadcast b JOIN updated_broadcast ub ON ub.id = b.id
+;
+
+
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
+CREATE TEMPORARY TABLE bm_segment AS
+  SELECT @everyone AS id
+  UNION
+  SELECT s.id from segment s JOIN segmentation sn ON sn.id = s.segmentation_id
+  WHERE sn.name = 'Country';
+CREATE INDEX bm_segment_id ON bm_segment (id);
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
-    b.id, b.name, @Everyone, 'unsubs', COUNT(DISTINCT contact_id)
+    b.id, b.name, seg.id, 'unsubs', COUNT(DISTINCT u.contact_id)
   FROM unsub u
   JOIN broadcast b ON b.id = u.broadcast_id
   JOIN updated_broadcast ub ON ub.id = b.id
-  GROUP BY b.id
+  JOIN bm_segment seg
+  JOIN contact_segment cs
+    ON u.contact_id = cs.contact_id
+    AND cs.segment_id = seg.id
+    AND cs.joined_at <= b.sent_at
+    AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
+
+  GROUP BY b.id, seg.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO campaign_metric
+            (campaign_id, segment_id, metric, value)
+  SELECT
+    camp.id, @everyone, 'unsubs', COUNT(DISTINCT u.contact_id)
+  FROM unsub u
+  JOIN broadcast b ON b.id = u.broadcast_id
+  JOIN updated_campaign camp ON camp.id = b.campaign_id
+  GROUP BY camp.id
 
   ON DUPLICATE KEY UPDATE value=VALUES(value)
 ;
 
 DROP TABLE updated_broadcast;
-
-INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
-SELECT
-  b1.broadcast_id, b1.broadcast_name, b1.segment_id, 'unsub_rate',
-  b1.value / b2.value
-  FROM broadcast_metric b1
-         JOIN broadcast_metric b2 ON b1.broadcast_id = b2.broadcast_id
-             AND b1.metric = 'unsubs' AND b2.metric = 'recipients'
-             AND b1.segment_id = b2.segment_id
-             ON DUPLICATE KEY UPDATE value=VALUES(value)
-         ;
+DROP TABLE updated_campaign;
+DROP TABLE bm_segment;

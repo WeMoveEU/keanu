@@ -1,4 +1,5 @@
 *.bak
+*.pyc
 .env
 cli/dist
 cli/build
