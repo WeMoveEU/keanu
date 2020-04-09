@@ -1,6 +1,18 @@
 import operator
+import click
 from . import util
 from .tracing import tracer
+
+from signal import signal, SIGHUP
+
+sighup_received = False
+def sighup(_a, _b):
+    click.echo("\r🛬 Received SIGHUP, stopping as soon as possible.")
+    global sighup_received
+    sighup_received = True
+
+signal(SIGHUP, sighup)
+
 
 class Batch:
     def __init__(_, mode):
@@ -60,6 +72,8 @@ class Batch:
                 else:
                     for e,d in scr.delete():
                         yield e, d
+                if sighup_received:
+                    break
 
     def find_source(_, criteria):
         for s in reversed(_.sources):
