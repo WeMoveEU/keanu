@@ -6,6 +6,7 @@ class DBDestination(DataStore):
         super().__init__(name, db_spec, dry_run)
 
         _.url = db_spec['url']
+        _.schema = db.url_to_schema(_.url)
         if not _.local:
             _.engine = db.get_engine(_.url, _.dry_run)
 
