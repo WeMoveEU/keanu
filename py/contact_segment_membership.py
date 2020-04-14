@@ -12,7 +12,7 @@ from civicrm import group_history, group_history_max_id, sql_for_contacts_who_ch
 from segment import ContactSegment, Segment, update_segments
 
 
-ORDER = 60
+ORDER = 40
 
 # Calculate membership
 # Member -> civicrm group subscription on Mamber

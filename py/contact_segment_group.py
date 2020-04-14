@@ -10,7 +10,7 @@ from util import ranges, get_table, nest_sql
 from civicrm import group_history, group_history_max_id, sql_for_contacts_who_changed_group
 from segment import update_segments
 
-ORDER = 61
+ORDER = 41
 BATCH_SIZE = 100000
 
 def non_member_group_segments(conn):
