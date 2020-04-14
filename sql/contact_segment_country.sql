@@ -13,9 +13,11 @@ INSERT INTO contact_segment -- Country
   FROM segmentation sn
   JOIN segment s ON s.segmentation_id = sn.id
   JOIN contact c ON c.country = s.name
+-- BEGIN INCREMENTAL
+  JOIN ${SOURCE}.civicrm_contact civi_c ON c.id = civi_c.id AND civi_c.modified_date > @last_update_dt
+-- END INCREMENTAL
   WHERE sn.name = 'Country'
 ;
 
 
-SELECT save_last_sync_dt('contact_segment.country', 'civicrm_contact',
-                         (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact));
+SELECT save_last_sync_dt('contact_segment.country', 'civicrm_contact', @max_modified_date);
