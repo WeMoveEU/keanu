@@ -141,7 +141,7 @@ INSERT INTO consent
 
 -- BEGIN INCREMENTAL
 INSERT INTO growthy_campaign
-  SELECT DISTINCT campaign_id
+  SELECT DISTINCT ap.campaign_id
   FROM action a
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'consent'
   JOIN ${SOURCE}.civicrm_activity act ON a.external_id = act.id AND a.external_system = 'civicrm_activity'

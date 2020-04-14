@@ -8,6 +8,7 @@ from .run_statement import RunStatement
 from . import util
 from . import tracing
 import os
+import shutil
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 
@@ -15,7 +16,7 @@ class SqlLoader(RunStatement, tracing.Tags):
     """
     Class that runs load scripts, that is SQL that loads some data in keanu database.
     It can read extra metadata from the script comments.
-
+    
     Pass path to file of SQL script.
 
     options can be:
@@ -189,7 +190,8 @@ class SqlLoader(RunStatement, tracing.Tags):
         if _.options['display']:
             return statement
 
-        trim_to = 50
+        trim_to = int(shutil.get_terminal_size((200, 20)).columns * 0.7)
+
         lines = statement.split("\n")
         lines = filter(lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines)
         try:

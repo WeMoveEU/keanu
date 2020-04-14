@@ -25,6 +25,7 @@ class Batch:
           display - boolean - display more information
           warn - boolean - display warnings (supressed by default)
           rewind - boolean - run in rewind mode
+          threads - int - number of threads for parallel processing
           }
         """
         _.mode = {
@@ -32,7 +33,8 @@ class Batch:
             'display': False,
             'warn': False,
             'dry_run': False,
-            'rewind': False
+            'rewind': False,
+            'threads': 1
         }
 
         _.mode.update(mode)

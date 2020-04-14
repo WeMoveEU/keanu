@@ -13,11 +13,19 @@ from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, Data
 import re
 import sys
 import traceback
+import logging
 
 
 @click.group()
 def cli():
     pass
+
+def positive_int(ctx, param, value):
+    v = int(value)
+    if v >= 1:
+        return v
+    else:
+        raise click.BadParameter("-t thread_number must be a positive integer")
 
 @cli.command()
 @click.option('-i', '--incremental', is_flag=True, default=False, help='incremental load')
@@ -25,15 +33,19 @@ def cli():
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
 @click.option('-W', '--warn', is_flag=True, default=False, help='display SQL warnings')
+@click.option('-t', '--threads', default=1, callback=positive_int, help='Number of threads for parallel python scripts')
+@click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
 @click.argument('config_or_dir', default='keanu.yaml', type=click.Path(exists=True))
-def load(incremental, order, dry_run, display, warn, config_or_dir):
+def load(incremental, order, dry_run, display, warn, threads, config_or_dir, verbose):
+    set_verbose(verbose)
     mode = { 'incremental': incremental,
              'order': order,
              'display': display,
              'warn': warn,
              'order': order,
              'dry_run': dry_run,
-             'rewind': False }
+             'rewind': False,
+             'threads': threads }
 
     configuration = config.configuration_from_argument(config_or_dir)
     batch = config.build_batch(mode, configuration)
@@ -174,3 +186,7 @@ def metabase_import(collection, json_file, metadata):
         mio.import_json(source, collection, metadata)
 
 
+def set_verbose(verbose):
+    if verbose:
+        logging.basicConfig()
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
