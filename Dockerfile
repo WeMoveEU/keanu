@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 
-RUN set -ex && mkdir /app && mkdir -p /queries/civicrm && mkdir -p /queries/currency
+RUN set -ex && mkdir /app && mkdir -p /queries/civicrm && mkdir -p /queries/civicrm-py && mkdir -p /queries/currency
 
 ADD docker-entrypoint.sh /app
 
@@ -20,3 +20,4 @@ RUN set -ex && pipenv install --deploy --system
 ADD erd/keanu-schema.sql /queries/
 ADD currency_sql /queries/currency
 ADD sql /queries/civicrm
+ADD py /queries/civicrm-py
