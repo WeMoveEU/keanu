@@ -157,12 +157,12 @@ UPDATE consent
   JOIN ${SOURCE}.civicrm_activity a
     ON action.external_system = 'civicrm_activity' AND action.external_id = a.id
     SET consent.status = CASE
-        WHEN a.status_id = 1 THEN 'pending'
-        WHEN a.status_id = 4 THEN 'rejected'
-        WHEN a.status_id = 9 THEN 'accepted'
-                         END,
+          WHEN a.status_id = 1 THEN 'pending'
+          WHEN a.status_id = 4 THEN 'rejected'
+          WHEN a.status_id = 9 THEN 'accepted'
+        END,
         action.created_at = a.modified_date
-  WHERE a.modified_date > action.created_at
+  WHERE a.modified_date > action.created_at AND a.status_id IN (1, 4, 9)
 ;
 -- END INCREMENTAL
 
