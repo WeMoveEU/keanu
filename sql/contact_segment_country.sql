@@ -17,6 +17,9 @@ INSERT INTO contact_segment -- Country
   JOIN ${SOURCE}.civicrm_contact civi_c ON c.id = civi_c.id AND civi_c.modified_date > @last_update_dt
 -- END INCREMENTAL
   WHERE sn.name = 'Country'
+-- BEGIN INCREMENTAL
+  ON DUPLICATE KEY UPDATE segment_id=VALUES(segment_id)
+-- END INCREMENTAL
 ;
 
 
