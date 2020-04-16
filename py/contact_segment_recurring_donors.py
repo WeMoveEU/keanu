@@ -75,7 +75,7 @@ ORDER BY contact_id, donation_id, started_at, receive_date
 
             if (ended_at is None and d.payment_count and d.success_count == 0) or \
                  (ended_at is not None and d.payment_count == 0):
-                s = failed_segment.segment_id
+                s = failed_segment
                 cd = ContactSegmentAction(s.segmentation_id, s.segment_id, contact_id,
                                           d.donation["started_at"], ended_at,
                                           d.donation["action_id"])
