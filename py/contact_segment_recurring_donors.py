@@ -162,10 +162,6 @@ ORDER BY contact_id, donation_id, started_at, receive_date
         acc.append(cs)
         acc.append(fill_cs)
 
-        if contact_id in [197116]:
-            print("Donor: {}".format(donors[contact_id]))
-            print("CS: {}".format(cs))
-            print("FILL CS: {}".format(fill_cs))
 
     update_segments(dst, itertools.chain(*acc),
                     list(donors.keys()),
