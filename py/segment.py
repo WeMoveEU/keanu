@@ -12,6 +12,11 @@ ContactSegment = collections.namedtuple(
     "ContactSegment",
     ['segmentation_id', 'segment_id', 'contact_id', 'joined_at', 'left_at'])
 
+ContactSegmentAction = collections.namedtuple(
+    "ContactSegmentAction",
+    ['segmentation_id', 'segment_id', 'contact_id', 'joined_at', 'left_at', 'trigger_action_id'])
+
+
 Segment = collections.namedtuple(
     "Segment",
     ["segmentation_id", "segment_id"])
