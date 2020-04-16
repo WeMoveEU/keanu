@@ -21,6 +21,7 @@ SET @hot_contact_now := NOW();
 SET @recent := last_sync_dt('hot_contact', 'civicrm');
 
 -- Create list of contacts who did something recently or who may have become inactive recently
+DROP TABLE IF EXISTS hot_contact;
 CREATE TABLE hot_contact (
   id INT NOT NULL PRIMARY KEY
 );
