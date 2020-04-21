@@ -1,7 +1,6 @@
 -- ORDER: 31
--- DELETE FROM consent
 -- DELETE FROM action
--- DELETE FROM campaign_metric WHERE metric IN ('actions', 'shares', 'donations', 'new_members')
+-- DELETE FROM campaign_metric WHERE metric IN ('actions', 'shares', 'donations')
 
 SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
@@ -95,96 +94,6 @@ INSERT INTO action
 SELECT save_last_sync_id('action', 'civicrm_activity',
   (SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
 
--- Consents
--- BEGIN INCREMENTAL
-SET @last_id := (SELECT last_sync_id('action', 'civicrm_activity.consent'));
-
-CREATE TEMPORARY TABLE growthy_campaign (id INT PRIMARY KEY);
--- END INCREMENTAL
-
-INSERT INTO action
-  (contact_id, created_at, action_page_id, source_id, external_id, external_system)
-
-  SELECT
-    ac.contact_id, activity_date_time, ap.id, s.id, a.id, 'civicrm_activity'
-  FROM ${SOURCE}.civicrm_activity a
-  JOIN ${SOURCE}.civicrm_activity_contact ac ON ac.activity_id = a.id AND ac.record_type_id = 2
-  JOIN action_page ap ON ap.external_id = a.campaign_id AND ap.external_system = 'civicrm_campaign' AND ap.action_type = 'consent'
-  LEFT JOIN ${SOURCE}.civicrm_value_action_source_4 utm ON utm.entity_id = a.id
-  LEFT JOIN source s ON s.source = utm.source_27 COLLATE utf8_general_ci
-                    AND s.medium = utm.media_28 COLLATE utf8_general_ci
-                    AND s.campaign = utm.campaign_26 COLLATE utf8_general_ci
-  WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67) AND a.status_id IN (1, 4, 9)
-  AND ac.contact_id <= @last_contact
-  -- BEGIN INCREMENTAL
-  AND a.id > @last_id
-  -- END INCREMENTAL
-;
-
-INSERT INTO consent
-  (action_id, status)
-
-  SELECT
-    a.id,
-    CASE
-    WHEN status_id = 1 THEN 'pending'
-    WHEN status_id = 4 THEN 'rejected'
-    WHEN status_id = 9 THEN 'accepted'
-    END AS action_type
-  FROM action a 
-  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'consent'
-  JOIN ${SOURCE}.civicrm_activity act ON a.external_id = act.id AND a.external_system = 'civicrm_activity'
-  -- BEGIN INCREMENTAL
-  WHERE a.external_id > @last_id
-  -- END INCREMENTAL
-;
-
--- BEGIN INCREMENTAL
-INSERT INTO growthy_campaign
-  SELECT DISTINCT ap.campaign_id
-  FROM action a
-  JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'consent'
-  JOIN ${SOURCE}.civicrm_activity act ON a.external_id = act.id AND a.external_system = 'civicrm_activity'
-  WHERE (act.modified_date > a.created_at OR a.external_id > @last_id) AND act.status_id = 9
-;
--- END INCREMENTAL
-
--- Update consents that changed their status (but are below @last_id and hence skipped)
--- BEGIN INCREMENTAL
-UPDATE consent
-  JOIN action
-    ON consent.action_id = action.id
-  JOIN ${SOURCE}.civicrm_activity a
-    ON action.external_system = 'civicrm_activity' AND action.external_id = a.id
-    SET consent.status = CASE
-          WHEN a.status_id = 1 THEN 'pending'
-          WHEN a.status_id = 4 THEN 'rejected'
-          WHEN a.status_id = 9 THEN 'accepted'
-        END,
-        action.created_at = a.modified_date
-  WHERE a.modified_date > action.created_at AND a.status_id IN (1, 4, 9)
-;
--- END INCREMENTAL
-
--- Update campaign growth
-INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
-  SELECT
-    ap.campaign_id, @everyone, 'new_members', COUNT(DISTINCT a.contact_id)
-  FROM consent c
-  JOIN action a ON a.id = c.action_id
-  JOIN action_page ap ON ap.id = a.action_page_id
--- BEGIN INCREMENTAL
-  JOIN growthy_campaign camp ON camp.id = ap.campaign_id
--- END INCREMENTAL
-  WHERE c.status = 'accepted'
-  GROUP BY ap.campaign_id
-
-  ON DUPLICATE KEY UPDATE value = VALUES(value)
-;
-
-SELECT save_last_sync_id('action', 'civicrm_activity.consent',
-  (SELECT max(external_id) from action WHERE external_system = 'civicrm_activity'));
-
 
 -- Update campaign action counts
 INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
@@ -192,8 +101,7 @@ INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
     ap.campaign_id, @everyone, 'actions', COUNT(a.id)
   FROM action a
   JOIN action_page ap ON ap.id = a.action_page_id
-  WHERE ap.action_type != 'consent'
-    AND a.id > @last_action
+  WHERE a.id > @last_action
   GROUP BY ap.campaign_id
 
   ON DUPLICATE KEY UPDATE value = value + VALUES(value)

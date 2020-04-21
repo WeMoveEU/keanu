@@ -1,4 +1,4 @@
--- ORDER: 32
+-- ORDER: 33
 -- DELETE FROM share
 
 INSERT INTO share (action_id, shared_source_id, conversion_count, share_count, new_member_count)
@@ -71,13 +71,11 @@ SELECT save_last_sync_id('share', 'share_count',
 SELECT @last_id = last_sync_id('share', 'new_member_count');
 -- END INCREMENTAL
 UPDATE share sh JOIN (
-    SELECT utm.id AS source_id, COUNT(DISTINCT v.contact_id) AS converted
+    SELECT utm.id AS source_id, COUNT(DISTINCT c.contact_id) AS converted
     FROM source utm
-    JOIN action v ON v.source_id = utm.id
-    JOIN action_page ap ON v.action_page_id = ap.id AND ap.action_type = 'consent'
-    JOIN consent c ON c.action_id = v.id AND c.status = 'accepted'
+    JOIN consent c ON c.source_id = utm.id AND c.status = 'accepted'
 -- BEGIN INCREMENTAL
-    WHERE v.id > @last_id
+    WHERE c.id > @last_id
 -- END INCREMENTAL
  
     GROUP BY source_id
@@ -86,8 +84,5 @@ UPDATE share sh JOIN (
 ;
 
 SELECT save_last_sync_id('share', 'new_member_count',
-   (SELECT max(v.id) FROM action v
-                   JOIN action_page ap
-                   ON v.action_page_id = ap.id AND ap.action_type  = 'consent'
-                   JOIN consent c ON c.action_id = v.id AND c.status = 'accepted'
-));
+   (SELECT max(c.id) FROM consent c WHERE c.status = 'accepted')
+);

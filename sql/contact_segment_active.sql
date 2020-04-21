@@ -160,7 +160,7 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
         -- BEGIN INCREMENTAL
         JOIN hot_contact h ON a.contact_id = h.id
         -- END INCREMENTAL
-        WHERE ap.action_type != 'consent' AND a.created_at >= DATE_ADD(c.created_at, INTERVAL 24 HOUR)
+        WHERE a.created_at >= DATE_ADD(c.created_at, INTERVAL 24 HOUR)
         ORDER BY contact_id, engaged_at
       ) ordered_engagement_moments
     ) cs
