@@ -11,7 +11,7 @@ INSERT INTO broadcast
   JOIN campaign camp ON c.parent_id=camp.external_id AND camp.external_system='civicrm_campaign'
   LEFT JOIN ${SOURCE}.civicrm_mailing_abtest ab ON m.id IN (mailing_id_a, mailing_id_b)
   LEFT JOIN broadcast_test t ON t.external_id=ab.id AND t.external_system='civicrm_mailing_abtest'
-  WHERE scheduled_date IS NOT NULL
+  WHERE scheduled_date IS NOT NULL AND language IS NOT NULL
 -- BEGIN INCREMENTAL
   AND m.id NOT IN (SELECT external_id FROM broadcast WHERE external_system = 'civicrm_mailing')
 -- END INCREMENTAL
