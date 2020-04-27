@@ -3,15 +3,15 @@ import click
 from . import util
 from .tracing import tracer
 
-from signal import signal, SIGHUP
+from signal import signal, SIGUSR1
 
 sighup_received = False
 def sighup(_a, _b):
-    click.echo("\r🛬 Received SIGHUP, stopping as soon as possible.")
+    click.echo("\r🛬 Received SIGUSR1, stopping as soon as possible...")
     global sighup_received
     sighup_received = True
 
-signal(SIGHUP, sighup)
+signal(SIGUSR1, sighup)
 
 
 class Batch:
