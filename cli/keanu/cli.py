@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import click
+from click_aliases import ClickAliasedGroup
 import json
 from glob import glob
 from os import environ
@@ -16,7 +17,7 @@ import traceback
 import logging
 
 
-@click.group()
+@click.group(cls=ClickAliasedGroup)
 def cli():
     pass
 
@@ -27,7 +28,7 @@ def positive_int(ctx, param, value):
     else:
         raise click.BadParameter("-t thread_number must be a positive integer")
 
-@cli.command()
+@cli.command(aliases=['l'])
 @click.option('-i', '--incremental', is_flag=True, default=False, help='incremental load')
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
@@ -95,7 +96,7 @@ def load(incremental, order, dry_run, display, warn, threads, config_or_dir, ver
 
 
 
-@cli.command()
+@cli.command(aliases=['d'])
 @click.option('-n', '--dry-run', is_flag=True, default=False, help='dry run')
 @click.option('-o', '--order', default='0:', help='specify order of files to run by (eg. 10 or 10,12 or 10:15,60 etc)')
 @click.option('-d', '--display', is_flag=True, default=False, help='display SQL')
@@ -128,7 +129,7 @@ def delete(order, display, dry_run, warn, config_or_dir):
 
 
 
-@cli.command()
+@cli.command(aliases=['s'])
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
 @click.option('-L', '--load', default=None, help='Load this SQL file')
 @click.argument('database_url')
@@ -162,11 +163,11 @@ def schema(drop, load, database_url):
                     ))
 
 
-@cli.group('metabase')
+@cli.group('metabase', cls=ClickAliasedGroup, aliases=['mb'])
 def metabase_cli():
   pass
 
-@metabase_cli.command('export')
+@metabase_cli.command('export', aliases=['e'])
 @click.option('-c', '--collection', help="Name of the collection to export")
 @click.option('-j', '--json-file', default=None, help="path to JSON file to import")
 @click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
@@ -181,7 +182,7 @@ def metabase_export(collection, json_file, verbose):
     else:
         print(json.dumps(result, indent=2))
 
-@metabase_cli.command('import')
+@metabase_cli.command('import', aliases=['i'])
 @click.option('-c', '--collection', help="Name of the collection to import into")
 @click.option('-j', '--json-file', help="path to JSON file to import")
 @click.option('-m', '--metadata', is_flag=True, help="Also import metadata before importing the collection")
@@ -219,18 +220,21 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
                 
 
 
-@metabase_cli.command('query')
+@metabase_cli.command('query', aliases=['q'])
+@click.option('-j', '--json', is_flag=True, default=False, help="Print in JSON instead of Python")
 @click.argument('model')
 @click.argument('oid', default=None, required=False)
 @click.argument('sub', default=None, required=False)
-def metabase_query(model, oid, sub):
+def metabase_query(model, oid, sub, **opts):
     from pprint import pprint
     client = metabase.Client()
 
     r = client.get(model, oid, sub)
 
-    pprint(r)
-    
+    if opts['json']:
+        print(json.dumps(r, indent=2))
+    else:
+        pprint(r)
 
 
 def set_verbose(verbose):
