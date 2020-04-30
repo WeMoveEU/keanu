@@ -48,7 +48,7 @@ INSERT INTO growthy_campaign
   SELECT DISTINCT c.campaign_id
   FROM consent c
   JOIN ${SOURCE}.civicrm_activity act ON c.external_id = act.id AND c.external_system = 'civicrm_activity'
-  WHERE c.external_id > @last_id AND c.status = 'accepted'
+  WHERE c.external_id > @last_id AND c.status = 'accepted' AND c.campaign_id IS NOT NULL
 ;
 -- END INCREMENTAL
 
