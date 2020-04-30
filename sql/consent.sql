@@ -32,7 +32,7 @@ INSERT INTO consent
   FROM ${SOURCE}.civicrm_activity a
   JOIN ${SOURCE}.civicrm_activity_contact ac ON ac.activity_id = a.id AND ac.record_type_id = 2
   LEFT JOIN action t ON t.external_system='civicrm_activity' AND t.external_id = a.parent_id
-  LEFT JOIN action_page ap ON ap.external_system='civicrm_campaign' AND ap.external_id=a.campaign_id
+  LEFT JOIN action_page ap ON ap.action_type='consent' AND ap.external_system='civicrm_campaign' AND ap.external_id=a.campaign_id
   LEFT JOIN ${SOURCE}.civicrm_value_action_source_4 utm ON utm.entity_id = a.id
   LEFT JOIN source s ON s.source = utm.source_27 COLLATE utf8_general_ci
                     AND s.medium = utm.media_28 COLLATE utf8_general_ci

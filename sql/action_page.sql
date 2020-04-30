@@ -21,6 +21,7 @@ INSERT INTO action_page
     WHEN activity_type_id = 54 THEN 'share'
     WHEN activity_type_id = 59 THEN 'tweet'
     WHEN activity_type_id = 67 THEN 'facebook'
+    WHEN activity_type_id = 68 THEN 'consent'  # Won't be used for actions, but action pages are needed to load consents
     END AS action_type,
     x.language_4,
     c.id,
@@ -32,7 +33,7 @@ INSERT INTO action_page
   JOIN ${SOURCE}.civicrm_activity a ON a.campaign_id=c.id
   JOIN ${SOURCE}.civicrm_value_speakout_integration_2 x ON x.entity_id=c.id
 
-  WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67)
+  WHERE a.activity_type_id IN (2, 3, 32, 54, 59, 67, 68)
 -- BEGIN INCREMENTAL
   AND c.id NOT IN (SELECT external_id FROM action_page WHERE external_system = 'civicrm_campaign')
 -- END INCREMENTAL
