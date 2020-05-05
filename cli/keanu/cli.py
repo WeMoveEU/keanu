@@ -197,6 +197,8 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
     with open(json_file, 'r') as f:
         source = json.loads(f.read())
         if validate:
+            if verbose:
+                click.echo("🔍 Validating import file coherence...")
             broken_cards = metabase.broken_cards(source['items'], source['datamodel'])
             if len(broken_cards) > 0:
                 print("There are broken cards:")
@@ -209,7 +211,13 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
                 for bd in broken_dashboards:
                     print("{}: {} (missing card id {})".format(*bd))
 
-            if len(broken_cards) > 0 or len(broken_dashboards) > 0:
+            broken_datamodel = metabase.broken_datamodel(source['datamodel'])
+            if len(broken_datamodel) > 0:
+                print("This is broken in the data model:")
+                for bd in broken_datamodel:
+                    print("{}: {} - {}".format(*bd))
+
+            if len(broken_cards) > 0 or len(broken_dashboards) > 0 or len(broken_datamodel) > 0:
                 return 1
 
 
