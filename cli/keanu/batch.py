@@ -75,7 +75,7 @@ class Batch:
                     for e,d in scr.delete():
                         yield e, d
                 if sighup_received:
-                    break
+                    raise click.Abort("Stopped gracefully due to USR1 signal")
 
     def find_source(_, criteria):
         for s in reversed(_.sources):

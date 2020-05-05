@@ -1,22 +1,26 @@
 FROM python:3.5
 
+# -- Install dependencies: --
+# - pipenv to create python environment
+# - dumb-init as docker init process
 RUN pip3 install pipenv
 RUN apt-get update && apt-get install -y \
   dumb-init \
  && rm -rf /var/lib/apt/lists/*
 
-
+# -- Create directories for app and loaders --
 RUN set -ex && mkdir /app && mkdir -p /queries/civicrm && mkdir -p /queries/civicrm-py && mkdir -p /queries/currency
-
-ADD docker-entrypoint.sh /app
-
-ADD cli /app
-
 WORKDIR /app
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
+# -- Add app to container, and install deps --
+ADD cli /app
 RUN set -ex && pipenv install --deploy --system
 
+# -- Set up docker runtime --
+ADD docker-entrypoint.sh /app
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+# -- Add loader files --
 ADD erd/keanu-schema.sql /queries/
 ADD currency_sql /queries/currency
 ADD sql /queries/civicrm
