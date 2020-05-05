@@ -5,6 +5,7 @@ set -o pipefail # set $? to first non zero exit value
                 # so we know when keanu failed when we pipe it to tee
 
 trap 'exit 0' TERM # Okay exit on docker stop
+trap '' USR1
 
 if [ -n "${RESTART:-}" ]; then
     while true; do
