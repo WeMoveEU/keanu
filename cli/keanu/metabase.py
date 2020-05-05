@@ -116,8 +116,6 @@ class Client:
       raise Exception("Could not add dimension to field {}".format(field_id))
     return result
 
-  # XXX how to update dimensions?
-
   def update_field(self, field_id, params):
     status = self.client.put('/field/{}'.format(field_id), json=params)
     if not status:
@@ -189,14 +187,37 @@ class MetabaseIO:
         for field in table['fields'].values():
           dest_field_id = mappings['fields'][field['id']]
 
+          update_attrs = {}
           field_values = field.get('has_field_values', 'none')
           if field_values != 'none':
-            self.client.update_field(dest_field_id, { 'has_field_values': field_values })
+            update_attrs['has_field_values'] = field_values
+
+          special_type = field.get('special_type', None)
+          if special_type is not None:
+            update_attrs['special_type'] = special_type
+
+          fk_target_field_id = field.get('fk_target_field_id', None)
+          if fk_target_field_id is not None:
+            update_attrs['fk_target_field_id'] = mappings['fields'][fk_target_field_id]
+
+          if 'settings' in field:
+            update_attrs['settings'] = field['settings']
+          
+          if update_attrs:
+            metabase_io_log.info("🏷️ setting custom field values for {}.{}: {}".format(table['name'], field['name'], update_attrs))
+            self.client.update_field(dest_field_id, update_attrs)
 
           if 'dimensions' in field:
             dest_field = self.client.get('field', dest_field_id)
-            if 'dimensions' not in dest_field:
-              self.client.add_dimension(field['dimensions'], dest_field_id)
+
+            dimensions = field['dimensions'].copy()
+            if 'human_readable_field_id' in dimensions:
+              deref(dimensions, 'human_readable_field_id', mappings['fields'])
+
+            metabase_io_log.info("🏷️ setting custom dimensions for {}.{}: {}".format(table['name'], field['name'], dimensions))
+            # XXX should we not always update this ?  what if dimensions change ?
+            # if 'dimensions' not in dest_field:
+            self.client.add_dimension(dimensions, dest_field_id)
 
   def add_items(self, items, collection_id, mappings, only_model='all', result=[]):
     """
@@ -250,7 +271,7 @@ class MetabaseIO:
           self.add_items(item['items'], c['id'], mappings, only_model, c['items'])
 
         elif item['model'] == 'card' and only_model == 'card':
-          metabase_io_log.info("⬆ ️{} {}: {}".format(item['model'], item['id'], item['name']))
+          metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
           card = deref_card(item, mappings)
 
           if item['id'] in mappings['cards']:
@@ -262,7 +283,7 @@ class MetabaseIO:
           result.append(upserted_card)
 
         elif item['model'] == 'dashboard' and only_model == 'dashboard':
-          metabase_io_log.info("⬆ ️{} {}: {}".format(item['model'], item['id'], item['name']))
+          metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
           exists = item['id'] in mappings['dashboards']
 
           deref_dashboard(item, mappings)
@@ -323,7 +344,7 @@ class MetabaseIO:
           # If the field may have dimensions, retrieve the fields to get them
           field = self.client.get('field', field['id'])
 
-        f_field = { k: field[k] for k in ['id', 'name', 'has_field_values', 'description', 'display_name', 'settings'] }
+        f_field = { k: field[k] for k in ['id', 'name', 'has_field_values', 'description', 'display_name', 'settings', 'special_type', 'fk_target_field_id'] }
         if 'dimensions' in field and len(field['dimensions']) > 0:
           f_field['dimensions'] = { k: field['dimensions'][k] for k in ['type', 'name', 'human_readable_field_id'] }
 
@@ -569,7 +590,30 @@ def broken_dashboards(items, broken=set()):
 
   return broken
 
-  
+def broken_datamodel(datamodel, broken=set()):
+  all_field_ids = set()
+  for database in datamodel['databases'].values():
+    for table in database["tables"].values():
+      for fid in table['fields'].keys():
+        all_field_ids.add(int(fid))
+
+  for database in datamodel['databases'].values():
+    for table in database["tables"].values():
+      for field in table['fields'].values():
+        if 'dimentions' in field and 'human_readable_field_id' in field['dimentions']:
+          if field['dimentions']['human_readable_field_id'] not in all_field_ids:
+            broken.add((field["id"],
+                        "{}.{}".format(table['name'], field['name']),
+                        "dimension set to nonexistent field id {}".format(field['dimentions']['human_readable_field_id'])))
+
+        if 'fk_target_field_id' in field and field['fk_target_field_id'] is not None:
+          if field['fk_target_field_id'] not in all_field_ids:
+            broken.add((field["id"], "{}.{}".format(table['name'], field['name']),
+                        "FK target does not exist (id {})".format(field['fk_target_field_id'])))
+    return broken
+
+
+
 def datamodel_has_fied(datamodel, db_id, fld_id):
   db = datamodel['databases'][str(db_id)]
   for table in db['tables'].values():
