@@ -1,4 +1,8 @@
 from metabase import Metabase
+import json
+import logging
+
+metabase_io_log = logging.getLogger('metabase.io')
 
 class Client:
   """
@@ -9,21 +13,25 @@ class Client:
   def __init__(self):
     self.client = Metabase()
 
-  def get(self, model, model_id, subquery = None):
+  def get(self, model, model_id = None, subquery = None):
     """
       Generic get method to retrieve a specific object or sub-objects
     """
-    if subquery is None:
+    if subquery is not None:
+      query = '/{}/{}/{}'.format(model, model_id, subquery)
+    elif model_id is not None:
       query = '/{}/{}'.format(model, model_id)
     else:
-      query = '/{}/{}/{}'.format(model, model_id, subquery)
+      query = '/{}/'.format(model)
 
     status, item = self.client.get(query)
     if not status:
-      if subquery is None:
+      if subquery is not None:
+        msg = "Error while retrieving {} for {} {}".format(subquery, model, model_id)
+      elif model_id is not None:
         msg = "Error while retrieving {} {}".format(model, model_id)
       else:
-        msg = "Error while retrieving {} for {} {}".format(subquery, model, model_id)
+        msg = "Error while retrieving {} list".format(model)
       raise Exception(msg)
 
     return item
@@ -50,6 +58,13 @@ class Client:
       raise Exception("Could not create card {}".format(card['name']))
     return result
 
+  def update_card(self, card, collection_id):
+    card['collection_id'] = collection_id
+    status = self.client.put('/card/{}'.format(card['id']), json=card)
+    if not status:
+      raise Exception("Could not update card {} (id {})".format(card['name'], card['id']))
+    return card
+
   def add_dashboard(self, dashboard, collection_id):
     dashboard['collection_id'] = collection_id
     status, result = self.client.post('/dashboard/', json=dashboard)
@@ -57,11 +72,27 @@ class Client:
       raise Exception("Could not create dashboard {}".format(dashboard['name']))
     return result
 
+  def update_dashboard(self, dashboard, collection_id):
+    dashboard['collection_id'] = collection_id
+    status = self.client.put('/dashboard/{}'.format(dashboard['id']), json=dashboard)
+    if not status:
+      raise Exception("Could not update dashboard {} (id {})".format(dashboard['name'], dashboard['id']))
+    return dashboard
+
   def add_dashboard_card(self, card, dashboard_id):
     status, result = self.client.post('/dashboard/{}/cards'.format(dashboard_id), json=card)
     if not status:
-      raise Exception("Could not add card {} to dashboard {}".format(card['cardId'], dashboard_id))
+      raise Exception("Could not add card {} to dashboard {}".format(card.get('cardId', '(no cardId)'), dashboard_id))
     return result
+
+  def clear_dashboard(self, dashboard):
+    status, existing = self.client.get('/dashboard/{}'.format(dashboard['id']))
+    for card in existing['ordered_cards']:
+      status = self.client.delete('/dashboard/{}/cards'.format(dashboard['id']),
+                                  params={ 'dashcardId': card['id'] })
+
+      if not status:
+        raise Existing("Could not clear dashboard {} (id {})".format(dashboard['name'], dashboard['id']))
 
   def add_collection(self, collection, parent_id):
     params = {k: collection[k] for k in ['name', 'description', 'color']}
@@ -71,11 +102,21 @@ class Client:
       raise Exception("Could not create collection {}".format(params['name']))
     return result
 
+  def update_collection(self, collection, parent_id):
+    params = {k: collection[k] for k in ['name', 'description', 'color']}
+    params['parent_id'] = parent_id
+    status = self.client.put('/collection/{}'.format(collection['id']), json=params)
+    if not status:
+      raise Exception("Could not update collection {} (id {})".format(params['name'], collection['id']))
+    return collection
+
   def add_dimension(self, dimension, field_id):
     status, result = self.client.post('/field/{}/dimension'.format(field_id), json=dimension)
     if not status:
       raise Exception("Could not add dimension to field {}".format(field_id))
     return result
+
+  # XXX how to update dimensions?
 
   def update_field(self, field_id, params):
     status = self.client.put('/field/{}'.format(field_id), json=params)
@@ -103,7 +144,7 @@ class MetabaseIO:
     result['mappings'] = mapper.add_cards(result['items'])
     return result
 
-  def import_json(self, source, collection, with_metadata=False):
+  def import_json(self, source, collection, with_metadata=False, overwrite=False, db_map=[]):
     """
       Create in the given collection name all the items of the source data (dictionary representation of JSON export).
       If `with_metadata` is True, the extra metadata about the model is also imported
@@ -111,12 +152,12 @@ class MetabaseIO:
     has_items = len(source['items']) > 0
     if has_items:
       destination = self.client.get_by_name('collection', collection)
-      if len(self.client.get('collection', destination['id'], 'items')) > 0:
+      if not overwrite and len(self.client.get('collection', destination['id'], 'items')) > 0:
           raise Exception("The destination collection is not empty")
 
     if has_items or with_metadata:
       mapper = Mapper(self.client)
-      mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'])
+      mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
       if with_metadata:
         self.import_metadata(source['datamodel'], mappings)
       if has_items:
@@ -131,6 +172,7 @@ class MetabaseIO:
     items = self.client.get('collection', collection_id, 'items')
 
     for i in items:
+      metabase_io_log.info("⬇️ {} {}: {}".format(i['model'], i['id'], i.get('name', '')))
       item = self.client.get(i['model'], i['id'])
       item['model'] = i['model']
       if item['model'] == 'collection':
@@ -171,25 +213,66 @@ class MetabaseIO:
     else:
       for item in items:
         if item['model'] == 'collection':
+          # Inserting collection
+          # 
+          # Please note:
+          #      ,- ITEMS -                             ,- RESULT -
+          #      |  coll  ----> INSERT or UPDATE ---->  |  coll (shallow copy)
+          #      |  card  ----> new id is given  ---->  |  card (same dict!)
+          #      |  dash  ----> or from mapping  ---->  |  dash (same dict!)
+          # items hold dicts with source ids, whereas result holds items with destination ids
+          # For collection, we need to have a copy of the item because the source collections
+          # are used when inserting cards and dashboards.
+          # When we overwrite, we do an explicit shallow copy, when we create a new collection,
+          # we will get a new dict back.
+          # For cards and dashboards this is not so important because we use them only once,
+          # but this code will modify cards and dashboards also in items (in source data).
+          # This can lead to errors if caution is not taken. Immutable data structures would be
+          # useful here.
           if only_model == 'collection':
-            c = self.client.add_collection(item, collection_id)
-            mappings['collections'][item['id']] = c['id']
+            metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
+            # Is this an only-collection phase? If so, get or create the collection
+            if item['id'] in mappings['collections']:
+              dst_item = item.copy() # shallow copy is fine
+              deref(dst_item, 'id', mappings['collections'])
+              c = self.client.update_collection(dst_item, collection_id)
+            else:
+              c = self.client.add_collection(item, collection_id)
+              mappings['collections'][item['id']] = c['id']
             c['items'] = []
             result.append(c)
           else:
+            # Is this non-collection insert phase? Get the collection id that was created
             c = next(filter(lambda r: r['id'] == mappings['collections'][item['id']], result))
+
+          # Whether its collection or non-collection phase, add all items with
+          # destination collection as parent
           self.add_items(item['items'], c['id'], mappings, only_model, c['items'])
 
         elif item['model'] == 'card' and only_model == 'card':
+          metabase_io_log.info("⬆ ️{} {}: {}".format(item['model'], item['id'], item['name']))
           card = deref_card(item, mappings)
-          created_card = self.client.add_card(card, collection_id)
-          mappings['cards'][item['id']] = created_card['id']
-          result.append(created_card)
+
+          if item['id'] in mappings['cards']:
+            card['id'] = mappings['cards'][item['id']]
+            upserted_card = self.client.update_card(card, collection_id)
+          else:
+            upserted_card = self.client.add_card(card, collection_id)
+          mappings['cards'][item['id']] = upserted_card['id']
+          result.append(upserted_card)
 
         elif item['model'] == 'dashboard' and only_model == 'dashboard':
-          dashboard = deref_dashboard(item, mappings)
-          d = self.client.add_dashboard(item, collection_id)
-          d = self.add_dashboard_cards(dashboard['ordered_cards'], d)
+          metabase_io_log.info("⬆ ️{} {}: {}".format(item['model'], item['id'], item['name']))
+          exists = item['id'] in mappings['dashboards']
+
+          deref_dashboard(item, mappings)
+          if exists:
+            deref(item, 'id', mappings['dashboards'])
+            d = self.client.update_dashboard(item, collection_id)
+            self.client.clear_dashboard(d)
+          else:
+            d = self.client.add_dashboard(item, collection_id)
+          d = self.add_dashboard_cards(item['ordered_cards'], d)
           result.append(d)
 
     return result
@@ -197,6 +280,8 @@ class MetabaseIO:
   def add_dashboard_cards(self, cards, dashboard):
     dashboard['ordered_cards'] = []
     for card in cards:
+      if 'card' in card and card['card']['archived'] == True:
+        continue
       c = self.client.add_dashboard_card(card, dashboard['id'])
       dashboard['ordered_cards'].append(c)
     return dashboard
@@ -209,6 +294,10 @@ class MetabaseIO:
     return result
 
   def get_database_ids(self, items, result = None):
+    """
+    Search items for cards (questions), recursively scanning collections, and
+    return a set of database_id's the cards are using.
+    """
     if result is None:
       result = set()
 
@@ -225,7 +314,7 @@ class MetabaseIO:
     f_db['tables'] = {}
 
     for table in db['tables']:
-      f_table = { k: table[k] for k in ['id', 'name'] }
+      f_table = { k: table[k] for k in ['id', 'name', 'description', 'display_name'] }
       f_table['fields'] = {}
       f_db['tables'][table['id']] = f_table
 
@@ -234,9 +323,13 @@ class MetabaseIO:
           # If the field may have dimensions, retrieve the fields to get them
           field = self.client.get('field', field['id'])
 
-        f_field = { k: field[k] for k in ['id', 'name', 'has_field_values'] }
+        f_field = { k: field[k] for k in ['id', 'name', 'has_field_values', 'description', 'display_name', 'settings'] }
         if 'dimensions' in field and len(field['dimensions']) > 0:
           f_field['dimensions'] = { k: field['dimensions'][k] for k in ['type', 'name', 'human_readable_field_id'] }
+
+        # see https://github.com/metabase/metabase/blob/master/src/metabase/api/field.clj#L221
+        if f_field['has_field_values'] == 'list' or f_field['has_field_values'] == 'type/Boolean':
+          f_field['values'] = self.client.get('field', field['id'], 'values')['values']
 
         f_table['fields'][field['id']] = f_field
 
@@ -257,17 +350,17 @@ class Mapper:
       Return the updated result.
     """
     if result is None:
-      result = {'cards': {}}
+      result = {'cards': {}, 'collections': {}, 'dashboards': {}, 'databases': {}}
 
     for item in items:
       if item['model'] == 'collection':
+        result['collections'][item['id']] = { 'name': item['name'] }
         self.add_cards(item['items'], result)
       elif item['model'] == 'dashboard':
-        for card in item['ordered_cards']:
-          if 'card_id' not in card or card['card_id'] is None:
-            card['card_id'] = card['id']
-          if card['card_id'] not in result['cards']:
-            result['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
+        result['dashboards'][item['id']] = { 'name': item['name'] }
+      elif item['model'] == 'card':
+        result['cards'][item['id']] = { 'name': item['name'] }
+        self.add_card(item, result)
 
     return result
 
@@ -337,7 +430,8 @@ class Mapper:
   def add_dashboard(self, dashboard, mappings):
     for card in dashboard['ordered_cards']:
       if 'card_id' not in card or card['card_id'] is None:
-        card['card_id'] = card['id']
+        next    # text card, wholly embedded, no mapping is needed
+      #   card['card_id'] = card['id']  
       if card['card_id'] not in mappings['cards']:
         mappings['cards'][card['card_id']] = 'source_card_' + str(card['card_id'])
 
@@ -347,37 +441,143 @@ class Mapper:
           if isinstance(target_spec, list):
             self.add_fields(target_spec, mappings)
 
-          
-  def resolved_mappings(self, source_map, datamodel):
+  def resolved_mappings(self, source_map, datamodel, overwrite, collection_id, db_map):
+    """Translates all the ids found in source_map into corresponding ids for the
+    current Metabase instance Return a dictionary { model => { source_id =>
+    translated_id } }
+
+      When overwrite is True, cards, collections and dashboards are found by
+      name under collection_id in destination MB.
+
+      When overwrite is False, these are not resolved because their id will be
+      known after creating them. They will be added to mapping on the go.
+
     """
-      Translates all the ids found in source_map into corresponding ids for the current Metabase instance
-      Return a dictionary { model => { source_id => translated_id } }
-      Cards are not resolved because they can only be resolved while creating them
-    """
-    result = {'databases': {}, 'tables': {}, 'fields': {}}
+    result = {'databases': {}, 'tables': {}, 'fields': {},
+              'cards': {}, 'collections': {}, 'dashboards': {}}
 
     for db_id, db in datamodel['databases'].items():
-      dest_db = self.client.get_by_name('database', db['name'])
+      dest_db = self.client.get_by_name('database', db_map.get(db['name'], db['name']))
       result['databases'][int(db_id)] = dest_db['id']
 
       db_data = self.client.get('database', dest_db['id'], 'metadata')
       for table_id, table in db['tables'].items():
         dest_table = list(filter(lambda t: t['name'] == table['name'], db_data['tables']))
         if len(dest_table) == 0:
-          raise Exception("Table {} could not be mapped".format(table['name']))
+          raise Exception("Table {}.{} could not be mapped".format(db['name'], table['name']))
         dest_table = dest_table[0]
         result['tables'][int(table_id)] = dest_table['id']
 
         for field_id, field in table['fields'].items():
           dest_field = list(filter(lambda f: f['name'] == field['name'], dest_table['fields']))
           if len(dest_field) == 0:
-            raise Exception("Field {} could not be mapped".format(field['name']))
+            raise Exception("Field {}.{}.{} could not be mapped".format(db['name'], table['name'], field['name']))
           result['fields'][int(field_id)] = dest_field[0]['id']
 
-    result['cards'] = { int(k): v for k, v in source_map['cards'].items() }
-    result['collections'] = {}
+    if overwrite:
+      # map name->id in destination, for collections, cards, and dashboards
+      # only for items that are under destination collection
+      collection_names_to_id = {
+        col['name']: col['id']
+        for col in self.client.get('collection')
+        if "/{}/".format(collection_id) in col.get('location', '')
+      }
+
+      collection_ids = set(collection_names_to_id.values())
+      collection_ids.add(collection_id)
+
+      card_names_to_id = {
+        card['name']: card['id']
+        for card in self.client.get('card')
+        if card["collection_id"] in collection_ids
+      }
+
+      dashboard_names_to_id = {
+        dash['name']: dash['id']
+        for dash in self.client.get('dashboard')
+        if dash["collection_id"] in collection_ids
+      }
+
+      # now iterate throught source items and build src id->dest id using names
+      result['cards'] = {
+        int(k): card_names_to_id[v['name']]
+        for k, v in source_map['cards'].items()
+        if v['name'] in card_names_to_id
+      }
+
+      result['collections'] = {
+        int(k): collection_names_to_id[v['name']]
+        for k, v in source_map['collections'].items()
+        if v['name'] in collection_names_to_id
+      }
+
+      result['dashboards'] = {
+        int(k): dashboard_names_to_id[v['name']]
+        for k, v in source_map['dashboards'].items()
+        if v['name'] in dashboard_names_to_id
+      }
 
     return result
+
+def broken_cards(items, datamodel, broken=set()):
+  def check_field(card, fld_id, db_id):
+    if not datamodel_has_fied(datamodel, db_id, fld_id):
+      broken.add((card['id'], card['name']))
+        
+  def check_query(card, values, db_id):
+    for v in values:
+      if isinstance(v, dict):
+        check_query(card, v.values(), db_id)
+      elif isinstance(v, list):
+        if v[0] == 'field-id':
+          check_field(card, v[1], db_id)
+        else:
+          check_query(card, v, db_id)
+
+  for item in items:
+    if item['model'] == 'collection':
+      broken_cards(item['items'], datamodel, broken)
+    elif item['model'] == 'card':
+      if item['query_type'] == 'query':
+        dq = item['dataset_query']
+        db_id = dq['database']
+        dqq = dq['query']
+        check_query(item, dqq.values(), db_id)
+
+  return broken
+
+def broken_dashboards(items, broken=set()):
+  def find_card(items, card_id):
+    for item in items:
+      if item['model'] == 'card' and item['id'] == card_id:
+        return item
+      elif item['model'] == 'collection':
+        cf = find_card(item['items'], card_id)
+        if cf:
+          return cf
+    return None
+
+  for dash in filter(lambda i: i["model"] == "dashboard", items):
+    for card in dash['ordered_cards']:
+      if is_virtual_card(card):
+        continue
+      if find_card(items, card['card_id']) is None:
+        broken.add((dash["id"], dash["name"], card['card_id']))
+        
+  for col in filter(lambda i: i["model"] == "collection", items):
+    broken_dashboards(col["items"], broken)
+
+  return broken
+
+  
+def datamodel_has_fied(datamodel, db_id, fld_id):
+  db = datamodel['databases'][str(db_id)]
+  for table in db['tables'].values():
+    if str(fld_id) in table['fields']:
+      return True
+  return False
+
+          
 
 def deref(obj, prop, mapping):
   obj[prop] = mapping[obj[prop]]
@@ -395,6 +595,9 @@ def deref_fields(expression, mappings):
     else:
       for factor in expression:
         deref_fields(factor, mappings)
+  elif isinstance(expression, dict):
+    for factor in expression.values():
+      deref_fields(factor, mappings)
 
 def deref_card(card, mappings):
 # skipping 'result_metadata', 
@@ -416,24 +619,51 @@ def deref_card(card, mappings):
         for join in query.get('joins', []):
           join['source-table'] = deref_table(join['source-table'], mappings)
           deref_fields(join['condition'], mappings)
+          deref_fields(join.get('fields', []), mappings)
 
         deref_fields(query.get('fields', []), mappings)
         deref_fields(query.get('filter', []), mappings)
         deref_fields(query.get('breakout', []), mappings)
         deref_fields(query.get('order-by', []), mappings)
+        deref_fields(query.get('aggregation', []), mappings)
 
       if 'native' in dquery and 'template-tags' in dquery['native']:
         for tag in dquery['native']['template-tags'].values():
           deref_fields(tag['dimension'], mappings)
-            
+
+  if 'visualization_settings' in card:
+    vs = card['visualization_settings']
+    if 'column_settings' in vs:
+      def deref_column_setting_key(cs):
+        if cs.startswith('["ref",["field-id",'):
+          csobj = json.loads(cs)
+          try:
+            csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
+          except KeyError:
+            # There could be stale column_settings that have orphan field-id
+            # e.g. referring to archived card
+            return cs
+          return json.dumps(csobj)
+        else:
+          return cs
+      vs['column_settings'] = {
+        deref_column_setting_key(k): v
+        for k,v in vs['column_settings'].items()
+      }
+
+    if 'table.columns' in vs:
+      deref_fields(vs['table.columns'], mappings)
+
+
   return card
 
 def deref_dashboard(dashboard, mappings):
   dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
   for c, card in enumerate(dashboard['ordered_cards']):
     card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY', 'visualization_settings']}
-    card['card_id'] = mappings['cards'][card['card_id']]
+
     if not is_virtual_card(card):
+      card['card_id'] = mappings['cards'][card['card_id']]
       card['cardId'] = card['card_id']  # Inconsistency in dashboard API
 
     if 'series' in card:

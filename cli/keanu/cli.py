@@ -168,25 +168,73 @@ def metabase_cli():
 
 @metabase_cli.command('export')
 @click.option('-c', '--collection', help="Name of the collection to export")
-def metabase_export(collection):
+@click.option('-j', '--json-file', default=None, help="path to JSON file to import")
+@click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
+def metabase_export(collection, json_file, verbose):
+    set_verbose(verbose)
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
     result = mio.export_json(collection)
-    print(json.dumps(result, indent=2))
+    if json_file:
+        with open(json_file, 'w') as out:
+            out.write(json.dumps(result, indent=2))
+    else:
+        print(json.dumps(result, indent=2))
 
 @metabase_cli.command('import')
 @click.option('-c', '--collection', help="Name of the collection to import into")
 @click.option('-j', '--json-file', help="path to JSON file to import")
 @click.option('-m', '--metadata', is_flag=True, help="Also import metadata before importing the collection")
-def metabase_import(collection, json_file, metadata):
+@click.option('-o', '--overwrite', is_flag=True, help="Overwrite cards")
+@click.option('-D', '--db-map', multiple=True, help="Map Metabase database names fromname:toname.")
+@click.option('-V', '--validate', is_flag=True,help="Validate JSON before load")
+@click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
+def metabase_import(collection, json_file, metadata, overwrite, db_map, validate, verbose):
+    set_verbose(verbose)
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
+    db_mapping = {d1: d2 for (d1,d2) in map(lambda x: x.split(":"), db_map)}
     with open(json_file, 'r') as f:
         source = json.loads(f.read())
-        mio.import_json(source, collection, metadata)
+        if validate:
+            broken_cards = metabase.broken_cards(source['items'], source['datamodel'])
+            if len(broken_cards) > 0:
+                print("There are broken cards:")
+                for bc in broken_cards:
+                    print("{}: {}".format(*bc))
+
+            broken_dashboards = metabase.broken_dashboards(source['items'])
+            if len(broken_dashboards) > 0:
+                print("There are broken dashboards (with questions outside of imported collection):")
+                for bd in broken_dashboards:
+                    print("{}: {} (missing card id {})".format(*bd))
+
+            if len(broken_cards) > 0 or len(broken_dashboards) > 0:
+                return 1
+
+
+        mio.import_json(source, collection, metadata,
+                        overwrite,
+                        db_mapping)
+                
+
+
+@metabase_cli.command('query')
+@click.argument('model')
+@click.argument('oid', default=None, required=False)
+@click.argument('sub', default=None, required=False)
+def metabase_query(model, oid, sub):
+    from pprint import pprint
+    client = metabase.Client()
+
+    r = client.get(model, oid, sub)
+
+    pprint(r)
+    
 
 
 def set_verbose(verbose):
     if verbose:
         logging.basicConfig()
         logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+        logging.getLogger('metabase.io').setLevel(logging.INFO)
