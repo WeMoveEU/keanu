@@ -28,13 +28,12 @@ INSERT INTO open (broadcast_id, contact_id, created_at, external_system, externa
 CREATE TEMPORARY TABLE updated_broadcast AS
   SELECT DISTINCT broadcast_id AS id FROM open WHERE external_system = 'civicrm_mailing_event_opened' AND external_id > @last_open
 ;
+CREATE INDEX updated_broadcast_id ON updated_broadcast (id);
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
 -- We need Country breakdown for openers_to_recipients, so we need openers
 CREATE TEMPORARY TABLE bm_segment AS
-  SELECT @everyone AS id
-  UNION
   SELECT s.id from segment s JOIN segmentation sn ON sn.id = s.segmentation_id
   WHERE sn.name = 'Country';
 CREATE INDEX bm_segment_id ON bm_segment (id);
@@ -42,17 +41,29 @@ CREATE INDEX bm_segment_id ON bm_segment (id);
 -- OPENERS
 INSERT INTO broadcast_metric -- openers
             (broadcast_id, broadcast_name, segment_id, metric, value)
-SELECT
-  b.id, b.name, seg.id, 'openers', COUNT(DISTINCT o.contact_id)
+  SELECT
+    b.id, b.name, @everyone, 'openers', COUNT(DISTINCT o.contact_id)
   FROM open o
-         JOIN broadcast b ON b.id = o.broadcast_id
-         JOIN updated_broadcast ub ON ub.id = b.id
-         JOIN contact_segment cs
-             ON cs.contact_id = o.contact_id
-             AND cs.joined_at <= b.sent_at
-             AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
-         JOIN bm_segment seg
-             ON cs.segment_id = seg.id
+  JOIN broadcast b ON b.id = o.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  GROUP BY b.id
+
+  ON DUPLICATE KEY UPDATE value=VALUES(value)
+;
+
+INSERT INTO broadcast_metric -- openers by country
+            (broadcast_id, broadcast_name, segment_id, metric, value)
+  SELECT
+    b.id, b.name, seg.id, 'openers', COUNT(DISTINCT o.contact_id)
+  FROM open o
+  JOIN broadcast b ON b.id = o.broadcast_id
+  JOIN updated_broadcast ub ON ub.id = b.id
+  JOIN contact_segment cs
+    ON cs.contact_id = o.contact_id
+    AND cs.joined_at <= b.sent_at
+    AND (cs.left_at IS NULL OR b.sent_at < cs.left_at)
+  JOIN bm_segment seg
+    ON cs.segment_id = seg.id
 
   GROUP BY b.id, seg.id
 
