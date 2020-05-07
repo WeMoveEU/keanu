@@ -313,6 +313,7 @@ class MetabaseIO:
             self.client.clear_dashboard(d)
           else:
             d = self.client.add_dashboard(item, collection_id)
+            mappings['dashboards'][item['id']] = d['id']
           d = self.add_dashboard_cards(item['ordered_cards'], d)
           result.append(d)
 
