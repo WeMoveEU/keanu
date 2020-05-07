@@ -64,28 +64,28 @@ class Client:
     return models[0]
 
   def add_card(self, card, collection_id):
-    card['collection_id'] = collection_id
+    card['collection_id'] = api_collection_id(collection_id)
     status, result = self.client.post('/card/', json=card)
     if not status:
       raise Exception("Could not create card {}".format(card['name']))
     return result
 
   def update_card(self, card, collection_id):
-    card['collection_id'] = collection_id
+    card['collection_id'] = api_collection_id(collection_id)
     status = self.client.put('/card/{}'.format(card['id']), json=card)
     if not status:
       raise Exception("Could not update card {} (id {})".format(card['name'], card['id']))
     return card
 
   def add_dashboard(self, dashboard, collection_id):
-    dashboard['collection_id'] = collection_id
+    dashboard['collection_id'] = api_collection_id(collection_id)
     status, result = self.client.post('/dashboard/', json=dashboard)
     if not status:
       raise Exception("Could not create dashboard {}".format(dashboard['name']))
     return result
 
   def update_dashboard(self, dashboard, collection_id):
-    dashboard['collection_id'] = collection_id
+    dashboard['collection_id'] = api_collection_id(collection_id)
     status = self.client.put('/dashboard/{}'.format(dashboard['id']), json=dashboard)
     if not status:
       raise Exception("Could not update dashboard {} (id {})".format(dashboard['name'], dashboard['id']))
@@ -108,7 +108,9 @@ class Client:
 
   def add_collection(self, collection, parent_id):
     params = {k: collection[k] for k in ['name', 'description', 'color']}
-    params['parent_id'] = parent_id
+    # The root coolection has a special non-integer id, but the API accepts only integer values...
+    # The special value None means root collection.
+    params['parent_id'] = api_collection_id(parent_id)
     status, result = self.client.post('/collection/', json=params)
     if not status:
       raise Exception("Could not create collection {}".format(params['name']))
@@ -116,7 +118,7 @@ class Client:
 
   def update_collection(self, collection, parent_id):
     params = {k: collection[k] for k in ['name', 'description', 'color']}
-    params['parent_id'] = parent_id
+    params['parent_id'] = api_collection_id(parent_id)
     status = self.client.put('/collection/{}'.format(collection['id']), json=params)
     if not status:
       raise Exception("Could not update collection {} (id {})".format(params['name'], collection['id']))
@@ -517,16 +519,22 @@ class Mapper:
           result['fields'][int(field_id)] = dest_field[0]['id']
 
     if overwrite:
+      def col_location(cid):
+        return '/' if cid == 'root' else "/{}/".format(collection_id)
+
       # map name->id in destination, for collections, cards, and dashboards
       # only for items that are under destination collection
       collection_names_to_id = {
         col['name']: col['id']
         for col in self.client.get('collection')
-        if "/{}/".format(collection_id) in col.get('location', '')
+        if col_location(collection_id) in col.get('location', '')
       }
 
       collection_ids = set(collection_names_to_id.values())
-      collection_ids.add(collection_id)
+      # The collection ids are going to be compared to ids returned by the API, so they need to be api_collection_id'ed
+      # But this affects only the root collection, and we know that root collection cannot be listed in the imported one
+      # so only `collection_id` needs this treatment
+      collection_ids.add(api_collection_id(collection_id))
 
       card_names_to_id = {
         card['name']: card['id']
@@ -753,3 +761,5 @@ def is_virtual_card(card):
   """
   return 'visualization_settings' in card and 'virtual_card' in card['visualization_settings']
 
+def api_collection_id(collection_id):
+  return collection_id if collection_id != 'root' else None
