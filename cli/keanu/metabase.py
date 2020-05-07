@@ -1,6 +1,7 @@
 from metabase import Metabase
 import json
 import logging
+import re
 
 ## XXX monkey patch metabase.Metabase.delete until upstream fixes:
 ## https://github.com/STUnitas/metabase-py/pull/9
@@ -167,10 +168,10 @@ class MetabaseIO:
     if has_items or with_metadata:
       mapper = Mapper(self.client)
       mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
-      if with_metadata:
-        self.import_metadata(source['datamodel'], mappings)
       if has_items:
         self.add_items(source['items'], destination['id'], mappings)
+      if with_metadata:
+        self.import_metadata(source['datamodel'], mappings)
     
   def get_items(self, collection_id):
     """
@@ -213,6 +214,14 @@ class MetabaseIO:
 
           if 'settings' in field:
             update_attrs['settings'] = field['settings']
+            # Check if custom action contains a dashboard URL, and replace its id with the mapped one
+            # Remove this part when custom action supports a more structured aproach
+            if field['settings'] is not None and 'custom_actions' in field['settings']:
+              url = field['settings']['custom_actions']['url']
+              m = re.search('/dashboard/(\d+)', url)
+              if m is not None:
+                url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
+                update_attrs['settings']['custom_actions']['url'] = url
           
           if update_attrs:
             metabase_io_log.info("🏷️ setting custom field values for {}.{}: {}".format(table['name'], field['name'], update_attrs))
@@ -553,7 +562,7 @@ class Mapper:
 
 def broken_cards(items, datamodel, broken=set()):
   def check_field(card, fld_id, db_id):
-    if not datamodel_has_fied(datamodel, db_id, fld_id):
+    if not datamodel_has_field(datamodel, db_id, fld_id):
       broken.add((card['id'], card['name']))
         
   def check_query(card, values, db_id):
@@ -625,7 +634,7 @@ def broken_datamodel(datamodel, broken=set()):
 
 
 
-def datamodel_has_fied(datamodel, db_id, fld_id):
+def datamodel_has_field(datamodel, db_id, fld_id):
   db = datamodel['databases'][str(db_id)]
   for table in db['tables'].values():
     if str(fld_id) in table['fields']:
