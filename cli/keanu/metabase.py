@@ -3,17 +3,6 @@ import json
 import logging
 import re
 
-## XXX monkey patch metabase.Metabase.delete until upstream fixes:
-## https://github.com/STUnitas/metabase-py/pull/9
-
-import requests
-def _metabase_delete(self, *args, headers=None, **kwargs):
-    headers = self.get_session_headers(headers, kwargs)
-    r = requests.delete(self.endpoint + args[0], headers=headers, **kwargs)
-    return self.fetch_header(r)
-Metabase.delete = _metabase_delete
-## XXX end monkey patch
-
 metabase_io_log = logging.getLogger('metabase.io')
 
 class Client:
