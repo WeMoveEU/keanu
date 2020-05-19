@@ -28,6 +28,8 @@ def configuration_from_argument(file_or_dir):
             {'destination': {'db': {'url': environ['DATABASE_URL']}}},
             {'transform': {'sql': {'directory': file_or_dir}}}
         ]
+    else:
+        raise click.Abort("Cannot use config {}".format(file_or_dir))
     return conf
 
 def load(file_path):
