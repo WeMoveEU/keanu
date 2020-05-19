@@ -1,6 +1,7 @@
 *.bak
 *.pyc
 .env
+.env.*
 cli/dist
 cli/build
 cli/keanu.egg-info
