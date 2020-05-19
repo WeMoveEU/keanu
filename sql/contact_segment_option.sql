@@ -25,7 +25,7 @@ INSERT INTO contact_segment -- Preferred Language
   FROM segmentation sn
   JOIN segment s ON s.segmentation_id = sn.id
   JOIN ${SOURCE}.civicrm_option_value ov ON s.external_id = ov.id
-  JOIN contact c ON SUBSTRING(c.preferred_language, 1, 2) = ov.value COLLATE utf8_general_ci
+  JOIN contact c ON c.preferred_language = ov.name COLLATE utf8_general_ci
   WHERE sn.name = 'Preferred language'
 -- BEGIN INCREMENTAL
   AND

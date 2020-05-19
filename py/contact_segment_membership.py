@@ -133,6 +133,7 @@ segment - the segment this gorup maps to
     MEMBER = 1
     state = NON_MEMBER
     last_join = None
+    minimal_join_time = timedelta(seconds=1)
 
     for e in events:
 
@@ -141,7 +142,11 @@ segment - the segment this gorup maps to
             last_join = e["date"]
         elif state == MEMBER and not e["is_join"]:
             state = NON_MEMBER
-            cs.append(ContactSegment(segment.segmentation_id, segment.segment_id, contact_id, last_join, e["date"]))
+            if last_join < e["date"]:
+                leave_at = e["date"]
+            else:
+                leave_at = last_join + minimal_join_time
+            cs.append(ContactSegment(segment.segmentation_id, segment.segment_id, contact_id, last_join, leave_at))
         elif state == MEMBER and e["is_join"]:
             pass
         elif state == NON_MEMBER and not e["is_join"]:

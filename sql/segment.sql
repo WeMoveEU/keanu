@@ -43,7 +43,7 @@ ov.id,
 FROM
 ${SOURCE}.civicrm_option_group og
 JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id COLLATE utf8_general_ci
-JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.value = SUBSTRING(pf.preferred_language, 1, 2) COLLATE utf8_general_ci
+JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.name = pf.preferred_language COLLATE utf8_general_ci
 WHERE og.id = @ext_id;
 
 
