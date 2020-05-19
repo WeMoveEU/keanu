@@ -90,18 +90,111 @@ Depending on subcommand, you configure keanu cli with:
 2. configuration YAML file (when more structured configuration is needed eg. to specify sources and destination for loaders, as well as which loaders are used)
 3. command line switches and arguments
 
-### Environment reference
+### Environment variables reference
+
+1. API keys and Database access urls
+
+Keanu uses metabase API in its metabase subcommand. Define Metabase url, username and password with these variables:
+
+- `METABASE_ENDPOINT` - url of Metabase instance with scheme, eg: https://data.awesome.com
+- `METABASE_AUTH_EMAIL` - email for login
+- `METABASE_AUTH_PASSWORD` - password for login
+
+Keanu uses Database credentials in form of database url in format suitable for SQLalchemy. Because keanu can have many sources and another destination, the urls are provided using a yaml configuration. 
+
+### Configuration file
+
+The configuration file must have `.yaml` extension and contain alist of elements that define sources of data, destination of data, and transforms, which run a series of loaders.
+You provide the configuration file as a positional argument to `load` or `delete` subcommands.
+
+#### Source
+
+The source should have a name, and db specification can either be url or schema. In case that source is the same db as destination, we say it is _local_ to that destination, and we can provide just schema name using `schema` key. You can use `${VARIABLE}` syntax to insert env variables (so, for instance, you do not store database credentials in configuration file).
+
+Example: source with database url, named _foobarcrm_
+```
+- source:
+    name: foobarcrm
+    db:
+      url: ${DATABASE_URL}
+```
+
+Example: source in the same DB as destination, but in `exchange_rates` database
+```
+- source:
+    name: currency_data
+    db:
+    schema: exchange_rates
+```
+
+#### Destination
+
+There can be only one destination in the config file (so there is no need to give it a name). The SQL transforms are run
+In the destination DB (they are SQL statements run on the DB server). This means
+sources must be local to the destination for SQL loaders. Keanu cannot yet
+stream data from one DB and insert it to another DB, but this is a feature we
+would like to develop in the feature (in this case the transform should run in
+the source and return a dataset that can be directly inserted to the
+destination).
+
+The python loaders run inside the keanu cli process, and download/upload data. They can use different db servers for sources and destination.
+
+Example:
+```
+- destination:
+    db:
+      url: ${DATABASE_URL}
+```
+
+#### Transform
+
+The transform points to directory with loaders and specifies their type. Transform is applied to one source and one destination. Because there can be many sources, transform should specify name of the sources under `source` key. Transform can point to `directory` or just one `file`.
+
+Example: transform will execute all SQL files found under `some/directory`. It will use `foobarcrm` as source.
+```
+- transform:
+    source: foobarcrm
+    sql:
+      directory: some/directory
+```
+
+Example: a transform using just one python loader file.
+```
+- transform:
+    source: foobarcrm
+    py:
+      file: python_scripts/conversions.py
+```
 
 1. You can  Copy the `cli/.env.sample` file to `.env` and change it to taste. 
+### Default setting
+
+However, keanu can also run with minamal default configuration.
+Running `keanu load sql_files` is equal to `keanu load config1.yaml` with `config1.yaml`:
+
+
+```
+- source:
+    db:
+      schema: ${SOURCE}
+- destination:
+    db:
+      url: ${DATABASE_URL}
+- transform:
+    sql:
+       directory: ${ARGV[1]}
+```
 
 - `DATABASE_URL` - must use schema understood by SQLAlchemy library, required for load and delete subcommands
-- `SOURCE` - is a name of CiviCRM database (also called schema), required only for SQL related commands
-- `METABASE_ENDPOINT`, `METABASE_AUTH_EMAIL`, `METABASE_AUTH_PASSWORD` - Metabase credentials, required only metabase commands
+- `SOURCE` - is a name of CiviCRM database (also called schema), required only for SQL loaders
 
 ## Usage
 
 Keanu commands has a set of subcommands, similar to git or heroku.
-You need to enable the Pipenv, by running `pipenv shell`.
+
+## Running from source
+
+Install dependencies using `pipenv insall` and open shell with needed requirements with `pipenv shell`.
 
 ## Package building
 
