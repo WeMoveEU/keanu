@@ -5,6 +5,24 @@ import re
 
 metabase_io_log = logging.getLogger('metabase.io')
 
+
+def _metabase_fetch_header(self, r):
+  if r.status_code == 200:
+    return True
+  elif r.status_code == 202:
+    return True
+  else:
+    return False
+
+def _metabase_fetch_body(self, r):
+    if r.status_code == 200 or r.status_code == 202:
+      return True, r.json()
+    else:
+      return False, None
+      
+Metabase.fetch_header = _metabase_fetch_header
+Metabase.fetch_body = _metabase_fetch_body
+
 class Client:
   """
     Wrapper around Metabase client for not having to deal with response status
