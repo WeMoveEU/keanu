@@ -16,6 +16,7 @@ pyaml = "*"
 jaeger-client = "*"
 pandas = "*"
 click-aliases = "*"
+slug = "*"
 
 [dev-packages]
 setuptools = "*"

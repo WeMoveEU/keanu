@@ -170,8 +170,9 @@ def metabase_cli():
 @metabase_cli.command('export', aliases=['e'])
 @click.option('-c', '--collection', help="Name of the collection to export")
 @click.option('-j', '--json-file', default=None, help="path to JSON file to import")
+@click.option('-y', '--yaml-dir', default=None, help="path to directory with yaml files")
 @click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
-def metabase_export(collection, json_file, verbose):
+def metabase_export(collection, json_file, yaml_dir, verbose):
     set_verbose(verbose)
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
@@ -179,18 +180,22 @@ def metabase_export(collection, json_file, verbose):
     if json_file:
         with open(json_file, 'w') as out:
             out.write(json.dumps(result, indent=2))
+    elif yaml_dir:
+        splitter = metabase.Splitter(yaml_dir)
+        splitter.store(result)
     else:
         print(json.dumps(result, indent=2))
 
 @metabase_cli.command('import', aliases=['i'])
 @click.option('-c', '--collection', help="Name of the collection to import into")
-@click.option('-j', '--json-file', help="path to JSON file to import")
+@click.option('-j', '--json-file', default=None, help="path to JSON file to import")
+@click.option('-y', '--yaml-dir', default=None, help="path to directory with yaml files")
 @click.option('-m', '--metadata', is_flag=True, help="Also import metadata before importing the collection")
 @click.option('-o', '--overwrite', is_flag=True, help="Overwrite cards")
 @click.option('-D', '--db-map', multiple=True, help="Map Metabase database names fromname:toname.")
 @click.option('-V', '--validate', is_flag=True,help="Validate JSON before load")
 @click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
-def metabase_import(collection, json_file, metadata, overwrite, db_map, validate, verbose):
+def metabase_import(collection, json_file, metadata, overwrite, db_map, validate, ymal_dir, verbose):
     set_verbose(verbose)
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
@@ -243,6 +248,14 @@ def metabase_query(model, oid, sub, **opts):
         print(json.dumps(r, indent=2))
     else:
         pprint(r)
+
+@metabase_cli.command('split', aliases=['s'])
+@click.option('-j', '--json-file', help="path to JSON file to import")
+@click.option('-y', '--yaml-dir', help="path to directory with yaml files")
+def metabase_split(json_file, yaml_dir):
+    data = json.load(open(json_file))
+    splitter = metabase.Splitter(yaml_dir)
+    splitter.store(data)
 
 
 def set_verbose(verbose):
