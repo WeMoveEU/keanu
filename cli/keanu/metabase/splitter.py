@@ -49,22 +49,23 @@ class Splitter:
             _.store_to(db_spec, 'databases/{}'.format(db_file))
 
     def store_items(_, items, prefix=[]):
-        for i in items:
+        for idx, i in enumerate(items):
             if i['model'] == 'card' or i['model'] == 'dashboard':
                 if i['model'] == 'card':
                     _.format_query_as_block(i)
 
-                file_name = slug(i['name'])
+                file_name = "{:02}-{}".format(idx, slug(i['name']))
                 loc = path.join('items', *prefix, file_name)
 
                 _.store_to(i, loc)
 
             elif i['model'] == 'collection':
-                dir_name = slug(i['name'])
+                dir_name = "{:02}-{}".format(idx, slug(i['name']))
                 loc = path.join('items', *prefix, dir_name, '__meta__')
 
                 _.store_to(i, loc)
                 _.store_items(i['items'], prefix + [dir_name])
+                del i['items']
 
     def format_query_as_block(_, card):
         if 'dataset_query' in card and 'native' in card['dataset_query']:
@@ -99,3 +100,37 @@ class Splitter:
             except IsADirectoryError:
                 rmtree(path.join(_.directory, f))
 
+
+    def load(_):
+        data = {}
+
+        data['items'] = _.load_items()
+        data['datamodel'] = _.load_datamodel()
+        data['mappings'] = _.load_from('mappings.yaml')
+
+        return data
+
+    def load_datamodel(_):
+        databases = {}
+        for f in listdir(path.join(_.directory, 'databases')):
+            db = _.load_from(path.join('databases', f))
+            databases[db['id']] = db
+        return { 'databases': databases }
+
+    def load_items(_, prefix=[]):
+        items = []
+        for f in listdir(path.join(_.directory, 'items', *prefix)):
+            if path.isdir(path.join(_.directory, 'items', *prefix, f)):
+                col = _.load_from(path.join('items', *prefix, f, '__meta__.yaml'))
+                col['items'] = _.load_items(prefix + [f])
+                items.append(col)
+            else:
+                item = _.load_from(path.join('items', *prefix, f))
+                items.append(item)
+        return items
+
+
+    def load_from(_, loc):
+        floc = path.join(_.directory, loc)
+        # fdir = path.dirname(floc)
+        return yaml.load(open(floc))

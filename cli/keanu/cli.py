@@ -257,6 +257,17 @@ def metabase_split(json_file, yaml_dir):
     splitter = metabase.Splitter(yaml_dir)
     splitter.store(data)
 
+@metabase_cli.command('join', aliases=['j'])
+@click.option('-j', '--json-file', default=None, help="path to JSON file to import")
+@click.option('-y', '--yaml-dir', help="path to directory with yaml files")
+def metabase_split(json_file, yaml_dir):
+    splitter = metabase.Splitter(yaml_dir)
+    data = splitter.load()
+    if json_file:
+        with open(json_file, 'w') as out:
+            out.write(json.dumps(data, indent=2))
+    else:
+        print(json.dumps(data, indent=2))
 
 def set_verbose(verbose):
     if verbose:
