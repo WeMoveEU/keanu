@@ -1,11 +1,11 @@
 id: 9
 name: Keanu Romain
 tables:
-  797:
+  '797':
     description: A segment is a sub-group of a segmentation.
     display_name: Segment
     fields:
-      6598:
+      '6598':
         description: null
         display_name: Segmentation ID
         fk_target_field_id: 6604
@@ -14,7 +14,7 @@ tables:
         name: segmentation_id
         settings: null
         special_type: type/FK
-      6599:
+      '6599':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -23,7 +23,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6600:
+      '6600':
         description: null
         display_name: Name
         fk_target_field_id: null
@@ -32,7 +32,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      6601:
+      '6601':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -41,7 +41,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6979:
+      '6979':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -57,7 +57,7 @@ tables:
         - - civicrm_country
     id: 797
     name: segment
-  800:
+  '800':
     description: 'A share is a type of action: it is the act of referring an action
       page to other people.
 
@@ -66,7 +66,7 @@ tables:
       from that share (the shared source).'
     display_name: Share
     fields:
-      6605:
+      '6605':
         description: 'is this a count of shares people did on the journey when converting
           ?  <- i think it''s this
 
@@ -91,7 +91,7 @@ tables:
         - - 8
         - - 9
         - - 14
-      6606:
+      '6606':
         description: Number of people who became members of the organisation directly
           thanks to this share
         display_name: New Member Count
@@ -113,7 +113,7 @@ tables:
         - - 13
         - - 22
         - - 30
-      6607:
+      '6607':
         description: Number of people who took action directly thanks this share
         display_name: Conversion Count
         fk_target_field_id: null
@@ -141,7 +141,7 @@ tables:
         - - 28
         - - 33
         - - 37
-      6608:
+      '6608':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -150,7 +150,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6887:
+      '6887':
         description: null
         display_name: Action ID
         fk_target_field_id: 6480
@@ -159,7 +159,7 @@ tables:
         name: action_id
         settings: null
         special_type: type/FK
-      6981:
+      '6981':
         description: Utm parameters used in the shared URL
         display_name: Shared Source ID
         fk_target_field_id: 6616
@@ -170,11 +170,11 @@ tables:
         special_type: type/FK
     id: 800
     name: share
-  802:
+  '802':
     description: null
     display_name: Campaign Topic
     fields:
-      6498:
+      '6498':
         description: null
         display_name: Campaign ID
         fk_target_field_id: 6496
@@ -183,7 +183,7 @@ tables:
         name: campaign_id
         settings: null
         special_type: type/FK
-      6499:
+      '6499':
         description: null
         display_name: Topic ID
         fk_target_field_id: 6621
@@ -194,11 +194,11 @@ tables:
         special_type: type/FK
     id: 802
     name: campaign_topic
-  805:
+  '805':
     description: A contact_segment record is a link between a person and a segment.
     display_name: Contact Segment
     fields:
-      6520:
+      '6520':
         description: null
         display_name: Segment ID
         fk_target_field_id: 6601
@@ -207,7 +207,7 @@ tables:
         name: segment_id
         settings: null
         special_type: type/FK
-      6521:
+      '6521':
         description: this is necessary to have one segment per segmentation enforced
           for a contact.
         display_name: Segmentation ID
@@ -217,7 +217,7 @@ tables:
         name: segmentation_id
         settings: null
         special_type: type/FK
-      6522:
+      '6522':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -226,7 +226,7 @@ tables:
         name: contact_id
         settings: null
         special_type: type/FK
-      6523:
+      '6523':
         description: 'When the contact left the segment, or NULL if the contact is
           still in the segment.
 
@@ -238,7 +238,7 @@ tables:
         name: left_at
         settings: null
         special_type: null
-      6524:
+      '6524':
         description: If applicable, the id of the action that made the contact join
           the segment
         display_name: Trigger Action ID
@@ -248,7 +248,7 @@ tables:
         name: trigger_action_id
         settings: null
         special_type: type/FK
-      6525:
+      '6525':
         description: 'When the contact joined the segment.
 
           If the contact was in the segment several times, there are several records.
@@ -261,7 +261,7 @@ tables:
         name: joined_at
         settings: null
         special_type: type/JoinTimestamp
-      6526:
+      '6526':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -272,11 +272,11 @@ tables:
         special_type: type/PK
     id: 805
     name: contact_segment
-  806:
+  '806':
     description: VIEW
     display_name: Contribution Recur To Campaign
     fields:
-      6534:
+      '6534':
         description: null
         display_name: Mailing ID
         fk_target_field_id: null
@@ -285,7 +285,7 @@ tables:
         name: mailing_id
         settings: null
         special_type: null
-      6535:
+      '6535':
         description: null
         display_name: Utm Campaign
         fk_target_field_id: null
@@ -294,7 +294,7 @@ tables:
         name: utm_campaign
         settings: null
         special_type: null
-      6536:
+      '6536':
         description: Contribution Recur ID
         display_name: ID
         fk_target_field_id: null
@@ -303,7 +303,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6537:
+      '6537':
         description: null
         display_name: Utm Medium
         fk_target_field_id: null
@@ -322,7 +322,7 @@ tables:
         - - wemove_en
         - - wemove_it
         - - widget
-      6538:
+      '6538':
         description: null
         display_name: Utm Source
         fk_target_field_id: null
@@ -331,7 +331,7 @@ tables:
         name: utm_source
         settings: null
         special_type: type/Source
-      6540:
+      '6540':
         description: null
         display_name: Language
         fk_target_field_id: null
@@ -350,7 +350,7 @@ tables:
         - - pl_PL
     id: 806
     name: contribution_recur_to_campaign
-  807:
+  '807':
     description: 'A source is a set of so-called utm parameters that can be used to
       identify how someone got exposed to a link. It is a major mechanism of action
       attribution.
@@ -358,7 +358,7 @@ tables:
       '
     display_name: Source
     fields:
-      6610:
+      '6610':
         description: null
         display_name: Medium
         fk_target_field_id: null
@@ -367,7 +367,7 @@ tables:
         name: medium
         settings: null
         special_type: type/Category
-      6611:
+      '6611':
         description: null
         display_name: Cost
         fk_target_field_id: null
@@ -376,7 +376,7 @@ tables:
         name: cost
         settings: null
         special_type: type/Cost
-      6612:
+      '6612':
         description: null
         display_name: Campaign
         fk_target_field_id: null
@@ -385,7 +385,7 @@ tables:
         name: campaign
         settings: null
         special_type: type/Category
-      6613:
+      '6613':
         description: null
         display_name: Source
         fk_target_field_id: null
@@ -394,7 +394,7 @@ tables:
         name: source
         settings: null
         special_type: type/Category
-      6614:
+      '6614':
         description: null
         display_name: Description
         fk_target_field_id: null
@@ -405,7 +405,7 @@ tables:
         special_type: type/Description
         values:
         - - null
-      6616:
+      '6616':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -416,11 +416,11 @@ tables:
         special_type: type/PK
     id: 807
     name: source
-  808:
+  '808':
     description: null
     display_name: Contact Tag
     fields:
-      6527:
+      '6527':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -429,7 +429,7 @@ tables:
         name: contact_id
         settings: null
         special_type: type/FK
-      6528:
+      '6528':
         description: null
         display_name: Created At
         fk_target_field_id: null
@@ -438,7 +438,7 @@ tables:
         name: created_at
         settings: null
         special_type: null
-      6529:
+      '6529':
         description: null
         display_name: Trigger Action ID
         fk_target_field_id: 6480
@@ -447,7 +447,7 @@ tables:
         name: trigger_action_id
         settings: null
         special_type: type/FK
-      6530:
+      '6530':
         description: null
         display_name: Tag ID
         fk_target_field_id: 6619
@@ -456,7 +456,7 @@ tables:
         name: tag_id
         settings: null
         special_type: type/FK
-      6531:
+      '6531':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -465,7 +465,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6532:
+      '6532':
         description: null
         display_name: Left
         fk_target_field_id: null
@@ -474,7 +474,7 @@ tables:
         name: left
         settings: null
         special_type: null
-      6533:
+      '6533':
         description: null
         display_name: Joined
         fk_target_field_id: null
@@ -485,12 +485,12 @@ tables:
         special_type: null
     id: 808
     name: contact_tag
-  809:
+  '809':
     description: A broadcast is a way to direct people to action pages, using group
       / mass communication.
     display_name: Broadcast
     fields:
-      6484:
+      '6484':
         description: Should match the actions.action_type !
         display_name: Ask Type
         fk_target_field_id: null
@@ -501,7 +501,7 @@ tables:
         special_type: type/Category
         values:
         - - sign
-      6485:
+      '6485':
         description: Broadcast medium
         display_name: Broadcast Type
         fk_target_field_id: null
@@ -510,7 +510,7 @@ tables:
         name: broadcast_type
         settings: null
         special_type: type/Category
-      6490:
+      '6490':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -521,7 +521,7 @@ tables:
           custom_actions:
             url: /dashboard/47?id={value}
         special_type: type/PK
-      6623:
+      '6623':
         description: Internal name of the broadcast
         display_name: Name
         fk_target_field_id: null
@@ -530,7 +530,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      6624:
+      '6624':
         description: When the sending of the broadcast started
         display_name: Sent At
         fk_target_field_id: null
@@ -539,7 +539,7 @@ tables:
         name: sent_at
         settings: null
         special_type: type/CreationDate
-      6633:
+      '6633':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -548,7 +548,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6634:
+      '6634':
         description: null
         display_name: External system
         fk_target_field_id: null
@@ -559,7 +559,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_mailing
-      6643:
+      '6643':
         description: null
         dimensions:
           human_readable_field_id: 6655
@@ -572,7 +572,7 @@ tables:
         name: broadcast_test_id
         settings: null
         special_type: type/FK
-      6644:
+      '6644':
         description: null
         dimensions:
           human_readable_field_id: 6495
@@ -587,7 +587,7 @@ tables:
           custom_actions:
             url: /dashboard/61?campaign={value}
         special_type: type/FK
-      7069:
+      '7069':
         description: The language in which the broadcast was written, in locale format
           (xx_YY).
         display_name: Language
@@ -624,11 +624,11 @@ tables:
         - - _ZZ
     id: 809
     name: broadcast
-  810:
+  '810':
     description: null
     display_name: Contact
     fields:
-      6504:
+      '6504':
         description: The language used to communicate with the contact, in locale
           format (xx_YY)
         display_name: Preferred Language
@@ -668,7 +668,7 @@ tables:
         - - sk_SK
         - - sr_RS
         - - sv_SE
-      6505:
+      '6505':
         description: The part after the @ in the primary email address of the contact
         display_name: Email Domain
         fk_target_field_id: null
@@ -677,7 +677,7 @@ tables:
         name: email_domain
         settings: null
         special_type: null
-      6506:
+      '6506':
         description: null
         display_name: Latitude
         fk_target_field_id: null
@@ -686,7 +686,7 @@ tables:
         name: latitude
         settings: null
         special_type: type/Latitude
-      6507:
+      '6507':
         description: When the contact was added to our database
         display_name: Created At
         fk_target_field_id: null
@@ -695,7 +695,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      6508:
+      '6508':
         description: null
         display_name: Postal Code
         fk_target_field_id: null
@@ -704,7 +704,7 @@ tables:
         name: postal_code
         settings: null
         special_type: type/ZipCode
-      6509:
+      '6509':
         description: 'The 2-letter country code of the contact.
 
           What this country represents is up to the contact (place of birth, place
@@ -716,7 +716,7 @@ tables:
         name: country
         settings: null
         special_type: type/Country
-      6510:
+      '6510':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -725,7 +725,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6511:
+      '6511':
         description: null
         display_name: Longitude
         fk_target_field_id: null
@@ -736,7 +736,7 @@ tables:
         special_type: type/Longitude
     id: 810
     name: contact
-  811:
+  '811':
     description: "In the context of analytics, a campaign is a \"project\" with a\
       \ political and/or organisational goal. It is the primary concept used to focus\
       \ data analysis to a specific area or goal. \nN.B.: It may be different from\
@@ -744,7 +744,7 @@ tables:
       \ definition and is closer to the analytics concept of action page."
     display_name: Campaign
     fields:
-      6491:
+      '6491':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -753,7 +753,7 @@ tables:
         name: external_id
         settings: null
         special_type: type/PK
-      6492:
+      '6492':
         description: When the campaign was launched
         display_name: Started At
         fk_target_field_id: null
@@ -762,7 +762,7 @@ tables:
         name: started_at
         settings: null
         special_type: type/CreationTimestamp
-      6493:
+      '6493':
         description: When the campaign was closed
         display_name: Ended At
         fk_target_field_id: null
@@ -771,7 +771,7 @@ tables:
         name: ended_at
         settings: null
         special_type: null
-      6494:
+      '6494':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -782,7 +782,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_campaign
-      6495:
+      '6495':
         description: The internal name of the campaign
         display_name: Name
         fk_target_field_id: null
@@ -791,7 +791,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      6496:
+      '6496':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -800,7 +800,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6497:
+      '6497':
         description: "One of the following:\n - wemove: a \"regular\" campaign run\
           \ by the organisation\n - youmove: a campaign initiated by a citizen or\
           \ organisation on the Youmove platform\n - eci: European Citizen Initiative\n\
@@ -819,7 +819,7 @@ tables:
         - - trial
     id: 811
     name: campaign
-  812:
+  '812':
     description: 'A segmentation is a way split a group of people into different segments
       (sub-groups).
 
@@ -827,7 +827,7 @@ tables:
       one segment (everyone is in a segment, no-one is in more than one segment).'
     display_name: Segmentation
     fields:
-      6602:
+      '6602':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -843,7 +843,7 @@ tables:
         - - 77
         - - 121
         - - 122
-      6603:
+      '6603':
         description: null
         display_name: Name
         fk_target_field_id: null
@@ -860,7 +860,7 @@ tables:
         - - Membership
         - - Preferred language
         - - Recurring donors
-      6604:
+      '6604':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -869,7 +869,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6980:
+      '6980':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -884,13 +884,13 @@ tables:
         - - civicrm_option_group
     id: 812
     name: segmentation
-  813:
+  '813':
     description: An action is what a single person does on an action page, a specific
       engagement act performed by a person. It is therefore the link between a contact
       and an action page.
     display_name: Action
     fields:
-      6476:
+      '6476':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -899,7 +899,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6479:
+      '6479':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -912,7 +912,7 @@ tables:
         - - civicrm_contribution_recur
         - - civicrm_contribution
         - - civicrm_activity
-      6480:
+      '6480':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -921,7 +921,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6872:
+      '6872':
         description: When the contact did the action
         display_name: Created At
         fk_target_field_id: null
@@ -930,7 +930,7 @@ tables:
         name: created_at
         settings: null
         special_type: null
-      6873:
+      '6873':
         description: The utm parameters that led to this action
         display_name: Source ID
         fk_target_field_id: 6616
@@ -939,7 +939,7 @@ tables:
         name: source_id
         settings: null
         special_type: type/FK
-      6874:
+      '6874':
         description: Contact who did the action
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -948,7 +948,7 @@ tables:
         name: contact_id
         settings: null
         special_type: type/FK
-      6876:
+      '6876':
         description: 'The action page where the action was done.
 
           Attributes a type, language and campaign to the action.'
@@ -961,14 +961,14 @@ tables:
         special_type: type/FK
     id: 813
     name: action
-  814:
+  '814':
     description: 'A click is the act of opening a link in a broadcast.
 
       The information is obtained by using an intermediary system that identifies
       and redirects recipients to the destination URL after capturing each click event.'
     display_name: Click
     fields:
-      6501:
+      '6501':
         description: null
         display_name: Created At
         fk_target_field_id: null
@@ -977,7 +977,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      6502:
+      '6502':
         description: null
         display_name: Mailing Link ID
         fk_target_field_id: 6651
@@ -986,7 +986,7 @@ tables:
         name: mailing_link_id
         settings: null
         special_type: type/FK
-      6503:
+      '6503':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -995,7 +995,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6890:
+      '6890':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1004,7 +1004,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6891:
+      '6891':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1015,7 +1015,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_mailing_event_trackable_url_open
-      6904:
+      '6904':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -1026,7 +1026,7 @@ tables:
         special_type: type/FK
     id: 814
     name: click
-  815:
+  '815':
     description: 'A donation a type of action: it is the intent from a person to give
       money to the organisation, either once or periodically. The intent may or may
       not be eventually fulfilled.
@@ -1036,7 +1036,7 @@ tables:
       that led the person to donate.'
     display_name: Donation
     fields:
-      6563:
+      '6563':
         description: null
         display_name: Frequency Interval
         fk_target_field_id: null
@@ -1049,7 +1049,7 @@ tables:
         - - 1
         - - 3
         - - 12
-      6564:
+      '6564':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1058,7 +1058,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6566:
+      '6566':
         description: 'For a recurring donation, when the donation started.
 
           For a one-off donation, when it is received.'
@@ -1069,7 +1069,7 @@ tables:
         name: started_at
         settings: null
         special_type: type/CreationTimestamp
-      6567:
+      '6567':
         description: Amount sum of all successful payments
         display_name: Total Amount
         fk_target_field_id: null
@@ -1078,7 +1078,7 @@ tables:
         name: total_amount
         settings: null
         special_type: type/Income
-      6569:
+      '6569':
         description: 'For a recurring donation, when it stopped.
 
           For a one-off donation, undefined.'
@@ -1089,7 +1089,7 @@ tables:
         name: ended_at
         settings: null
         special_type: null
-      6570:
+      '6570':
         description: The amount of the donation in the original currency
         display_name: Original Amount
         fk_target_field_id: null
@@ -1098,7 +1098,7 @@ tables:
         name: original_amount
         settings: null
         special_type: type/Income
-      6571:
+      '6571':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1110,7 +1110,7 @@ tables:
         values:
         - - civicrm_contribution_recur
         - - civicrm_contribution
-      6572:
+      '6572':
         description: one-off for a one-off donation, month for a recurring donation
         display_name: Frequency Unit
         fk_target_field_id: null
@@ -1122,7 +1122,7 @@ tables:
         values:
         - - one-off
         - - month
-      6573:
+      '6573':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1131,7 +1131,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6575:
+      '6575':
         description: Number of successful payments for this donation
         display_name: Payment Count
         fk_target_field_id: null
@@ -1190,7 +1190,7 @@ tables:
         - - 47
         - - 48
         - - 49
-      6576:
+      '6576':
         description: The currency in which the donation is made
         display_name: Original Currency
         fk_target_field_id: null
@@ -1203,7 +1203,7 @@ tables:
         - - EUR
         - - GBP
         - - PLN
-      6577:
+      '6577':
         description: 'How the donation is paid.
 
           Sepa (aka direct debit) is a transfer initiated by the organisation on request
@@ -1220,7 +1220,7 @@ tables:
         - - paypal
         - - card
         - - bank_transfer
-      6622:
+      '6622':
         description: Amount of the donation converted into the organisation currency
         display_name: Amount
         fk_target_field_id: null
@@ -1229,7 +1229,7 @@ tables:
         name: amount
         settings: null
         special_type: type/Income
-      6883:
+      '6883':
         description: null
         display_name: Action ID
         fk_target_field_id: 6480
@@ -1238,7 +1238,7 @@ tables:
         name: action_id
         settings: null
         special_type: type/FK
-      6884:
+      '6884':
         description: Number of failed payments for this donation
         display_name: Fail Count
         fk_target_field_id: null
@@ -1259,11 +1259,11 @@ tables:
         - - 8
     id: 815
     name: donation
-  817:
+  '817':
     description: null
     display_name: Topic
     fields:
-      6620:
+      '6620':
         description: null
         display_name: Name
         fk_target_field_id: null
@@ -1272,7 +1272,7 @@ tables:
         name: name
         settings: null
         special_type: null
-      6621:
+      '6621':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1283,11 +1283,11 @@ tables:
         special_type: type/PK
     id: 817
     name: topic
-  819:
+  '819':
     description: A payment is an attempt (successful or failed) to fulfill a donation.
     display_name: Payment
     fields:
-      6589:
+      '6589':
         description: null
         display_name: Donation ID
         fk_target_field_id: 6573
@@ -1296,7 +1296,7 @@ tables:
         name: donation_id
         settings: null
         special_type: type/FK
-      6590:
+      '6590':
         description: When the payment was attempted
         display_name: Receive Date
         fk_target_field_id: null
@@ -1305,7 +1305,7 @@ tables:
         name: receive_date
         settings: null
         special_type: null
-      6591:
+      '6591':
         description: "One of:\n - success: the payment was processed\n - fail: the\
           \ payment could not be processed\n - cancel: the payment was processed but\
           \ the donor requested to take it back"
@@ -1320,7 +1320,7 @@ tables:
         - - success
         - - fail
         - - cancel
-      6592:
+      '6592':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1329,7 +1329,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6885:
+      '6885':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1340,7 +1340,7 @@ tables:
         special_type: null
         values:
         - - null
-      6886:
+      '6886':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1353,11 +1353,11 @@ tables:
         - - null
     id: 819
     name: payment
-  821:
+  '821':
     description: null
     display_name: Tag
     fields:
-      6617:
+      '6617':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1366,7 +1366,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6618:
+      '6618':
         description: null
         display_name: Name
         fk_target_field_id: null
@@ -1375,7 +1375,7 @@ tables:
         name: name
         settings: null
         special_type: null
-      6619:
+      '6619':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1386,13 +1386,13 @@ tables:
         special_type: type/PK
     id: 821
     name: tag
-  825:
+  '825':
     description: A broadcast test is a set of broadcasts sent at the same time but
       to different people, meant to be compared to each other to identify the one
       that performs best. It is also known as an A/B test or A/B/n test.
     display_name: Broadcast Test
     fields:
-      6652:
+      '6652':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1401,7 +1401,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6653:
+      '6653':
         description: When the test was created in database
         display_name: Created At
         fk_target_field_id: null
@@ -1410,7 +1410,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      6654:
+      '6654':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1421,7 +1421,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_mailing_abtest
-      6655:
+      '6655':
         description: Internal name of the test
         display_name: Name
         fk_target_field_id: null
@@ -1430,7 +1430,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      6656:
+      '6656':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1441,7 +1441,7 @@ tables:
           custom_actions:
             url: /dashboard/62?id={value}
         special_type: type/PK
-      6657:
+      '6657':
         description: When the sending of the test started
         display_name: Sent At
         fk_target_field_id: null
@@ -1452,7 +1452,7 @@ tables:
         special_type: null
     id: 825
     name: broadcast_test
-  826:
+  '826':
     description: 'An open is the act of displaying the content of a broadcast.
 
       For mailings, it is typically captured by adding to the broadcast content an
@@ -1460,7 +1460,7 @@ tables:
       all actual opens (if the recipient does not display images).'
     display_name: Open
     fields:
-      6658:
+      '6658':
         description: null
         display_name: Broadcast ID
         fk_target_field_id: 6490
@@ -1469,7 +1469,7 @@ tables:
         name: broadcast_id
         settings: null
         special_type: type/FK
-      6660:
+      '6660':
         description: When the notification of the open was received
         display_name: Created At
         fk_target_field_id: null
@@ -1478,7 +1478,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      6661:
+      '6661':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1487,7 +1487,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6892:
+      '6892':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1496,7 +1496,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6893:
+      '6893':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1507,7 +1507,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_mailing_event_opened
-      6905:
+      '6905':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -1518,14 +1518,14 @@ tables:
         special_type: type/FK
     id: 826
     name: open
-  827:
+  '827':
     description: "An unsub is the request from a broadcast recipient not to receive\
       \ further broadcasts anymore. \nWhile people may send such a request through\
       \ different means, an unsub refers specifically to the act of using one of the\
       \ unsuscribe options that are mandatory in any mass communication."
     display_name: Unsub
     fields:
-      6662:
+      '6662':
         description: The broadcast from which the contact sent the unsubscribe request
         display_name: Broadcast ID
         fk_target_field_id: 6490
@@ -1534,7 +1534,7 @@ tables:
         name: broadcast_id
         settings: null
         special_type: type/FK
-      6664:
+      '6664':
         description: When te unsubscribe request was received
         display_name: Created At
         fk_target_field_id: null
@@ -1543,7 +1543,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      6665:
+      '6665':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1552,7 +1552,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6896:
+      '6896':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1561,7 +1561,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6897:
+      '6897':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1572,7 +1572,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_mailing_event_unsubscribe
-      6906:
+      '6906':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -1583,14 +1583,14 @@ tables:
         special_type: type/FK
     id: 827
     name: unsub
-  828:
+  '828':
     description: 'A broadcast link is a web link found in the content of a broadcast.
 
       It is associated to the source that matches the utm parameters used in the link,
       which can be used to attribute actions to a broadcast.'
     display_name: Broadcast Link
     fields:
-      6648:
+      '6648':
         description: null
         display_name: Broadcast ID
         fk_target_field_id: 6490
@@ -1599,7 +1599,7 @@ tables:
         name: broadcast_id
         settings: null
         special_type: type/FK
-      6649:
+      '6649':
         description: 'Complete target URL of the link, including utm parameters.
 
           This is not the URL of the click tracking system.'
@@ -1610,7 +1610,7 @@ tables:
         name: url
         settings: null
         special_type: type/URL
-      6650:
+      '6650':
         description: utm parameters that were used in the URL
         display_name: Source ID
         fk_target_field_id: 6616
@@ -1619,7 +1619,7 @@ tables:
         name: source_id
         settings: null
         special_type: type/FK
-      6651:
+      '6651':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1628,7 +1628,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6888:
+      '6888':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1637,7 +1637,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6889:
+      '6889':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1650,13 +1650,13 @@ tables:
         - - civicrm_mailing_trackable_url
     id: 828
     name: broadcast_link
-  861:
+  '861':
     description: An action page is a place (such as a web page or a form) written
       in a given language where we want people to perform actions of a given type.
       An action page is always associated to a campaign.
     display_name: Action Page
     fields:
-      6877:
+      '6877':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -1665,7 +1665,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      6878:
+      '6878':
         description: null
         dimensions:
           human_readable_field_id: 6495
@@ -1678,7 +1678,7 @@ tables:
         name: campaign_id
         settings: null
         special_type: type/FK
-      6879:
+      '6879':
         description: 'Kind of engagement that users can do on the action page.
 
           The type consent is listed here for technical reasons, consents are not
@@ -1699,7 +1699,7 @@ tables:
         - - share
         - - donate
         - - consent
-      6880:
+      '6880':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -1710,7 +1710,7 @@ tables:
         special_type: type/Category
         values:
         - - civicrm_campaign
-      6881:
+      '6881':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1719,7 +1719,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      6882:
+      '6882':
         description: Language of the page in locale format (xx_YY where xx is language
           code and YY is country code)
         display_name: Language
@@ -1758,13 +1758,13 @@ tables:
         - - sv_SE
     id: 861
     name: action_page
-  862:
+  '862':
     description: A broadcast metric is an indicator of how recipients interacted with
       the broadcast. In this table, the value of each metric is given for a specific
       contact segment (which may be the "everyone" segment).
     display_name: Broadcast Metric
     fields:
-      6898:
+      '6898':
         description: null
         display_name: Value
         fk_target_field_id: null
@@ -1773,7 +1773,7 @@ tables:
         name: value
         settings: null
         special_type: null
-      6899:
+      '6899':
         description: null
         dimensions:
           human_readable_field_id: 6623
@@ -1788,7 +1788,7 @@ tables:
           custom_actions:
             url: /dashboard/47?id={value}
         special_type: type/FK
-      6900:
+      '6900':
         description: null
         display_name: Segment ID
         fk_target_field_id: 6601
@@ -1797,7 +1797,7 @@ tables:
         name: segment_id
         settings: null
         special_type: type/FK
-      6901:
+      '6901':
         description: null
         display_name: Broadcast Name
         fk_target_field_id: null
@@ -1806,7 +1806,7 @@ tables:
         name: broadcast_name
         settings: null
         special_type: null
-      6902:
+      '6902':
         description: null
         display_name: Metric
         fk_target_field_id: null
@@ -1844,7 +1844,7 @@ tables:
         - - monthly_amount
         - - unsub_rate
         - - activated_rate
-      6903:
+      '6903':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -1855,11 +1855,11 @@ tables:
         special_type: type/PK
     id: 862
     name: broadcast_metric
-  869:
+  '869':
     description: null
     display_name: Calendar
     fields:
-      6966:
+      '6966':
         description: null
         display_name: M
         fk_target_field_id: null
@@ -1881,7 +1881,7 @@ tables:
         - - 10
         - - 11
         - - 12
-      6967:
+      '6967':
         description: null
         display_name: Y
         fk_target_field_id: null
@@ -1897,7 +1897,7 @@ tables:
         - - 2018
         - - 2019
         - - 2020
-      6968:
+      '6968':
         description: null
         display_name: Day Name
         fk_target_field_id: null
@@ -1914,7 +1914,7 @@ tables:
         - - Thursday
         - - Tuesday
         - - Wednesday
-      6969:
+      '6969':
         description: null
         display_name: Isweekday
         fk_target_field_id: null
@@ -1926,7 +1926,7 @@ tables:
         values:
         - - false
         - - true
-      6970:
+      '6970':
         description: null
         display_name: Dt
         fk_target_field_id: null
@@ -1935,7 +1935,7 @@ tables:
         name: dt
         settings: null
         special_type: type/PK
-      6971:
+      '6971':
         description: null
         display_name: Q
         fk_target_field_id: null
@@ -1949,7 +1949,7 @@ tables:
         - - 2
         - - 3
         - - 4
-      6972:
+      '6972':
         description: null
         display_name: Dw
         fk_target_field_id: null
@@ -1966,7 +1966,7 @@ tables:
         - - 5
         - - 6
         - - 7
-      6973:
+      '6973':
         description: null
         display_name: W
         fk_target_field_id: null
@@ -2029,7 +2029,7 @@ tables:
         - - 51
         - - 52
         - - 53
-      6974:
+      '6974':
         description: null
         display_name: D
         fk_target_field_id: null
@@ -2070,7 +2070,7 @@ tables:
         - - 29
         - - 30
         - - 31
-      6975:
+      '6975':
         description: null
         display_name: Month Name
         fk_target_field_id: null
@@ -2094,7 +2094,7 @@ tables:
         - - September
     id: 869
     name: calendar
-  870:
+  '870':
     description: 'In this database, a consent is either any event regarding a person''s
       explicit consent to have their personal data processed or used for a certain
       purpose.
@@ -2103,7 +2103,7 @@ tables:
       consent ask and response, or an unsollicited consent cancellation.'
     display_name: Consent
     fields:
-      6977:
+      '6977':
         description: "One of:\n - accepted: the person became a member\n - rejected:\
           \ the person refused to become a member\n - pending: the person was asked\
           \ asynchronously (eg by email) to become a member\n - cancelled: the person\
@@ -2120,7 +2120,7 @@ tables:
         - - rejected
         - - pending
         - - cancelled
-      6978:
+      '6978':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -2129,7 +2129,7 @@ tables:
         name: id
         settings: null
         special_type: type/PK
-      7132:
+      '7132':
         description: null
         display_name: External ID
         fk_target_field_id: null
@@ -2138,7 +2138,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-      7133:
+      '7133':
         description: The utm parameters that led to this consent.
         display_name: Source ID
         fk_target_field_id: 6616
@@ -2147,7 +2147,7 @@ tables:
         name: source_id
         settings: null
         special_type: type/FK
-      7134:
+      '7134':
         description: null
         display_name: Campaign ID
         fk_target_field_id: 6496
@@ -2156,7 +2156,7 @@ tables:
         name: campaign_id
         settings: null
         special_type: type/FK
-      7135:
+      '7135':
         description: null
         display_name: Contact ID
         fk_target_field_id: 6510
@@ -2165,7 +2165,7 @@ tables:
         name: contact_id
         settings: null
         special_type: type/FK
-      7136:
+      '7136':
         description: When the consent event happened
         display_name: Created At
         fk_target_field_id: null
@@ -2174,7 +2174,7 @@ tables:
         name: created_at
         settings: null
         special_type: type/CreationTimestamp
-      7137:
+      '7137':
         description: The action that led to this consent event
         display_name: Trigger Action ID
         fk_target_field_id: 6480
@@ -2183,7 +2183,7 @@ tables:
         name: trigger_action_id
         settings: null
         special_type: type/FK
-      7138:
+      '7138':
         description: null
         display_name: External System
         fk_target_field_id: null
@@ -2196,11 +2196,11 @@ tables:
         - - civicrm_activity
     id: 870
     name: consent
-  879:
+  '879':
     description: null
     display_name: Last Sync
     fields:
-      7023:
+      '7023':
         description: null
         display_name: Last ID
         fk_target_field_id: null
@@ -2225,7 +2225,7 @@ tables:
         - - 24512843
         - - 96067398
         - - 96067399
-      7024:
+      '7024':
         description: null
         display_name: Dst
         fk_target_field_id: null
@@ -2241,7 +2241,7 @@ tables:
         - - contact_segment.everyone
         - - share
         - - source
-      7025:
+      '7025':
         description: null
         display_name: Src
         fk_target_field_id: null
@@ -2267,11 +2267,11 @@ tables:
         - - share_count
     id: 879
     name: last_sync
-  880:
+  '880':
     description: null
     display_name: Currency
     fields:
-      7021:
+      '7021':
         description: null
         display_name: Rate
         fk_target_field_id: null
@@ -2281,7 +2281,7 @@ tables:
         settings:
           show_mini_bar: true
         special_type: type/Share
-      7022:
+      '7022':
         description: null
         display_name: Code
         fk_target_field_id: null
@@ -2296,11 +2296,11 @@ tables:
         - - PLN
     id: 880
     name: currency
-  884:
+  '884':
     description: null
     display_name: Last Sync Dt
     fields:
-      7037:
+      '7037':
         description: null
         display_name: Last Dt
         fk_target_field_id: null
@@ -2309,7 +2309,7 @@ tables:
         name: last_dt
         settings: null
         special_type: null
-      7038:
+      '7038':
         description: null
         display_name: Dst
         fk_target_field_id: null
@@ -2323,7 +2323,7 @@ tables:
         - - contact.preferred_language
         - - contact_segment.country
         - - hot_contact
-      7039:
+      '7039':
         description: null
         display_name: Src
         fk_target_field_id: null
@@ -2338,11 +2338,11 @@ tables:
         - - civicrm_option_value
     id: 884
     name: last_sync_dt
-  887:
+  '887':
     description: VIEW
     display_name: Broadcast Summary
     fields:
-      7055:
+      '7055':
         description: null
         display_name: Segment ID
         fk_target_field_id: 6601
@@ -2392,7 +2392,7 @@ tables:
         - - 102
         - - 103
         - - 104
-      7056:
+      '7056':
         description: null
         display_name: Recipients
         fk_target_field_id: null
@@ -2401,7 +2401,7 @@ tables:
         name: recipients
         settings: null
         special_type: type/Number
-      7057:
+      '7057':
         description: Should match the actions.action_type !
         display_name: Ask Type
         fk_target_field_id: null
@@ -2412,7 +2412,7 @@ tables:
         special_type: type/Category
         values:
         - - sign
-      7058:
+      '7058':
         description: null
         display_name: Broadcast Test ID
         fk_target_field_id: 6656
@@ -2423,7 +2423,7 @@ tables:
           custom_actions:
             url: /dashboard/62?id={value}
         special_type: type/FK
-      7060:
+      '7060':
         description: Internal name of the broadcast
         display_name: Name
         fk_target_field_id: null
@@ -2432,7 +2432,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      7061:
+      '7061':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -2443,7 +2443,7 @@ tables:
           custom_actions:
             url: /dashboard/47?id={value}
         special_type: type/PK
-      7062:
+      '7062':
         description: When the sending of the broadcast started
         display_name: Sent At
         fk_target_field_id: null
@@ -2452,7 +2452,7 @@ tables:
         name: sent_at
         settings: null
         special_type: type/CreationTimestamp
-      7063:
+      '7063':
         description: null
         display_name: Campaign ID
         fk_target_field_id: 6496
@@ -2463,7 +2463,7 @@ tables:
           custom_actions:
             url: /dashboard/61?campaign={value}
         special_type: type/FK
-      7064:
+      '7064':
         description: null
         display_name: Converted
         fk_target_field_id: null
@@ -2472,7 +2472,7 @@ tables:
         name: converted
         settings: null
         special_type: null
-      7065:
+      '7065':
         description: null
         display_name: Clickers
         fk_target_field_id: null
@@ -2481,7 +2481,7 @@ tables:
         name: clickers
         settings: null
         special_type: null
-      7066:
+      '7066':
         description: null
         display_name: Openers
         fk_target_field_id: null
@@ -2490,7 +2490,7 @@ tables:
         name: openers
         settings: null
         special_type: null
-      7067:
+      '7067':
         description: null
         display_name: Unsubs
         fk_target_field_id: null
@@ -2499,7 +2499,7 @@ tables:
         name: unsubs
         settings: null
         special_type: null
-      7068:
+      '7068':
         description: null
         display_name: Likely Forwarders
         fk_target_field_id: null
@@ -2508,7 +2508,7 @@ tables:
         name: likely_forwarders
         settings: null
         special_type: null
-      7070:
+      '7070':
         description: The language in which the broadcast was written, in locale format
           (xx_YY).
         display_name: Language
@@ -2545,13 +2545,13 @@ tables:
         - - _ZZ
     id: 887
     name: broadcast_summary
-  890:
+  '890':
     description: A campaign metric is a indicator of how people interacted with the
       campaign. In this table, the value of each metric is given for a specific contact
       segment (which may be the "everyone" segment).
     display_name: Campaign Metric
     fields:
-      7080:
+      '7080':
         description: null
         display_name: Value
         fk_target_field_id: null
@@ -2560,7 +2560,7 @@ tables:
         name: value
         settings: null
         special_type: null
-      7081:
+      '7081':
         description: null
         display_name: Segment ID
         fk_target_field_id: 6601
@@ -2569,7 +2569,7 @@ tables:
         name: segment_id
         settings: null
         special_type: type/FK
-      7082:
+      '7082':
         description: "One of the following:\n - recipients: number of broadcast recipients\
           \ targeted by the campaign\n - messages: total number of broadcast messages\
           \ (emails, sms, etc) sent for the campaign\n - unsubs: number of people\
@@ -2597,7 +2597,7 @@ tables:
         - - shares
         - - donations
         - - donations_total_amount
-      7083:
+      '7083':
         description: null
         display_name: Campaign ID
         fk_target_field_id: 6496
@@ -2606,7 +2606,7 @@ tables:
         name: campaign_id
         settings: null
         special_type: type/FK
-      7084:
+      '7084':
         description: null
         display_name: ID
         fk_target_field_id: null
@@ -2617,11 +2617,11 @@ tables:
         special_type: type/PK
     id: 890
     name: campaign_metric
-  891:
+  '891':
     description: VIEW
     display_name: Campaign Summary
     fields:
-      7085:
+      '7085':
         description: null
         display_name: Actions
         fk_target_field_id: null
@@ -2630,7 +2630,7 @@ tables:
         name: actions
         settings: null
         special_type: null
-      7086:
+      '7086':
         description: null
         display_name: Segment ID
         fk_target_field_id: null
@@ -2642,7 +2642,7 @@ tables:
         values:
         - - null
         - - 1
-      7087:
+      '7087':
         description: When the campaign was launched
         display_name: Started At
         fk_target_field_id: null
@@ -2651,7 +2651,7 @@ tables:
         name: started_at
         settings: null
         special_type: type/CreationTimestamp
-      7088:
+      '7088':
         description: null
         display_name: Donations Total Amount
         fk_target_field_id: null
@@ -2660,7 +2660,7 @@ tables:
         name: donations_total_amount
         settings: null
         special_type: type/Income
-      7089:
+      '7089':
         description: null
         display_name: Messages
         fk_target_field_id: null
@@ -2669,7 +2669,7 @@ tables:
         name: messages
         settings: null
         special_type: null
-      7090:
+      '7090':
         description: When the campaign was closed
         display_name: Ended At
         fk_target_field_id: null
@@ -2678,7 +2678,7 @@ tables:
         name: ended_at
         settings: null
         special_type: null
-      7091:
+      '7091':
         description: null
         display_name: New Members
         fk_target_field_id: null
@@ -2687,7 +2687,7 @@ tables:
         name: new_members
         settings: null
         special_type: null
-      7092:
+      '7092':
         description: null
         display_name: Shares
         fk_target_field_id: null
@@ -2696,7 +2696,7 @@ tables:
         name: shares
         settings: null
         special_type: type/Share
-      7093:
+      '7093':
         description: null
         display_name: Unsubs
         fk_target_field_id: null
@@ -2705,7 +2705,7 @@ tables:
         name: unsubs
         settings: null
         special_type: null
-      7094:
+      '7094':
         description: null
         display_name: Donations
         fk_target_field_id: null
@@ -2714,7 +2714,7 @@ tables:
         name: donations
         settings: null
         special_type: null
-      7095:
+      '7095':
         description: The internal name of the campaign
         display_name: Name
         fk_target_field_id: null
@@ -2723,7 +2723,7 @@ tables:
         name: name
         settings: null
         special_type: type/Name
-      7096:
+      '7096':
         description: "One of the following:\n - wemove: a \"regular\" campaign run\
           \ by the organisation\n - youmove: a campaign initiated by a citizen or\
           \ organisation on the Youmove platform\n - eci: European Citizen Initiative\n\
@@ -2740,7 +2740,7 @@ tables:
         - - eci
         - - wemove
         - - trial
-      7097:
+      '7097':
         description: null
         display_name: Activated
         fk_target_field_id: null
@@ -2749,7 +2749,7 @@ tables:
         name: activated
         settings: null
         special_type: null
-      7098:
+      '7098':
         description: null
         display_name: ID
         fk_target_field_id: null
