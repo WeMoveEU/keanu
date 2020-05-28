@@ -63,9 +63,10 @@ class Splitter:
                 dir_name = "{:02}-{}".format(idx, slug(i['name']))
                 loc = path.join('items', *prefix, dir_name, '__meta__')
 
-                _.store_to(i, loc)
-                _.store_items(i['items'], prefix + [dir_name])
+                col_items = i['items']
                 del i['items']
+                _.store_to(i, loc)
+                _.store_items(col_items, prefix + [dir_name])
 
     def format_query_as_block(_, card):
         if 'dataset_query' in card and 'native' in card['dataset_query']:
@@ -119,9 +120,15 @@ class Splitter:
 
     def load_items(_, prefix=[]):
         items = []
-        for f in listdir(path.join(_.directory, 'items', *prefix)):
+        ls = listdir(path.join(_.directory, 'items', *prefix))
+        ls.sort()
+        for f in ls:
+            if f == '__meta__.yaml':
+                continue
+
             if path.isdir(path.join(_.directory, 'items', *prefix, f)):
                 col = _.load_from(path.join('items', *prefix, f, '__meta__.yaml'))
+
                 col['items'] = _.load_items(prefix + [f])
                 items.append(col)
             else:
