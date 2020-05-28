@@ -1,5 +1,5 @@
 import yaml
-from os import path, makedirs
+from os import path, makedirs, listdir, unlink
 from slug import slug
 from shutil import rmtree
 
@@ -31,7 +31,7 @@ class Splitter:
         _.directory = directory
 
     def store(_, json):
-        rmtree(_.directory)
+        _.clean_directory()
         _.store_mappings(json)
         _.store_datamodel(json)
         _.store_items(json['items'])
@@ -84,3 +84,18 @@ class Splitter:
 
         with open(floc, 'w') as out:
             yaml.dump(node, stream=out)
+
+
+    def clean_directory(_):
+        if not path.exists(_.directory):
+            makedirs(_.directory, 0o755, True)
+            return
+
+        for f in listdir(_.directory):
+            if f.startswith("."):
+                continue
+            try:
+                unlink(path.join(_.directory, f))
+            except IsADirectoryError:
+                rmtree(path.join(_.directory, f))
+
