@@ -1,0 +1,2612 @@
+archived: false
+can_write: true
+collection_id: 71
+color: '#509EE3'
+description: null
+effective_ancestors:
+- can_write: true
+  id: root
+  metabase.models.collection/is-root?: true
+  name: Our analytics
+- can_write: true
+  id: 71
+  name: Keanu
+effective_location: /71/
+id: 72
+items:
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-18T16:26:50.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      breakout:
+      - - field-id
+        - 6623
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6879
+      filter:
+      - and
+      - - not-null
+        - - joined-field
+          - Action Page
+          - - field-id
+            - 6879
+      - - '!='
+        - - joined-field
+          - Action Page
+          - - field-id
+            - 6879
+        - consent
+      joins:
+      - alias: Broadcast Link
+        condition:
+        - '='
+        - - field-id
+          - 6490
+        - - joined-field
+          - Broadcast Link
+          - - field-id
+            - 6648
+        fields: all
+        source-table: 828
+      - alias: Source
+        condition:
+        - '='
+        - - joined-field
+          - Broadcast Link
+          - - field-id
+            - 6650
+        - - joined-field
+          - Source
+          - - field-id
+            - 6873
+        fields: all
+        source-table: 813
+      - alias: Action Page
+        condition:
+        - '='
+        - - joined-field
+          - Source
+          - - field-id
+            - 6876
+        - - joined-field
+          - Action Page
+          - - field-id
+            - 6881
+        fields: all
+        source-table: 861
+      limit: 10
+      source-table: 809
+    type: query
+  description: For each action type, count of number of actions originating from one
+    of the  links of the mailing
+  display: bar
+  embedding_params: null
+  enable_embedding: false
+  id: 463
+  made_public_by_id: null
+  model: card
+  name: Action types
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Text
+    description: Internal name of the broadcast
+    display_name: Name
+    fingerprint:
+      global:
+        distinct-count: 9916
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 39.6161
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name
+    special_type: type/Name
+  - base_type: type/*
+    description: 'Kind of engagement that users can do on the action page.
+
+      The type consent is listed here for technical reasons, consents are not considered
+      as actions and are recorded in the consent table.'
+    display_name: "Action Page \u2192 Action Type"
+    fingerprint:
+      global:
+        distinct-count: 7
+        nil%: 0.0
+    name: action_type
+    special_type: type/Category
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 8
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 24.5
+          max: 75.0
+          min: 1.0
+          q1: 2.5278640450004204
+          q3: 50.0
+          sd: 28.500487325268278
+    name: count
+    special_type: type/Quantity
+  table_id: 809
+  updated_at: '2020-05-26T10:56:16.000Z'
+  visualization_settings:
+    graph.dimensions:
+    - action_type
+    graph.metrics:
+    - count
+    graph.x_axis.title_text: Action Type
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: name
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-30T10:49:26.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - activated_rate
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of recipients activated by a link in the mailing vs total number
+    of recipients
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 471
+  made_public_by_id: null
+  model: card
+  name: Activation rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.03318678
+          max: 0.03318678
+          min: 0.03318678
+          q1: 0.03318678
+          q3: 0.03318678
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.02
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.05
+      min: 0.02
+    - color: '#84BB4C'
+      label: ''
+      max: 1
+      min: 0.05
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-01T07:36:05.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      expressions:
+        rate:
+        - /
+        - - field-id
+          - 6898
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      fields:
+      - - expression
+        - rate
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - bounces
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - recipients
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: none
+        source-table: 862
+      limit: 1
+      source-table: 862
+    type: query
+  description: null
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 384
+  made_public_by_id: null
+  model: card
+  name: Bounce rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: rate
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.5
+          max: 0.5
+          min: 0.5
+          q1: 0.5
+          q3: 0.5
+          sd: null
+    name: rate
+    special_type: type/Share
+  table_id: 862
+  updated_at: '2020-05-26T11:34:28.000Z'
+  visualization_settings:
+    column_settings:
+      '["ref",["expression","Bounce rate"]]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","Unsub rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#84BB4C'
+      label: ''
+      max: 0.002
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.005
+      min: 0.002
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.02
+      min: 0.005
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-11-29T16:00:03.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - clickers_to_openers
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of people who clicked a link versus number of people who displayed
+    the open tracker.
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 382
+  made_public_by_id: null
+  model: card
+  name: Click rate (vs opens)
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.25767032
+          max: 0.25767032
+          min: 0.25767032
+          q1: 0.25767032
+          q3: 0.25767032
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Click rate"]]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.05
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.2
+      min: 0.05
+    - color: '#84BB4C'
+      label: ''
+      max: 1
+      min: 0.2
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-19T11:29:59.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    native:
+      query: "SELECT \n    c.status, COUNT(*) AS `count`\nFROM consent c\nJOIN (\n\
+        \    SELECT \n        contact_id, MAX(created_at) latest \n    FROM broadcast_link\n\
+        \    JOIN source s ON s.id = broadcast_link.source_id\n    JOIN consent ON\
+        \ consent.source_id=s.id\n    WHERE {{broadcast_id}}\n    GROUP BY contact_id\n\
+        ) l ON l.contact_id=c.contact_id AND l.latest=c.created_at\nGROUP BY status\n"
+      template-tags:
+        broadcast_id:
+          dimension:
+          - field-id
+          - 6648
+          display-name: Broadcast id
+          id: 533c2fdc-6e2e-174a-e25c-e8e6ac205aeb
+          name: broadcast_id
+          required: true
+          type: dimension
+          widget-type: id
+    type: native
+  description: null
+  display: pie
+  embedding_params: null
+  enable_embedding: false
+  id: 468
+  made_public_by_id: null
+  model: card
+  name: Consents
+  public_uuid: null
+  query_type: native
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Text
+    display_name: status
+    fingerprint:
+      global:
+        distinct-count: 3
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 7.666666666666667
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: status
+    special_type: type/Category
+  - base_type: type/Integer
+    display_name: count
+    fingerprint:
+      global:
+        distinct-count: 3
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 19.333333333333332
+          max: 33.0
+          min: 8.0
+          q1: 10.25
+          q3: 29.0
+          sd: 12.662279942148386
+    name: count
+    special_type: type/Quantity
+  table_id: null
+  updated_at: '2020-05-26T10:53:45.000Z'
+  visualization_settings:
+    pie.colors:
+      accepted: '#84BB4C'
+      pending: '#F2A86F'
+      rejected: '#ED6E6E'
+    pie.dimension: status
+    pie.metric: count
+    pie.slice_threshold: 0
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: name
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-09T16:04:08.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - recipients
+        - openers
+        - clickers
+        - converted
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 4
+      order-by:
+      - - desc
+        - - field-id
+          - 6899
+      - - desc
+        - - field-id
+          - 6898
+      source-table: 862
+    type: query
+  description: Percentages are against number of recipients
+  display: funnel
+  embedding_params: null
+  enable_embedding: false
+  id: 409
+  made_public_by_id: null
+  model: card
+  name: Conversion funnel
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: ID
+    fingerprint: null
+    name: id
+    special_type: type/PK
+  - base_type: type/Integer
+    display_name: Broadcast ID
+    fingerprint:
+      global:
+        distinct-count: 9755
+        nil%: 0.0
+    name: broadcast_id
+    special_type: type/FK
+  - base_type: type/Text
+    display_name: Broadcast Name
+    fingerprint:
+      global:
+        distinct-count: 9669
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 43.4621
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: broadcast_name
+    special_type: null
+  - base_type: type/*
+    display_name: Metric
+    fingerprint:
+      global:
+        distinct-count: 2
+        nil%: 0.0
+    name: metric
+    special_type: type/Category
+  - base_type: type/Integer
+    display_name: Segment ID
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+    name: segment_id
+    special_type: type/FK
+  - base_type: type/Decimal
+    display_name: Value
+    fingerprint:
+      global:
+        distinct-count: 2602
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 940.771
+          max: 16233.0
+          min: 1.0
+          q1: 43.88261242616341
+          q3: 784.7677438370661
+          sd: 1999.358711085584
+    name: value
+    special_type: null
+  - base_type: type/Text
+    description: Internal name of the broadcast
+    display_name: "Broadcast \u2192 Name"
+    fingerprint:
+      global:
+        distinct-count: 9916
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 39.6161
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name
+    special_type: type/Name
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    funnel.dimension: metric
+    funnel.metric: value
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-09T15:56:56.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 3
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - converted_to_clickers
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of people who took action versus number of people who clicked
+    a link
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 408
+  made_public_by_id: null
+  model: card
+  name: Conversion rate (vs clicks)
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 1.43933817
+          max: 1.43933817
+          min: 1.43933817
+          q1: 1.43933817
+          q3: 1.43933817
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Click rate"]]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+      '["ref",["field-id",6898]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.75
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.95
+      min: 0.75
+    - color: '#84BB4C'
+      label: ''
+      max: 1
+      min: 0.95
+    scalar.field: value
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-19T13:20:10.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - likely_forwarders_rate
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of "contacts" who opened the mailing 3 times or more versus
+    number of recipients
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 470
+  made_public_by_id: null
+  model: card
+  name: Estimated forward rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.05180084
+          max: 0.05180084
+          min: 0.05180084
+          q1: 0.05180084
+          q3: 0.05180084
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["name","expression"]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.01
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.05
+      min: 0.01
+    - color: '#84BB4C'
+      label: ''
+      max: 1
+      min: 0.05
+    scalar.field: rate
+    table.cell_column: count
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: true
+      name: expression
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6899
+      name: broadcast_id_2
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6901
+      name: broadcast_name_2
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6903
+      name: id_2
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6902
+      name: metric_2
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6900
+      name: segment_id_2
+    - enabled: true
+      field_ref:
+      - joined-field
+      - Broadcast Metric
+      - - field-id
+        - 6898
+      name: value_2
+    - enabled: true
+      field_ref:
+      - expression
+      - rate
+      name: rate
+    table.pivot_column: broadcast_id
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-18T16:41:44.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      - - distinct
+        - - joined-field
+          - Click
+          - - field-id
+            - 6904
+      breakout:
+      - - field-id
+        - 6623
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6649
+      filter:
+      - not-null
+      - - joined-field
+        - Click
+        - - field-id
+          - 6503
+      joins:
+      - alias: Broadcast Link
+        condition:
+        - '='
+        - - field-id
+          - 6490
+        - - joined-field
+          - Broadcast Link
+          - - field-id
+            - 6648
+        fields:
+        - - joined-field
+          - Broadcast Link
+          - - field-id
+            - 6649
+        source-table: 828
+      - alias: Click
+        condition:
+        - '='
+        - - joined-field
+          - Broadcast Link
+          - - field-id
+            - 6651
+        - - joined-field
+          - Click
+          - - field-id
+            - 6502
+        fields: none
+        source-table: 814
+      limit: 10
+      order-by:
+      - - desc
+        - - aggregation
+          - 0
+      source-table: 809
+    type: query
+  description: Number of clicks and clickers for each link of the mailing
+  display: table
+  embedding_params: null
+  enable_embedding: false
+  id: 464
+  made_public_by_id: null
+  model: card
+  name: Individual link stats
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Text
+    description: Internal name of the broadcast
+    display_name: Name
+    fingerprint:
+      global:
+        distinct-count: 9916
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 39.6161
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name
+    special_type: type/Name
+  - base_type: type/Text
+    description: 'Complete target URL of the link, including utm parameters.
+
+      This is not the URL of the click tracking system.'
+    display_name: "Broadcast Link \u2192 URL"
+    fingerprint:
+      global:
+        distinct-count: 8907
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 122.1977
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.997
+    name: url
+    special_type: type/URL
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 10
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 3260.4
+          max: 4257.0
+          min: 2910.0
+          q1: 3043.0
+          q3: 3386.0
+          sd: 399.8550292849203
+    name: count
+    special_type: type/Quantity
+  - base_type: type/Integer
+    display_name: "Distinct values of Click \u2192 Contact ID"
+    fingerprint:
+      global:
+        distinct-count: 9
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 2759.2
+          max: 3606.0
+          min: 2444.0
+          q1: 2501.0
+          q3: 2919.9512146747807
+          sd: 353.7537750093041
+    name: count_2
+    special_type: null
+  table_id: 809
+  updated_at: '2020-05-26T10:56:13.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","count"]':
+        column_title: Clicks
+      '["name","count_2"]':
+        column_title: Clickers
+      '["ref",["field-id",6649]]':
+        column_title: Mailing Link URL
+      '["ref",["fk->",["field-id",6502],["field-id",6649]]]':
+        column_title: Mailing Link URL
+    table.cell_column: count
+    table.columns:
+    - enabled: false
+      name: name
+    - enabled: true
+      name: url
+    - enabled: true
+      name: count
+    - enabled: true
+      name: count_2
+    table.pivot_column: url
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-19T07:02:26.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - avg
+      expressions:
+        avg:
+        - /
+        - - field-id
+          - 6898
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - monthly_amount
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - monthly_donations
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6900
+        - 1
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Average amount of monthly donations
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 466
+  made_public_by_id: null
+  model: card
+  name: Monthly average amount
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of avg
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 10.036951951952
+          max: 10.036951951952
+          min: 10.036951951952
+          q1: 10.036951951952
+          q3: 10.036951951952
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        currency: EUR
+        number_style: currency
+      '["name","sum"]':
+        currency: EUR
+    scalar.field: avg
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-19T06:59:45.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - rate
+      expressions:
+        rate:
+        - /
+        - - '*'
+          - - field-id
+            - 6898
+          - 10000
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - monthly_donations
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - recipients
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6900
+        - 1
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Number of monthly donations per 10k recipients
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 465
+  made_public_by_id: null
+  model: card
+  name: Monthly donations
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of rate
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 85.393364148095
+          max: 85.393364148095
+          min: 85.393364148095
+          q1: 85.393364148095
+          q3: 85.393364148095
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        suffix: ' / 10k'
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: name
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-19T07:05:52.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - rate
+      expressions:
+        rate:
+        - /
+        - - '*'
+          - - field-id
+            - 6898
+          - 10000
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - monthly_amount
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - recipients
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6900
+        - 1
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Total monthly amount fundraised, per 10k recipients
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 467
+  made_public_by_id: null
+  model: card
+  name: Monthly total amount
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of rate
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 706.913490564458
+          max: 706.913490564458
+          min: 706.913490564458
+          q1: 706.913490564458
+          q3: 706.913490564458
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        prefix: "\u20AC"
+        suffix: ' / 10k'
+      '["name","sum"]':
+        currency: EUR
+    scalar.field: sum
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-18T16:06:47.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - avg_amount
+      expressions:
+        avg_amount:
+        - /
+        - - field-id
+          - 6898
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - oneoff_amount
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - oneoff_donations
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Average amount of one-off donations
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 462
+  made_public_by_id: null
+  model: card
+  name: One-off average amount
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of avg_amount
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 20.671155805219
+          max: 20.671155805219
+          min: 20.671155805219
+          q1: 20.671155805219
+          q3: 20.671155805219
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        currency: EUR
+        number_style: currency
+      '["name","sum"]':
+        currency: EUR
+    scalar.field: avg
+    table.cell_column: avg
+    table.pivot_column: name
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-11T15:39:16.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - rate
+      expressions:
+        rate:
+        - /
+        - - '*'
+          - - field-id
+            - 6898
+          - 10000
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - oneoff_donations
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - recipients
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6900
+        - 1
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Number of one-off donations per 10k recipients
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 453
+  made_public_by_id: null
+  model: card
+  name: One-off donations
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of rate
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 606.721419556046
+          max: 606.721419556046
+          min: 606.721419556046
+          q1: 606.721419556046
+          q3: 606.721419556046
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        suffix: ' / 10k'
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: name
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-18T15:55:00.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - expression
+          - amount
+      expressions:
+        amount:
+        - /
+        - - '*'
+          - - field-id
+            - 6898
+          - 10000
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - oneoff_amount
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6902
+        - recipients
+      - - '='
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6900
+        - 1
+      joins:
+      - alias: Broadcast
+        condition:
+        - '='
+        - - field-id
+          - 6899
+        - - joined-field
+          - Broadcast
+          - - field-id
+            - 6899
+        fields: all
+        source-table: 862
+      source-table: 862
+    type: query
+  description: Total amount fundraised from one-off donations, per 10k recipients
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 461
+  made_public_by_id: null
+  model: card
+  name: One-off total amount
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Float
+    display_name: Average of amount
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 12266.146978497614
+          max: 12266.146978497614
+          min: 12266.146978497614
+          q1: 12266.146978497614
+          q3: 12266.146978497614
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        prefix: "\u20AC"
+        suffix: ' / 10k'
+      '["name","sum"]':
+        currency: EUR
+    scalar.field: sum
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-11-29T15:51:06.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - openers_rate
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of people who displayed the open tracker versus number of recipients
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 381
+  made_public_by_id: null
+  model: card
+  name: Open rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.35312222
+          max: 0.35312222
+          min: 0.35312222
+          q1: 0.35312222
+          q3: 0.35312222
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.05
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.25
+      min: 0.05
+    - color: '#84BB4C'
+      label: ''
+      max: 1
+      min: 0.25
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+    - enabled: true
+      field_ref:
+      - field-id
+      - 6902
+      name: metric
+    - enabled: true
+      field_ref:
+      - field-id
+      - 6903
+      name: id
+    - enabled: true
+      field_ref:
+      - field-id
+      - 6901
+      name: broadcast_name
+    - enabled: true
+      field_ref:
+      - field-id
+      - 6899
+      name: broadcast_id
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-01T07:39:46.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - spam_rate
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: null
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 385
+  made_public_by_id: null
+  model: card
+  name: Spam rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.00152052
+          max: 0.00152052
+          min: 0.00152052
+          q1: 0.00152052
+          q3: 0.00152052
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","Spam rate"]]':
+        number_style: percent
+      '["ref",["expression","Unsub rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#84BB4C'
+      label: ''
+      max: 0.0005
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.0008
+      min: 0.0005
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.01
+      min: 0.0008
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-12-18T15:11:36.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      fields:
+      - - field-id
+        - 6490
+      - - field-id
+        - 6623
+      - - field-id
+        - 6484
+      - - field-id
+        - 6643
+      - - field-id
+        - 6644
+      - - field-id
+        - 6624
+      limit: 1
+      source-table: 809
+    type: query
+  description: null
+  display: table
+  embedding_params: null
+  enable_embedding: false
+  id: 460
+  made_public_by_id: null
+  model: card
+  name: Summary
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: ID
+    fingerprint: null
+    name: id
+    special_type: type/PK
+  - base_type: type/Text
+    description: Internal name of the broadcast
+    display_name: Name
+    fingerprint:
+      global:
+        distinct-count: 9916
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 39.6161
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name
+    special_type: type/Name
+  - base_type: type/*
+    description: Should match the actions.action_type !
+    display_name: Ask Type
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+    name: ask_type
+    special_type: type/Category
+  - base_type: type/Integer
+    display_name: Broadcast Test
+    fingerprint:
+      global:
+        distinct-count: 1959
+        nil%: 0.6084
+    name: broadcast_test_id
+    special_type: type/FK
+  - base_type: type/Integer
+    display_name: Campaign
+    fingerprint:
+      global:
+        distinct-count: 130
+        nil%: 0.0
+    name: campaign_id
+    special_type: type/FK
+  - base_type: type/DateTime
+    description: When the sending of the broadcast started
+    display_name: Sent At
+    fingerprint:
+      global:
+        distinct-count: 7994
+        nil%: 0.0
+      type:
+        type/DateTime:
+          earliest: '2015-02-09T15:44:24.000Z'
+          latest: '2018-07-05T14:42:18.000Z'
+    name: sent_at
+    special_type: type/CreationDate
+  - base_type: type/Text
+    description: Internal name of the test
+    display_name: "Broadcast Test \u2192 Name"
+    fingerprint:
+      global:
+        distinct-count: 1942
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 36.58631256384066
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name_2
+    special_type: type/Name
+  - base_type: type/Text
+    description: The internal name of the campaign
+    display_name: "Campaign \u2192 Name"
+    fingerprint:
+      global:
+        distinct-count: 290
+        nil%: 0.0
+      type:
+        type/Text:
+          average-length: 27.769491525423728
+          percent-email: 0.0
+          percent-json: 0.0
+          percent-url: 0.0
+    name: name_3
+    special_type: type/Name
+  table_id: 809
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["ref",["field-id",6643]]':
+        column_title: AB Test
+    table.cell_column: sent_at
+    table.columns:
+    - enabled: true
+      name: id
+    - enabled: true
+      name: name
+    - enabled: true
+      name: ask_type
+    - enabled: true
+      name: broadcast_test_id
+    - enabled: false
+      name: broadcast_type
+    - enabled: true
+      name: campaign_id
+    - enabled: false
+      name: external_id
+    - enabled: false
+      name: external_system
+    - enabled: true
+      name: sent_at
+    table.pivot_column: id
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 72
+    location: /71/
+    name: Single mailing
+    personal_owner_id: null
+    slug: single_mailing
+  collection_id: 72
+  collection_position: null
+  created_at: '2019-11-29T16:13:10.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 2
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - avg
+        - - field-id
+          - 6898
+      filter:
+      - and
+      - - '='
+        - - field-id
+          - 6902
+        - unsub_rate
+      - - '='
+        - - field-id
+          - 6900
+        - 1
+      limit: 1
+      source-table: 862
+    type: query
+  description: Number of people who unsubscribe versus number of recipients
+  display: gauge
+  embedding_params: null
+  enable_embedding: false
+  id: 383
+  made_public_by_id: null
+  model: card
+  name: Unsubcribe rate
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Decimal
+    display_name: Average of Value
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 0.00570147
+          max: 0.00570147
+          min: 0.00570147
+          q1: 0.00570147
+          q3: 0.00570147
+          sd: null
+    name: avg
+    special_type: null
+  table_id: 862
+  updated_at: '2020-05-26T10:56:04.000Z'
+  visualization_settings:
+    column_settings:
+      '["name","avg"]':
+        number_style: percent
+      '["ref",["expression","Open rate"]]':
+        number_style: percent
+      '["ref",["expression","Unsub rate"]]':
+        number_style: percent
+      '["ref",["expression","open rate"]]':
+        number_style: percent
+      '["ref",["expression","rate"]]':
+        number_style: percent
+    gauge.segments:
+    - color: '#84BB4C'
+      label: ''
+      max: 0.005
+      min: 0
+    - color: '#F9CF48'
+      label: ''
+      max: 0.02
+      min: 0.005
+    - color: '#ED6E6E'
+      label: ''
+      max: 0.05
+      min: 0.02
+    table.columns:
+    - enabled: false
+      name: id
+    - enabled: false
+      name: broadcast_id
+    - enabled: false
+      name: broadcast_name
+    - enabled: false
+      name: metric
+    - enabled: false
+      name: segment_id
+    - enabled: false
+      name: value
+    - enabled: true
+      name: rate
+    - enabled: false
+      name: id_2
+    - enabled: false
+      name: broadcast_id_2
+    - enabled: false
+      name: broadcast_name_2
+    - enabled: false
+      name: metric_2
+    - enabled: false
+      name: segment_id_2
+    - enabled: false
+      name: value_2
+location: /71/
+model: collection
+name: Single mailing
+parent_id: 71
+personal_owner_id: null
+slug: single_mailing

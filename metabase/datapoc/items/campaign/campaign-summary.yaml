@@ -1,0 +1,145 @@
+archived: false
+cache_ttl: null
+can_write: true
+collection:
+  archived: false
+  color: '#509EE3'
+  description: null
+  id: 101
+  location: /71/
+  name: Campaign
+  personal_owner_id: null
+  slug: campaign
+collection_id: 101
+collection_position: null
+created_at: '2020-01-15T15:58:32.000Z'
+creator:
+  common_name: Romain Thouvenin
+  date_joined: '2017-07-21T17:21:46.000Z'
+  email: romain@wemove.eu
+  first_name: Romain
+  id: 1
+  is_qbnewb: false
+  is_superuser: true
+  last_login: '2020-05-26T10:52:02.000Z'
+  last_name: Thouvenin
+creator_id: 1
+dashboard_count: 1
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    fields:
+    - - field-id
+      - 6491
+    - - field-id
+      - 6495
+    - - field-id
+      - 6492
+    - - field-id
+      - 6493
+    - - field-id
+      - 6497
+    limit: 1
+    source-table: 811
+  type: query
+description: null
+display: table
+embedding_params: null
+enable_embedding: false
+id: 478
+made_public_by_id: null
+model: card
+name: Campaign summary
+public_uuid: null
+query_type: query
+read_permissions: null
+result_metadata:
+- base_type: type/Integer
+  display_name: External ID
+  fingerprint:
+    global:
+      distinct-count: 294
+      nil%: 0.006779661016949153
+    type:
+      type/Number:
+        avg: 831.4914675767918
+        max: 2350.0
+        min: 1.0
+        q1: 218.0430313820163
+        q3: 1514.1737106739033
+        sd: 609.5154490717861
+  name: external_id
+  special_type: type/PK
+- base_type: type/Text
+  description: The internal name of the campaign
+  display_name: Name
+  fingerprint:
+    global:
+      distinct-count: 290
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 27.769491525423728
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: name
+  special_type: type/Name
+- base_type: type/DateTime
+  description: When the campaign was launched
+  display_name: Started At
+  fingerprint:
+    global:
+      distinct-count: 293
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-01-01T00:00:00.000Z'
+        latest: '2019-11-07T17:30:00.000Z'
+  name: started_at
+  special_type: type/CreationTimestamp
+- base_type: type/DateTime
+  description: When the campaign was closed
+  display_name: Ended At
+  fingerprint:
+    global:
+      distinct-count: 9
+      nil%: 0.9491525423728814
+    type:
+      type/DateTime:
+        earliest: '2016-11-22T00:00:00.000Z'
+        latest: '2018-08-01T00:00:00.000Z'
+  name: ended_at
+  special_type: null
+- base_type: type/*
+  description: "One of the following:\n - wemove: a \"regular\" campaign run by the\
+    \ organisation\n - youmove: a campaign initiated by a citizen or organisation\
+    \ on the Youmove platform\n - eci: European Citizen Initiative\n - trial: a campaign\
+    \ run the organisation to assess its potential success"
+  display_name: Campaign Type
+  fingerprint:
+    global:
+      distinct-count: 3
+      nil%: 0.0
+  name: campaign_type
+  special_type: type/Category
+table_id: 811
+updated_at: '2020-05-14T04:45:35.000Z'
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6491]]':
+      column_title: CiviCRM ID
+  table.cell_column: ended_at
+  table.columns:
+  - enabled: true
+    name: external_id
+  - enabled: true
+    name: name
+  - enabled: true
+    name: started_at
+  - enabled: true
+    name: ended_at
+  - enabled: true
+    name: campaign_type
+  table.pivot_column: id

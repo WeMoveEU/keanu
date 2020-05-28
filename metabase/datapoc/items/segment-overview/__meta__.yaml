@@ -1,0 +1,318 @@
+archived: false
+can_write: true
+collection_id: 71
+color: '#509EE3'
+description: null
+effective_ancestors:
+- can_write: true
+  id: root
+  metabase.models.collection/is-root?: true
+  name: Our analytics
+- can_write: true
+  id: 71
+  name: Keanu
+effective_location: /71/
+id: 100
+items:
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 100
+    location: /71/
+    name: Segment overview
+    personal_owner_id: null
+    slug: segment_overview
+  collection_id: 100
+  collection_position: null
+  created_at: '2019-12-31T16:07:10.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      breakout:
+      - - field-id
+        - 6520
+      - - datetime-field
+        - - field-id
+          - 6525
+        - month
+      source-table: 805
+    type: query
+  description: null
+  display: line
+  embedding_params: null
+  enable_embedding: false
+  id: 473
+  made_public_by_id: null
+  model: card
+  name: Count of segment joins by month
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: Segment ID
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+    name: segment_id
+    special_type: type/FK
+  - base_type: type/DateTime
+    description: 'When the contact joined the segment.
+
+      If the contact was in the segment several times, there are several records.
+
+      '
+    display_name: Joined At
+    fingerprint:
+      global:
+        distinct-count: 7770
+        nil%: 0.0
+      type:
+        type/DateTime:
+          earliest: '2015-09-04T00:01:40.000Z'
+          latest: '2018-12-11T16:01:19.000Z'
+    name: joined_at
+    special_type: type/JoinTimestamp
+    unit: month
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 789
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 389.5405405405405
+          max: 14886.0
+          min: 1.0
+          q1: 18.79502096831625
+          q3: 191.429252222881
+          sd: 1112.431178774479
+    name: count
+    special_type: type/Quantity
+  table_id: 805
+  updated_at: '2020-05-26T07:38:14.000Z'
+  visualization_settings:
+    graph.dimensions:
+    - joined_at
+    graph.metrics:
+    - count
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: segment_id
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 100
+    location: /71/
+    name: Segment overview
+    personal_owner_id: null
+    slug: segment_overview
+  collection_id: 100
+  collection_position: null
+  created_at: '2019-12-31T16:09:50.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 0
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      breakout:
+      - - field-id
+        - 6520
+      - - datetime-field
+        - - field-id
+          - 6523
+        - month
+      source-table: 805
+    type: query
+  description: null
+  display: line
+  embedding_params: null
+  enable_embedding: false
+  id: 474
+  made_public_by_id: null
+  model: card
+  name: Count of segment leaves by month
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: Segment ID
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+    name: segment_id
+    special_type: type/FK
+  - base_type: type/DateTime
+    description: 'When the contact left the segment, or NULL if the contact is still
+      in the segment.
+
+      It is equal to the joined_at column for the next segment within this segmentation.'
+    display_name: Left At
+    fingerprint:
+      global:
+        distinct-count: 1025
+        nil%: 0.4107
+      type:
+        type/DateTime:
+          earliest: '2015-10-01T17:29:59.000Z'
+          latest: '2018-10-08T10:20:38.000Z'
+    name: left_at
+    special_type: null
+    unit: month
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 463
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 1519.8542654028436
+          max: 148459.0
+          min: 1.0
+          q1: 22.132394915668165
+          q3: 966.9815440788183
+          sd: 7362.286031829464
+    name: count
+    special_type: type/Quantity
+  table_id: 805
+  updated_at: '2020-05-26T07:38:13.000Z'
+  visualization_settings:
+    graph.dimensions:
+    - left_at
+    graph.metrics:
+    - count
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: segment_id
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 100
+    location: /71/
+    name: Segment overview
+    personal_owner_id: null
+    slug: segment_overview
+  collection_id: 100
+  collection_position: null
+  created_at: '2019-12-31T15:50:13.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      breakout:
+      - - field-id
+        - 6520
+      filter:
+      - is-null
+      - - field-id
+        - 6523
+      limit: 1
+      source-table: 805
+    type: query
+  description: null
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 472
+  made_public_by_id: null
+  model: card
+  name: Segment current size
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: Segment ID
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+    name: segment_id
+    special_type: type/FK
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 148459.0
+          max: 148459.0
+          min: 148459.0
+          q1: 148459.0
+          q3: 148459.0
+          sd: null
+    name: count
+    special_type: type/Quantity
+  table_id: 805
+  updated_at: '2020-05-26T07:38:13.000Z'
+  visualization_settings:
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: segment_id
+location: /71/
+model: collection
+name: Segment overview
+parent_id: 71
+personal_owner_id: null
+slug: segment_overview

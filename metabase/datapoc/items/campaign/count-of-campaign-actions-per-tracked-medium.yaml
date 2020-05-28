@@ -1,0 +1,114 @@
+archived: false
+cache_ttl: null
+can_write: true
+collection:
+  archived: false
+  color: '#509EE3'
+  description: null
+  id: 101
+  location: /71/
+  name: Campaign
+  personal_owner_id: null
+  slug: campaign
+collection_id: 101
+collection_position: null
+created_at: '2020-01-16T11:05:39.000Z'
+creator:
+  common_name: Romain Thouvenin
+  date_joined: '2017-07-21T17:21:46.000Z'
+  email: romain@wemove.eu
+  first_name: Romain
+  id: 1
+  is_qbnewb: false
+  is_superuser: true
+  last_login: '2020-05-26T10:52:02.000Z'
+  last_name: Thouvenin
+creator_id: 1
+dashboard_count: 1
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - joined-field
+      - Source
+      - - field-id
+        - 6610
+    joins:
+    - alias: Action Page
+      condition:
+      - '='
+      - - field-id
+        - 6876
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6881
+      fields: all
+      source-table: 861
+    - alias: Source
+      condition:
+      - '='
+      - - field-id
+        - 6873
+      - - joined-field
+        - Source
+        - - field-id
+          - 6616
+      fields: all
+      source-table: 807
+    source-table: 813
+  type: query
+description: null
+display: pie
+embedding_params: null
+enable_embedding: false
+id: 482
+made_public_by_id: null
+model: card
+name: Count of campaign actions per tracked medium
+public_uuid: null
+query_type: query
+read_permissions: null
+result_metadata:
+- base_type: type/Text
+  display_name: "Source \u2192 Medium"
+  fingerprint:
+    global:
+      distinct-count: 18
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 7.8666
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: medium
+  special_type: type/Category
+- base_type: type/Integer
+  display_name: Count
+  fingerprint:
+    global:
+      distinct-count: 13
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 203.6
+        max: 2363.0
+        min: 1.0
+        q1: 3.41886116991581
+        q3: 60.25
+        sd: 605.6985105762485
+  name: count
+  special_type: type/Quantity
+table_id: 813
+updated_at: '2020-05-14T04:45:35.000Z'
+visualization_settings:
+  graph.dimensions:
+  - medium
+  graph.metrics:
+  - count
+  pie.slice_threshold: 0.5
+  stackable.stack_type: stacked

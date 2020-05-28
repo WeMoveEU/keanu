@@ -1,0 +1,289 @@
+archived: false
+can_write: true
+caveats: null
+collection_id: 71
+collection_position: null
+created_at: '2019-12-31T15:50:40.000Z'
+creator_id: 1
+description: null
+embedding_params: null
+enable_embedding: false
+id: 60
+made_public_by_id: null
+model: dashboard
+name: Segment overview
+ordered_cards:
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 100
+    collection_position: null
+    created_at: '2019-12-31T15:50:13.000Z'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        aggregation:
+        - - count
+        breakout:
+        - - field-id
+          - 6520
+        filter:
+        - is-null
+        - - field-id
+          - 6523
+        limit: 1
+        source-table: 805
+      type: query
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 472
+    made_public_by_id: null
+    name: Segment current size
+    public_uuid: null
+    query_average_duration: 520
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Integer
+      display_name: Count
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 148459.0
+            max: 148459.0
+            min: 148459.0
+            q1: 148459.0
+            q3: 148459.0
+            sd: null
+      name: count
+      special_type: type/Quantity
+    table_id: 805
+    updated_at: '2020-05-26T07:38:13.000Z'
+    visualization_settings:
+      scalar.field: count
+      table.cell_column: count
+      table.pivot_column: segment_id
+  card_id: 472
+  col: 0
+  created_at: '2019-12-31T15:50:56.000Z'
+  dashboard_id: 60
+  id: 438
+  parameter_mappings:
+  - card_id: 472
+    parameter_id: b39281f5
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6520
+      - - field-id
+        - 6601
+  row: 0
+  series: []
+  sizeX: 4
+  sizeY: 6
+  updated_at: '2019-12-31T16:12:34.000Z'
+  visualization_settings:
+    card.title: contacts
+    scalar.field: count
+    table.cell_column: count
+    table.pivot_column: segment_id
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 100
+    collection_position: null
+    created_at: '2019-12-31T16:07:10.000Z'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        aggregation:
+        - - count
+        breakout:
+        - - field-id
+          - 6520
+        - - datetime-field
+          - - field-id
+            - 6525
+          - month
+        source-table: 805
+      type: query
+    description: null
+    display: line
+    embedding_params: null
+    enable_embedding: false
+    id: 473
+    made_public_by_id: null
+    name: Count of segment joins by month
+    public_uuid: null
+    query_average_duration: 2093
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/DateTime
+      description: 'When the contact joined the segment.
+
+        If the contact was in the segment several times, there are several records.
+
+        '
+      display_name: Joined At
+      fingerprint:
+        global:
+          distinct-count: 7770
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-09-04T00:01:40.000Z'
+            latest: '2018-12-11T16:01:19.000Z'
+      name: joined_at
+      special_type: type/JoinTimestamp
+      unit: month
+    - base_type: type/Integer
+      display_name: Count
+      fingerprint:
+        global:
+          distinct-count: 789
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 389.5405405405405
+            max: 14886.0
+            min: 1.0
+            q1: 18.79502096831625
+            q3: 191.429252222881
+            sd: 1112.431178774479
+      name: count
+      special_type: type/Quantity
+    table_id: 805
+    updated_at: '2020-05-26T07:38:14.000Z'
+    visualization_settings:
+      graph.dimensions:
+      - joined_at
+      graph.metrics:
+      - count
+      scalar.field: count
+      table.cell_column: count
+      table.pivot_column: segment_id
+  card_id: 473
+  col: 4
+  created_at: '2019-12-31T16:07:51.000Z'
+  dashboard_id: 60
+  id: 439
+  parameter_mappings:
+  - card_id: 473
+    parameter_id: b39281f5
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6520
+      - - field-id
+        - 6601
+  - card_id: 474
+    parameter_id: b39281f5
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6520
+      - - field-id
+        - 6601
+  row: 0
+  series:
+  - collection_id: 100
+    dataset_query:
+      database: 9
+      query:
+        aggregation:
+        - - count
+        breakout:
+        - - field-id
+          - 6520
+        - - datetime-field
+          - - field-id
+            - 6523
+          - month
+        source-table: 805
+      type: query
+    description: null
+    display: line
+    id: 474
+    name: Count of segment leaves by month
+    query_average_duration: 1517
+    visualization_settings:
+      graph.dimensions:
+      - left_at
+      graph.metrics:
+      - count
+      scalar.field: count
+      table.cell_column: count
+      table.pivot_column: segment_id
+  sizeX: 14
+  sizeY: 6
+  updated_at: '2019-12-31T16:12:34.000Z'
+  visualization_settings:
+    graph.dimensions:
+    - joined_at
+    graph.metrics:
+    - count
+    graph.x_axis.labels_enabled: false
+    scalar.field: count
+    series_settings:
+      Count of segment leaves by month:
+        color: '#EF8C8C'
+      count:
+        color: '#88BF4D'
+    table.cell_column: count
+    table.pivot_column: segment_id
+param_fields:
+  '6601':
+    base_type: type/Integer
+    dimensions: []
+    display_name: ID
+    has_field_values: search
+    id: 6601
+    name_field:
+      base_type: type/Text
+      display_name: Name
+      has_field_values: search
+      id: 6600
+      special_type: type/Name
+      table_id: 797
+    special_type: type/PK
+    table_id: 797
+param_values: {}
+parameters:
+- id: b39281f5
+  name: ID
+  slug: id
+  type: id
+points_of_interest: null
+position: null
+public_uuid: null
+show_in_getting_started: false
+updated_at: '2020-03-05T15:07:05.000Z'

@@ -1,0 +1,305 @@
+cards:
+  381:
+    name: Open rate
+  382:
+    name: Click rate (vs opens)
+  383:
+    name: Unsubcribe rate
+  384:
+    name: Bounce rate
+  385:
+    name: Spam rate
+  408:
+    name: Conversion rate (vs clicks)
+  409:
+    name: Conversion funnel
+  453:
+    name: One-off donations
+  460:
+    name: Summary
+  461:
+    name: One-off total amount
+  462:
+    name: One-off average amount
+  463:
+    name: Action types
+  464:
+    name: Individual link stats
+  465:
+    name: Monthly donations
+  466:
+    name: Monthly average amount
+  467:
+    name: Monthly total amount
+  468:
+    name: Consents
+  469:
+    name: Opens per contact
+  470:
+    name: Estimated forward rate
+  471:
+    name: Activation rate
+  472:
+    name: Segment current size
+  473:
+    name: Count of segment joins by month
+  474:
+    name: Count of segment leaves by month
+  476:
+    name: Count of campaign actions per type over time
+  477:
+    name: Count of campaign actions per type
+  478:
+    name: Campaign summary
+  479:
+    name: Count of campaign actions per language and country
+  482:
+    name: Count of campaign actions per tracked medium
+  483:
+    name: Count of campaign actions per tracked source
+  484:
+    name: Count of campaign actions per tracked campaign code
+  485:
+    name: Repartition of consent statuses
+  486:
+    name: Count of campaign actions
+  487:
+    name: Campaign emails sent
+  488:
+    name: New members from a campaign
+  489:
+    name: Total money raised from a campaign
+  490:
+    name: Growth media
+  491:
+    name: Growth sources
+  492:
+    name: Count of campaign actions per language
+  493:
+    name: Count of campaign actions per country
+  494:
+    name: Campaign mailings
+  496:
+    name: A/B test summary
+  497:
+    name: Latest mailings info
+  499:
+    name: Open rate
+  500:
+    name: Click vs open rate
+  504:
+    name: Latest A/B tests
+  505:
+    name: Latest WeMove Campaigns
+  506:
+    name: Conversion rate (vs clicks)
+  507:
+    name: Converted
+  508:
+    name: Forward rate
+  509:
+    name: Consents
+  510:
+    name: Unsubscribe rate
+  511:
+    name: Delivery KPIs
+  513:
+    name: Count of member joins without an accepted consent
+  514:
+    name: Count of member leaves without a cancelled consent
+  515:
+    name: Count of member joins without an accepted consent over time
+  516:
+    name: Count of members leaves without a cancelled consent over time
+  517:
+    name: Count of accepted consents without a member join
+  518:
+    name: Count of accepted consents without a member join, over time
+  519:
+    name: Count of contacts
+  520:
+    name: Count of members
+  521:
+    name: Count of cancelled consents without a member leave
+  522:
+    name: Count of cancelled consents without a member leave, over time
+  523:
+    name: Random pick of member joins without an accepted consent
+  524:
+    name: Random pick of accepted consents without a member join
+  525:
+    name: Random pick of member leaves without a cancelled consent
+  526:
+    name: Random pick of cancelled consents without a member leave
+collections:
+  72:
+    name: Single mailing
+  100:
+    name: Segment overview
+  101:
+    name: Campaign
+  102:
+    name: A/B test mailing
+  103:
+    name: Latest mailings
+  104:
+    name: Latest campaigns
+  105:
+    name: Data checks
+  106:
+    name: Consents
+dashboards:
+  47:
+    name: Single mailing
+  60:
+    name: Segment overview
+  61:
+    name: Campaign
+  62:
+    name: A/B test mailing
+  63:
+    name: Latest mailings
+  64:
+    name: Latest campaigns
+  65:
+    name: Consents
+databases:
+  9:
+    name: Keanu Romain
+    tables:
+      797:
+        fields:
+          6598: segmentation_id
+          6600: name
+          6601: id
+        name: segment
+      805:
+        fields:
+          6520: segment_id
+          6523: left_at
+          6525: joined_at
+        name: contact_segment
+      807:
+        fields:
+          6610: medium
+          6612: campaign
+          6613: source
+          6616: id
+        name: source
+      809:
+        fields:
+          6484: ask_type
+          6490: id
+          6623: name
+          6624: sent_at
+          6643: broadcast_test_id
+          6644: campaign_id
+        name: broadcast
+      810:
+        fields:
+          6504: preferred_language
+          6509: country
+          6510: id
+        name: contact
+      811:
+        fields:
+          6491: external_id
+          6492: started_at
+          6493: ended_at
+          6495: name
+          6497: campaign_type
+        name: campaign
+      812:
+        fields:
+          6603: name
+          6604: id
+        name: segmentation
+      813:
+        fields:
+          6480: id
+          6872: created_at
+          6873: source_id
+          6874: contact_id
+          6876: action_page_id
+        name: action
+      814:
+        fields:
+          6502: mailing_link_id
+          6503: id
+        name: click
+      815:
+        fields:
+          6883: action_id
+        name: donation
+      825:
+        fields:
+          6653: created_at
+          6655: name
+          6656: id
+          6657: sent_at
+        name: broadcast_test
+      826:
+        fields:
+          6658: broadcast_id
+          6905: contact_id
+        name: open
+      828:
+        fields:
+          6648: broadcast_id
+          6649: url
+          6650: source_id
+          6651: id
+        name: broadcast_link
+      861:
+        fields:
+          6878: campaign_id
+          6879: action_type
+          6881: id
+        name: action_page
+      862:
+        fields:
+          6898: value
+          6899: broadcast_id
+          6900: segment_id
+          6902: metric
+        name: broadcast_metric
+      870:
+        fields:
+          6977: status
+          7133: source_id
+          7134: campaign_id
+          7136: created_at
+        name: consent
+      887:
+        fields:
+          7055: segment_id
+          7056: recipients
+          7057: ask_type
+          7058: broadcast_test_id
+          7060: name
+          7061: id
+          7062: sent_at
+          7063: campaign_id
+          7064: converted
+          7065: clickers
+          7066: openers
+          7067: unsubs
+          7068: likely_forwarders
+          7070: language
+        name: broadcast_summary
+      891:
+        fields:
+          7085: actions
+          7087: started_at
+          7088: donations_total_amount
+          7089: messages
+          7090: ended_at
+          7091: new_members
+          7092: shares
+          7093: unsubs
+          7094: donations
+          7095: name
+          7096: campaign_type
+          7097: activated
+          7098: id
+        name: campaign_summary

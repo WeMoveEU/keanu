@@ -1,0 +1,2910 @@
+archived: false
+can_write: true
+collection_id: 71
+color: '#509EE3'
+description: null
+effective_ancestors:
+- can_write: true
+  id: root
+  metabase.models.collection/is-root?: true
+  name: Our analytics
+- can_write: true
+  id: 71
+  name: Keanu
+effective_location: /71/
+id: 105
+items:
+- archived: false
+  can_write: true
+  collection_id: 105
+  color: '#509EE3'
+  description: null
+  effective_ancestors:
+  - can_write: true
+    id: root
+    metabase.models.collection/is-root?: true
+    name: Our analytics
+  - can_write: true
+    id: 105
+    name: Data checks
+  - can_write: true
+    id: 71
+    name: Keanu
+  effective_location: /71/105/
+  id: 106
+  items:
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:09:04.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT COUNT(*)
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''accepted''
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+          <= 60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 517
+    made_public_by_id: null
+    model: card
+    name: Count of accepted consents without a member join
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 22585.0
+            max: 22585.0
+            min: 22585.0
+            q1: 22585.0
+            q3: 22585.0
+            sd: null
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:17.000Z'
+    visualization_settings: {}
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:13:59.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT DATE_FORMAT(c.created_at, ''%Y-%m'') AS consent_month, COUNT(*)
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''accepted''
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+          <= 60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL
+
+          GROUP BY consent_month'
+      type: native
+    description: null
+    display: line
+    embedding_params: null
+    enable_embedding: false
+    id: 518
+    made_public_by_id: null
+    model: card
+    name: Count of accepted consents without a member join, over time
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Text
+      display_name: consent_month
+      fingerprint:
+        global:
+          distinct-count: 56
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: consent_month
+      special_type: null
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 48
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 403.30357142857144
+            max: 3486.0
+            min: 2.0
+            q1: 24.0
+            q3: 571.5
+            sd: 613.6736153435563
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:17.000Z'
+    visualization_settings:
+      graph.dimensions:
+      - consent_month
+      graph.metrics:
+      - COUNT(*)
+      graph.x_axis.title_text: Consent month
+      series_settings:
+        COUNT(*):
+          line.interpolate: step-after
+          line.marker_enabled: false
+          title: Count
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:24:41.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT COUNT(*)
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''cancelled''
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at)) <=
+          60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 521
+    made_public_by_id: null
+    model: card
+    name: Count of cancelled consents without a member leave
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 5438.0
+            max: 5438.0
+            min: 5438.0
+            q1: 5438.0
+            q3: 5438.0
+            sd: null
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings: {}
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:29:03.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT DATE_FORMAT(c.created_at, ''%Y-%m'') AS cancel_month, COUNT(*)
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''cancelled''
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at)) <=
+          60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL
+
+          GROUP BY cancel_month'
+      type: native
+    description: null
+    display: line
+    embedding_params: null
+    enable_embedding: false
+    id: 522
+    made_public_by_id: null
+    model: card
+    name: Count of cancelled consents without a member leave, over time
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Text
+      display_name: cancel_month
+      fingerprint:
+        global:
+          distinct-count: 56
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: cancel_month
+      special_type: null
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 53
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 97.10714285714286
+            max: 446.0
+            min: 1.0
+            q1: 35.5
+            q3: 115.5
+            sd: 99.88041551073664
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings:
+      graph.dimensions:
+      - cancel_month
+      graph.metrics:
+      - COUNT(*)
+      graph.x_axis.title_text: Cancel month
+      series_settings:
+        COUNT(*):
+          line.interpolate: step-after
+          line.marker_enabled: false
+          title: Count
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T12:39:08.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT COUNT(*)
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+          WHERE s.name=''Member'' AND c.id IS NULL'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 513
+    made_public_by_id: null
+    model: card
+    name: Count of member joins without an accepted consent
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 16309.0
+            max: 16309.0
+            min: 16309.0
+            q1: 16309.0
+            q3: 16309.0
+            sd: null
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings: {}
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T12:51:55.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT DATE_FORMAT(cs.joined_at, ''%Y-%m'') AS join_month, COUNT(*)
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+          WHERE s.name=''Member'' AND c.id IS NULL
+
+          GROUP BY join_month'
+      type: native
+    description: By month
+    display: line
+    embedding_params: null
+    enable_embedding: false
+    id: 515
+    made_public_by_id: null
+    model: card
+    name: Count of member joins without an accepted consent over time
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Text
+      display_name: join_month
+      fingerprint:
+        global:
+          distinct-count: 56
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: join_month
+      special_type: null
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 51
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 291.23214285714283
+            max: 2678.0
+            min: 3.0
+            q1: 42.0
+            q3: 335.0
+            sd: 467.5080938947933
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings:
+      graph.dimensions:
+      - join_month
+      graph.metrics:
+      - COUNT(*)
+      graph.x_axis.title_text: Join month
+      series_settings:
+        COUNT(*):
+          line.interpolate: step-after
+          line.marker_enabled: false
+          line.missing: zero
+          title: Count
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T12:44:16.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT COUNT(*)
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT NULL
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+          WHERE s.name=''Member'' AND c.id IS NULL'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 514
+    made_public_by_id: null
+    model: card
+    name: Count of member leaves without a cancelled consent
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 34119.0
+            max: 34119.0
+            min: 34119.0
+            q1: 34119.0
+            q3: 34119.0
+            sd: null
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings: {}
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:01:00.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: '
+
+          SELECT DATE_FORMAT(cs.left_at, ''%Y-%m'') AS leave_month, COUNT(*)
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT NULL
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+          WHERE s.name=''Member'' AND c.id IS NULL
+
+          GROUP BY leave_month'
+      type: native
+    description: By month
+    display: line
+    embedding_params: null
+    enable_embedding: false
+    id: 516
+    made_public_by_id: null
+    model: card
+    name: Count of members leaves without a cancelled consent over time
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Text
+      display_name: leave_month
+      fingerprint:
+        global:
+          distinct-count: 52
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: leave_month
+      special_type: null
+    - base_type: type/Integer
+      display_name: COUNT(*)
+      fingerprint:
+        global:
+          distinct-count: 49
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 656.1346153846154
+            max: 13407.0
+            min: 2.0
+            q1: 155.5
+            q3: 582.5
+            sd: 1855.5997395149861
+      name: COUNT(*)
+      special_type: null
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings:
+      graph.dimensions:
+      - leave_month
+      graph.metrics:
+      - COUNT(*)
+      graph.x_axis.title_text: Leave month
+      series_settings:
+        COUNT(*):
+          line.interpolate: step-after
+          line.marker_enabled: false
+          title: Count
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:53:08.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+          contact.preferred_language, c.created_at AS consent_date, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+          contact.id) AS crm_url
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''accepted''
+
+          JOIN contact ON contact.id = c.contact_id
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+          <= 60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL
+
+          ORDER BY RAND() LIMIT 5'
+      type: native
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 524
+    made_public_by_id: null
+    model: card
+    name: Random pick of accepted consents without a member join
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: id
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/DateTime
+      display_name: contact_created_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-10-06T18:57:33.000Z'
+            latest: '2018-09-29T19:56:57.000Z'
+      name: contact_created_at
+      special_type: type/CreationTimestamp
+    - base_type: type/Text
+      display_name: country
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 9.6
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: country
+      special_type: type/Country
+    - base_type: type/Text
+      display_name: preferred_language
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 5.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: preferred_language
+      special_type: null
+    - base_type: type/DateTime
+      display_name: consent_date
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-10-06T18:57:33.000Z'
+            latest: '2020-04-22T00:33:23.000Z'
+      name: consent_date
+      special_type: null
+    - base_type: type/Text
+      display_name: crm_url
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 53.2
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 1.0
+      name: crm_url
+      special_type: type/URL
+    table_id: null
+    updated_at: '2020-05-19T14:03:18.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","consent_date"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+        '["name","contact_created_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_enabled: null
+        '["name","joined_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+      table.cell_column: id
+      table.pivot_column: country
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T14:03:05.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+          contact.preferred_language, c.created_at AS cancel_date, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+          contact.id) AS crm_url
+
+          FROM segment s
+
+          JOIN consent c ON c.status = ''cancelled''
+
+          JOIN contact ON contact.id = c.contact_id
+
+          LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id =
+          cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at)) <=
+          60
+
+          WHERE s.name=''Member'' AND cs.id IS NULL
+
+          ORDER BY RAND() LIMIT 5'
+      type: native
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 526
+    made_public_by_id: null
+    model: card
+    name: Random pick of cancelled consents without a member leave
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: id
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/DateTime
+      display_name: contact_created_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2016-07-23T14:00:03.000Z'
+            latest: '2017-11-20T11:52:31.000Z'
+      name: contact_created_at
+      special_type: type/CreationTimestamp
+    - base_type: type/Text
+      display_name: country
+      fingerprint:
+        global:
+          distinct-count: 4
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.6
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: country
+      special_type: type/Country
+    - base_type: type/Text
+      display_name: preferred_language
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 5.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: preferred_language
+      special_type: null
+    - base_type: type/DateTime
+      display_name: cancel_date
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2017-05-05T16:34:33.000Z'
+            latest: '2019-08-23T23:53:48.000Z'
+      name: cancel_date
+      special_type: type/CancelationTimestamp
+    - base_type: type/Text
+      display_name: crm_url
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 53.6
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 1.0
+      name: crm_url
+      special_type: type/URL
+    table_id: null
+    updated_at: '2020-05-19T14:03:17.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","cancel_date"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+        '["name","consent_date"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+        '["name","contact_created_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_enabled: null
+        '["name","joined_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+      table.cell_column: id
+      table.pivot_column: country
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:45:30.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+          contact.preferred_language, cs.joined_at, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+          contact.id) AS crm_url
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id
+
+          JOIN contact ON contact.id = cs.contact_id
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+          WHERE s.name=''Member'' AND c.id IS NULL
+
+          ORDER BY RAND() LIMIT 5'
+      type: native
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 523
+    made_public_by_id: null
+    model: card
+    name: Random pick of member joins without an accepted consent
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: id
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/DateTime
+      display_name: contact_created_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-02-14T23:45:20.000Z'
+            latest: '2018-10-04T22:42:13.000Z'
+      name: contact_created_at
+      special_type: type/CreationTimestamp
+    - base_type: type/Text
+      display_name: country
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 7.2
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: country
+      special_type: type/Country
+    - base_type: type/Text
+      display_name: preferred_language
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 5.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: preferred_language
+      special_type: null
+    - base_type: type/DateTime
+      display_name: joined_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-10-22T09:56:15.000Z'
+            latest: '2018-10-05T03:33:11.000Z'
+      name: joined_at
+      special_type: type/JoinTimestamp
+    - base_type: type/Text
+      display_name: crm_url
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 52.6
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 1.0
+      name: crm_url
+      special_type: type/URL
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","contact_created_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_enabled: null
+        '["name","joined_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+      table.cell_column: id
+      table.pivot_column: country
+  - archived: false
+    cache_ttl: null
+    can_write: true
+    collection:
+      archived: false
+      color: '#509EE3'
+      description: null
+      id: 106
+      location: /71/105/
+      name: Consents
+      personal_owner_id: null
+      slug: consents
+    collection_id: 106
+    collection_position: null
+    created_at: '2020-05-19T13:58:15.000Z'
+    creator:
+      common_name: Romain Thouvenin
+      date_joined: '2017-07-21T17:21:46.000Z'
+      email: romain@wemove.eu
+      first_name: Romain
+      id: 1
+      is_qbnewb: false
+      is_superuser: true
+      last_login: '2020-05-26T10:52:02.000Z'
+      last_name: Thouvenin
+    creator_id: 1
+    dashboard_count: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+          contact.preferred_language, cs.left_at, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+          contact.id) AS crm_url
+
+          FROM segment s
+
+          JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT NULL
+
+          JOIN contact ON contact.id = cs.contact_id
+
+          LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+          c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+          WHERE s.name=''Member'' AND c.id IS NULL
+
+          ORDER BY RAND() LIMIT 5'
+      type: native
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 525
+    made_public_by_id: null
+    model: card
+    name: Random pick of member leaves without a cancelled consent
+    public_uuid: null
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: id
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/DateTime
+      display_name: contact_created_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-12-05T12:19:48.000Z'
+            latest: '2017-06-15T09:47:26.000Z'
+      name: contact_created_at
+      special_type: type/CreationTimestamp
+    - base_type: type/Text
+      display_name: country
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 5.4
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: country
+      special_type: type/Country
+    - base_type: type/Text
+      display_name: preferred_language
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 5.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: preferred_language
+      special_type: null
+    - base_type: type/DateTime
+      display_name: left_at
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2016-04-01T13:30:01.000Z'
+            latest: '2018-05-29T12:02:54.000Z'
+      name: left_at
+      special_type: null
+    - base_type: type/Text
+      display_name: crm_url
+      fingerprint:
+        global:
+          distinct-count: 5
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 53.2
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 1.0
+      name: crm_url
+      special_type: type/URL
+    table_id: null
+    updated_at: '2020-05-19T14:03:16.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","contact_created_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_enabled: null
+        '["name","joined_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+        '["name","left_at"]':
+          date_separator: '-'
+          date_style: YYYY/M/D
+          time_style: k:mm
+      table.cell_column: id
+      table.pivot_column: country
+  location: /71/105/
+  model: collection
+  name: Consents
+  parent_id: 105
+  personal_owner_id: null
+  slug: consents
+- archived: false
+  can_write: true
+  caveats: null
+  collection_id: 105
+  collection_position: null
+  created_at: '2020-05-19T12:39:39.000Z'
+  creator_id: 1
+  description: null
+  embedding_params: null
+  enable_embedding: false
+  id: 65
+  made_public_by_id: null
+  model: dashboard
+  name: Consents
+  ordered_cards:
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T12:39:08.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT COUNT(*)
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+            WHERE s.name=''Member'' AND c.id IS NULL'
+        type: native
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 513
+      made_public_by_id: null
+      name: Count of member joins without an accepted consent
+      public_uuid: null
+      query_average_duration: 1267
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 16309.0
+              max: 16309.0
+              min: 16309.0
+              q1: 16309.0
+              q3: 16309.0
+              sd: null
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings: {}
+    card_id: 513
+    col: 0
+    created_at: '2020-05-19T12:42:05.000Z'
+    dashboard_id: 65
+    id: 484
+    parameter_mappings: []
+    row: 3
+    series: []
+    sizeX: 4
+    sizeY: 3
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: joins without an accepted consent
+  - card:
+      query_average_duration: null
+    card_id: null
+    col: 0
+    created_at: '2020-05-19T12:42:05.000Z'
+    dashboard_id: 65
+    id: 485
+    parameter_mappings: []
+    row: 0
+    series: []
+    sizeX: 12
+    sizeY: 3
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      dashcard.background: false
+      text: '# Comparison of consent and member segment history
+
+        Each accepted consent should have a matching join in Member segment (within
+        60 minutes), and each cancelled consent should have a matching leave'
+      virtual_card:
+        archived: false
+        dataset_query: {}
+        display: text
+        name: null
+        visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T12:44:16.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT COUNT(*)
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT
+            NULL
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+            WHERE s.name=''Member'' AND c.id IS NULL'
+        type: native
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 514
+      made_public_by_id: null
+      name: Count of member leaves without a cancelled consent
+      public_uuid: null
+      query_average_duration: 1021
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 34119.0
+              max: 34119.0
+              min: 34119.0
+              q1: 34119.0
+              q3: 34119.0
+              sd: null
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings: {}
+    card_id: 514
+    col: 8
+    created_at: '2020-05-19T12:44:53.000Z'
+    dashboard_id: 65
+    id: 486
+    parameter_mappings: []
+    row: 3
+    series: []
+    sizeX: 5
+    sizeY: 3
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: leaves without a cancelled consent
+  - card:
+      query_average_duration: null
+    card_id: null
+    col: 0
+    created_at: '2020-05-19T12:46:13.000Z'
+    dashboard_id: 65
+    id: 487
+    parameter_mappings: []
+    row: 6
+    series: []
+    sizeX: 7
+    sizeY: 1
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      dashcard.background: false
+      text: '## Over time'
+      virtual_card:
+        archived: false
+        dataset_query: {}
+        display: text
+        name: null
+        visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T12:51:55.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT DATE_FORMAT(cs.joined_at, ''%Y-%m'') AS join_month, COUNT(*)
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+            WHERE s.name=''Member'' AND c.id IS NULL
+
+            GROUP BY join_month'
+        type: native
+      description: By month
+      display: line
+      embedding_params: null
+      enable_embedding: false
+      id: 515
+      made_public_by_id: null
+      name: Count of member joins without an accepted consent over time
+      public_uuid: null
+      query_average_duration: 1327
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Text
+        display_name: join_month
+        fingerprint:
+          global:
+            distinct-count: 56
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: join_month
+        special_type: null
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 51
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 291.23214285714283
+              max: 2678.0
+              min: 3.0
+              q1: 42.0
+              q3: 335.0
+              sd: 467.5080938947933
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings:
+        graph.dimensions:
+        - join_month
+        graph.metrics:
+        - COUNT(*)
+        graph.x_axis.title_text: Join month
+        series_settings:
+          COUNT(*):
+            line.interpolate: step-after
+            line.marker_enabled: false
+            line.missing: zero
+            title: Count
+    card_id: 515
+    col: 0
+    created_at: '2020-05-19T12:52:35.000Z'
+    dashboard_id: 65
+    id: 488
+    parameter_mappings: []
+    row: 7
+    series: []
+    sizeX: 9
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:01:00.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: '
+
+            SELECT DATE_FORMAT(cs.left_at, ''%Y-%m'') AS leave_month, COUNT(*)
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT
+            NULL
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+            WHERE s.name=''Member'' AND c.id IS NULL
+
+            GROUP BY leave_month'
+        type: native
+      description: By month
+      display: line
+      embedding_params: null
+      enable_embedding: false
+      id: 516
+      made_public_by_id: null
+      name: Count of members leaves without a cancelled consent over time
+      public_uuid: null
+      query_average_duration: 1079
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Text
+        display_name: leave_month
+        fingerprint:
+          global:
+            distinct-count: 52
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: leave_month
+        special_type: null
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 49
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 656.1346153846154
+              max: 13407.0
+              min: 2.0
+              q1: 155.5
+              q3: 582.5
+              sd: 1855.5997395149861
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings:
+        graph.dimensions:
+        - leave_month
+        graph.metrics:
+        - COUNT(*)
+        graph.x_axis.title_text: Leave month
+        series_settings:
+          COUNT(*):
+            line.interpolate: step-after
+            line.marker_enabled: false
+            title: Count
+    card_id: 516
+    col: 0
+    created_at: '2020-05-19T13:01:39.000Z'
+    dashboard_id: 65
+    id: 489
+    parameter_mappings: []
+    row: 12
+    series: []
+    sizeX: 9
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:09:04.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT COUNT(*)
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''accepted''
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL'
+        type: native
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 517
+      made_public_by_id: null
+      name: Count of accepted consents without a member join
+      public_uuid: null
+      query_average_duration: 2457
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 22585.0
+              max: 22585.0
+              min: 22585.0
+              q1: 22585.0
+              q3: 22585.0
+              sd: null
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:17.000Z'
+      visualization_settings: {}
+    card_id: 517
+    col: 4
+    created_at: '2020-05-19T13:10:56.000Z'
+    dashboard_id: 65
+    id: 490
+    parameter_mappings: []
+    row: 3
+    series: []
+    sizeX: 4
+    sizeY: 3
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: accepted consents without a join
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:13:59.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT DATE_FORMAT(c.created_at, ''%Y-%m'') AS consent_month, COUNT(*)
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''accepted''
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL
+
+            GROUP BY consent_month'
+        type: native
+      description: null
+      display: line
+      embedding_params: null
+      enable_embedding: false
+      id: 518
+      made_public_by_id: null
+      name: Count of accepted consents without a member join, over time
+      public_uuid: null
+      query_average_duration: 2503
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Text
+        display_name: consent_month
+        fingerprint:
+          global:
+            distinct-count: 56
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: consent_month
+        special_type: null
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 48
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 403.30357142857144
+              max: 3486.0
+              min: 2.0
+              q1: 24.0
+              q3: 571.5
+              sd: 613.6736153435563
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:17.000Z'
+      visualization_settings:
+        graph.dimensions:
+        - consent_month
+        graph.metrics:
+        - COUNT(*)
+        graph.x_axis.title_text: Consent month
+        series_settings:
+          COUNT(*):
+            line.interpolate: step-after
+            line.marker_enabled: false
+            title: Count
+    card_id: 518
+    col: 9
+    created_at: '2020-05-19T13:15:02.000Z'
+    dashboard_id: 65
+    id: 491
+    parameter_mappings: []
+    row: 7
+    series: []
+    sizeX: 9
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 105
+      collection_position: null
+      created_at: '2020-05-19T13:18:05.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        query:
+          aggregation:
+          - - count
+          source-table: 810
+        type: query
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 519
+      made_public_by_id: null
+      name: Count of contacts
+      public_uuid: null
+      query_average_duration: 297
+      query_type: query
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: Count
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 148459.0
+              max: 148459.0
+              min: 148459.0
+              q1: 148459.0
+              q3: 148459.0
+              sd: null
+        name: count
+        special_type: type/Quantity
+      table_id: 810
+      updated_at: '2020-05-19T14:03:15.000Z'
+      visualization_settings: {}
+    card_id: 519
+    col: 12
+    created_at: '2020-05-19T13:18:49.000Z'
+    dashboard_id: 65
+    id: 492
+    parameter_mappings: []
+    row: 0
+    series: []
+    sizeX: 3
+    sizeY: 2
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: contacts
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 105
+      collection_position: null
+      created_at: '2020-05-19T13:21:28.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        query:
+          aggregation:
+          - - count
+          filter:
+          - and
+          - - '='
+            - - fk->
+              - - field-id
+                - 6520
+              - - field-id
+                - 6600
+            - Member
+          - - is-null
+            - - field-id
+              - 6523
+          source-table: 805
+        type: query
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 520
+      made_public_by_id: null
+      name: Count of members
+      public_uuid: null
+      query_average_duration: 537
+      query_type: query
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: Count
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 56493.0
+              max: 56493.0
+              min: 56493.0
+              q1: 56493.0
+              q3: 56493.0
+              sd: null
+        name: count
+        special_type: type/Quantity
+      table_id: 805
+      updated_at: '2020-05-19T14:03:15.000Z'
+      visualization_settings: {}
+    card_id: 520
+    col: 15
+    created_at: '2020-05-19T13:21:58.000Z'
+    dashboard_id: 65
+    id: 493
+    parameter_mappings: []
+    row: 0
+    series: []
+    sizeX: 3
+    sizeY: 2
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: members
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:24:41.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT COUNT(*)
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''cancelled''
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL'
+        type: native
+      description: null
+      display: scalar
+      embedding_params: null
+      enable_embedding: false
+      id: 521
+      made_public_by_id: null
+      name: Count of cancelled consents without a member leave
+      public_uuid: null
+      query_average_duration: 865
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 1
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 5438.0
+              max: 5438.0
+              min: 5438.0
+              q1: 5438.0
+              q3: 5438.0
+              sd: null
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings: {}
+    card_id: 521
+    col: 13
+    created_at: '2020-05-19T13:25:25.000Z'
+    dashboard_id: 65
+    id: 494
+    parameter_mappings: []
+    row: 3
+    series: []
+    sizeX: 5
+    sizeY: 3
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      card.title: cancelled consents without a leave
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:29:03.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT DATE_FORMAT(c.created_at, ''%Y-%m'') AS cancel_month, COUNT(*)
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''cancelled''
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL
+
+            GROUP BY cancel_month'
+        type: native
+      description: null
+      display: line
+      embedding_params: null
+      enable_embedding: false
+      id: 522
+      made_public_by_id: null
+      name: Count of cancelled consents without a member leave, over time
+      public_uuid: null
+      query_average_duration: 883
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Text
+        display_name: cancel_month
+        fingerprint:
+          global:
+            distinct-count: 56
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: cancel_month
+        special_type: null
+      - base_type: type/Integer
+        display_name: COUNT(*)
+        fingerprint:
+          global:
+            distinct-count: 53
+            nil%: 0.0
+          type:
+            type/Number:
+              avg: 97.10714285714286
+              max: 446.0
+              min: 1.0
+              q1: 35.5
+              q3: 115.5
+              sd: 99.88041551073664
+        name: COUNT(*)
+        special_type: null
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings:
+        graph.dimensions:
+        - cancel_month
+        graph.metrics:
+        - COUNT(*)
+        graph.x_axis.title_text: Cancel month
+        series_settings:
+          COUNT(*):
+            line.interpolate: step-after
+            line.marker_enabled: false
+            title: Count
+    card_id: 522
+    col: 9
+    created_at: '2020-05-19T13:29:26.000Z'
+    dashboard_id: 65
+    id: 495
+    parameter_mappings: []
+    row: 12
+    series: []
+    sizeX: 9
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:45:30.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+            contact.preferred_language, cs.joined_at, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+            contact.id) AS crm_url
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id
+
+            JOIN contact ON contact.id = cs.contact_id
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.joined_at)) <= 60 AND c.status = ''accepted''
+
+            WHERE s.name=''Member'' AND c.id IS NULL
+
+            ORDER BY RAND() LIMIT 5'
+        type: native
+      description: null
+      display: table
+      embedding_params: null
+      enable_embedding: false
+      id: 523
+      made_public_by_id: null
+      name: Random pick of member joins without an accepted consent
+      public_uuid: null
+      query_average_duration: 1191
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: id
+        fingerprint: null
+        name: id
+        special_type: type/PK
+      - base_type: type/DateTime
+        display_name: contact_created_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2015-02-14T23:45:20.000Z'
+              latest: '2018-10-04T22:42:13.000Z'
+        name: contact_created_at
+        special_type: type/CreationTimestamp
+      - base_type: type/Text
+        display_name: country
+        fingerprint:
+          global:
+            distinct-count: 3
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.2
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: country
+        special_type: type/Country
+      - base_type: type/Text
+        display_name: preferred_language
+        fingerprint:
+          global:
+            distinct-count: 3
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 5.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: preferred_language
+        special_type: null
+      - base_type: type/DateTime
+        display_name: joined_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2015-10-22T09:56:15.000Z'
+              latest: '2018-10-05T03:33:11.000Z'
+        name: joined_at
+        special_type: type/JoinTimestamp
+      - base_type: type/Text
+        display_name: crm_url
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 52.6
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 1.0
+        name: crm_url
+        special_type: type/URL
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings:
+        column_settings:
+          '["name","contact_created_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_enabled: null
+          '["name","joined_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+        table.cell_column: id
+        table.pivot_column: country
+    card_id: 523
+    col: 0
+    created_at: '2020-05-19T13:46:27.000Z'
+    dashboard_id: 65
+    id: 496
+    parameter_mappings: []
+    row: 18
+    series: []
+    sizeX: 18
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      query_average_duration: null
+    card_id: null
+    col: 0
+    created_at: '2020-05-19T13:46:27.000Z'
+    dashboard_id: 65
+    id: 497
+    parameter_mappings: []
+    row: 17
+    series: []
+    sizeX: 7
+    sizeY: 1
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings:
+      dashcard.background: false
+      text: '## Random picks'
+      virtual_card:
+        archived: false
+        dataset_query: {}
+        display: text
+        name: null
+        visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:53:08.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+            contact.preferred_language, c.created_at AS consent_date, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+            contact.id) AS crm_url
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''accepted''
+
+            JOIN contact ON contact.id = c.contact_id
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL
+
+            ORDER BY RAND() LIMIT 5'
+        type: native
+      description: null
+      display: table
+      embedding_params: null
+      enable_embedding: false
+      id: 524
+      made_public_by_id: null
+      name: Random pick of accepted consents without a member join
+      public_uuid: null
+      query_average_duration: 2203
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: id
+        fingerprint: null
+        name: id
+        special_type: type/PK
+      - base_type: type/DateTime
+        display_name: contact_created_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2015-10-06T18:57:33.000Z'
+              latest: '2018-09-29T19:56:57.000Z'
+        name: contact_created_at
+        special_type: type/CreationTimestamp
+      - base_type: type/Text
+        display_name: country
+        fingerprint:
+          global:
+            distinct-count: 3
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 9.6
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: country
+        special_type: type/Country
+      - base_type: type/Text
+        display_name: preferred_language
+        fingerprint:
+          global:
+            distinct-count: 2
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 5.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: preferred_language
+        special_type: null
+      - base_type: type/DateTime
+        display_name: consent_date
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2015-10-06T18:57:33.000Z'
+              latest: '2020-04-22T00:33:23.000Z'
+        name: consent_date
+        special_type: null
+      - base_type: type/Text
+        display_name: crm_url
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 53.2
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 1.0
+        name: crm_url
+        special_type: type/URL
+      table_id: null
+      updated_at: '2020-05-19T14:03:18.000Z'
+      visualization_settings:
+        column_settings:
+          '["name","consent_date"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+          '["name","contact_created_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_enabled: null
+          '["name","joined_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+        table.cell_column: id
+        table.pivot_column: country
+    card_id: 524
+    col: 0
+    created_at: '2020-05-19T13:53:48.000Z'
+    dashboard_id: 65
+    id: 498
+    parameter_mappings: []
+    row: 23
+    series: []
+    sizeX: 18
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T13:58:15.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+            contact.preferred_language, cs.left_at, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+            contact.id) AS crm_url
+
+            FROM segment s
+
+            JOIN contact_segment cs ON cs.segment_id = s.id AND cs.left_at IS NOT
+            NULL
+
+            JOIN contact ON contact.id = cs.contact_id
+
+            LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE,
+            c.created_at, cs.left_at)) <= 60 AND c.status = ''cancelled''
+
+            WHERE s.name=''Member'' AND c.id IS NULL
+
+            ORDER BY RAND() LIMIT 5'
+        type: native
+      description: null
+      display: table
+      embedding_params: null
+      enable_embedding: false
+      id: 525
+      made_public_by_id: null
+      name: Random pick of member leaves without a cancelled consent
+      public_uuid: null
+      query_average_duration: 952
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: id
+        fingerprint: null
+        name: id
+        special_type: type/PK
+      - base_type: type/DateTime
+        display_name: contact_created_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2015-12-05T12:19:48.000Z'
+              latest: '2017-06-15T09:47:26.000Z'
+        name: contact_created_at
+        special_type: type/CreationTimestamp
+      - base_type: type/Text
+        display_name: country
+        fingerprint:
+          global:
+            distinct-count: 3
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 5.4
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: country
+        special_type: type/Country
+      - base_type: type/Text
+        display_name: preferred_language
+        fingerprint:
+          global:
+            distinct-count: 3
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 5.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: preferred_language
+        special_type: null
+      - base_type: type/DateTime
+        display_name: left_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2016-04-01T13:30:01.000Z'
+              latest: '2018-05-29T12:02:54.000Z'
+        name: left_at
+        special_type: null
+      - base_type: type/Text
+        display_name: crm_url
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 53.2
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 1.0
+        name: crm_url
+        special_type: type/URL
+      table_id: null
+      updated_at: '2020-05-19T14:03:16.000Z'
+      visualization_settings:
+        column_settings:
+          '["name","contact_created_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_enabled: null
+          '["name","joined_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+          '["name","left_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+        table.cell_column: id
+        table.pivot_column: country
+    card_id: 525
+    col: 0
+    created_at: '2020-05-19T13:58:57.000Z'
+    dashboard_id: 65
+    id: 499
+    parameter_mappings: []
+    row: 28
+    series: []
+    sizeX: 18
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  - card:
+      archived: false
+      cache_ttl: null
+      collection_id: 106
+      collection_position: null
+      created_at: '2020-05-19T14:03:05.000Z'
+      creator_id: 1
+      database_id: 9
+      dataset_query:
+        database: 9
+        native:
+          query: 'SELECT contact.id, contact.created_at AS contact_created_at, contact.country,
+            contact.preferred_language, c.created_at AS cancel_date, CONCAT(''https://www.wemove.eu/civicrm/contact/view?cid='',
+            contact.id) AS crm_url
+
+            FROM segment s
+
+            JOIN consent c ON c.status = ''cancelled''
+
+            JOIN contact ON contact.id = c.contact_id
+
+            LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id
+            = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at))
+            <= 60
+
+            WHERE s.name=''Member'' AND cs.id IS NULL
+
+            ORDER BY RAND() LIMIT 5'
+        type: native
+      description: null
+      display: table
+      embedding_params: null
+      enable_embedding: false
+      id: 526
+      made_public_by_id: null
+      name: Random pick of cancelled consents without a member leave
+      public_uuid: null
+      query_average_duration: 766
+      query_type: native
+      read_permissions: null
+      result_metadata:
+      - base_type: type/Integer
+        display_name: id
+        fingerprint: null
+        name: id
+        special_type: type/PK
+      - base_type: type/DateTime
+        display_name: contact_created_at
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2016-07-23T14:00:03.000Z'
+              latest: '2017-11-20T11:52:31.000Z'
+        name: contact_created_at
+        special_type: type/CreationTimestamp
+      - base_type: type/Text
+        display_name: country
+        fingerprint:
+          global:
+            distinct-count: 4
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 7.6
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: country
+        special_type: type/Country
+      - base_type: type/Text
+        display_name: preferred_language
+        fingerprint:
+          global:
+            distinct-count: 2
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 5.0
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 0.0
+        name: preferred_language
+        special_type: null
+      - base_type: type/DateTime
+        display_name: cancel_date
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/DateTime:
+              earliest: '2017-05-05T16:34:33.000Z'
+              latest: '2019-08-23T23:53:48.000Z'
+        name: cancel_date
+        special_type: type/CancelationTimestamp
+      - base_type: type/Text
+        display_name: crm_url
+        fingerprint:
+          global:
+            distinct-count: 5
+            nil%: 0.0
+          type:
+            type/Text:
+              average-length: 53.6
+              percent-email: 0.0
+              percent-json: 0.0
+              percent-url: 1.0
+        name: crm_url
+        special_type: type/URL
+      table_id: null
+      updated_at: '2020-05-19T14:03:17.000Z'
+      visualization_settings:
+        column_settings:
+          '["name","cancel_date"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+          '["name","consent_date"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+          '["name","contact_created_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_enabled: null
+          '["name","joined_at"]':
+            date_separator: '-'
+            date_style: YYYY/M/D
+            time_style: k:mm
+        table.cell_column: id
+        table.pivot_column: country
+    card_id: 526
+    col: 0
+    created_at: '2020-05-19T14:03:28.000Z'
+    dashboard_id: 65
+    id: 500
+    parameter_mappings: []
+    row: 33
+    series: []
+    sizeX: 18
+    sizeY: 5
+    updated_at: '2020-05-19T14:03:28.000Z'
+    visualization_settings: {}
+  param_fields: null
+  param_values: null
+  parameters: []
+  points_of_interest: null
+  position: null
+  public_uuid: null
+  show_in_getting_started: false
+  updated_at: '2020-05-19T14:03:29.000Z'
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 105
+    location: /71/
+    name: Data checks
+    personal_owner_id: null
+    slug: data_checks
+  collection_id: 105
+  collection_position: null
+  created_at: '2020-05-19T13:18:05.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      source-table: 810
+    type: query
+  description: null
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 519
+  made_public_by_id: null
+  model: card
+  name: Count of contacts
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 148459.0
+          max: 148459.0
+          min: 148459.0
+          q1: 148459.0
+          q3: 148459.0
+          sd: null
+    name: count
+    special_type: type/Quantity
+  table_id: 810
+  updated_at: '2020-05-19T14:03:15.000Z'
+  visualization_settings: {}
+- archived: false
+  cache_ttl: null
+  can_write: true
+  collection:
+    archived: false
+    color: '#509EE3'
+    description: null
+    id: 105
+    location: /71/
+    name: Data checks
+    personal_owner_id: null
+    slug: data_checks
+  collection_id: 105
+  collection_position: null
+  created_at: '2020-05-19T13:21:28.000Z'
+  creator:
+    common_name: Romain Thouvenin
+    date_joined: '2017-07-21T17:21:46.000Z'
+    email: romain@wemove.eu
+    first_name: Romain
+    id: 1
+    is_qbnewb: false
+    is_superuser: true
+    last_login: '2020-05-26T10:52:02.000Z'
+    last_name: Thouvenin
+  creator_id: 1
+  dashboard_count: 1
+  database_id: 9
+  dataset_query:
+    database: 9
+    query:
+      aggregation:
+      - - count
+      filter:
+      - and
+      - - '='
+        - - fk->
+          - - field-id
+            - 6520
+          - - field-id
+            - 6600
+        - Member
+      - - is-null
+        - - field-id
+          - 6523
+      source-table: 805
+    type: query
+  description: null
+  display: scalar
+  embedding_params: null
+  enable_embedding: false
+  id: 520
+  made_public_by_id: null
+  model: card
+  name: Count of members
+  public_uuid: null
+  query_type: query
+  read_permissions: null
+  result_metadata:
+  - base_type: type/Integer
+    display_name: Count
+    fingerprint:
+      global:
+        distinct-count: 1
+        nil%: 0.0
+      type:
+        type/Number:
+          avg: 56493.0
+          max: 56493.0
+          min: 56493.0
+          q1: 56493.0
+          q3: 56493.0
+          sd: null
+    name: count
+    special_type: type/Quantity
+  table_id: 805
+  updated_at: '2020-05-19T14:03:15.000Z'
+  visualization_settings: {}
+location: /71/
+model: collection
+name: Data checks
+parent_id: 71
+personal_owner_id: null
+slug: data_checks
