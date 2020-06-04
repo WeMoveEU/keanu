@@ -33,7 +33,14 @@ UPDATE campaign c
     ON c.external_system = 'civicrm_campaign' AND c.external_id = civic.id
 SET
     c.ended_at = civic.end_date,
-    c.name = civic.name
+    c.name = civic.name,
+    c.campaign_type = CASE
+        WHEN civic.campaign_type_id IN (1,2,3,4,5,7,8,11,12,13) THEN 'wemove'
+        WHEN civic.campaign_type_id IN (6) THEN 'youmove'
+        WHEN civic.campaign_type_id IN (9,10) THEN 'eci'
+        WHEN civic.campaign_type_id IN (14) THEN 'trial'
+        ELSE 'wemove'
+    END
 ;
 -- END INCREMENTAL
 
