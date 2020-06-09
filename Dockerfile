@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 # -- Create directories for app and loaders --
-RUN set -ex && mkdir /app && mkdir -p /queries/civicrm && mkdir -p /queries/civicrm-py && mkdir -p /queries/currency && mkdir -p /metabase
+RUN set -ex && mkdir /app && mkdir -p /queries/civicrm && mkdir -p /queries/currency && mkdir -p /metabase
 WORKDIR /app
 
 # -- Add app to container, and install deps --
@@ -22,9 +22,8 @@ ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # -- Add loader files --
 ADD erd/keanu-schema.sql /queries/
-ADD currency_sql /queries/currency
-ADD sql /queries/civicrm
-ADD py /queries/civicrm-py
+ADD loaders/civicrm_currency /queries/currency
+ADD loaders/civicrm /queries/civicrm
 
 # -- Add metabase file --
 ADD metabase/datapoc.json /metabase/keanu-mb.json
