@@ -1,0 +1,61 @@
+collection_id: 106
+collection_position: null
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT DATE_FORMAT(c.created_at, '%Y-%m') AS cancel_month, COUNT(*)
+      FROM segment s
+      JOIN consent c ON c.status = 'cancelled'
+      LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at)) <= 60
+      WHERE s.name='Member' AND cs.id IS NULL
+      GROUP BY cancel_month
+  type: native
+description: null
+display: line
+id: 522
+model: card
+name: Count of cancelled consents without a member leave, over time
+query_type: native
+result_metadata:
+- base_type: type/Text
+  display_name: cancel_month
+  fingerprint:
+    global:
+      distinct-count: 56
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 7.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: cancel_month
+  special_type: null
+- base_type: type/Integer
+  display_name: COUNT(*)
+  fingerprint:
+    global:
+      distinct-count: 53
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 97.10714285714286
+        max: 446.0
+        min: 1.0
+        q1: 35.5
+        q3: 115.5
+        sd: 99.88041551073664
+  name: COUNT(*)
+  special_type: null
+visualization_settings:
+  graph.dimensions:
+  - cancel_month
+  graph.metrics:
+  - COUNT(*)
+  graph.x_axis.title_text: Cancel month
+  series_settings:
+    COUNT(*):
+      line.interpolate: step-after
+      line.marker_enabled: false
+      title: Count

@@ -1,0 +1,191 @@
+collection_id: 71
+collection_position: null
+dataset_query:
+  database: 9
+  query:
+    fields:
+    - - field-id
+      - 6656
+    - - field-id
+      - 6655
+    - - field-id
+      - 6653
+    - - field-id
+      - 6657
+    joins:
+    - alias: Broadcast
+      condition:
+      - '='
+      - - field-id
+        - 6656
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6643
+      fields:
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6484
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6644
+      source-table: 809
+    limit: 1
+    source-table: 825
+  type: query
+description: null
+display: table
+id: 496
+model: card
+name: A/B test summary
+query_type: query
+result_metadata:
+- base_type: type/Integer
+  display_name: ID
+  fingerprint: null
+  name: id
+  special_type: type/PK
+- base_type: type/Text
+  description: Internal name of the test
+  display_name: Name
+  fingerprint:
+    global:
+      distinct-count: 1942
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 36.58631256384066
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: name
+  special_type: type/Name
+- base_type: type/DateTime
+  description: When the test was created in database
+  display_name: Created At
+  fingerprint:
+    global:
+      distinct-count: 1956
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-05-21T13:25:40.000Z'
+        latest: '2019-08-19T12:56:46.000Z'
+  name: created_at
+  special_type: type/CreationTimestamp
+- base_type: type/DateTime
+  description: When the sending of the test started
+  display_name: Sent At
+  fingerprint:
+    global:
+      distinct-count: 1766
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-05-21T14:40:19.000Z'
+        latest: '2019-10-14T13:18:14.000Z'
+  name: sent_at
+  special_type: null
+- base_type: type/*
+  description: Should match the actions.action_type !
+  display_name: "Broadcast \u2192 Ask Type"
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+  name: ask_type
+  special_type: type/Category
+- base_type: type/Integer
+  display_name: "Broadcast \u2192 Campaign"
+  fingerprint:
+    global:
+      distinct-count: 130
+      nil%: 0.0
+  name: campaign_id
+  special_type: type/FK
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6484]]':
+      column_title: Ask Type
+    '["ref",["field-id",6644]]':
+      column_title: Campaign
+  table.cell_column: sent_at
+  table.columns:
+  - enabled: true
+    name: id
+  - enabled: true
+    name: name
+  - enabled: true
+    name: created_at
+  - enabled: false
+    name: external_id
+  - enabled: false
+    name: external_system
+  - enabled: true
+    name: sent_at
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6484
+    name: ask_type
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6643
+    name: broadcast_test_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6485
+    name: broadcast_type
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6644
+    name: campaign_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6633
+    name: external_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6634
+    name: external_system
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6490
+    name: id_2
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6623
+    name: name_2
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6624
+    name: sent_at_2
+  table.pivot_column: id

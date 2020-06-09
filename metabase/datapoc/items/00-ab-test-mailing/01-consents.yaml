@@ -1,0 +1,92 @@
+collection_id: 102
+collection_position: null
+dataset_query:
+  database: 9
+  native:
+    query: "SELECT \n    SUBSTR(l.name, 1, 6) AS version, c.status AS consent_status,\
+      \ COUNT(*) AS `count`\nFROM consent c\nJOIN (\n    SELECT \n        broadcast.name,\
+      \ contact_id, MAX(created_at) latest \n    FROM broadcast\n    JOIN broadcast_link\
+      \ link ON link.broadcast_id=broadcast.id\n    JOIN source s ON s.id = link.source_id\n\
+      \    JOIN consent ON consent.source_id=s.id\n    WHERE {{broadcast_test_id}}\n\
+      \    GROUP BY broadcast.id, contact_id\n) l ON l.contact_id=c.contact_id AND\
+      \ l.latest=c.created_at\nGROUP BY version, consent_status\n"
+    template-tags:
+      broadcast_test_id:
+        dimension:
+        - field-id
+        - 6643
+        display-name: Broadcast test id
+        id: 533c2fdc-6e2e-174a-e25c-e8e6ac205aeb
+        name: broadcast_test_id
+        required: true
+        type: dimension
+        widget-type: id
+  type: native
+description: Number of consents for each status
+display: bar
+id: 509
+model: card
+name: Consents
+query_type: native
+result_metadata:
+- base_type: type/Text
+  display_name: version
+  fingerprint:
+    global:
+      distinct-count: 2
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 6.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: version
+  special_type: null
+- base_type: type/Text
+  display_name: consent_status
+  fingerprint:
+    global:
+      distinct-count: 2
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 8.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: consent_status
+  special_type: null
+- base_type: type/Integer
+  display_name: count
+  fingerprint:
+    global:
+      distinct-count: 3
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 1.75
+        max: 3.0
+        min: 1.0
+        q1: 1.0
+        q3: 2.5
+        sd: 0.9574271077563381
+  name: count
+  special_type: type/Quantity
+visualization_settings:
+  graph.dimensions:
+  - version
+  - consent_status
+  graph.metrics:
+  - count
+  graph.x_axis.labels_enabled: false
+  pie.colors:
+    accepted: '#84BB4C'
+    pending: '#F2A86F'
+    rejected: '#ED6E6E'
+  pie.dimension: status
+  pie.metric: count
+  pie.slice_threshold: 0
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: name
