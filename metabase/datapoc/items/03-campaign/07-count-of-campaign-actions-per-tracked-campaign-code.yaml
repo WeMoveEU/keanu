@@ -1,0 +1,85 @@
+collection_id: 101
+collection_position: null
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - joined-field
+      - Source
+      - - field-id
+        - 6612
+    joins:
+    - alias: Action Page
+      condition:
+      - '='
+      - - field-id
+        - 6876
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6881
+      fields: all
+      source-table: 861
+    - alias: Source
+      condition:
+      - '='
+      - - field-id
+        - 6873
+      - - joined-field
+        - Source
+        - - field-id
+          - 6616
+      fields: all
+      source-table: 807
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 813
+  type: query
+description: null
+display: pie
+id: 484
+model: card
+name: Count of campaign actions per tracked campaign code
+query_type: query
+result_metadata:
+- base_type: type/Text
+  display_name: "Source \u2192 Campaign"
+  fingerprint:
+    global:
+      distinct-count: 9866
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 10.161
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: campaign
+  special_type: type/Category
+- base_type: type/BigInteger
+  display_name: Count
+  fingerprint:
+    global:
+      distinct-count: 22
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 11.560975609756097
+        max: 2499.0
+        min: 1.0
+        q1: 1.0
+        q3: 1.9329535618213818
+        sd: 120.9079127351847
+  name: count
+  special_type: type/Quantity
+visualization_settings:
+  graph.dimensions:
+  - medium
+  graph.metrics:
+  - count
+  pie.slice_threshold: 0.5
+  stackable.stack_type: stacked

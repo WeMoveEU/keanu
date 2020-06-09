@@ -1,0 +1,108 @@
+collection_id: 106
+collection_position: null
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT contact.id, contact.created_at AS contact_created_at, contact.country, contact.preferred_language, c.created_at AS consent_date, CONCAT('https://www.wemove.eu/civicrm/contact/view?cid=', contact.id) AS crm_url
+      FROM segment s
+      JOIN consent c ON c.status = 'accepted'
+      JOIN contact ON contact.id = c.contact_id
+      LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at)) <= 60
+      WHERE s.name='Member' AND cs.id IS NULL
+      ORDER BY RAND() LIMIT 5
+  type: native
+description: null
+display: table
+id: 524
+model: card
+name: Random pick of accepted consents without a member join
+query_type: native
+result_metadata:
+- base_type: type/Integer
+  display_name: id
+  fingerprint: null
+  name: id
+  special_type: type/PK
+- base_type: type/DateTime
+  display_name: contact_created_at
+  fingerprint:
+    global:
+      distinct-count: 5
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-10-06T18:57:33.000Z'
+        latest: '2018-09-29T19:56:57.000Z'
+  name: contact_created_at
+  special_type: type/CreationTimestamp
+- base_type: type/Text
+  display_name: country
+  fingerprint:
+    global:
+      distinct-count: 3
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 9.6
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: country
+  special_type: type/Country
+- base_type: type/Text
+  display_name: preferred_language
+  fingerprint:
+    global:
+      distinct-count: 2
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 5.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: preferred_language
+  special_type: null
+- base_type: type/DateTime
+  display_name: consent_date
+  fingerprint:
+    global:
+      distinct-count: 5
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-10-06T18:57:33.000Z'
+        latest: '2020-04-22T00:33:23.000Z'
+  name: consent_date
+  special_type: null
+- base_type: type/Text
+  display_name: crm_url
+  fingerprint:
+    global:
+      distinct-count: 5
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 53.2
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 1.0
+  name: crm_url
+  special_type: type/URL
+visualization_settings:
+  column_settings:
+    '["name","consent_date"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_style: k:mm
+    '["name","contact_created_at"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_enabled: null
+    '["name","joined_at"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_style: k:mm
+  table.cell_column: id
+  table.pivot_column: country

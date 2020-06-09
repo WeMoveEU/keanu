@@ -1,0 +1,1487 @@
+collection_id: 71
+collection_position: null
+description: null
+id: 62
+model: dashboard
+name: A/B test mailing
+ordered_cards:
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 71
+    collection_position: null
+    created_at: '2020-03-05T15:10:39'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        fields:
+        - - field-id
+          - 6656
+        - - field-id
+          - 6655
+        - - field-id
+          - 6653
+        - - field-id
+          - 6657
+        joins:
+        - alias: Broadcast
+          condition:
+          - '='
+          - - field-id
+            - 6656
+          - - joined-field
+            - Broadcast
+            - - field-id
+              - 6643
+          fields:
+          - - joined-field
+            - Broadcast
+            - - field-id
+              - 6484
+          - - joined-field
+            - Broadcast
+            - - field-id
+              - 6644
+          source-table: 809
+        limit: 1
+        source-table: 825
+      type: query
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 496
+    made_public_by_id: null
+    name: A/B test summary
+    public_uuid: null
+    query_average_duration: 291
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Text
+      description: Internal name of the test
+      display_name: Name
+      fingerprint:
+        global:
+          distinct-count: 1942
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 36.58631256384066
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    - base_type: type/DateTime
+      description: When the test was created in database
+      display_name: Created At
+      fingerprint:
+        global:
+          distinct-count: 1956
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-05-21T13:25:40.000Z'
+            latest: '2019-08-19T12:56:46.000Z'
+      name: created_at
+      special_type: type/CreationTimestamp
+    - base_type: type/DateTime
+      description: When the sending of the test started
+      display_name: Sent At
+      fingerprint:
+        global:
+          distinct-count: 1766
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-05-21T14:40:19.000Z'
+            latest: '2019-10-14T13:18:14.000Z'
+      name: sent_at
+      special_type: null
+    - base_type: type/*
+      description: Should match the actions.action_type !
+      display_name: "Broadcast \u2192 Ask Type"
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: ask_type
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: "Broadcast \u2192 Campaign"
+      fingerprint:
+        global:
+          distinct-count: 130
+          nil%: 0.0
+      name: campaign_id
+      special_type: type/FK
+    table_id: 825
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6484]]':
+          column_title: Ask Type
+        '["ref",["field-id",6644]]':
+          column_title: Campaign
+      table.cell_column: sent_at
+      table.columns:
+      - enabled: true
+        name: id
+      - enabled: true
+        name: name
+      - enabled: true
+        name: created_at
+      - enabled: false
+        name: external_id
+      - enabled: false
+        name: external_system
+      - enabled: true
+        name: sent_at
+      - enabled: true
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6484
+        name: ask_type
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6643
+        name: broadcast_test_id
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6485
+        name: broadcast_type
+      - enabled: true
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6644
+        name: campaign_id
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6633
+        name: external_id
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6634
+        name: external_system
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6490
+        name: id_2
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6623
+        name: name_2
+      - enabled: false
+        field_ref:
+        - joined-field
+        - Broadcast
+        - - field-id
+          - 6624
+        name: sent_at_2
+      table.pivot_column: id
+  card_id: 496
+  col: 0
+  created_at: '2020-03-05T15:11:22'
+  dashboard_id: 62
+  id: 466
+  parameter_mappings:
+  - card_id: 496
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - field-id
+      - 6656
+  row: 0
+  series: []
+  sizeX: 18
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-03-11T16:16:25'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - openers_rate
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: null
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 499
+    made_public_by_id: null
+    name: Open rate
+    public_uuid: null
+    query_average_duration: 929
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      series_settings:
+        value:
+          title: Open rate
+  card_id: 499
+  col: 1
+  created_at: '2020-03-11T16:17:11'
+  dashboard_id: 62
+  id: 469
+  parameter_mappings:
+  - card_id: 499
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-03-11T16:19:42'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - clickers_to_openers
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: null
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 500
+    made_public_by_id: null
+    name: Click vs open rate
+    public_uuid: null
+    query_average_duration: 933
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.title_text: Click rate
+      series_settings:
+        value:
+          title: Open rate
+  card_id: 500
+  col: 5
+  created_at: '2020-03-11T16:20:23'
+  dashboard_id: 62
+  id: 470
+  parameter_mappings:
+  - card_id: 500
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T09:52:25'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - converted_to_clickers
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: Number of people who took action versus number of people who clicked
+      a link
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 506
+    made_public_by_id: null
+    name: Conversion rate (vs clicks)
+    public_uuid: null
+    query_average_duration: 900
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.title_text: Conversion rate
+      series_settings:
+        value:
+          title: Open rate
+  card_id: 506
+  col: 9
+  created_at: '2020-05-04T09:53:11'
+  dashboard_id: 62
+  id: 475
+  parameter_mappings:
+  - card_id: 506
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T09:58:53'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - converted
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: Number of people who took at least one action
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 507
+    made_public_by_id: null
+    name: Converted
+    public_uuid: null
+    query_average_duration: 1071
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:53'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]': {}
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.title_text: Converted recipients
+      series_settings:
+        value:
+          title: Open rate
+  card_id: 507
+  col: 13
+  created_at: '2020-05-04T09:59:48'
+  dashboard_id: 62
+  id: 476
+  parameter_mappings:
+  - card_id: 507
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    query_average_duration: null
+  card_id: null
+  col: 0
+  created_at: '2020-05-04T10:06:56'
+  dashboard_id: 62
+  id: 477
+  parameter_mappings: []
+  row: 4
+  series: []
+  sizeX: 18
+  sizeY: 1
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings:
+    dashcard.background: false
+    text: '## Conversions'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card:
+    query_average_duration: null
+  card_id: null
+  col: 0
+  created_at: '2020-05-04T10:07:27'
+  dashboard_id: 62
+  id: 478
+  parameter_mappings: []
+  row: 9
+  series: []
+  sizeX: 12
+  sizeY: 1
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings:
+    dashcard.background: false
+    text: '## Growth'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T10:10:44'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - likely_forwarders_rate
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: Number of "contacts" who opened the mailing 3 times or more vs number
+      of recipients
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 508
+    made_public_by_id: null
+    name: Forward rate
+    public_uuid: null
+    query_average_duration: 935
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.title_text: Forward rate
+      series_settings:
+        value:
+          title: Forward rate
+  card_id: 508
+  col: 0
+  created_at: '2020-05-04T10:11:21'
+  dashboard_id: 62
+  id: 479
+  parameter_mappings:
+  - card_id: 508
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T10:20:36'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: "SELECT \n    SUBSTR(l.name, 1, 6) AS version, c.status AS consent_status,\
+          \ COUNT(*) AS `count`\nFROM consent c\nJOIN (\n    SELECT \n        broadcast.name,\
+          \ contact_id, MAX(created_at) latest \n    FROM broadcast\n    JOIN broadcast_link\
+          \ link ON link.broadcast_id=broadcast.id\n    JOIN source s ON s.id = link.source_id\n\
+          \    JOIN consent ON consent.source_id=s.id\n    WHERE {{broadcast_test_id}}\n\
+          \    GROUP BY broadcast.id, contact_id\n) l ON l.contact_id=c.contact_id\
+          \ AND l.latest=c.created_at\nGROUP BY version, consent_status\n"
+        template-tags:
+          broadcast_test_id:
+            dimension:
+            - field-id
+            - 6643
+            display-name: Broadcast test id
+            id: 533c2fdc-6e2e-174a-e25c-e8e6ac205aeb
+            name: broadcast_test_id
+            required: true
+            type: dimension
+            widget-type: id
+      type: native
+    description: Number of consents for each status
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 509
+    made_public_by_id: null
+    name: Consents
+    public_uuid: null
+    query_average_duration: 295
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Text
+      display_name: version
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 6.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: version
+      special_type: null
+    - base_type: type/Text
+      display_name: consent_status
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 8.0
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: consent_status
+      special_type: null
+    - base_type: type/Integer
+      display_name: count
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 1.75
+            max: 3.0
+            min: 1.0
+            q1: 1.0
+            q3: 2.5
+            sd: 0.9574271077563381
+      name: count
+      special_type: type/Quantity
+    table_id: null
+    updated_at: '2020-06-04T12:33:52'
+    visualization_settings:
+      graph.dimensions:
+      - version
+      - consent_status
+      graph.metrics:
+      - count
+      graph.x_axis.labels_enabled: false
+      pie.colors:
+        accepted: '#84BB4C'
+        pending: '#F2A86F'
+        rejected: '#ED6E6E'
+      pie.dimension: status
+      pie.metric: count
+      pie.slice_threshold: 0
+      scalar.field: count
+      table.cell_column: count
+      table.pivot_column: name
+  card_id: 509
+  col: 4
+  created_at: '2020-05-04T10:21:07'
+  dashboard_id: 62
+  id: 480
+  parameter_mappings:
+  - card_id: 509
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - template-tag
+      - broadcast_test_id
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T10:24:49'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - unsub_rate
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: null
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 510
+    made_public_by_id: null
+    name: Unsubscribe rate
+    public_uuid: null
+    query_average_duration: 909
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:53'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.title_text: Forward rate
+      series_settings:
+        value:
+          title: Forward rate
+  card_id: 510
+  col: 8
+  created_at: '2020-05-04T10:25:57'
+  dashboard_id: 62
+  id: 481
+  parameter_mappings:
+  - card_id: 510
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings: {}
+- card:
+    query_average_duration: null
+  card_id: null
+  col: 12
+  created_at: '2020-05-04T10:31:26'
+  dashboard_id: 62
+  id: 482
+  parameter_mappings: []
+  row: 9
+  series: []
+  sizeX: 6
+  sizeY: 1
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings:
+    dashcard.background: false
+    text: '### Delivery'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 102
+    collection_position: null
+    created_at: '2020-05-04T10:34:04'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        filter:
+        - and
+        - - '='
+          - - field-id
+            - 6902
+          - bounce_rate
+          - spam_rate
+        - - '='
+          - - field-id
+            - 6900
+          - 1
+        order-by:
+        - - asc
+          - - field-id
+            - 6899
+        source-table: 862
+      type: query
+    description: null
+    display: bar
+    embedding_params: null
+    enable_embedding: false
+    id: 511
+    made_public_by_id: null
+    name: Delivery KPIs
+    public_uuid: null
+    query_average_duration: 914
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Integer
+      display_name: Broadcast ID
+      fingerprint:
+        global:
+          distinct-count: 9755
+          nil%: 0.0
+      name: broadcast_id
+      special_type: type/FK
+    - base_type: type/Text
+      display_name: Broadcast Name
+      fingerprint:
+        global:
+          distinct-count: 9669
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 43.4621
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: broadcast_name
+      special_type: null
+    - base_type: type/*
+      display_name: Metric
+      fingerprint:
+        global:
+          distinct-count: 2
+          nil%: 0.0
+      name: metric
+      special_type: type/Category
+    - base_type: type/Integer
+      display_name: Segment ID
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+      name: segment_id
+      special_type: type/FK
+    - base_type: type/Decimal
+      display_name: Value
+      fingerprint:
+        global:
+          distinct-count: 2602
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 940.771
+            max: 16233.0
+            min: 1.0
+            q1: 43.88261242616341
+            q3: 784.7677438370661
+            sd: 1999.358711085584
+      name: value
+      special_type: null
+    - base_type: type/Text
+      description: Internal name of the broadcast
+      display_name: "Broadcast \u2192 Name"
+      fingerprint:
+        global:
+          distinct-count: 9916
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 39.6161
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    table_id: 862
+    updated_at: '2020-06-04T12:33:53'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",6898]]':
+          number_style: percent
+      graph.dimensions:
+      - broadcast_id
+      - metric
+      graph.metrics:
+      - value
+      graph.x_axis.labels_enabled: false
+      graph.y_axis.labels_enabled: false
+      graph.y_axis.title_text: Forward rate
+      series_settings:
+        value:
+          title: Forward rate
+  card_id: 511
+  col: 12
+  created_at: '2020-05-04T10:34:59'
+  dashboard_id: 62
+  id: 483
+  parameter_mappings:
+  - card_id: 511
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 6
+  sizeY: 4
+  updated_at: '2020-05-04T10:35:00'
+  visualization_settings:
+    column_settings:
+      '["ref",["field-id",6898]]':
+        number_style: percent
+    graph.dimensions:
+    - broadcast_id
+    - metric
+    graph.metrics:
+    - value
+    graph.x_axis.labels_enabled: false
+    graph.y_axis.labels_enabled: false
+    graph.y_axis.title_text: Forward rate
+    series_settings:
+      bounce_rate:
+        color: '#F2A86F'
+      spam_rate:
+        color: '#EF8C8C'
+      value:
+        title: Forward rate
+parameters:
+- id: 62b0b39f
+  name: ID
+  slug: id
+  type: id
