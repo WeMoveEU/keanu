@@ -180,10 +180,10 @@ def metabase_export(collection, json_file, yaml_dir, verbose):
     if json_file:
         with open(json_file, 'w') as out:
             out.write(json.dumps(result, indent=2))
-    elif yaml_dir:
+    if yaml_dir:
         splitter = metabase.Splitter(yaml_dir)
         splitter.store(result)
-    else:
+    if not (json_file or yaml_dir):
         print(json.dumps(result, indent=2))
 
 @metabase_cli.command('import', aliases=['i'])
@@ -203,10 +203,10 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
     if json_file:
         with open(json_file, 'r') as f:
             source = json.loads(f.read())
-    if yaml_dir:
+    elif yaml_dir:
         splitter = metabase.Splitter(yaml_dir)
         source = splitter.load()
-    if not (json_file or yaml_dir):
+    else:
         raise click.Abort("You need to specify json file with -j or yaml directory with -y")
 
     if validate:
