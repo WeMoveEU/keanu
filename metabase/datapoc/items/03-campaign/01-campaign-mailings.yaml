@@ -145,24 +145,24 @@ result_metadata:
   display_name: Sum of Clickers
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 13
+      nil%: 0.1428571428571429
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
+        avg: 329.1666666666667
+        max: 1810.0
+        min: 13.0
+        q1: 40.5
+        q3: 218.0
+        sd: 548.2709737037522
   name: sum
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Converted
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 1
+      nil%: 1.0
     type:
       type/Number:
         avg: null
@@ -177,8 +177,8 @@ result_metadata:
   display_name: Sum of Likely Forwarders
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 1
+      nil%: 1.0
     type:
       type/Number:
         avg: null
@@ -193,48 +193,48 @@ result_metadata:
   display_name: Sum of Openers
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 14
+      nil%: 0.0
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
+        avg: 682.5
+        max: 3460.0
+        min: 3.0
+        q1: 60.0
+        q3: 465.0
+        sd: 1151.97981753154
   name: sum_4
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Recipients
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 14
+      nil%: 0.0
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
+        avg: 2816.6428571428573
+        max: 15690.0
+        min: 16.0
+        q1: 418.0
+        q3: 2067.0
+        sd: 4795.123670614087
   name: sum_5
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Unsubs
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 5
+      nil%: 0.5
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
+        avg: 4.428571428571429
+        max: 17.0
+        min: 1.0
+        q1: 1.0
+        q3: 6.0
+        sd: 5.968169536721256
   name: sum_6
   special_type: null
 visualization_settings:

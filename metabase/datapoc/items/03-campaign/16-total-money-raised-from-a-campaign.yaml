@@ -45,15 +45,15 @@ result_metadata:
   display_name: "Sum of Donation \u2192 Total Amount"
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 1
+      nil%: 0.0
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
+        avg: 55.0
+        max: 55.0
+        min: 55.0
+        q1: 55.0
+        q3: 55.0
         sd: null
   name: sum
   special_type: type/Income

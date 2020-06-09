@@ -105,7 +105,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -272,7 +272,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -471,7 +471,7 @@ ordered_cards:
       name: campaign_type
       special_type: type/Category
     table_id: 811
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6491]]':
@@ -597,7 +597,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -778,7 +778,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -937,7 +937,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -1136,7 +1136,7 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       card.title: Consents
       graph.dimensions:
@@ -1265,20 +1265,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 1
+          nil%: 0.0
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
+            avg: 5688.0
+            max: 5688.0
+            min: 5688.0
+            q1: 5688.0
+            q3: 5688.0
             sd: null
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -1405,16 +1405,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 0.0
-            max: 0.0
-            min: 0.0
-            q1: 0.0
-            q3: 0.0
+            avg: 287.0
+            max: 287.0
+            min: 287.0
+            q1: 287.0
+            q3: 287.0
             sd: null
       name: count
       special_type: type/Quantity
     table_id: 870
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings: {}
   card_id: 488
   col: 8
@@ -1529,20 +1529,20 @@ ordered_cards:
       display_name: "Sum of Donation \u2192 Total Amount"
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 1
+          nil%: 0.0
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
+            avg: 55.0
+            max: 55.0
+            min: 55.0
+            q1: 55.0
+            q3: 55.0
             sd: null
       name: sum
       special_type: type/Income
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       column_settings:
         '["name","sum"]':
@@ -1680,7 +1680,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 870
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -1848,20 +1848,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 8
+          nil%: 0.0
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
+            avg: 568.8
+            max: 2976.0
+            min: 1.0
+            q1: 9.785218258752417
+            q3: 448.0
+            sd: 998.2820576704094
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -2021,7 +2021,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -2165,7 +2165,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 870
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -2416,24 +2416,24 @@ ordered_cards:
       display_name: Sum of Clickers
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 13
+          nil%: 0.1428571428571429
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
+            avg: 329.1666666666667
+            max: 1810.0
+            min: 13.0
+            q1: 40.5
+            q3: 218.0
+            sd: 548.2709737037522
       name: sum
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Converted
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 1
+          nil%: 1.0
         type:
           type/Number:
             avg: null
@@ -2448,8 +2448,8 @@ ordered_cards:
       display_name: Sum of Likely Forwarders
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 1
+          nil%: 1.0
         type:
           type/Number:
             avg: null
@@ -2464,52 +2464,52 @@ ordered_cards:
       display_name: Sum of Openers
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 14
+          nil%: 0.0
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
+            avg: 682.5
+            max: 3460.0
+            min: 3.0
+            q1: 60.0
+            q3: 465.0
+            sd: 1151.97981753154
       name: sum_4
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Recipients
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 14
+          nil%: 0.0
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
+            avg: 2816.6428571428573
+            max: 15690.0
+            min: 16.0
+            q1: 418.0
+            q3: 2067.0
+            sd: 4795.123670614087
       name: sum_5
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Unsubs
       fingerprint:
         global:
-          distinct-count: 0
-          nil%: null
+          distinct-count: 5
+          nil%: 0.5
         type:
           type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
+            avg: 4.428571428571429
+            max: 17.0
+            min: 1.0
+            q1: 1.0
+            q3: 6.0
+            sd: 5.968169536721256
       name: sum_6
       special_type: null
     table_id: 887
-    updated_at: '2020-06-08T14:48:37'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       column_settings:
         '["name","sum"]':
@@ -2698,7 +2698,7 @@ ordered_cards:
       name: sum
       special_type: null
     table_id: 862
-    updated_at: '2020-06-08T14:48:36'
+    updated_at: '2020-06-09T14:23:45'
     visualization_settings:
       card.title: Recipients
       table.cell_column: sum

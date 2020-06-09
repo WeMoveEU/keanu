@@ -37,15 +37,15 @@ result_metadata:
   display_name: Count
   fingerprint:
     global:
-      distinct-count: 0
-      nil%: null
+      distinct-count: 1
+      nil%: 0.0
     type:
       type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
+        avg: 5688.0
+        max: 5688.0
+        min: 5688.0
+        q1: 5688.0
+        q3: 5688.0
         sd: null
   name: count
   special_type: type/Quantity
