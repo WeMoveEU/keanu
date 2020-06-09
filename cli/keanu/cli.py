@@ -179,12 +179,12 @@ def metabase_export(collection, json_file, yaml_dir, verbose):
     result = mio.export_json(collection)
     if json_file:
         with open(json_file, 'w') as out:
-            out.write(json.dumps(result, indent=2))
+            out.write(json.dumps(result, indent=2, sort_keys=True))
     if yaml_dir:
         splitter = metabase.Splitter(yaml_dir)
         splitter.store(result)
     if not (json_file or yaml_dir):
-        print(json.dumps(result, indent=2))
+        print(json.dumps(result, indent=2, sort_keys=True))
 
 @metabase_cli.command('import', aliases=['i'])
 @click.option('-c', '--collection', help="Name of the collection to import into")
@@ -272,9 +272,9 @@ def metabase_split(json_file, yaml_dir):
     data = splitter.load()
     if json_file:
         with open(json_file, 'w') as out:
-            out.write(json.dumps(data, indent=2))
+            out.write(json.dumps(data, indent=2, sort_keys=True))
     else:
-        print(json.dumps(data, indent=2))
+        print(json.dumps(data, indent=2, sort_keys=True))
 
 def set_verbose(verbose):
     if verbose:
