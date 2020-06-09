@@ -195,7 +195,7 @@ def metabase_export(collection, json_file, yaml_dir, verbose):
 @click.option('-D', '--db-map', multiple=True, help="Map Metabase database names fromname:toname.")
 @click.option('-V', '--validate', is_flag=True,help="Validate JSON before load")
 @click.option('-v', '--verbose', is_flag=True, default=False, help="More logging")
-def metabase_import(collection, json_file, metadata, overwrite, db_map, validate, ymal_dir, verbose):
+def metabase_import(collection, json_file, metadata, overwrite, db_map, validate, yaml_dir, verbose):
     set_verbose(verbose)
     client = metabase.Client()
     mio = metabase.MetabaseIO(client)
@@ -203,10 +203,10 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
     if json_file:
         with open(json_file, 'r') as f:
             source = json.loads(f.read())
-    elif yaml_dir:
+    if yaml_dir:
         splitter = metabase.Splitter(yaml_dir)
         source = splitter.load()
-    else:
+    if not (json_file or yaml_dir):
         raise click.Abort("You need to specify json file with -j or yaml directory with -y")
 
     if validate:
@@ -234,9 +234,9 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
             return 1
 
 
-        mio.import_json(source, collection, metadata,
-                        overwrite,
-                        db_mapping)
+    mio.import_json(source, collection, metadata,
+                    overwrite,
+                    db_mapping)
                 
 
 
