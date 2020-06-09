@@ -1,15 +1,7 @@
-archived: false
-can_write: true
-caveats: null
 collection_id: 71
-collection_position: 3
-created_at: '2020-03-05T15:08:02.000Z'
-creator_id: 1
+collection_position: null
 description: null
-embedding_params: null
-enable_embedding: false
 id: 62
-made_public_by_id: null
 model: dashboard
 name: A/B test mailing
 ordered_cards:
@@ -18,7 +10,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 71
     collection_position: null
-    created_at: '2020-03-05T15:10:39.000Z'
+    created_at: '2020-03-05T15:10:39'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -64,7 +56,7 @@ ordered_cards:
     made_public_by_id: null
     name: A/B test summary
     public_uuid: null
-    query_average_duration: 281
+    query_average_duration: 291
     query_type: query
     read_permissions: null
     result_metadata:
@@ -74,6 +66,7 @@ ordered_cards:
       name: id
       special_type: type/PK
     - base_type: type/Text
+      description: Internal name of the test
       display_name: Name
       fingerprint:
         global:
@@ -88,6 +81,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     - base_type: type/DateTime
+      description: When the test was created in database
       display_name: Created At
       fingerprint:
         global:
@@ -100,6 +94,7 @@ ordered_cards:
       name: created_at
       special_type: type/CreationTimestamp
     - base_type: type/DateTime
+      description: When the sending of the test started
       display_name: Sent At
       fingerprint:
         global:
@@ -129,7 +124,7 @@ ordered_cards:
       name: campaign_id
       special_type: type/FK
     table_id: 825
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6484]]':
@@ -216,7 +211,7 @@ ordered_cards:
       table.pivot_column: id
   card_id: 496
   col: 0
-  created_at: '2020-03-05T15:11:22.000Z'
+  created_at: '2020-03-05T15:11:22'
   dashboard_id: 62
   id: 466
   parameter_mappings:
@@ -230,14 +225,14 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-03-11T16:16:25.000Z'
+    created_at: '2020-03-11T16:16:25'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -267,7 +262,7 @@ ordered_cards:
     made_public_by_id: null
     name: Open rate
     public_uuid: null
-    query_average_duration: 1039
+    query_average_duration: 929
     query_type: query
     read_permissions: null
     result_metadata:
@@ -331,6 +326,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -345,7 +341,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -360,7 +356,7 @@ ordered_cards:
           title: Open rate
   card_id: 499
   col: 1
-  created_at: '2020-03-11T16:17:11.000Z'
+  created_at: '2020-03-11T16:17:11'
   dashboard_id: 62
   id: 469
   parameter_mappings:
@@ -377,14 +373,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-03-11T16:19:42.000Z'
+    created_at: '2020-03-11T16:19:42'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -414,7 +410,7 @@ ordered_cards:
     made_public_by_id: null
     name: Click vs open rate
     public_uuid: null
-    query_average_duration: 1097
+    query_average_duration: 933
     query_type: query
     read_permissions: null
     result_metadata:
@@ -478,6 +474,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -492,7 +489,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -508,7 +505,7 @@ ordered_cards:
           title: Open rate
   card_id: 500
   col: 5
-  created_at: '2020-03-11T16:20:23.000Z'
+  created_at: '2020-03-11T16:20:23'
   dashboard_id: 62
   id: 470
   parameter_mappings:
@@ -525,14 +522,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T09:52:25.000Z'
+    created_at: '2020-05-04T09:52:25'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -563,7 +560,7 @@ ordered_cards:
     made_public_by_id: null
     name: Conversion rate (vs clicks)
     public_uuid: null
-    query_average_duration: 996
+    query_average_duration: 900
     query_type: query
     read_permissions: null
     result_metadata:
@@ -627,6 +624,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -641,7 +639,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -657,7 +655,7 @@ ordered_cards:
           title: Open rate
   card_id: 506
   col: 9
-  created_at: '2020-05-04T09:53:11.000Z'
+  created_at: '2020-05-04T09:53:11'
   dashboard_id: 62
   id: 475
   parameter_mappings:
@@ -674,14 +672,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T09:58:53.000Z'
+    created_at: '2020-05-04T09:58:53'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -711,7 +709,7 @@ ordered_cards:
     made_public_by_id: null
     name: Converted
     public_uuid: null
-    query_average_duration: 1009
+    query_average_duration: 1071
     query_type: query
     read_permissions: null
     result_metadata:
@@ -775,6 +773,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -789,7 +788,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:53'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]': {}
@@ -804,7 +803,7 @@ ordered_cards:
           title: Open rate
   card_id: 507
   col: 13
-  created_at: '2020-05-04T09:59:48.000Z'
+  created_at: '2020-05-04T09:59:48'
   dashboard_id: 62
   id: 476
   parameter_mappings:
@@ -821,13 +820,13 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-04T10:06:56.000Z'
+  created_at: '2020-05-04T10:06:56'
   dashboard_id: 62
   id: 477
   parameter_mappings: []
@@ -835,7 +834,7 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings:
     dashcard.background: false
     text: '## Conversions'
@@ -849,7 +848,7 @@ ordered_cards:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-04T10:07:27.000Z'
+  created_at: '2020-05-04T10:07:27'
   dashboard_id: 62
   id: 478
   parameter_mappings: []
@@ -857,7 +856,7 @@ ordered_cards:
   series: []
   sizeX: 12
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings:
     dashcard.background: false
     text: '## Growth'
@@ -872,7 +871,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:10:44.000Z'
+    created_at: '2020-05-04T10:10:44'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -967,6 +966,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -981,7 +981,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -997,7 +997,7 @@ ordered_cards:
           title: Forward rate
   card_id: 508
   col: 0
-  created_at: '2020-05-04T10:11:21.000Z'
+  created_at: '2020-05-04T10:11:21'
   dashboard_id: 62
   id: 479
   parameter_mappings:
@@ -1014,14 +1014,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:20:36.000Z'
+    created_at: '2020-05-04T10:20:36'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1054,7 +1054,7 @@ ordered_cards:
     made_public_by_id: null
     name: Consents
     public_uuid: null
-    query_average_duration: 221
+    query_average_duration: 295
     query_type: native
     read_permissions: null
     result_metadata:
@@ -1103,7 +1103,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: null
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:52'
     visualization_settings:
       graph.dimensions:
       - version
@@ -1123,7 +1123,7 @@ ordered_cards:
       table.pivot_column: name
   card_id: 509
   col: 4
-  created_at: '2020-05-04T10:21:07.000Z'
+  created_at: '2020-05-04T10:21:07'
   dashboard_id: 62
   id: 480
   parameter_mappings:
@@ -1137,14 +1137,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:24:49.000Z'
+    created_at: '2020-05-04T10:24:49'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1174,7 +1174,7 @@ ordered_cards:
     made_public_by_id: null
     name: Unsubscribe rate
     public_uuid: null
-    query_average_duration: 820
+    query_average_duration: 909
     query_type: query
     read_permissions: null
     result_metadata:
@@ -1238,6 +1238,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -1252,7 +1253,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:53'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1268,7 +1269,7 @@ ordered_cards:
           title: Forward rate
   card_id: 510
   col: 8
-  created_at: '2020-05-04T10:25:57.000Z'
+  created_at: '2020-05-04T10:25:57'
   dashboard_id: 62
   id: 481
   parameter_mappings:
@@ -1285,13 +1286,13 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings: {}
 - card:
     query_average_duration: null
   card_id: null
   col: 12
-  created_at: '2020-05-04T10:31:26.000Z'
+  created_at: '2020-05-04T10:31:26'
   dashboard_id: 62
   id: 482
   parameter_mappings: []
@@ -1299,7 +1300,7 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings:
     dashcard.background: false
     text: '### Delivery'
@@ -1314,7 +1315,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:34:04.000Z'
+    created_at: '2020-05-04T10:34:04'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1345,7 +1346,7 @@ ordered_cards:
     made_public_by_id: null
     name: Delivery KPIs
     public_uuid: null
-    query_average_duration: 842
+    query_average_duration: 914
     query_type: query
     read_permissions: null
     result_metadata:
@@ -1409,6 +1410,7 @@ ordered_cards:
       name: value
       special_type: null
     - base_type: type/Text
+      description: Internal name of the broadcast
       display_name: "Broadcast \u2192 Name"
       fingerprint:
         global:
@@ -1423,7 +1425,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-05-04T10:35:26.000Z'
+    updated_at: '2020-06-04T12:33:53'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1441,7 +1443,7 @@ ordered_cards:
           title: Forward rate
   card_id: 511
   col: 12
-  created_at: '2020-05-04T10:34:59.000Z'
+  created_at: '2020-05-04T10:34:59'
   dashboard_id: 62
   id: 483
   parameter_mappings:
@@ -1458,7 +1460,7 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00.000Z'
+  updated_at: '2020-05-04T10:35:00'
   visualization_settings:
     column_settings:
       '["ref",["field-id",6898]]':
@@ -1478,51 +1480,8 @@ ordered_cards:
         color: '#EF8C8C'
       value:
         title: Forward rate
-param_fields:
-  '6643':
-    base_type: type/Integer
-    dimensions:
-      field_id: 6643
-      human_readable_field:
-        base_type: type/Text
-        display_name: Name
-        has_field_values: null
-        id: 6655
-        special_type: type/Name
-        table_id: 825
-      human_readable_field_id: 6655
-      id: 14
-      name: Broadcast Test ID
-      type: external
-    display_name: Broadcast Test
-    has_field_values: none
-    id: 6643
-    name_field: null
-    special_type: type/FK
-    table_id: 809
-  '6656':
-    base_type: type/Integer
-    dimensions: []
-    display_name: ID
-    has_field_values: search
-    id: 6656
-    name_field:
-      base_type: type/Text
-      display_name: Name
-      has_field_values: search
-      id: 6655
-      special_type: type/Name
-      table_id: 825
-    special_type: type/PK
-    table_id: 825
-param_values: {}
 parameters:
 - id: 62b0b39f
   name: ID
   slug: id
   type: id
-points_of_interest: null
-position: null
-public_uuid: null
-show_in_getting_started: false
-updated_at: '2020-05-04T10:35:00.000Z'

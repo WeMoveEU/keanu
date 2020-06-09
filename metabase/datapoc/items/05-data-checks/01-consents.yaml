@@ -1,15 +1,7 @@
-archived: false
-can_write: true
-caveats: null
 collection_id: 105
 collection_position: null
-created_at: '2020-05-19T12:39:39.000Z'
-creator_id: 1
 description: null
-embedding_params: null
-enable_embedding: false
 id: 65
-made_public_by_id: null
 model: dashboard
 name: Consents
 ordered_cards:
@@ -18,7 +10,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T12:39:08.000Z'
+    created_at: '2020-05-19T12:39:08'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -64,11 +56,11 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings: {}
   card_id: 513
   col: 0
-  created_at: '2020-05-19T12:42:05.000Z'
+  created_at: '2020-05-19T12:42:05'
   dashboard_id: 65
   id: 484
   parameter_mappings: []
@@ -76,14 +68,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 3
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: joins without an accepted consent
 - card:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-19T12:42:05.000Z'
+  created_at: '2020-05-19T12:42:05'
   dashboard_id: 65
   id: 485
   parameter_mappings: []
@@ -91,7 +83,7 @@ ordered_cards:
   series: []
   sizeX: 12
   sizeY: 3
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     dashcard.background: false
     text: '# Comparison of consent and member segment history
@@ -109,7 +101,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T12:44:16.000Z'
+    created_at: '2020-05-19T12:44:16'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -155,11 +147,11 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings: {}
   card_id: 514
   col: 8
-  created_at: '2020-05-19T12:44:53.000Z'
+  created_at: '2020-05-19T12:44:53'
   dashboard_id: 65
   id: 486
   parameter_mappings: []
@@ -167,14 +159,14 @@ ordered_cards:
   series: []
   sizeX: 5
   sizeY: 3
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: leaves without a cancelled consent
 - card:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-19T12:46:13.000Z'
+  created_at: '2020-05-19T12:46:13'
   dashboard_id: 65
   id: 487
   parameter_mappings: []
@@ -182,7 +174,7 @@ ordered_cards:
   series: []
   sizeX: 7
   sizeY: 1
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     dashcard.background: false
     text: '## Over time'
@@ -197,7 +189,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T12:51:55.000Z'
+    created_at: '2020-05-19T12:51:55'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -259,7 +251,7 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings:
       graph.dimensions:
       - join_month
@@ -274,7 +266,7 @@ ordered_cards:
           title: Count
   card_id: 515
   col: 0
-  created_at: '2020-05-19T12:52:35.000Z'
+  created_at: '2020-05-19T12:52:35'
   dashboard_id: 65
   id: 488
   parameter_mappings: []
@@ -282,14 +274,14 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:01:00.000Z'
+    created_at: '2020-05-19T13:01:00'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -353,7 +345,7 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings:
       graph.dimensions:
       - leave_month
@@ -367,7 +359,7 @@ ordered_cards:
           title: Count
   card_id: 516
   col: 0
-  created_at: '2020-05-19T13:01:39.000Z'
+  created_at: '2020-05-19T13:01:39'
   dashboard_id: 65
   id: 489
   parameter_mappings: []
@@ -375,14 +367,14 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:09:04.000Z'
+    created_at: '2020-05-19T13:09:04'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -429,11 +421,11 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:17.000Z'
+    updated_at: '2020-05-19T14:03:17'
     visualization_settings: {}
   card_id: 517
   col: 4
-  created_at: '2020-05-19T13:10:56.000Z'
+  created_at: '2020-05-19T13:10:56'
   dashboard_id: 65
   id: 490
   parameter_mappings: []
@@ -441,7 +433,7 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 3
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: accepted consents without a join
 - card:
@@ -449,7 +441,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:13:59.000Z'
+    created_at: '2020-05-19T13:13:59'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -512,7 +504,7 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:17.000Z'
+    updated_at: '2020-05-19T14:03:17'
     visualization_settings:
       graph.dimensions:
       - consent_month
@@ -526,7 +518,7 @@ ordered_cards:
           title: Count
   card_id: 518
   col: 9
-  created_at: '2020-05-19T13:15:02.000Z'
+  created_at: '2020-05-19T13:15:02'
   dashboard_id: 65
   id: 491
   parameter_mappings: []
@@ -534,14 +526,14 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 105
     collection_position: null
-    created_at: '2020-05-19T13:18:05.000Z'
+    created_at: '2020-05-19T13:18:05'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -580,11 +572,11 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 810
-    updated_at: '2020-05-19T14:03:15.000Z'
+    updated_at: '2020-05-19T14:03:15'
     visualization_settings: {}
   card_id: 519
   col: 12
-  created_at: '2020-05-19T13:18:49.000Z'
+  created_at: '2020-05-19T13:18:49'
   dashboard_id: 65
   id: 492
   parameter_mappings: []
@@ -592,7 +584,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: contacts
 - card:
@@ -600,7 +592,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 105
     collection_position: null
-    created_at: '2020-05-19T13:21:28.000Z'
+    created_at: '2020-05-19T13:21:28'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -651,11 +643,11 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 805
-    updated_at: '2020-05-19T14:03:15.000Z'
+    updated_at: '2020-05-19T14:03:15'
     visualization_settings: {}
   card_id: 520
   col: 15
-  created_at: '2020-05-19T13:21:58.000Z'
+  created_at: '2020-05-19T13:21:58'
   dashboard_id: 65
   id: 493
   parameter_mappings: []
@@ -663,7 +655,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: members
 - card:
@@ -671,7 +663,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:24:41.000Z'
+    created_at: '2020-05-19T13:24:41'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -718,11 +710,11 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings: {}
   card_id: 521
   col: 13
-  created_at: '2020-05-19T13:25:25.000Z'
+  created_at: '2020-05-19T13:25:25'
   dashboard_id: 65
   id: 494
   parameter_mappings: []
@@ -730,7 +722,7 @@ ordered_cards:
   series: []
   sizeX: 5
   sizeY: 3
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     card.title: cancelled consents without a leave
 - card:
@@ -738,7 +730,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:29:03.000Z'
+    created_at: '2020-05-19T13:29:03'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -801,7 +793,7 @@ ordered_cards:
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings:
       graph.dimensions:
       - cancel_month
@@ -815,7 +807,7 @@ ordered_cards:
           title: Count
   card_id: 522
   col: 9
-  created_at: '2020-05-19T13:29:26.000Z'
+  created_at: '2020-05-19T13:29:26'
   dashboard_id: 65
   id: 495
   parameter_mappings: []
@@ -823,14 +815,14 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:45:30.000Z'
+    created_at: '2020-05-19T13:45:30'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -937,7 +929,7 @@ ordered_cards:
       name: crm_url
       special_type: type/URL
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings:
       column_settings:
         '["name","contact_created_at"]':
@@ -952,7 +944,7 @@ ordered_cards:
       table.pivot_column: country
   card_id: 523
   col: 0
-  created_at: '2020-05-19T13:46:27.000Z'
+  created_at: '2020-05-19T13:46:27'
   dashboard_id: 65
   id: 496
   parameter_mappings: []
@@ -960,13 +952,13 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-19T13:46:27.000Z'
+  created_at: '2020-05-19T13:46:27'
   dashboard_id: 65
   id: 497
   parameter_mappings: []
@@ -974,7 +966,7 @@ ordered_cards:
   series: []
   sizeX: 7
   sizeY: 1
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings:
     dashcard.background: false
     text: '## Random picks'
@@ -989,7 +981,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:53:08.000Z'
+    created_at: '2020-05-19T13:53:08'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1097,7 +1089,7 @@ ordered_cards:
       name: crm_url
       special_type: type/URL
     table_id: null
-    updated_at: '2020-05-19T14:03:18.000Z'
+    updated_at: '2020-05-19T14:03:18'
     visualization_settings:
       column_settings:
         '["name","consent_date"]':
@@ -1116,7 +1108,7 @@ ordered_cards:
       table.pivot_column: country
   card_id: 524
   col: 0
-  created_at: '2020-05-19T13:53:48.000Z'
+  created_at: '2020-05-19T13:53:48'
   dashboard_id: 65
   id: 498
   parameter_mappings: []
@@ -1124,14 +1116,14 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T13:58:15.000Z'
+    created_at: '2020-05-19T13:58:15'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1238,7 +1230,7 @@ ordered_cards:
       name: crm_url
       special_type: type/URL
     table_id: null
-    updated_at: '2020-05-19T14:03:16.000Z'
+    updated_at: '2020-05-19T14:03:16'
     visualization_settings:
       column_settings:
         '["name","contact_created_at"]':
@@ -1257,7 +1249,7 @@ ordered_cards:
       table.pivot_column: country
   card_id: 525
   col: 0
-  created_at: '2020-05-19T13:58:57.000Z'
+  created_at: '2020-05-19T13:58:57'
   dashboard_id: 65
   id: 499
   parameter_mappings: []
@@ -1265,14 +1257,14 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 106
     collection_position: null
-    created_at: '2020-05-19T14:03:05.000Z'
+    created_at: '2020-05-19T14:03:05'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1380,7 +1372,7 @@ ordered_cards:
       name: crm_url
       special_type: type/URL
     table_id: null
-    updated_at: '2020-05-19T14:03:17.000Z'
+    updated_at: '2020-05-19T14:03:17'
     visualization_settings:
       column_settings:
         '["name","cancel_date"]':
@@ -1403,7 +1395,7 @@ ordered_cards:
       table.pivot_column: country
   card_id: 526
   col: 0
-  created_at: '2020-05-19T14:03:28.000Z'
+  created_at: '2020-05-19T14:03:28'
   dashboard_id: 65
   id: 500
   parameter_mappings: []
@@ -1411,13 +1403,6 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 5
-  updated_at: '2020-05-19T14:03:28.000Z'
+  updated_at: '2020-05-19T14:03:28'
   visualization_settings: {}
-param_fields: null
-param_values: null
 parameters: []
-points_of_interest: null
-position: null
-public_uuid: null
-show_in_getting_started: false
-updated_at: '2020-05-19T14:03:29.000Z'

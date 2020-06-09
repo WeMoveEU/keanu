@@ -1,21 +1,6 @@
-archived: false
-can_write: true
-collection_id: 71
 color: '#509EE3'
 description: null
-effective_ancestors:
-- can_write: true
-  id: root
-  metabase.models.collection/is-root?: true
-  name: Our analytics
-- can_write: true
-  id: 71
-  name: Keanu
-effective_location: /71/
 id: 101
-location: /71/
 model: collection
 name: Campaign
 parent_id: 71
-personal_owner_id: null
-slug: campaign

@@ -90,7 +90,7 @@ cards:
   '504':
     name: Latest A/B tests
   '505':
-    name: Latest WeMove Campaigns
+    name: Latest campaigns
   '506':
     name: Conversion rate (vs clicks)
   '507':
@@ -160,9 +160,15 @@ dashboards:
   '63':
     name: Latest mailings
   '64':
-    name: Latest campaigns
+    name: Latest WeMove Europe campaigns
   '65':
     name: Consents
+  '66':
+    name: Latest Youmove campaigns
+  '67':
+    name: Latest trial campaigns
+  '68':
+    name: Single mailing - Duplicate
 databases:
   '9':
     name: Keanu Romain

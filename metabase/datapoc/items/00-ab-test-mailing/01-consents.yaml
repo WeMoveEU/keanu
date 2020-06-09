@@ -1,31 +1,5 @@
-archived: false
-cache_ttl: null
-can_write: true
-collection:
-  archived: false
-  color: '#509EE3'
-  description: null
-  id: 102
-  location: /71/
-  name: A/B test mailing
-  personal_owner_id: null
-  slug: a_b_test_mailing
 collection_id: 102
 collection_position: null
-created_at: '2020-05-04T10:20:36.000Z'
-creator:
-  common_name: Romain Thouvenin
-  date_joined: '2017-07-21T17:21:46.000Z'
-  email: romain@wemove.eu
-  first_name: Romain
-  id: 1
-  is_qbnewb: false
-  is_superuser: true
-  last_login: '2020-05-26T10:52:02.000Z'
-  last_name: Thouvenin
-creator_id: 1
-dashboard_count: 1
-database_id: 9
 dataset_query:
   database: 9
   native:
@@ -50,15 +24,10 @@ dataset_query:
   type: native
 description: Number of consents for each status
 display: bar
-embedding_params: null
-enable_embedding: false
 id: 509
-made_public_by_id: null
 model: card
 name: Consents
-public_uuid: null
 query_type: native
-read_permissions: null
 result_metadata:
 - base_type: type/Text
   display_name: version
@@ -104,8 +73,6 @@ result_metadata:
         sd: 0.9574271077563381
   name: count
   special_type: type/Quantity
-table_id: null
-updated_at: '2020-05-04T10:35:26.000Z'
 visualization_settings:
   graph.dimensions:
   - version

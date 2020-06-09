@@ -1,24 +1,6 @@
-archived: false
-can_write: true
-collection_id: 105
 color: '#509EE3'
 description: null
-effective_ancestors:
-- can_write: true
-  id: root
-  metabase.models.collection/is-root?: true
-  name: Our analytics
-- can_write: true
-  id: 105
-  name: Data checks
-- can_write: true
-  id: 71
-  name: Keanu
-effective_location: /71/105/
 id: 106
-location: /71/105/
 model: collection
 name: Consents
 parent_id: 105
-personal_owner_id: null
-slug: consents
