@@ -302,3 +302,5 @@ SELECT save_last_sync_dt('hot_contact', 'civicrm', @hot_contact_now);
 -- BEGIN INCREMENTAL
 DROP TABLE hot_contact;
 -- END INCREMENTAL
+
+SELECT save_last_sync_dt('contact_segment_active', 'query_start', @hot_contact_now);

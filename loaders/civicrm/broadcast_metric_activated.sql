@@ -5,6 +5,8 @@
 -- Country breakdown also for metrics:
 -- activated_rate - depends on: activated
 
+SET @query_start := NOW();
+
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 SET @active = (SELECT id FROM segment WHERE name = 'Active');
 
@@ -64,3 +66,5 @@ INSERT INTO campaign_metric
 ;
 
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('broadcast_metric_activated', 'query_start', @query_start);

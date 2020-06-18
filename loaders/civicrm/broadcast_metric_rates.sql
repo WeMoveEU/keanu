@@ -1,6 +1,8 @@
 -- ORDER: 57
 -- DELETE FROM broadcast_metric WHERE metric IN ('openers_rate', 'clickers_rate', 'clickers_to_openers', 'converted_to_clickers', 'sharers_rate', 'likely_forwarders_rate', 'bounce_rate', 'spam_rate')
 
+SET @query_start := NOW();
+
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
 CREATE TEMPORARY TABLE bm_segment AS
@@ -127,3 +129,5 @@ SELECT
          ;
 
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('broadcast_metric_rates', 'query_start', @query_start);

@@ -1,6 +1,8 @@
 -- ORDER: 20
 -- DELETE FROM source
 
+SET @query_start := NOW();
+
 -- ACTIVITIES --------------------------------------------------------
 INSERT IGNORE INTO source (source, medium, campaign)
   SELECT source_27, media_28, campaign_26
@@ -58,3 +60,4 @@ INSERT IGNORE INTO source (source, medium, campaign)
 -- store last_id synced
 SELECT save_last_sync_id('source', 'civicrm_value_recur_utm', (SELECT max(id) FROM ${SOURCE}.civicrm_value_recur_utm));
 
+SELECT save_last_sync_dt('source', 'query_start', @query_start);

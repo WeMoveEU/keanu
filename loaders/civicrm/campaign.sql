@@ -1,6 +1,8 @@
 -- ORDER: 9
 -- DELETE FROM campaign
 
+SET @query_start := NOW();
+
 INSERT INTO campaign
   (id, name, started_at, ended_at, campaign_type, external_id, external_system)
   SELECT
@@ -44,3 +46,4 @@ SET
 ;
 -- END INCREMENTAL
 
+SELECT save_last_sync_dt('campaign', 'query_start', @query_start);

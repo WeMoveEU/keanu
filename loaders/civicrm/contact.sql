@@ -4,6 +4,8 @@
 -- We base it on:
 -- civicrm_contact
 
+SET @query_start := NOW();
+
 -- BEGIN INCREMENTAL
 SET @last_contact := (SELECT MAX(id) FROM contact);
 -- END INCREMENTAL
@@ -86,3 +88,4 @@ UPDATE contact c
 DROP VIEW IF EXISTS civicrm_contact_to_contact;
 
 SELECT save_last_sync_dt('contact', 'civicrm_contact', @max_modified_dt);
+SELECT save_last_sync_dt('contact', 'query_start', @query_start);

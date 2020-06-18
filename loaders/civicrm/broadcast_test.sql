@@ -1,6 +1,8 @@
 -- ORDER: 50
 -- DELETE FROM broadcast_test
 
+SET @query_start := NOW();
+
 INSERT INTO broadcast_test (id, name, created_at, sent_at, external_id, external_system)
   SELECT
     ab.id, -- identity with the source
@@ -13,3 +15,4 @@ INSERT INTO broadcast_test (id, name, created_at, sent_at, external_id, external
 -- END INCREMENTAL
 ;
 
+SELECT save_last_sync_dt('broadcast_test', 'query_start', @query_start);

@@ -2,6 +2,8 @@
 -- TRUNCATE open
 -- DELETE FROM broadcast_metric WHERE metric IN ('openers', 'opens', 'likely_forwarders')
 
+SET @query_start := NOW();
+
 SET @last_open = 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
@@ -103,5 +105,6 @@ INSERT INTO broadcast_metric -- likely_forwarders
 ;
 
 DROP TABLE updated_broadcast;
-
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('open', 'query_start', @query_start);

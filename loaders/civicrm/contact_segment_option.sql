@@ -1,6 +1,8 @@
 -- ORDER: 46
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.external_system = 'civicrm_option_group' AND sn.name != 'Active status'
 
+SET @query_start := NOW();
+
 -- BEGIN INCREMENTAL
 SET @last_update_dt := (SELECT last_sync_dt('contact.preferred_language', 'civicrm_option_value'));
 
@@ -35,3 +37,5 @@ INSERT INTO contact_segment -- Preferred Language
 
 SELECT save_last_sync_dt('contact.preferred_language', 'civicrm_option_value',
        (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact));
+
+SELECT save_last_sync_dt('contact_segment_option', 'query_start', @query_start);

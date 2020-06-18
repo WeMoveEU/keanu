@@ -1,6 +1,8 @@
 -- ORDER: 52
 -- DELETE FROM broadcast_link
 
+SET @query_start := NOW();
+
 INSERT INTO broadcast_link (broadcast_id, url, source_id, external_system, external_id)
   SELECT
     b.id, u.url, s.id, 'civicrm_mailing_trackable_url', u.id
@@ -15,3 +17,5 @@ INSERT INTO broadcast_link (broadcast_id, url, source_id, external_system, exter
   AND u.id NOT IN (SELECT external_id FROM broadcast_link WHERE external_system = 'civicrm_mailing_trackable_url')
 -- END INCREMENTAL
 ;
+
+SELECT save_last_sync_dt('broadcast_link', 'query_start', @query_start);
