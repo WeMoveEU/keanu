@@ -2,6 +2,8 @@
 -- DELETE FROM action
 -- DELETE FROM campaign_metric WHERE metric IN ('actions', 'shares', 'donations')
 
+SET @query_start := NOW();
+
 SELECT @unattributed_donations := a.id FROM action_page a JOIN campaign c ON a.campaign_id = c.id where a.action_type = 'donate' and c.name = 'Unattributed';
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 SET @last_contact := (SELECT MAX(id) FROM contact);
@@ -121,3 +123,5 @@ INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
 
   ON DUPLICATE KEY UPDATE value = value + VALUES(value)
 ;
+
+SELECT save_last_sync_dt('action', 'query_start', @query_start);

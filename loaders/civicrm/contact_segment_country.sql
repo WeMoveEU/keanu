@@ -1,6 +1,8 @@
 -- ORDER: 47
 -- DELETE cs FROM contact_segment cs JOIN segment s ON cs.segment_id = s.id JOIN segmentation sn ON sn.id = s.segmentation_id WHERE sn.name = 'Country'
 
+SET @query_start := NOW();
+
 SET @max_modified_date := (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact); 
 SET @last_update_dt := (SELECT last_sync_dt('contact_segment.country', 'civicrm_contact'));
 
@@ -22,5 +24,5 @@ INSERT INTO contact_segment -- Country
 -- END INCREMENTAL
 ;
 
-
 SELECT save_last_sync_dt('contact_segment.country', 'civicrm_contact', @max_modified_date);
+SELECT save_last_sync_dt('contact_segment_country', 'query_start', @query_start);

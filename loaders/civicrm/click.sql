@@ -2,6 +2,8 @@
 -- TRUNCATE click
 -- DELETE FROM broadcast_metric WHERE metric IN ('clicks', 'clickers')
 
+SET @query_start := NOW();
+
 SET @last_click = 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
@@ -75,3 +77,5 @@ INSERT INTO broadcast_metric -- clicks
 
 DROP TABLE updated_broadcast;
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('click', 'query_start', @query_start);

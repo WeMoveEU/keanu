@@ -43,6 +43,7 @@ def execute(_):
     dst = _.destination.connection()
     meta = MetaData(dst)
     table = Table("contact_segment", meta, autoload=True)
+    query_start = dst.execute("SELECT NOW()").fetchone()[0]
 
     # Get all reveland segment and group ids
     member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
@@ -109,16 +110,15 @@ def execute(_):
 
         hist = group_history(_, member_group_id, hist_max_id, contact_select=contacts_which_changed)
         if hist.rowcount > 0:
-
             cont = contacts(src, contact_select=contacts_which_changed)
-            # print(len(cont))
-            
             cs = history_to_segments(hist, cont)
             
             update_segments(dst, cs, list(cont.keys()),
                             [member_segment_id, expiring_segment_id, expired_segment_id])
 
         last_sync.save_last_sync_id(dst, 'contact_segment', 'civicrm_subscription_history.member', hist_max_id)
+
+    last_sync.save_last_sync_dt(dst, 'contact_segment_membership', 'query_start', query_start)
 
 
 def group_history_to_segments(events, contact_id, segment):
@@ -224,9 +224,6 @@ def contacts(conn, contact_range=None, contact_select=None):
         for
         row in conn.execute(sql)
     }
-
-
-
 
 
 def prop_loader():

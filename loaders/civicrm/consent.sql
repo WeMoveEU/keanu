@@ -2,6 +2,8 @@
 -- DELETE FROM consent
 -- DELETE FROM campaign_metric WHERE metric IN ('new_members')
 
+SET @query_start := NOW();
+
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 SET @last_contact := (SELECT MAX(id) FROM contact);
 
@@ -68,3 +70,5 @@ INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
 
 SELECT save_last_sync_id('consent', 'civicrm_activity',
   (SELECT max(external_id) from consent WHERE external_system = 'civicrm_activity'));
+
+SELECT save_last_sync_dt('consent', 'query_start', @query_start);

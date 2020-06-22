@@ -50,6 +50,7 @@ def execute(_):
     src = _.source.connection()
     dst = _.destination.connection()
     table = get_table(dst, 'contact_segment')
+    query_start = dst.execute("SELECT NOW()").fetchone()[0]
 
     group_segments = non_member_group_segments(dst)
 
@@ -125,8 +126,9 @@ def execute(_):
                                     'civicrm_subscription_history.group', hist_max_id)
 
 
-
     if _.options['incremental'] == False:
         _.threaded(full_load)
     else:
         incremental_load()
+
+    last_sync.save_last_sync_dt(dst, 'contact_segment_group', 'query_start', query_start)

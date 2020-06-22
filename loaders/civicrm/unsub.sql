@@ -6,6 +6,8 @@
 -- Country breakdown also for metrics:
 -- unsub_rate
 
+SET @query_start := NOW();
+
 SET @last_unsub := 0;
 SET @last_contact := (SELECT MAX(id) FROM contact);
 -- BEGIN INCREMENTAL
@@ -78,3 +80,5 @@ INSERT INTO campaign_metric
 DROP TABLE updated_broadcast;
 DROP TABLE updated_campaign;
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('unsub', 'query_start', @query_start);

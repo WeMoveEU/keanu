@@ -24,6 +24,7 @@ DonationInfo = collections.namedtuple("DonationInfo",
 
 def execute(_):
     dst = _.destination.connection()
+    query_start = dst.execute("SELECT NOW()").fetchone()[0]
 
     sql = text("""
 SELECT
@@ -162,10 +163,11 @@ ORDER BY contact_id, donation_id, started_at, receive_date
         acc.append(cs)
         acc.append(fill_cs)
 
-
     update_segments(dst, itertools.chain(*acc),
                     list(donors.keys()),
                     list(map(lambda s: s.segment_id, segments.values())))
+
+    last_sync.save_last_sync_dt(dst, 'contact_segment_recurring_donors', 'query_start', query_start)
 
 
 def recurring_donor_contacts(conn):

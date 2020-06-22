@@ -2,6 +2,8 @@
 -- DELETE FROM broadcast_metric WHERE metric IN ('recipients', 'spams', 'bounces', 'conversions', 'converted', 'sharers', 'shares', 'oneoff_donations', 'oneoff_amount', 'monthly_donations', 'monthly_amount')
 -- DELETE FROM campaign_metric WHERE metric IN ('messages')
 
+SET @query_start := NOW();
+
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 
 -- RECIPIENTS
@@ -267,3 +269,5 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 ;
 
 DROP TABLE bm_segment;
+
+SELECT save_last_sync_dt('broadcast_metric', 'query_start', @query_start);

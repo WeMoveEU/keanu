@@ -3,6 +3,8 @@
 -- DELETE FROM donation
 -- DELETE FROM campaign_metric WHERE metric = 'donations_total_amount'
 
+SET @query_start := NOW();
+
 -- PREPARATION -----------------------------------------------------------------
 -- I create a temporary table all_contributions that keeps all the logic of
 -- translating payment_instrument to payment methods etc. It's 20MB for 50k
@@ -178,3 +180,5 @@ INSERT INTO campaign_metric
 
 -- CLEANUP -------------------------------------------------------------------
 DROP TABLE all_contributions;
+
+SELECT save_last_sync_dt('donation', 'query_start', @query_start);

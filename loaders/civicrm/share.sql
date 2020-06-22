@@ -1,6 +1,8 @@
 -- ORDER: 33
 -- DELETE FROM share
 
+SET @query_start := NOW();
+
 INSERT INTO share (action_id, shared_source_id, conversion_count, share_count, new_member_count)
   SELECT
     a.id, utm.id, 0, 0, 0
@@ -86,3 +88,5 @@ UPDATE share sh JOIN (
 SELECT save_last_sync_id('share', 'new_member_count',
    (SELECT max(c.id) FROM consent c WHERE c.status = 'accepted')
 );
+
+SELECT save_last_sync_dt('share', 'query_start', @query_start);

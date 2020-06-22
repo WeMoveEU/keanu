@@ -45,7 +45,7 @@ def last_sync_dt(conn, dst, src):
     return last_dt
 
 
-def save_last_sync_ft(conn, destination, source, last_dt):
+def save_last_sync_dt(conn, destination, source, last_dt):
     sql = """
     INSERT INTO last_sync_dt (dst, src, last_dt) VALUES (:dst, :src, :last_dt)
     ON DUPLICATE KEY UPDATE last_dt = :last_dt

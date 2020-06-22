@@ -1,6 +1,8 @@
 -- ORDER: 11
 -- DELETE FROM segment
 
+SET @query_start := NOW();
+
 -- BEGIN INITIAL
 -- Special Everyone segment
 SET @everyone = (SELECT id FROM segmentation WHERE name = 'Everyone');
@@ -92,3 +94,5 @@ WHERE og.id = @ext_id;
 
 
 -- END INITIAL
+
+SELECT save_last_sync_dt('segment', 'query_start', @query_start);

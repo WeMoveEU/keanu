@@ -10,6 +10,8 @@
 -- ;
 -- END INITIAL
 
+SET @query_start := NOW();
+
 INSERT INTO action_page
   (campaign_id, action_type, language, external_id, external_system)
   SELECT
@@ -21,7 +23,7 @@ INSERT INTO action_page
     WHEN activity_type_id = 54 THEN 'share'
     WHEN activity_type_id = 59 THEN 'tweet'
     WHEN activity_type_id = 67 THEN 'facebook'
-    WHEN activity_type_id = 68 THEN 'consent'  # Won't be used for actions, but action pages are needed to load consents
+    WHEN activity_type_id = 68 THEN 'consent'  -- Won't be used for actions, but action pages are needed to load consents
     END AS action_type,
     x.language_4,
     c.id,
@@ -64,3 +66,5 @@ INSERT INTO action_page
 ;
 
 -- other updates: can language change?
+
+SELECT save_last_sync_dt('action_page', 'query_start', @query_start);

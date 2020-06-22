@@ -4,6 +4,8 @@
 
 
 -- Get the ids of segments for easier use and initialize variables
+SET @query_start := NOW();
+
 SET @sn = (SELECT id FROM segmentation sn WHERE sn.name = 'Membership');
 
 SET @seg_member = (SELECT s.id FROM segment s JOIN segmentation sn ON s.segmentation_id = sn.id
@@ -218,3 +220,5 @@ DROP TABLE membership_ranked;
 -- BEGIN INCREMENTAL
 DROP TABLE activated;
 -- END INCREMENTAL
+
+SELECT save_last_sync_dt('contact_segment_group_complement', 'query_start', @query_start);

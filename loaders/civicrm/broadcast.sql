@@ -1,6 +1,8 @@
 -- ORDER: 51
 -- DELETE FROM broadcast;
 
+SET @query_start := NOW();
+
 INSERT INTO broadcast 
   (id, name, broadcast_type, language, sent_at, broadcast_test_id, campaign_id, external_id, external_system)
   SELECT
@@ -17,3 +19,4 @@ INSERT INTO broadcast
 -- END INCREMENTAL
 ;
 
+SELECT save_last_sync_dt('broadcast', 'query_start', @query_start);
