@@ -52,10 +52,7 @@ class Splitter:
         for idx, i in enumerate(items):
             if i['model'] == 'card' or i['model'] == 'dashboard':
                 if i['model'] == 'card':
-                    i = _.trim_data(i, _.keep_card_keys)
                     _.format_query_as_block(i)
-                else:
-                    i = _.trim_data(i, _.keep_dashboard_keys)
 
                 file_name = "{:02}-{}".format(idx, slug(i['name']))
                 loc = path.join('items', *prefix, file_name)
@@ -68,7 +65,6 @@ class Splitter:
 
                 col_items = i['items']
                 del i['items']
-                i = _.trim_data(i, _.keep_collection_keys)
                 _.store_to(i, loc)
                 _.store_items(col_items, prefix + [dir_name])
 
@@ -104,45 +100,6 @@ class Splitter:
                 unlink(path.join(_.directory, f))
             except IsADirectoryError:
                 rmtree(path.join(_.directory, f))
-
-    keep_card_keys = [
-        'id',
-        'model',
-        'visualization_settings',
-        'description',
-        'collection_position',
-        'result_metadata',
-        'metadata_checksum',
-        'collection_id',
-        'name',
-        'dataset_query',
-        'display',
-        'query_type'
-    ]
-
-    keep_dashboard_keys = [
-        'id',
-        'model',
-        'name',
-        'description',
-        'parameters',
-        'collection_id',
-        'collection_position',
-        'dashboard',
-        'ordered_cards'
-    ]
-
-    keep_collection_keys = [
-        'id',
-        'model',
-        'name',
-        'color',
-        'description',
-        'parent_id'
-    ]
-
-    def trim_data(_, card, keep_keys):
-        return { k:  card[k] for k in card if k in keep_keys }
 
     
     def load(_):

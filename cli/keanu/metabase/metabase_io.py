@@ -57,6 +57,8 @@ class MetabaseIO:
       metabase_io_log.info("⬇️ {} {}: {}".format(i['model'], i['id'], i.get('name', '')))
       item = self.client.get(i['model'], i['id'])
       item['model'] = i['model']
+      item = Trimmer.trim_data(item)
+
       if item['model'] == 'collection':
         item['items'] = self.get_items(item['id'])
       if 'collection_id' not in item:
@@ -597,7 +599,6 @@ def deref_card(card, mappings):
     if 'table.columns' in vs:
       deref_fields(vs['table.columns'], mappings)
 
-
   return card
 
 def deref_dashboard(dashboard, mappings):
@@ -630,4 +631,56 @@ def is_virtual_card(card):
     Tell whether the given card object represents a virtual dashboard card (text cards)
   """
   return 'visualization_settings' in card and 'virtual_card' in card['visualization_settings']
+
+class Trimmer:
+  keep_card_keys = [
+    'id',
+    'model',
+    'visualization_settings',
+    'description',
+    'collection_position',
+    'result_metadata',
+    'metadata_checksum',
+    'collection_id',
+    'name',
+    'dataset_query',
+    'display',
+    'query_type',
+    'database_id'
+  ]
+
+  keep_dashboard_keys = [
+    'id',
+    'model',
+    'name',
+    'description',
+    'parameters',
+    'collection_id',
+    'collection_position',
+    'dashboard',
+    'ordered_cards'
+  ]
+
+  keep_collection_keys = [
+    'id',
+    'model',
+    'name',
+    'color',
+    'description',
+    'parent_id'
+  ]
+
+  @staticmethod
+  def trim_data(item, keep_keys=None):
+    if keep_keys is None:
+      if item['model'] == 'card':
+        keep_keys = Trimmer.keep_card_keys
+      elif item['model'] == 'collection':
+        keep_keys = Trimmer.keep_collection_keys
+      elif item['model'] == 'dashboard':
+        keep_keys = Trimmer.keep_dashboard_keys
+      else:
+        raise Exception('Do not know how to trim_data on hash with no known model key')
+
+    return { k:  item[k] for k in item if k in keep_keys }
 
