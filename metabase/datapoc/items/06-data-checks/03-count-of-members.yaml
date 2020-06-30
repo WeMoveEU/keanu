@@ -1,0 +1,46 @@
+collection_id: 105
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    filter:
+    - and
+    - - '='
+      - - fk->
+        - - field-id
+          - 6520
+        - - field-id
+          - 6600
+      - Member
+    - - is-null
+      - - field-id
+        - 6523
+    source-table: 805
+  type: query
+description: null
+display: scalar
+id: 520
+model: card
+name: Count of members
+query_type: query
+result_metadata:
+- base_type: type/BigInteger
+  display_name: Count
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 56493.0
+        max: 56493.0
+        min: 56493.0
+        q1: 56493.0
+        q3: 56493.0
+        sd: null
+  name: count
+  special_type: type/Quantity
+visualization_settings: {}

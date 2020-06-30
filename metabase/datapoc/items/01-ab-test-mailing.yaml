@@ -10,7 +10,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 71
     collection_position: null
-    created_at: '2020-03-05T15:10:39'
+    created_at: '2020-03-05T15:10:39.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -56,7 +56,7 @@ ordered_cards:
     made_public_by_id: null
     name: A/B test summary
     public_uuid: null
-    query_average_duration: 291
+    query_average_duration: 298
     query_type: query
     read_permissions: null
     result_metadata:
@@ -124,7 +124,7 @@ ordered_cards:
       name: campaign_id
       special_type: type/FK
     table_id: 825
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-18T14:11:03.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6484]]':
@@ -211,7 +211,7 @@ ordered_cards:
       table.pivot_column: id
   card_id: 496
   col: 0
-  created_at: '2020-03-05T15:11:22'
+  created_at: '2020-03-05T15:11:22.000Z'
   dashboard_id: 62
   id: 466
   parameter_mappings:
@@ -225,14 +225,14 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-03-11T16:16:25'
+    created_at: '2020-03-11T16:16:25.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -262,7 +262,7 @@ ordered_cards:
     made_public_by_id: null
     name: Open rate
     public_uuid: null
-    query_average_duration: 929
+    query_average_duration: 1017
     query_type: query
     read_permissions: null
     result_metadata:
@@ -341,7 +341,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -356,7 +356,7 @@ ordered_cards:
           title: Open rate
   card_id: 499
   col: 1
-  created_at: '2020-03-11T16:17:11'
+  created_at: '2020-03-11T16:17:11.000Z'
   dashboard_id: 62
   id: 469
   parameter_mappings:
@@ -373,14 +373,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-03-11T16:19:42'
+    created_at: '2020-03-11T16:19:42.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -410,7 +410,7 @@ ordered_cards:
     made_public_by_id: null
     name: Click vs open rate
     public_uuid: null
-    query_average_duration: 933
+    query_average_duration: 1019
     query_type: query
     read_permissions: null
     result_metadata:
@@ -489,7 +489,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -505,7 +505,7 @@ ordered_cards:
           title: Open rate
   card_id: 500
   col: 5
-  created_at: '2020-03-11T16:20:23'
+  created_at: '2020-03-11T16:20:23.000Z'
   dashboard_id: 62
   id: 470
   parameter_mappings:
@@ -522,14 +522,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T09:52:25'
+    created_at: '2020-05-04T09:52:25.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -560,7 +560,7 @@ ordered_cards:
     made_public_by_id: null
     name: Conversion rate (vs clicks)
     public_uuid: null
-    query_average_duration: 900
+    query_average_duration: 994
     query_type: query
     read_permissions: null
     result_metadata:
@@ -639,7 +639,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -655,7 +655,7 @@ ordered_cards:
           title: Open rate
   card_id: 506
   col: 9
-  created_at: '2020-05-04T09:53:11'
+  created_at: '2020-05-04T09:53:11.000Z'
   dashboard_id: 62
   id: 475
   parameter_mappings:
@@ -672,14 +672,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T09:58:53'
+    created_at: '2020-05-04T09:58:53.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -709,7 +709,7 @@ ordered_cards:
     made_public_by_id: null
     name: Converted
     public_uuid: null
-    query_average_duration: 1071
+    query_average_duration: 1145
     query_type: query
     read_permissions: null
     result_metadata:
@@ -788,7 +788,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:53'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]': {}
@@ -803,7 +803,7 @@ ordered_cards:
           title: Open rate
   card_id: 507
   col: 13
-  created_at: '2020-05-04T09:59:48'
+  created_at: '2020-05-04T09:59:48.000Z'
   dashboard_id: 62
   id: 476
   parameter_mappings:
@@ -820,13 +820,13 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-04T10:06:56'
+  created_at: '2020-05-04T10:06:56.000Z'
   dashboard_id: 62
   id: 477
   parameter_mappings: []
@@ -834,7 +834,7 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings:
     dashcard.background: false
     text: '## Conversions'
@@ -848,7 +848,7 @@ ordered_cards:
     query_average_duration: null
   card_id: null
   col: 0
-  created_at: '2020-05-04T10:07:27'
+  created_at: '2020-05-04T10:07:27.000Z'
   dashboard_id: 62
   id: 478
   parameter_mappings: []
@@ -856,7 +856,7 @@ ordered_cards:
   series: []
   sizeX: 12
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings:
     dashcard.background: false
     text: '## Growth'
@@ -871,7 +871,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:10:44'
+    created_at: '2020-05-04T10:10:44.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -902,7 +902,7 @@ ordered_cards:
     made_public_by_id: null
     name: Forward rate
     public_uuid: null
-    query_average_duration: 935
+    query_average_duration: 1020
     query_type: query
     read_permissions: null
     result_metadata:
@@ -981,7 +981,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -997,7 +997,7 @@ ordered_cards:
           title: Forward rate
   card_id: 508
   col: 0
-  created_at: '2020-05-04T10:11:21'
+  created_at: '2020-05-04T10:11:21.000Z'
   dashboard_id: 62
   id: 479
   parameter_mappings:
@@ -1014,14 +1014,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:20:36'
+    created_at: '2020-05-04T10:20:36.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1054,7 +1054,7 @@ ordered_cards:
     made_public_by_id: null
     name: Consents
     public_uuid: null
-    query_average_duration: 295
+    query_average_duration: 289
     query_type: native
     read_permissions: null
     result_metadata:
@@ -1103,7 +1103,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: null
-    updated_at: '2020-06-04T12:33:52'
+    updated_at: '2020-06-04T12:33:52.000Z'
     visualization_settings:
       graph.dimensions:
       - version
@@ -1123,7 +1123,7 @@ ordered_cards:
       table.pivot_column: name
   card_id: 509
   col: 4
-  created_at: '2020-05-04T10:21:07'
+  created_at: '2020-05-04T10:21:07.000Z'
   dashboard_id: 62
   id: 480
   parameter_mappings:
@@ -1137,14 +1137,14 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     archived: false
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:24:49'
+    created_at: '2020-05-04T10:24:49.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1174,7 +1174,7 @@ ordered_cards:
     made_public_by_id: null
     name: Unsubscribe rate
     public_uuid: null
-    query_average_duration: 909
+    query_average_duration: 991
     query_type: query
     read_permissions: null
     result_metadata:
@@ -1253,7 +1253,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:53'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1269,7 +1269,7 @@ ordered_cards:
           title: Forward rate
   card_id: 510
   col: 8
-  created_at: '2020-05-04T10:25:57'
+  created_at: '2020-05-04T10:25:57.000Z'
   dashboard_id: 62
   id: 481
   parameter_mappings:
@@ -1286,13 +1286,13 @@ ordered_cards:
   series: []
   sizeX: 4
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings: {}
 - card:
     query_average_duration: null
   card_id: null
   col: 12
-  created_at: '2020-05-04T10:31:26'
+  created_at: '2020-05-04T10:31:26.000Z'
   dashboard_id: 62
   id: 482
   parameter_mappings: []
@@ -1300,7 +1300,7 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 1
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Delivery'
@@ -1315,7 +1315,7 @@ ordered_cards:
     cache_ttl: null
     collection_id: 102
     collection_position: null
-    created_at: '2020-05-04T10:34:04'
+    created_at: '2020-05-04T10:34:04.000Z'
     creator_id: 1
     database_id: 9
     dataset_query:
@@ -1346,7 +1346,7 @@ ordered_cards:
     made_public_by_id: null
     name: Delivery KPIs
     public_uuid: null
-    query_average_duration: 914
+    query_average_duration: 997
     query_type: query
     read_permissions: null
     result_metadata:
@@ -1425,7 +1425,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-04T12:33:53'
+    updated_at: '2020-06-18T14:11:04.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1443,7 +1443,7 @@ ordered_cards:
           title: Forward rate
   card_id: 511
   col: 12
-  created_at: '2020-05-04T10:34:59'
+  created_at: '2020-05-04T10:34:59.000Z'
   dashboard_id: 62
   id: 483
   parameter_mappings:
@@ -1460,7 +1460,7 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 4
-  updated_at: '2020-05-04T10:35:00'
+  updated_at: '2020-06-18T14:12:30.000Z'
   visualization_settings:
     column_settings:
       '["ref",["field-id",6898]]':
@@ -1480,6 +1480,70 @@ ordered_cards:
         color: '#EF8C8C'
       value:
         title: Forward rate
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 71
+    collection_position: null
+    created_at: '2020-06-18T10:21:22.000Z'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: SELECT TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW()) FROM `last_sync_dt`
+          WHERE `last_sync_dt`.`src` = 'query_start'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 528
+    made_public_by_id: null
+    name: Age of last computation cycle
+    public_uuid: null
+    query_average_duration: 256
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 1181.0
+            max: 1181.0
+            min: 1181.0
+            q1: 1181.0
+            q3: 1181.0
+            sd: null
+      name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
+      special_type: null
+    table_id: null
+    updated_at: '2020-06-19T10:27:53.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+          suffix: ' minutes'
+  card_id: 528
+  col: 0
+  created_at: '2020-06-18T14:12:29.000Z'
+  dashboard_id: 62
+  id: 530
+  parameter_mappings: []
+  row: 14
+  series: []
+  sizeX: 18
+  sizeY: 2
+  updated_at: '2020-06-18T14:12:30.000Z'
+  visualization_settings:
+    card.title: This is the maximum age of the data used on this dashboard
+    column_settings:
+      '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+        suffix: ' minutes'
 parameters:
 - id: 62b0b39f
   name: ID

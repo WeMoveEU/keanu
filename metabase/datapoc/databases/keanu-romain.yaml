@@ -639,7 +639,6 @@ tables:
         settings: null
         special_type: type/Category
         values:
-        - - null
         - - bg
         - - bg_BG
         - - cs_CZ
@@ -668,6 +667,7 @@ tables:
         - - sk_SK
         - - sr_RS
         - - sv_SE
+        - - ZZ
       6505:
         description: The part after the @ in the primary email address of the contact
         display_name: Email Domain
@@ -1821,13 +1821,27 @@ tables:
         - - openers
         - - clicks
         - - clickers
+        - - conversions
+        - - converted
         - - activated
         - - unsubs
+        - - bounces
+        - - spams
         - - likely_forwarders
         - - openers_rate
         - - clickers_rate
+        - - sharers_rate
         - - likely_forwarders_rate
+        - - sharers
+        - - shares
         - - clickers_to_openers
+        - - converted_to_clickers
+        - - bounce_rate
+        - - spam_rate
+        - - oneoff_donations
+        - - oneoff_amount
+        - - monthly_donations
+        - - monthly_amount
         - - unsub_rate
         - - activated_rate
       6903:
@@ -2171,10 +2185,34 @@ tables:
         settings: null
         special_type: type/Category
         values:
+        - - action
+        - - action_page
+        - - broadcast
+        - - broadcast_link
+        - - broadcast_metric
+        - - broadcast_metric_activated
+        - - broadcast_metric_rates
+        - - broadcast_test
+        - - campaign
+        - - click
+        - - consent
         - - contact
         - - contact.preferred_language
         - - contact_segment.country
+        - - contact_segment_active
+        - - contact_segment_country
+        - - contact_segment_everyone
+        - - contact_segment_group
+        - - contact_segment_membership
+        - - contact_segment_option
+        - - contact_segment_recurring_donors
+        - - donation
         - - hot_contact
+        - - open
+        - - segment
+        - - share
+        - - source
+        - - unsub
       7039:
         description: null
         display_name: Src
@@ -2188,6 +2226,7 @@ tables:
         - - civicrm
         - - civicrm_contact
         - - civicrm_option_value
+        - - query_start
     id: 884
     name: last_sync_dt
   887:
@@ -2610,7 +2649,7 @@ tables:
         name: id
         settings:
           custom_actions:
-            url: https://datapoc.wemove.support/dashboard/61?campaign={value}
+            url: /dashboard/61?campaign={value}
         special_type: type/PK
     id: 891
     name: campaign_summary

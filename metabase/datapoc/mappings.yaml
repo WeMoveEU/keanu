@@ -131,6 +131,10 @@ cards:
     name: Random pick of member leaves without a cancelled consent
   526:
     name: Random pick of cancelled consents without a member leave
+  527:
+    name: Count of unsubscribes for a campaign
+  528:
+    name: Age of last computation cycle
 collections:
   72:
     name: Single mailing
@@ -247,6 +251,10 @@ databases:
           6658: broadcast_id
           6905: contact_id
         name: open
+      827:
+        fields:
+          6662: broadcast_id
+        name: unsub
       828:
         fields:
           6648: broadcast_id

@@ -1,0 +1,63 @@
+collection_id: 106
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT DATE_FORMAT(cs.joined_at, '%Y-%m') AS join_month, COUNT(*)
+      FROM segment s
+      JOIN contact_segment cs ON cs.segment_id = s.id
+      LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at)) <= 60 AND c.status = 'accepted'
+      WHERE s.name='Member' AND c.id IS NULL
+      GROUP BY join_month
+  type: native
+description: By month
+display: line
+id: 515
+model: card
+name: Count of member joins without an accepted consent over time
+query_type: native
+result_metadata:
+- base_type: type/Text
+  display_name: join_month
+  fingerprint:
+    global:
+      distinct-count: 56
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 7.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: join_month
+  special_type: null
+- base_type: type/BigInteger
+  display_name: COUNT(*)
+  fingerprint:
+    global:
+      distinct-count: 51
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 291.23214285714283
+        max: 2678.0
+        min: 3.0
+        q1: 42.0
+        q3: 335.0
+        sd: 467.5080938947933
+  name: COUNT(*)
+  special_type: null
+visualization_settings:
+  graph.dimensions:
+  - join_month
+  graph.metrics:
+  - COUNT(*)
+  graph.x_axis.title_text: Join month
+  series_settings:
+    COUNT(*):
+      line.interpolate: step-after
+      line.marker_enabled: false
+      line.missing: zero
+      title: Count

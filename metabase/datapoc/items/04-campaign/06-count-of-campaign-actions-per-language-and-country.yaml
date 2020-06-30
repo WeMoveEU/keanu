@@ -1,0 +1,140 @@
+collection_id: 101
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - joined-field
+      - Action Page
+      - - field-id
+        - 6878
+    - - joined-field
+      - Contact
+      - - field-id
+        - 6504
+    - - joined-field
+      - Contact
+      - - field-id
+        - 6509
+    filter:
+    - '!='
+    - - joined-field
+      - Action Page
+      - - field-id
+        - 6879
+    - consent
+    joins:
+    - alias: Action Page
+      condition:
+      - '='
+      - - field-id
+        - 6876
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6881
+      fields: all
+      source-table: 861
+    - alias: Contact
+      condition:
+      - '='
+      - - field-id
+        - 6874
+      - - joined-field
+        - Contact
+        - - field-id
+          - 6510
+      fields: all
+      source-table: 810
+    source-table: 813
+  type: query
+description: null
+display: table
+id: 479
+model: card
+name: Count of campaign actions per language and country
+query_type: query
+result_metadata:
+- base_type: type/Integer
+  display_name: "Action Page \u2192 Campaign ID"
+  fingerprint:
+    global:
+      distinct-count: 297
+      nil%: 0.0
+  name: campaign_id
+  special_type: type/FK
+- base_type: type/Text
+  display_name: "Contact \u2192 Preferred Language"
+  fingerprint:
+    global:
+      distinct-count: 9
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 5.0
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: preferred_language
+  special_type: type/Category
+- base_type: type/Text
+  display_name: "Contact \u2192 Country"
+  fingerprint:
+    global:
+      distinct-count: 62
+      nil%: 0.0606
+    type:
+      type/Text:
+        average-length: 1.8788
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: country
+  special_type: type/Country
+- base_type: type/Integer
+  display_name: Nombre de lignes
+  fingerprint:
+    global:
+      distinct-count: 661
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 81.64826674799228
+        max: 12524.0
+        min: 1.0
+        q1: 5.342397600223598
+        q3: 35.757291648691016
+        sd: 440.00587691555245
+  name: count
+  special_type: type/Quantity
+visualization_settings:
+  column_settings:
+    '["name","count"]':
+      column_title: Actions
+    '["ref",["field-id",6504]]':
+      column_title: Language
+    '["ref",["field-id",6509]]':
+      column_title: Country
+    '["ref",["field-id",6878]]':
+      column_title: Campaign ID
+  graph.dimensions:
+  - created_at
+  - action_type
+  graph.metrics:
+  - count
+  pie.slice_threshold: 0
+  series_settings:
+    donate:
+      axis: null
+    share:
+      axis: null
+    sign:
+      axis: null
+  stackable.stack_type: null
+  table.cell_column: count
+  table.column_formatting: []
+  table.pivot: false
+  table.pivot_column: preferred_language

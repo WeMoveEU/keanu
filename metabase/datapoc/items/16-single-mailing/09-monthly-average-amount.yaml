@@ -1,0 +1,86 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - avg
+      - - expression
+        - avg
+    expressions:
+      avg:
+      - /
+      - - field-id
+        - 6898
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6898
+    filter:
+    - and
+    - - '='
+      - - field-id
+        - 6902
+      - monthly_amount
+    - - '='
+      - - field-id
+        - 6900
+      - 1
+    - - '='
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6902
+      - monthly_donations
+    - - '='
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6900
+      - 1
+    joins:
+    - alias: Broadcast
+      condition:
+      - '='
+      - - field-id
+        - 6899
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6899
+      fields: all
+      source-table: 862
+    source-table: 862
+  type: query
+description: Average amount of monthly donations
+display: scalar
+id: 466
+model: card
+name: Monthly average amount
+query_type: query
+result_metadata:
+- base_type: type/Float
+  display_name: Average of avg
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 10.036951951952
+        max: 10.036951951952
+        min: 10.036951951952
+        q1: 10.036951951952
+        q3: 10.036951951952
+        sd: null
+  name: avg
+  special_type: null
+visualization_settings:
+  column_settings:
+    '["name","avg"]':
+      currency: EUR
+      number_style: currency
+    '["name","sum"]':
+      currency: EUR
+  scalar.field: avg

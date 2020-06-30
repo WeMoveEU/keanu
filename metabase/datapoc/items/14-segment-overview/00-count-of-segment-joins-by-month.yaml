@@ -1,0 +1,74 @@
+collection_id: 100
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - field-id
+      - 6520
+    - - datetime-field
+      - - field-id
+        - 6525
+      - month
+    source-table: 805
+  type: query
+description: null
+display: line
+id: 473
+model: card
+name: Count of segment joins by month
+query_type: query
+result_metadata:
+- base_type: type/Integer
+  display_name: Segment ID
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+  name: segment_id
+  special_type: type/FK
+- base_type: type/DateTime
+  description: 'When the contact joined the segment.
+
+    If the contact was in the segment several times, there are several records.
+
+    '
+  display_name: Joined At
+  fingerprint:
+    global:
+      distinct-count: 7770
+      nil%: 0.0
+    type:
+      type/DateTime:
+        earliest: '2015-09-04T00:01:40.000Z'
+        latest: '2018-12-11T16:01:19.000Z'
+  name: joined_at
+  special_type: type/JoinTimestamp
+  unit: month
+- base_type: type/Integer
+  display_name: Count
+  fingerprint:
+    global:
+      distinct-count: 789
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 389.5405405405405
+        max: 14886.0
+        min: 1.0
+        q1: 18.79502096831625
+        q3: 191.429252222881
+        sd: 1112.431178774479
+  name: count
+  special_type: type/Quantity
+visualization_settings:
+  graph.dimensions:
+  - joined_at
+  graph.metrics:
+  - count
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: segment_id
