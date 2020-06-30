@@ -50,11 +50,11 @@ result_metadata:
       nil%: 0.0
     type:
       type/Number:
-        avg: 55.0
-        max: 55.0
-        min: 55.0
-        q1: 55.0
-        q3: 55.0
+        avg: 116937.78
+        max: 116937.78
+        min: 116937.78
+        q1: 116937.78
+        q3: 116937.78
         sd: null
   name: sum
   special_type: type/Income

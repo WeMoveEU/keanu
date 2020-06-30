@@ -68,11 +68,11 @@ result_metadata:
   display_name: status
   fingerprint:
     global:
-      distinct-count: 3
+      distinct-count: 1
       nil%: 0.0
     type:
       type/Text:
-        average-length: 7.666666666666667
+        average-length: 7.0
         percent-email: 0.0
         percent-json: 0.0
         percent-url: 0.0
@@ -82,16 +82,16 @@ result_metadata:
   display_name: COUNT(*)
   fingerprint:
     global:
-      distinct-count: 3
+      distinct-count: 1
       nil%: 0.0
     type:
       type/Number:
-        avg: 217.33333333333334
-        max: 282.0
-        min: 118.0
-        q1: 151.5
-        q3: 274.5
-        sd: 87.32315462312006
+        avg: 4.0
+        max: 4.0
+        min: 4.0
+        q1: 4.0
+        q3: 4.0
+        sd: null
   name: COUNT(*)
   special_type: null
 visualization_settings:

@@ -50,16 +50,16 @@ result_metadata:
   display_name: Distinct values of Contact ID
   fingerprint:
     global:
-      distinct-count: 9
+      distinct-count: 10
       nil%: 0.0
     type:
       type/Number:
-        avg: 12.478260869565217
-        max: 115.0
+        avg: 3.8125
+        max: 33.0
         min: 1.0
         q1: 1.0
-        q3: 5.25
-        sd: 28.72735403000453
+        q3: 3.585786437626905
+        sd: 6.741482080756522
   name: count
   special_type: type/Quantity
 visualization_settings:

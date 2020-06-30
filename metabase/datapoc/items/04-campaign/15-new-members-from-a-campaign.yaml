@@ -30,11 +30,11 @@ result_metadata:
       nil%: 0.0
     type:
       type/Number:
-        avg: 287.0
-        max: 287.0
-        min: 287.0
-        q1: 287.0
-        q3: 287.0
+        avg: 0.0
+        max: 0.0
+        min: 0.0
+        q1: 0.0
+        q3: 0.0
         sd: null
   name: count
   special_type: type/Quantity

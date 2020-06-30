@@ -92,20 +92,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 11
+          distinct-count: 24
           nil%: 0.0
         type:
           type/Number:
-            avg: 474.0
-            max: 2053.0
+            avg: 2.9593023255813953
+            max: 49.0
             min: 1.0
-            q1: 100.5
-            q3: 484.0
-            sd: 620.6779284855318
+            q1: 1.0695830385666347
+            q3: 3.5424598286924116
+            sd: 3.460780777005838
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -171,8 +171,8 @@ ordered_cards:
   row: 6
   series: []
   sizeX: 11
-  sizeY: 7
-  updated_at: '2020-06-18T14:23:14.000Z'
+  sizeY: 5
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     graph.dimensions:
     - created_at
@@ -338,7 +338,7 @@ ordered_cards:
   row: 6
   series: []
   sizeX: 7
-  sizeY: 7
+  sizeY: 5
   updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     graph.dimensions:
@@ -367,7 +367,7 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Actions types'
@@ -484,7 +484,7 @@ ordered_cards:
       name: campaign_type
       special_type: type/Category
     table_id: 811
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6491]]':
@@ -518,7 +518,7 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 3
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings: {}
 - card:
     archived: false
@@ -597,20 +597,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 9
+          distinct-count: 13
           nil%: 0.0
         type:
           type/Number:
-            avg: 632.0
-            max: 4883.0
+            avg: 203.6
+            max: 2363.0
             min: 1.0
-            q1: 6.75
-            q3: 213.75
-            sd: 1597.8363495677522
+            q1: 3.41886116991581
+            q3: 60.25
+            sd: 605.6985105762485
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -665,11 +665,11 @@ ordered_cards:
       - Source
       - - field-id
         - 6610
-  row: 14
+  row: 12
   series: []
-  sizeX: 6
+  sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: Media
     graph.dimensions:
@@ -686,11 +686,11 @@ ordered_cards:
   dashboard_id: 61
   id: 448
   parameter_mappings: []
-  row: 13
+  row: 11
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Actions sources'
@@ -718,6 +718,14 @@ ordered_cards:
           - Source
           - - field-id
             - 6613
+        filter:
+        - does-not-contain
+        - - joined-field
+          - Source
+          - - field-id
+            - 6613
+        - civimail
+        - case-sensitive: false
         joins:
         - alias: Action Page
           condition:
@@ -755,7 +763,7 @@ ordered_cards:
     made_public_by_id: null
     name: Count of campaign actions per tracked source
     public_uuid: null
-    query_average_duration: 3698
+    query_average_duration: 2213
     query_type: query
     read_permissions: null
     result_metadata:
@@ -777,29 +785,30 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 27
+          distinct-count: 13
           nil%: 0.0
         type:
           type/Number:
-            avg: 126.4
-            max: 2017.0
+            avg: 19.774193548387096
+            max: 401.0
             min: 1.0
-            q1: 1.5147960268752383
-            q3: 138.25
-            sd: 348.8471532973092
+            q1: 1.0991805480332872
+            q3: 11.426785900258878
+            sd: 71.59688525693436
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
+      card.title: Sources (other than mailings)
       graph.dimensions:
       - medium
       graph.metrics:
       - count
-      pie.slice_threshold: 0.5
+      pie.slice_threshold: 1
       stackable.stack_type: stacked
   card_id: 483
-  col: 6
+  col: 9
   created_at: '2020-01-16T11:12:43.000Z'
   dashboard_id: 61
   id: 449
@@ -845,176 +854,18 @@ ordered_cards:
       - Source
       - - field-id
         - 6610
-  row: 14
+  row: 12
   series: []
-  sizeX: 6
+  sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
-    card.title: Sources
+    card.title: Sources (other than mailings)
     graph.dimensions:
     - medium
     graph.metrics:
     - count
-    pie.slice_threshold: 0.5
-    stackable.stack_type: stacked
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:15:00.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        breakout:
-        - - joined-field
-          - Source
-          - - field-id
-            - 6612
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        - alias: Source
-          condition:
-          - '='
-          - - field-id
-            - 6873
-          - - joined-field
-            - Source
-            - - field-id
-              - 6616
-          fields: all
-          source-table: 807
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 484
-    made_public_by_id: null
-    name: Count of campaign actions per tracked campaign code
-    public_uuid: null
-    query_average_duration: 4267
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: "Source \u2192 Campaign"
-      fingerprint:
-        global:
-          distinct-count: 9866
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 10.161
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: campaign
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 22
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 11.560975609756097
-            max: 2499.0
-            min: 1.0
-            q1: 1.0
-            q3: 1.9329535618213818
-            sd: 120.9079127351847
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - medium
-      graph.metrics:
-      - count
-      pie.slice_threshold: 0.5
-      stackable.stack_type: stacked
-  card_id: 484
-  col: 12
-  created_at: '2020-01-16T11:15:38.000Z'
-  dashboard_id: 61
-  id: 450
-  parameter_mappings:
-  - card_id: 484
-    parameter_id: 49572a13
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 6876
-      - - field-id
-        - 6878
-  - card_id: 484
-    parameter_id: 485c0e15
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 6876
-      - - field-id
-        - 6882
-  - card_id: 484
-    parameter_id: 15d95ec
-    target:
-    - dimension
-    - - field-id
-      - 6872
-  - card_id: 484
-    parameter_id: eb0b4e45
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 6874
-      - - field-id
-        - 6509
-  - card_id: 484
-    parameter_id: f70dcfbe
-    target:
-    - dimension
-    - - joined-field
-      - Source
-      - - field-id
-        - 6610
-  row: 14
-  series: []
-  sizeX: 6
-  sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
-  visualization_settings:
-    card.title: Utm campaigns
-    graph.dimensions:
-    - medium
-    graph.metrics:
-    - count
-    pie.slice_threshold: 0.5
+    pie.slice_threshold: 1
     stackable.stack_type: stacked
 - card:
     query_average_duration: null
@@ -1024,11 +875,11 @@ ordered_cards:
   dashboard_id: 61
   id: 451
   parameter_mappings: []
-  row: 19
+  row: 17
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Growth'
@@ -1119,11 +970,11 @@ ordered_cards:
       display_name: status
       fingerprint:
         global:
-          distinct-count: 3
+          distinct-count: 1
           nil%: 0.0
         type:
           type/Text:
-            average-length: 7.666666666666667
+            average-length: 7.0
             percent-email: 0.0
             percent-json: 0.0
             percent-url: 0.0
@@ -1133,20 +984,20 @@ ordered_cards:
       display_name: COUNT(*)
       fingerprint:
         global:
-          distinct-count: 3
+          distinct-count: 1
           nil%: 0.0
         type:
           type/Number:
-            avg: 217.33333333333334
-            max: 282.0
-            min: 118.0
-            q1: 151.5
-            q3: 274.5
-            sd: 87.32315462312006
+            avg: 4.0
+            max: 4.0
+            min: 4.0
+            q1: 4.0
+            q3: 4.0
+            sd: null
       name: COUNT(*)
       special_type: null
     table_id: null
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings:
       card.title: Consents
       graph.dimensions:
@@ -1204,11 +1055,11 @@ ordered_cards:
     - dimension
     - - template-tag
       - country
-  row: 20
+  row: 18
   series: []
-  sizeX: 6
+  sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: Consents
     graph.dimensions:
@@ -1279,16 +1130,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 5688.0
-            max: 5688.0
-            min: 5688.0
-            q1: 5688.0
-            q3: 5688.0
+            avg: 3054.0
+            max: 3054.0
+            min: 3054.0
+            q1: 3054.0
+            q3: 3054.0
             sd: null
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -1356,7 +1207,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: actions
     graph.dimensions:
@@ -1415,16 +1266,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 287.0
-            max: 287.0
-            min: 287.0
-            q1: 287.0
-            q3: 287.0
+            avg: 0.0
+            max: 0.0
+            min: 0.0
+            q1: 0.0
+            q3: 0.0
             sd: null
       name: count
       special_type: type/Quantity
     table_id: 870
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings: {}
   card_id: 488
   col: 6
@@ -1478,7 +1329,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: new members
 - card:
@@ -1543,16 +1394,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 55.0
-            max: 55.0
-            min: 55.0
-            q1: 55.0
-            q3: 55.0
+            avg: 116937.78
+            max: 116937.78
+            min: 116937.78
+            q1: 116937.78
+            q3: 116937.78
             sd: null
       name: sum
       special_type: type/Income
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       column_settings:
         '["name","sum"]':
@@ -1609,7 +1460,7 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: raised (one-off and total from recurring)
     column_settings:
@@ -1677,20 +1528,20 @@ ordered_cards:
       display_name: Distinct values of Contact ID
       fingerprint:
         global:
-          distinct-count: 8
-          nil%: 0.0
+          distinct-count: 0
+          nil%: null
         type:
           type/Number:
-            avg: 35.875
-            max: 168.0
-            min: 1.0
-            q1: 3.0
-            q3: 38.0
-            sd: 55.576041857723446
+            avg: null
+            max: null
+            min: null
+            q1: null
+            q3: null
+            sd: null
       name: count
       special_type: type/Quantity
     table_id: 870
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
       - created_at
@@ -1707,7 +1558,7 @@ ordered_cards:
           axis: null
       stackable.stack_type: null
   card_id: 490
-  col: 6
+  col: 9
   created_at: '2020-01-16T12:55:06.000Z'
   dashboard_id: 61
   id: 457
@@ -1754,11 +1605,11 @@ ordered_cards:
         - 7133
       - - field-id
         - 6610
-  row: 20
+  row: 18
   series: []
-  sizeX: 6
+  sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings: {}
 - card:
     query_average_duration: null
@@ -1768,11 +1619,11 @@ ordered_cards:
   dashboard_id: 61
   id: 458
   parameter_mappings: []
-  row: 25
+  row: 23
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Contact segmentation'
@@ -1862,16 +1713,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 568.8
-            max: 2976.0
-            min: 1.0
-            q1: 9.785218258752417
-            q3: 448.0
-            sd: 998.2820576704094
+            avg: 381.75
+            max: 1745.0
+            min: 13.0
+            q1: 40.0
+            q3: 461.0
+            sd: 580.139084308976
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -1951,11 +1802,11 @@ ordered_cards:
         - 6874
       - - field-id
         - 6509
-  row: 26
+  row: 24
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: Preferred language
     graph.dimensions:
@@ -2042,20 +1893,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 15
+          distinct-count: 20
           nil%: 0.0
         type:
           type/Number:
-            avg: 247.30434782608697
-            max: 2709.0
+            avg: 117.46153846153847
+            max: 1691.0
             min: 1.0
-            q1: 1.5
-            q3: 159.5
-            sd: 625.8981499182964
+            q1: 2.76393202250021
+            q3: 77.0
+            sd: 332.0305083294884
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
       - medium
@@ -2111,11 +1962,11 @@ ordered_cards:
         - 6874
       - - field-id
         - 6509
-  row: 26
+  row: 24
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: Primary country
     graph.dimensions:
@@ -2125,151 +1976,6 @@ ordered_cards:
     pie.slice_threshold: 1
     stackable.stack_type: stacked
 - card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T12:58:49.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 7135
-        breakout:
-        - - fk->
-          - - field-id
-            - 7133
-          - - field-id
-            - 6613
-        filter:
-        - '='
-        - - field-id
-          - 6977
-        - accepted
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 870
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 491
-    made_public_by_id: null
-    name: Growth sources
-    public_uuid: null
-    query_average_duration: 846
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: "Source \u2192 Source"
-      fingerprint:
-        global:
-          distinct-count: 54
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 6.2891
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: source
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 9
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 12.478260869565217
-            max: 115.0
-            min: 1.0
-            q1: 1.0
-            q3: 5.25
-            sd: 28.72735403000453
-      name: count
-      special_type: type/Quantity
-    table_id: 870
-    updated_at: '2020-06-18T14:57:24.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - created_at
-      - action_type
-      graph.metrics:
-      - count
-      pie.slice_threshold: 1
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 491
-  col: 12
-  created_at: '2020-01-20T09:56:37.000Z'
-  dashboard_id: 61
-  id: 461
-  parameter_mappings:
-  - card_id: 491
-    parameter_id: 49572a13
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 7134
-      - - field-id
-        - 6496
-  - card_id: 491
-    parameter_id: 485c0e15
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 7135
-      - - field-id
-        - 6504
-  - card_id: 491
-    parameter_id: 15d95ec
-    target:
-    - dimension
-    - - field-id
-      - 7136
-  - card_id: 491
-    parameter_id: f70dcfbe
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 7133
-      - - field-id
-        - 6610
-  - card_id: 491
-    parameter_id: eb0b4e45
-    target:
-    - dimension
-    - - fk->
-      - - field-id
-        - 7135
-      - - field-id
-        - 6509
-  row: 20
-  series: []
-  sizeX: 6
-  sizeY: 5
-  updated_at: '2020-06-18T14:23:14.000Z'
-  visualization_settings: {}
-- card:
     query_average_duration: null
   card_id: null
   col: 0
@@ -2277,11 +1983,11 @@ ordered_cards:
   dashboard_id: 61
   id: 462
   parameter_mappings: []
-  row: 31
+  row: 29
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Mailings'
@@ -2450,32 +2156,32 @@ ordered_cards:
       display_name: Sum of Clickers
       fingerprint:
         global:
-          distinct-count: 13
-          nil%: 0.1428571428571429
+          distinct-count: 115
+          nil%: 0.5402298850574713
         type:
           type/Number:
-            avg: 329.1666666666667
-            max: 1810.0
-            min: 13.0
-            q1: 40.5
-            q3: 218.0
-            sd: 548.2709737037522
+            avg: 70.871875
+            max: 1545.0
+            min: 1.0
+            q1: 5.496801708267508
+            q3: 50.166666666666664
+            sd: 172.92482321799952
       name: sum
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Converted
       fingerprint:
         global:
-          distinct-count: 13
-          nil%: 0.1428571428571429
+          distinct-count: 82
+          nil%: 0.7313218390804598
         type:
           type/Number:
-            avg: 299.4166666666667
-            max: 1697.0
-            min: 13.0
-            q1: 35.5
-            q3: 202.0
-            sd: 508.34016140471306
+            avg: 198.76470588235293
+            max: 1873.0
+            min: 1.0
+            q1: 3.158324288234026
+            q3: 86.381071161323
+            sd: 439.9474487813444
       name: sum_2
       special_type: null
     - base_type: type/Decimal
@@ -2498,52 +2204,52 @@ ordered_cards:
       display_name: Sum of Openers
       fingerprint:
         global:
-          distinct-count: 14
-          nil%: 0.0
+          distinct-count: 251
+          nil%: 0.08189655172413793
         type:
           type/Number:
-            avg: 682.5
-            max: 3460.0
-            min: 3.0
-            q1: 60.0
-            q3: 465.0
-            sd: 1151.97981753154
+            avg: 144.40845070422534
+            max: 2840.0
+            min: 1.0
+            q1: 15.992406618955963
+            q3: 149.75300962507686
+            sd: 278.9483000220824
       name: sum_4
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Recipients
       fingerprint:
         global:
-          distinct-count: 14
+          distinct-count: 361
           nil%: 0.0
         type:
           type/Number:
-            avg: 2816.6428571428573
-            max: 15690.0
-            min: 16.0
-            q1: 418.0
-            q3: 2067.0
-            sd: 4795.123670614087
+            avg: 377.83620689655174
+            max: 8008.0
+            min: 1.0
+            q1: 25.561621538393553
+            q3: 340.8877493233707
+            sd: 802.5457901029744
       name: sum_5
       special_type: null
     - base_type: type/Decimal
       display_name: Sum of Unsubs
       fingerprint:
         global:
-          distinct-count: 5
-          nil%: 0.5
+          distinct-count: 17
+          nil%: 0.6738505747126436
         type:
           type/Number:
-            avg: 4.428571428571429
-            max: 17.0
+            avg: 3.290748898678414
+            max: 44.0
             min: 1.0
-            q1: 1.0
-            q3: 6.0
-            sd: 5.968169536721256
+            q1: 1.080919051581568
+            q3: 3.953529900650049
+            sd: 4.356264217451044
       name: sum_6
       special_type: null
     table_id: 887
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       column_settings:
         '["name","sum"]':
@@ -2631,11 +2337,11 @@ ordered_cards:
         - 7063
       - - field-id
         - 6496
-  row: 32
+  row: 30
   series: []
   sizeX: 18
   sizeY: 10
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings: {}
 - card:
     archived: false
@@ -2723,16 +2429,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 39433.0
-            max: 39433.0
-            min: 39433.0
-            q1: 39433.0
-            q3: 39433.0
+            avg: 262974.0
+            max: 262974.0
+            min: 262974.0
+            q1: 262974.0
+            q3: 262974.0
             sd: null
       name: sum
       special_type: null
     table_id: 862
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       card.title: Recipients
       table.cell_column: sum
@@ -2791,7 +2497,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: Emails
     table.cell_column: sum
@@ -2846,16 +2552,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 31.0
-            max: 31.0
-            min: 31.0
-            q1: 31.0
-            q3: 31.0
+            avg: 770.0
+            max: 770.0
+            min: 770.0
+            q1: 770.0
+            q3: 770.0
             sd: null
       name: count
       special_type: type/Quantity
     table_id: 827
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings: {}
   card_id: 527
   col: 9
@@ -2906,7 +2612,7 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.description: Number of people who unsubscribed through this campaign
     card.title: unsubscribes
@@ -2932,7 +2638,7 @@ ordered_cards:
     made_public_by_id: null
     name: Age of last computation cycle
     public_uuid: null
-    query_average_duration: 256
+    query_average_duration: 318
     query_type: native
     read_permissions: null
     result_metadata:
@@ -2944,16 +2650,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 1181.0
-            max: 1181.0
-            min: 1181.0
-            q1: 1181.0
-            q3: 1181.0
+            avg: 17242.0
+            max: 17242.0
+            min: 17242.0
+            q1: 17242.0
+            q3: 17242.0
             sd: null
       name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
       special_type: null
     table_id: null
-    updated_at: '2020-06-19T10:27:53.000Z'
+    updated_at: '2020-06-30T14:08:36.000Z'
     visualization_settings:
       column_settings:
         '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
@@ -2964,11 +2670,11 @@ ordered_cards:
   dashboard_id: 61
   id: 536
   parameter_mappings: []
-  row: 42
+  row: 40
   series: []
   sizeX: 18
   sizeY: 2
-  updated_at: '2020-06-18T14:23:14.000Z'
+  updated_at: '2020-06-30T14:08:33.000Z'
   visualization_settings:
     card.title: This is the maximum age of data used on this dashboard
     column_settings:

@@ -74,11 +74,11 @@ result_metadata:
       nil%: 0.0
     type:
       type/Number:
-        avg: 39433.0
-        max: 39433.0
-        min: 39433.0
-        q1: 39433.0
-        q3: 39433.0
+        avg: 262974.0
+        max: 262974.0
+        min: 262974.0
+        q1: 262974.0
+        q3: 262974.0
         sd: null
   name: sum
   special_type: null
