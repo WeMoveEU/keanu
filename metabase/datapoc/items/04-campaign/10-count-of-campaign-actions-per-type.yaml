@@ -37,7 +37,7 @@ dataset_query:
     source-table: 813
   type: query
 description: null
-display: pie
+display: bar
 id: 477
 model: card
 name: Count of campaign actions per type
@@ -59,21 +59,20 @@ result_metadata:
   display_name: Count
   fingerprint:
     global:
-      distinct-count: 3
+      distinct-count: 5
       nil%: 0.0
     type:
       type/Number:
-        avg: 1896.0
-        max: 4561.0
-        min: 2.0
-        q1: 282.75
-        q3: 3702.0
-        sd: 2375.2791414905323
+        avg: 610.8
+        max: 2703.0
+        min: 37.0
+        q1: 40.0
+        q3: 829.5
+        sd: 1171.5934448433893
   name: count
   special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
-  - created_at
   - action_type
   graph.metrics:
   - count

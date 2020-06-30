@@ -232,14 +232,14 @@ ordered_cards:
         source-table: 813
       type: query
     description: null
-    display: pie
+    display: bar
     embedding_params: null
     enable_embedding: false
     id: 477
     made_public_by_id: null
     name: Count of campaign actions per type
     public_uuid: null
-    query_average_duration: 601
+    query_average_duration: 647
     query_type: query
     read_permissions: null
     result_metadata:
@@ -259,23 +259,22 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 3
+          distinct-count: 5
           nil%: 0.0
         type:
           type/Number:
-            avg: 1896.0
-            max: 4561.0
-            min: 2.0
-            q1: 282.75
-            q3: 3702.0
-            sd: 2375.2791414905323
+            avg: 610.8
+            max: 2703.0
+            min: 37.0
+            q1: 40.0
+            q3: 829.5
+            sd: 1171.5934448433893
       name: count
       special_type: type/Quantity
     table_id: 813
-    updated_at: '2020-06-18T14:57:24.000Z'
+    updated_at: '2020-06-30T14:08:37.000Z'
     visualization_settings:
       graph.dimensions:
-      - created_at
       - action_type
       graph.metrics:
       - count
@@ -340,8 +339,22 @@ ordered_cards:
   series: []
   sizeX: 7
   sizeY: 7
-  updated_at: '2020-06-18T14:23:14.000Z'
-  visualization_settings: {}
+  updated_at: '2020-06-30T14:08:33.000Z'
+  visualization_settings:
+    graph.dimensions:
+    - action_type
+    graph.metrics:
+    - count
+    graph.x_axis.title_text: Action Type
+    pie.slice_threshold: 0
+    series_settings:
+      donate:
+        axis: null
+      share:
+        axis: null
+      sign:
+        axis: null
+    stackable.stack_type: null
 - card:
     query_average_duration: null
   card_id: null

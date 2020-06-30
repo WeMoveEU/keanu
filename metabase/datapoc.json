@@ -9579,7 +9579,7 @@
             "type": "query"
           },
           "description": null,
-          "display": "pie",
+          "display": "bar",
           "id": 477,
           "model": "card",
           "name": "Count of campaign actions per type",
@@ -9623,7 +9623,6 @@
           ],
           "visualization_settings": {
             "graph.dimensions": [
-              "created_at",
               "action_type"
             ],
             "graph.metrics": [
@@ -10805,14 +10804,14 @@
               "type": "query"
             },
             "description": null,
-            "display": "pie",
+            "display": "bar",
             "embedding_params": null,
             "enable_embedding": false,
             "id": 477,
             "made_public_by_id": null,
             "name": "Count of campaign actions per type",
             "public_uuid": null,
-            "query_average_duration": 601,
+            "query_average_duration": 647,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -10853,10 +10852,9 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-18T14:57:24.000Z",
+            "updated_at": "2020-06-30T14:08:37.000Z",
             "visualization_settings": {
               "graph.dimensions": [
-                "created_at",
                 "action_type"
               ],
               "graph.metrics": [
