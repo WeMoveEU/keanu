@@ -9393,6 +9393,21 @@
                   ]
                 ]
               ],
+              "filter": [
+                "does-not-contain",
+                [
+                  "joined-field",
+                  "Source",
+                  [
+                    "field-id",
+                    6613
+                  ]
+                ],
+                "civimail",
+                {
+                  "case-sensitive": false
+                }
+              ],
               "joins": [
                 {
                   "alias": "Action Page",
@@ -9499,13 +9514,14 @@
             }
           ],
           "visualization_settings": {
+            "card.title": "Sources (other than mailings)",
             "graph.dimensions": [
               "medium"
             ],
             "graph.metrics": [
               "count"
             ],
-            "pie.slice_threshold": 0.5,
+            "pie.slice_threshold": 1,
             "stackable.stack_type": "stacked"
           }
         },
@@ -11512,6 +11528,21 @@
                     ]
                   ]
                 ],
+                "filter": [
+                  "does-not-contain",
+                  [
+                    "joined-field",
+                    "Source",
+                    [
+                      "field-id",
+                      6613
+                    ]
+                  ],
+                  "civimail",
+                  {
+                    "case-sensitive": false
+                  }
+                ],
                 "joins": [
                   {
                     "alias": "Action Page",
@@ -11623,15 +11654,16 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-18T14:57:24.000Z",
+            "updated_at": "2020-06-30T14:08:37.000Z",
             "visualization_settings": {
+              "card.title": "Sources (other than mailings)",
               "graph.dimensions": [
                 "medium"
               ],
               "graph.metrics": [
                 "count"
               ],
-              "pie.slice_threshold": 0.5,
+              "pie.slice_threshold": 1,
               "stackable.stack_type": "stacked"
             }
           },

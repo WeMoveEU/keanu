@@ -11,6 +11,14 @@ dataset_query:
       - Source
       - - field-id
         - 6613
+    filter:
+    - does-not-contain
+    - - joined-field
+      - Source
+      - - field-id
+        - 6613
+    - civimail
+    - case-sensitive: false
     joins:
     - alias: Action Page
       condition:
@@ -65,22 +73,23 @@ result_metadata:
   display_name: Count
   fingerprint:
     global:
-      distinct-count: 27
+      distinct-count: 13
       nil%: 0.0
     type:
       type/Number:
-        avg: 126.4
-        max: 2017.0
+        avg: 19.774193548387096
+        max: 401.0
         min: 1.0
-        q1: 1.5147960268752383
-        q3: 138.25
-        sd: 348.8471532973092
+        q1: 1.0991805480332872
+        q3: 11.426785900258878
+        sd: 71.59688525693436
   name: count
   special_type: type/Quantity
 visualization_settings:
+  card.title: Sources (other than mailings)
   graph.dimensions:
   - medium
   graph.metrics:
   - count
-  pie.slice_threshold: 0.5
+  pie.slice_threshold: 1
   stackable.stack_type: stacked
