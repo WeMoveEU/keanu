@@ -22,11 +22,11 @@ result_metadata:
       nil%: 0.0
     type:
       type/Number:
-        avg: 1181.0
-        max: 1181.0
-        min: 1181.0
-        q1: 1181.0
-        q3: 1181.0
+        avg: 106.0
+        max: 106.0
+        min: 106.0
+        q1: 106.0
+        q3: 106.0
         sd: null
   name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
   special_type: null

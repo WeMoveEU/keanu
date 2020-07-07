@@ -3777,6 +3777,644 @@
           "database_id": 9,
           "dataset_query": {
             "database": 9,
+            "native": {
+              "query": "SELECT \n    SUBSTR(l.name, 1, 6) AS version, c.status AS consent_status, COUNT(*) AS `count`\nFROM consent c\nJOIN (\n    SELECT \n        broadcast.name, contact_id, MAX(created_at) latest \n    FROM broadcast\n    JOIN broadcast_link link ON link.broadcast_id=broadcast.id\n    JOIN source s ON s.id = link.source_id\n    JOIN consent ON consent.source_id=s.id\n    WHERE {{broadcast_test_id}}\n    GROUP BY broadcast.id, contact_id\n) l ON l.contact_id=c.contact_id AND l.latest=c.created_at\nGROUP BY version, consent_status\n",
+              "template-tags": {
+                "broadcast_test_id": {
+                  "dimension": [
+                    "field-id",
+                    6643
+                  ],
+                  "display-name": "Broadcast test id",
+                  "id": "533c2fdc-6e2e-174a-e25c-e8e6ac205aeb",
+                  "name": "broadcast_test_id",
+                  "required": true,
+                  "type": "dimension",
+                  "widget-type": "id"
+                }
+              }
+            },
+            "type": "native"
+          },
+          "description": "Number of consents for each status",
+          "display": "bar",
+          "id": 509,
+          "model": "card",
+          "name": "A/B Consents",
+          "query_type": "native",
+          "result_metadata": [
+            {
+              "base_type": "type/Text",
+              "display_name": "version",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 6,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "version",
+              "special_type": null
+            },
+            {
+              "base_type": "type/Text",
+              "display_name": "consent_status",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 8,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "consent_status",
+              "special_type": null
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "count",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 3,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Number": {
+                    "avg": 1.75,
+                    "max": 3,
+                    "min": 1,
+                    "q1": 1,
+                    "q3": 2.5,
+                    "sd": 0.9574271077563381
+                  }
+                }
+              },
+              "name": "count",
+              "special_type": "type/Quantity"
+            }
+          ],
+          "visualization_settings": {
+            "graph.dimensions": [
+              "version",
+              "consent_status"
+            ],
+            "graph.metrics": [
+              "count"
+            ],
+            "graph.x_axis.labels_enabled": false,
+            "pie.colors": {
+              "accepted": "#84BB4C",
+              "pending": "#F2A86F",
+              "rejected": "#ED6E6E"
+            },
+            "pie.dimension": "status",
+            "pie.metric": "count",
+            "pie.slice_threshold": 0,
+            "scalar.field": "count",
+            "table.cell_column": "count",
+            "table.pivot_column": "name"
+          }
+        },
+        {
+          "collection_id": 102,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6902
+                  ],
+                  "converted_to_clickers"
+                ],
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6900
+                  ],
+                  1
+                ]
+              ],
+              "order-by": [
+                [
+                  "asc",
+                  [
+                    "field-id",
+                    6899
+                  ]
+                ]
+              ],
+              "source-table": 862
+            },
+            "type": "query"
+          },
+          "description": "Number of people who took action versus number of people who clicked a link",
+          "display": "bar",
+          "id": 506,
+          "model": "card",
+          "name": "A/B Conversion rate (vs clicks)",
+          "query_type": "query",
+          "result_metadata": [
+            {
+              "base_type": "type/Integer",
+              "display_name": "ID",
+              "fingerprint": null,
+              "name": "id",
+              "special_type": "type/PK"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Broadcast ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9755,
+                  "nil%": 0
+                }
+              },
+              "name": "broadcast_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Text",
+              "display_name": "Broadcast Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9669,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 43.4621,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "broadcast_name",
+              "special_type": null
+            },
+            {
+              "base_type": "type/*",
+              "display_name": "Metric",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2,
+                  "nil%": 0
+                }
+              },
+              "name": "metric",
+              "special_type": "type/Category"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Segment ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 1,
+                  "nil%": 0
+                }
+              },
+              "name": "segment_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Decimal",
+              "display_name": "Value",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2602,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Number": {
+                    "avg": 940.771,
+                    "max": 16233,
+                    "min": 1,
+                    "q1": 43.88261242616341,
+                    "q3": 784.7677438370661,
+                    "sd": 1999.358711085584
+                  }
+                }
+              },
+              "name": "value",
+              "special_type": null
+            },
+            {
+              "base_type": "type/Text",
+              "description": "Internal name of the broadcast",
+              "display_name": "Broadcast \u2192 Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9916,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 39.6161,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "name",
+              "special_type": "type/Name"
+            }
+          ],
+          "visualization_settings": {
+            "column_settings": {
+              "[\"ref\",[\"field-id\",6898]]": {
+                "number_style": "percent"
+              }
+            },
+            "graph.dimensions": [
+              "broadcast_id"
+            ],
+            "graph.metrics": [
+              "value"
+            ],
+            "graph.x_axis.labels_enabled": false,
+            "graph.y_axis.title_text": "Conversion rate",
+            "series_settings": {
+              "value": {
+                "title": "Open rate"
+              }
+            }
+          }
+        },
+        {
+          "collection_id": 102,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6902
+                  ],
+                  "openers_rate"
+                ],
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6900
+                  ],
+                  1
+                ]
+              ],
+              "order-by": [
+                [
+                  "asc",
+                  [
+                    "field-id",
+                    6899
+                  ]
+                ]
+              ],
+              "source-table": 862
+            },
+            "type": "query"
+          },
+          "description": null,
+          "display": "bar",
+          "id": 499,
+          "model": "card",
+          "name": "A/B Open rate",
+          "query_type": "query",
+          "result_metadata": [
+            {
+              "base_type": "type/Integer",
+              "display_name": "ID",
+              "fingerprint": null,
+              "name": "id",
+              "special_type": "type/PK"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Broadcast ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9755,
+                  "nil%": 0
+                }
+              },
+              "name": "broadcast_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Text",
+              "display_name": "Broadcast Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9669,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 43.4621,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "broadcast_name",
+              "special_type": null
+            },
+            {
+              "base_type": "type/*",
+              "display_name": "Metric",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2,
+                  "nil%": 0
+                }
+              },
+              "name": "metric",
+              "special_type": "type/Category"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Segment ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 1,
+                  "nil%": 0
+                }
+              },
+              "name": "segment_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Decimal",
+              "display_name": "Value",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2602,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Number": {
+                    "avg": 940.771,
+                    "max": 16233,
+                    "min": 1,
+                    "q1": 43.88261242616341,
+                    "q3": 784.7677438370661,
+                    "sd": 1999.358711085584
+                  }
+                }
+              },
+              "name": "value",
+              "special_type": null
+            },
+            {
+              "base_type": "type/Text",
+              "description": "Internal name of the broadcast",
+              "display_name": "Broadcast \u2192 Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9916,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 39.6161,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "name",
+              "special_type": "type/Name"
+            }
+          ],
+          "visualization_settings": {
+            "column_settings": {
+              "[\"ref\",[\"field-id\",6898]]": {
+                "number_style": "percent"
+              }
+            },
+            "graph.dimensions": [
+              "broadcast_id"
+            ],
+            "graph.metrics": [
+              "value"
+            ],
+            "graph.x_axis.labels_enabled": false,
+            "series_settings": {
+              "value": {
+                "title": "Open rate"
+              }
+            }
+          }
+        },
+        {
+          "collection_id": 102,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6902
+                  ],
+                  "unsub_rate"
+                ],
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6900
+                  ],
+                  1
+                ]
+              ],
+              "order-by": [
+                [
+                  "asc",
+                  [
+                    "field-id",
+                    6899
+                  ]
+                ]
+              ],
+              "source-table": 862
+            },
+            "type": "query"
+          },
+          "description": null,
+          "display": "bar",
+          "id": 510,
+          "model": "card",
+          "name": "A/B Unsubscribe rate",
+          "query_type": "query",
+          "result_metadata": [
+            {
+              "base_type": "type/Integer",
+              "display_name": "ID",
+              "fingerprint": null,
+              "name": "id",
+              "special_type": "type/PK"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Broadcast ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9755,
+                  "nil%": 0
+                }
+              },
+              "name": "broadcast_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Text",
+              "display_name": "Broadcast Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9669,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 43.4621,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "broadcast_name",
+              "special_type": null
+            },
+            {
+              "base_type": "type/*",
+              "display_name": "Metric",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2,
+                  "nil%": 0
+                }
+              },
+              "name": "metric",
+              "special_type": "type/Category"
+            },
+            {
+              "base_type": "type/Integer",
+              "display_name": "Segment ID",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 1,
+                  "nil%": 0
+                }
+              },
+              "name": "segment_id",
+              "special_type": "type/FK"
+            },
+            {
+              "base_type": "type/Decimal",
+              "display_name": "Value",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 2602,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Number": {
+                    "avg": 940.771,
+                    "max": 16233,
+                    "min": 1,
+                    "q1": 43.88261242616341,
+                    "q3": 784.7677438370661,
+                    "sd": 1999.358711085584
+                  }
+                }
+              },
+              "name": "value",
+              "special_type": null
+            },
+            {
+              "base_type": "type/Text",
+              "description": "Internal name of the broadcast",
+              "display_name": "Broadcast \u2192 Name",
+              "fingerprint": {
+                "global": {
+                  "distinct-count": 9916,
+                  "nil%": 0
+                },
+                "type": {
+                  "type/Text": {
+                    "average-length": 39.6161,
+                    "percent-email": 0,
+                    "percent-json": 0,
+                    "percent-url": 0
+                  }
+                }
+              },
+              "name": "name",
+              "special_type": "type/Name"
+            }
+          ],
+          "visualization_settings": {
+            "column_settings": {
+              "[\"ref\",[\"field-id\",6898]]": {
+                "number_style": "percent"
+              }
+            },
+            "graph.dimensions": [
+              "broadcast_id"
+            ],
+            "graph.metrics": [
+              "value"
+            ],
+            "graph.x_axis.labels_enabled": false,
+            "graph.y_axis.title_text": "Forward rate",
+            "series_settings": {
+              "value": {
+                "title": "Forward rate"
+              }
+            }
+          }
+        },
+        {
+          "collection_id": 102,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
             "query": {
               "filter": [
                 "and",
@@ -3938,297 +4576,6 @@
             ],
             "graph.x_axis.labels_enabled": false,
             "graph.y_axis.title_text": "Click rate",
-            "series_settings": {
-              "value": {
-                "title": "Open rate"
-              }
-            }
-          }
-        },
-        {
-          "collection_id": 102,
-          "collection_position": null,
-          "database_id": 9,
-          "dataset_query": {
-            "database": 9,
-            "native": {
-              "query": "SELECT \n    SUBSTR(l.name, 1, 6) AS version, c.status AS consent_status, COUNT(*) AS `count`\nFROM consent c\nJOIN (\n    SELECT \n        broadcast.name, contact_id, MAX(created_at) latest \n    FROM broadcast\n    JOIN broadcast_link link ON link.broadcast_id=broadcast.id\n    JOIN source s ON s.id = link.source_id\n    JOIN consent ON consent.source_id=s.id\n    WHERE {{broadcast_test_id}}\n    GROUP BY broadcast.id, contact_id\n) l ON l.contact_id=c.contact_id AND l.latest=c.created_at\nGROUP BY version, consent_status\n",
-              "template-tags": {
-                "broadcast_test_id": {
-                  "dimension": [
-                    "field-id",
-                    6643
-                  ],
-                  "display-name": "Broadcast test id",
-                  "id": "533c2fdc-6e2e-174a-e25c-e8e6ac205aeb",
-                  "name": "broadcast_test_id",
-                  "required": true,
-                  "type": "dimension",
-                  "widget-type": "id"
-                }
-              }
-            },
-            "type": "native"
-          },
-          "description": "Number of consents for each status",
-          "display": "bar",
-          "id": 509,
-          "model": "card",
-          "name": "Consents",
-          "query_type": "native",
-          "result_metadata": [
-            {
-              "base_type": "type/Text",
-              "display_name": "version",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 6.0,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "version",
-              "special_type": null
-            },
-            {
-              "base_type": "type/Text",
-              "display_name": "consent_status",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 8.0,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "consent_status",
-              "special_type": null
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "count",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 3,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Number": {
-                    "avg": 1.75,
-                    "max": 3.0,
-                    "min": 1.0,
-                    "q1": 1.0,
-                    "q3": 2.5,
-                    "sd": 0.9574271077563381
-                  }
-                }
-              },
-              "name": "count",
-              "special_type": "type/Quantity"
-            }
-          ],
-          "visualization_settings": {
-            "graph.dimensions": [
-              "version",
-              "consent_status"
-            ],
-            "graph.metrics": [
-              "count"
-            ],
-            "graph.x_axis.labels_enabled": false,
-            "pie.colors": {
-              "accepted": "#84BB4C",
-              "pending": "#F2A86F",
-              "rejected": "#ED6E6E"
-            },
-            "pie.dimension": "status",
-            "pie.metric": "count",
-            "pie.slice_threshold": 0,
-            "scalar.field": "count",
-            "table.cell_column": "count",
-            "table.pivot_column": "name"
-          }
-        },
-        {
-          "collection_id": 102,
-          "collection_position": null,
-          "database_id": 9,
-          "dataset_query": {
-            "database": 9,
-            "query": {
-              "filter": [
-                "and",
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6902
-                  ],
-                  "converted_to_clickers"
-                ],
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6900
-                  ],
-                  1
-                ]
-              ],
-              "order-by": [
-                [
-                  "asc",
-                  [
-                    "field-id",
-                    6899
-                  ]
-                ]
-              ],
-              "source-table": 862
-            },
-            "type": "query"
-          },
-          "description": "Number of people who took action versus number of people who clicked a link",
-          "display": "bar",
-          "id": 506,
-          "model": "card",
-          "name": "Conversion rate (vs clicks)",
-          "query_type": "query",
-          "result_metadata": [
-            {
-              "base_type": "type/Integer",
-              "display_name": "ID",
-              "fingerprint": null,
-              "name": "id",
-              "special_type": "type/PK"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Broadcast ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9755,
-                  "nil%": 0.0
-                }
-              },
-              "name": "broadcast_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Text",
-              "display_name": "Broadcast Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9669,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 43.4621,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "broadcast_name",
-              "special_type": null
-            },
-            {
-              "base_type": "type/*",
-              "display_name": "Metric",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2,
-                  "nil%": 0.0
-                }
-              },
-              "name": "metric",
-              "special_type": "type/Category"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Segment ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 1,
-                  "nil%": 0.0
-                }
-              },
-              "name": "segment_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Decimal",
-              "display_name": "Value",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2602,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Number": {
-                    "avg": 940.771,
-                    "max": 16233.0,
-                    "min": 1.0,
-                    "q1": 43.88261242616341,
-                    "q3": 784.7677438370661,
-                    "sd": 1999.358711085584
-                  }
-                }
-              },
-              "name": "value",
-              "special_type": null
-            },
-            {
-              "base_type": "type/Text",
-              "description": "Internal name of the broadcast",
-              "display_name": "Broadcast \u2192 Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9916,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 39.6161,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "name",
-              "special_type": "type/Name"
-            }
-          ],
-          "visualization_settings": {
-            "column_settings": {
-              "[\"ref\",[\"field-id\",6898]]": {
-                "number_style": "percent"
-              }
-            },
-            "graph.dimensions": [
-              "broadcast_id"
-            ],
-            "graph.metrics": [
-              "value"
-            ],
-            "graph.x_axis.labels_enabled": false,
-            "graph.y_axis.title_text": "Conversion rate",
             "series_settings": {
               "value": {
                 "title": "Open rate"
@@ -4758,353 +5105,6 @@
               }
             }
           }
-        },
-        {
-          "collection_id": 102,
-          "collection_position": null,
-          "database_id": 9,
-          "dataset_query": {
-            "database": 9,
-            "query": {
-              "filter": [
-                "and",
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6902
-                  ],
-                  "openers_rate"
-                ],
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6900
-                  ],
-                  1
-                ]
-              ],
-              "order-by": [
-                [
-                  "asc",
-                  [
-                    "field-id",
-                    6899
-                  ]
-                ]
-              ],
-              "source-table": 862
-            },
-            "type": "query"
-          },
-          "description": null,
-          "display": "bar",
-          "id": 499,
-          "model": "card",
-          "name": "Open rate",
-          "query_type": "query",
-          "result_metadata": [
-            {
-              "base_type": "type/Integer",
-              "display_name": "ID",
-              "fingerprint": null,
-              "name": "id",
-              "special_type": "type/PK"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Broadcast ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9755,
-                  "nil%": 0.0
-                }
-              },
-              "name": "broadcast_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Text",
-              "display_name": "Broadcast Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9669,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 43.4621,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "broadcast_name",
-              "special_type": null
-            },
-            {
-              "base_type": "type/*",
-              "display_name": "Metric",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2,
-                  "nil%": 0.0
-                }
-              },
-              "name": "metric",
-              "special_type": "type/Category"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Segment ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 1,
-                  "nil%": 0.0
-                }
-              },
-              "name": "segment_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Decimal",
-              "display_name": "Value",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2602,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Number": {
-                    "avg": 940.771,
-                    "max": 16233.0,
-                    "min": 1.0,
-                    "q1": 43.88261242616341,
-                    "q3": 784.7677438370661,
-                    "sd": 1999.358711085584
-                  }
-                }
-              },
-              "name": "value",
-              "special_type": null
-            },
-            {
-              "base_type": "type/Text",
-              "description": "Internal name of the broadcast",
-              "display_name": "Broadcast \u2192 Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9916,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 39.6161,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "name",
-              "special_type": "type/Name"
-            }
-          ],
-          "visualization_settings": {
-            "column_settings": {
-              "[\"ref\",[\"field-id\",6898]]": {
-                "number_style": "percent"
-              }
-            },
-            "graph.dimensions": [
-              "broadcast_id"
-            ],
-            "graph.metrics": [
-              "value"
-            ],
-            "graph.x_axis.labels_enabled": false,
-            "series_settings": {
-              "value": {
-                "title": "Open rate"
-              }
-            }
-          }
-        },
-        {
-          "collection_id": 102,
-          "collection_position": null,
-          "database_id": 9,
-          "dataset_query": {
-            "database": 9,
-            "query": {
-              "filter": [
-                "and",
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6902
-                  ],
-                  "unsub_rate"
-                ],
-                [
-                  "=",
-                  [
-                    "field-id",
-                    6900
-                  ],
-                  1
-                ]
-              ],
-              "order-by": [
-                [
-                  "asc",
-                  [
-                    "field-id",
-                    6899
-                  ]
-                ]
-              ],
-              "source-table": 862
-            },
-            "type": "query"
-          },
-          "description": null,
-          "display": "bar",
-          "id": 510,
-          "model": "card",
-          "name": "Unsubscribe rate",
-          "query_type": "query",
-          "result_metadata": [
-            {
-              "base_type": "type/Integer",
-              "display_name": "ID",
-              "fingerprint": null,
-              "name": "id",
-              "special_type": "type/PK"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Broadcast ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9755,
-                  "nil%": 0.0
-                }
-              },
-              "name": "broadcast_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Text",
-              "display_name": "Broadcast Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9669,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 43.4621,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "broadcast_name",
-              "special_type": null
-            },
-            {
-              "base_type": "type/*",
-              "display_name": "Metric",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2,
-                  "nil%": 0.0
-                }
-              },
-              "name": "metric",
-              "special_type": "type/Category"
-            },
-            {
-              "base_type": "type/Integer",
-              "display_name": "Segment ID",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 1,
-                  "nil%": 0.0
-                }
-              },
-              "name": "segment_id",
-              "special_type": "type/FK"
-            },
-            {
-              "base_type": "type/Decimal",
-              "display_name": "Value",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 2602,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Number": {
-                    "avg": 940.771,
-                    "max": 16233.0,
-                    "min": 1.0,
-                    "q1": 43.88261242616341,
-                    "q3": 784.7677438370661,
-                    "sd": 1999.358711085584
-                  }
-                }
-              },
-              "name": "value",
-              "special_type": null
-            },
-            {
-              "base_type": "type/Text",
-              "description": "Internal name of the broadcast",
-              "display_name": "Broadcast \u2192 Name",
-              "fingerprint": {
-                "global": {
-                  "distinct-count": 9916,
-                  "nil%": 0.0
-                },
-                "type": {
-                  "type/Text": {
-                    "average-length": 39.6161,
-                    "percent-email": 0.0,
-                    "percent-json": 0.0,
-                    "percent-url": 0.0
-                  }
-                }
-              },
-              "name": "name",
-              "special_type": "type/Name"
-            }
-          ],
-          "visualization_settings": {
-            "column_settings": {
-              "[\"ref\",[\"field-id\",6898]]": {
-                "number_style": "percent"
-              }
-            },
-            "graph.dimensions": [
-              "broadcast_id"
-            ],
-            "graph.metrics": [
-              "value"
-            ],
-            "graph.x_axis.labels_enabled": false,
-            "graph.y_axis.title_text": "Forward rate",
-            "series_settings": {
-              "value": {
-                "title": "Forward rate"
-              }
-            }
-          }
         }
       ],
       "model": "collection",
@@ -5298,7 +5298,7 @@
               }
             ],
             "table_id": 825,
-            "updated_at": "2020-06-18T14:11:03.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6484]]": {
@@ -5521,9 +5521,9 @@
             "enable_embedding": false,
             "id": 499,
             "made_public_by_id": null,
-            "name": "Open rate",
+            "name": "A/B Open rate",
             "public_uuid": null,
-            "query_average_duration": 1017,
+            "query_average_duration": 967,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -5540,7 +5540,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9755,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "broadcast_id",
@@ -5552,14 +5552,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9669,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 43.4621,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -5572,7 +5572,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "metric",
@@ -5584,7 +5584,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 1,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "segment_id",
@@ -5596,13 +5596,13 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2602,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Number": {
                       "avg": 940.771,
-                      "max": 16233.0,
-                      "min": 1.0,
+                      "max": 16233,
+                      "min": 1,
                       "q1": 43.88261242616341,
                       "q3": 784.7677438370661,
                       "sd": 1999.358711085584
@@ -5619,14 +5619,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9916,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 39.6161,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -5635,7 +5635,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:40:28.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -5852,7 +5852,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -5956,9 +5956,9 @@
             "enable_embedding": false,
             "id": 506,
             "made_public_by_id": null,
-            "name": "Conversion rate (vs clicks)",
+            "name": "A/B Conversion rate (vs clicks)",
             "public_uuid": null,
-            "query_average_duration": 994,
+            "query_average_duration": 965,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -5975,7 +5975,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9755,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "broadcast_id",
@@ -5987,14 +5987,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9669,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 43.4621,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6007,7 +6007,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "metric",
@@ -6019,7 +6019,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 1,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "segment_id",
@@ -6031,13 +6031,13 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2602,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Number": {
                       "avg": 940.771,
-                      "max": 16233.0,
-                      "min": 1.0,
+                      "max": 16233,
+                      "min": 1,
                       "q1": 43.88261242616341,
                       "q3": 784.7677438370661,
                       "sd": 1999.358711085584
@@ -6054,14 +6054,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9916,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 39.6161,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6070,7 +6070,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:39:28.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -6288,7 +6288,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {}
@@ -6558,7 +6558,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -6648,7 +6648,7 @@
             "enable_embedding": false,
             "id": 509,
             "made_public_by_id": null,
-            "name": "Consents",
+            "name": "A/B Consents",
             "public_uuid": null,
             "query_average_duration": 289,
             "query_type": "native",
@@ -6660,14 +6660,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
-                      "average-length": 6.0,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "average-length": 6,
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6680,14 +6680,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
-                      "average-length": 8.0,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "average-length": 8,
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6700,14 +6700,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 3,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Number": {
                       "avg": 1.75,
-                      "max": 3.0,
-                      "min": 1.0,
-                      "q1": 1.0,
+                      "max": 3,
+                      "min": 1,
+                      "q1": 1,
                       "q3": 2.5,
                       "sd": 0.9574271077563381
                     }
@@ -6718,7 +6718,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-04T12:33:52.000Z",
+            "updated_at": "2020-07-07T15:39:01.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "version",
@@ -6816,9 +6816,9 @@
             "enable_embedding": false,
             "id": 510,
             "made_public_by_id": null,
-            "name": "Unsubscribe rate",
+            "name": "A/B Unsubscribe rate",
             "public_uuid": null,
-            "query_average_duration": 991,
+            "query_average_duration": 962,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -6835,7 +6835,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9755,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "broadcast_id",
@@ -6847,14 +6847,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9669,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 43.4621,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6867,7 +6867,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "metric",
@@ -6879,7 +6879,7 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 1,
-                    "nil%": 0.0
+                    "nil%": 0
                   }
                 },
                 "name": "segment_id",
@@ -6891,13 +6891,13 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 2602,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Number": {
                       "avg": 940.771,
-                      "max": 16233.0,
-                      "min": 1.0,
+                      "max": 16233,
+                      "min": 1,
                       "q1": 43.88261242616341,
                       "q3": 784.7677438370661,
                       "sd": 1999.358711085584
@@ -6914,14 +6914,14 @@
                 "fingerprint": {
                   "global": {
                     "distinct-count": 9916,
-                    "nil%": 0.0
+                    "nil%": 0
                   },
                   "type": {
                     "type/Text": {
                       "average-length": 39.6161,
-                      "percent-email": 0.0,
-                      "percent-json": 0.0,
-                      "percent-url": 0.0
+                      "percent-email": 0,
+                      "percent-json": 0,
+                      "percent-url": 0
                     }
                   }
                 },
@@ -6930,7 +6930,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:41:00.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -7176,7 +7176,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-18T14:11:04.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6898]]": {
@@ -7283,7 +7283,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -7297,11 +7297,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -7311,7 +7311,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -7693,11 +7693,11 @@
             },
             "type": {
               "type/Number": {
-                "avg": 17242.0,
-                "max": 17242.0,
-                "min": 17242.0,
-                "q1": 17242.0,
-                "q3": 17242.0,
+                "avg": 106.0,
+                "max": 106.0,
+                "min": 106.0,
+                "q1": 106.0,
+                "q3": 106.0,
                 "sd": null
               }
             }
@@ -7847,11 +7847,11 @@
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 262974.0,
-                    "max": 262974.0,
-                    "min": 262974.0,
-                    "q1": 262974.0,
-                    "q3": 262974.0,
+                    "avg": 39433.0,
+                    "max": 39433.0,
+                    "min": 39433.0,
+                    "q1": 39433.0,
+                    "q3": 39433.0,
                     "sd": null
                   }
                 }
@@ -8109,17 +8109,17 @@
               "display_name": "Sum of Clickers",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 115,
-                  "nil%": 0.5402298850574713
+                  "distinct-count": 13,
+                  "nil%": 0.1428571428571429
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 70.871875,
-                    "max": 1545.0,
-                    "min": 1.0,
-                    "q1": 5.496801708267508,
-                    "q3": 50.166666666666664,
-                    "sd": 172.92482321799952
+                    "avg": 329.1666666666667,
+                    "max": 1810.0,
+                    "min": 13.0,
+                    "q1": 40.5,
+                    "q3": 218.0,
+                    "sd": 548.2709737037522
                   }
                 }
               },
@@ -8131,17 +8131,17 @@
               "display_name": "Sum of Converted",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 82,
-                  "nil%": 0.7313218390804598
+                  "distinct-count": 13,
+                  "nil%": 0.1428571428571429
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 198.76470588235293,
-                    "max": 1873.0,
-                    "min": 1.0,
-                    "q1": 3.158324288234026,
-                    "q3": 86.381071161323,
-                    "sd": 439.9474487813444
+                    "avg": 299.4166666666667,
+                    "max": 1697.0,
+                    "min": 13.0,
+                    "q1": 35.5,
+                    "q3": 202.0,
+                    "sd": 508.34016140471306
                   }
                 }
               },
@@ -8175,17 +8175,17 @@
               "display_name": "Sum of Openers",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 251,
-                  "nil%": 0.08189655172413793
+                  "distinct-count": 14,
+                  "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 144.40845070422534,
-                    "max": 2840.0,
-                    "min": 1.0,
-                    "q1": 15.992406618955963,
-                    "q3": 149.75300962507686,
-                    "sd": 278.9483000220824
+                    "avg": 682.5,
+                    "max": 3460.0,
+                    "min": 3.0,
+                    "q1": 60.0,
+                    "q3": 465.0,
+                    "sd": 1151.97981753154
                   }
                 }
               },
@@ -8197,17 +8197,17 @@
               "display_name": "Sum of Recipients",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 361,
+                  "distinct-count": 14,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 377.83620689655174,
-                    "max": 8008.0,
-                    "min": 1.0,
-                    "q1": 25.561621538393553,
-                    "q3": 340.8877493233707,
-                    "sd": 802.5457901029744
+                    "avg": 2816.6428571428573,
+                    "max": 15690.0,
+                    "min": 16.0,
+                    "q1": 418.0,
+                    "q3": 2067.0,
+                    "sd": 4795.123670614087
                   }
                 }
               },
@@ -8219,17 +8219,17 @@
               "display_name": "Sum of Unsubs",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 17,
-                  "nil%": 0.6738505747126436
+                  "distinct-count": 5,
+                  "nil%": 0.5
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 3.290748898678414,
-                    "max": 44.0,
+                    "avg": 4.428571428571429,
+                    "max": 17.0,
                     "min": 1.0,
-                    "q1": 1.080919051581568,
-                    "q3": 3.953529900650049,
-                    "sd": 4.356264217451044
+                    "q1": 1.0,
+                    "q3": 6.0,
+                    "sd": 5.968169536721256
                   }
                 }
               },
@@ -8547,11 +8547,11 @@
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 3054.0,
-                    "max": 3054.0,
-                    "min": 3054.0,
-                    "q1": 3054.0,
-                    "q3": 3054.0,
+                    "avg": 5688.0,
+                    "max": 5688.0,
+                    "min": 5688.0,
+                    "q1": 5688.0,
+                    "q3": 5688.0,
                     "sd": null
                   }
                 }
@@ -8688,17 +8688,17 @@
               "display_name": "Count",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 20,
+                  "distinct-count": 15,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 117.46153846153847,
-                    "max": 1691.0,
+                    "avg": 247.30434782608697,
+                    "max": 2709.0,
                     "min": 1.0,
-                    "q1": 2.76393202250021,
-                    "q3": 77.0,
-                    "sd": 332.0305083294884
+                    "q1": 1.5,
+                    "q3": 159.5,
+                    "sd": 625.8981499182964
                   }
                 }
               },
@@ -8827,12 +8827,12 @@
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 381.75,
-                    "max": 1745.0,
-                    "min": 13.0,
-                    "q1": 40.0,
-                    "q3": 461.0,
-                    "sd": 580.139084308976
+                    "avg": 568.8,
+                    "max": 2976.0,
+                    "min": 1.0,
+                    "q1": 9.785218258752417,
+                    "q3": 448.0,
+                    "sd": 998.2820576704094
                   }
                 }
               },
@@ -9342,17 +9342,17 @@
               "display_name": "Count",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 13,
+                  "distinct-count": 9,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 203.6,
-                    "max": 2363.0,
+                    "avg": 632.0,
+                    "max": 4883.0,
                     "min": 1.0,
-                    "q1": 3.41886116991581,
-                    "q3": 60.25,
-                    "sd": 605.6985105762485
+                    "q1": 6.75,
+                    "q3": 213.75,
+                    "sd": 1597.8363495677522
                   }
                 }
               },
@@ -9495,17 +9495,17 @@
               "display_name": "Count",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 13,
+                  "distinct-count": 11,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 19.774193548387096,
-                    "max": 401.0,
+                    "avg": 31.185185185185187,
+                    "max": 544.0,
                     "min": 1.0,
-                    "q1": 1.0991805480332872,
-                    "q3": 11.426785900258878,
-                    "sd": 71.59688525693436
+                    "q1": 1.0638593383654928,
+                    "q3": 5.75,
+                    "sd": 109.0698565976577
                   }
                 }
               },
@@ -9873,11 +9873,11 @@
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 770.0,
-                    "max": 770.0,
-                    "min": 770.0,
-                    "q1": 770.0,
-                    "q3": 770.0,
+                    "avg": 31.0,
+                    "max": 31.0,
+                    "min": 31.0,
+                    "q1": 31.0,
+                    "q3": 31.0,
                     "sd": null
                   }
                 }
@@ -9970,17 +9970,17 @@
               "display_name": "Distinct values of Contact ID",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 0,
-                  "nil%": null
+                  "distinct-count": 8,
+                  "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": null,
-                    "max": null,
-                    "min": null,
-                    "q1": null,
-                    "q3": null,
-                    "sd": null
+                    "avg": 35.875,
+                    "max": 168.0,
+                    "min": 1.0,
+                    "q1": 3.0,
+                    "q3": 38.0,
+                    "sd": 55.576041857723446
                   }
                 }
               },
@@ -10179,11 +10179,11 @@
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 0.0,
-                    "max": 0.0,
-                    "min": 0.0,
-                    "q1": 0.0,
-                    "q3": 0.0,
+                    "avg": 287.0,
+                    "max": 287.0,
+                    "min": 287.0,
+                    "q1": 287.0,
+                    "q3": 287.0,
                     "sd": null
                   }
                 }
@@ -10275,12 +10275,12 @@
               "display_name": "status",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 1,
+                  "distinct-count": 3,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Text": {
-                    "average-length": 7.0,
+                    "average-length": 7.666666666666667,
                     "percent-email": 0.0,
                     "percent-json": 0.0,
                     "percent-url": 0.0
@@ -10295,17 +10295,17 @@
               "display_name": "COUNT(*)",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 1,
+                  "distinct-count": 3,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 4.0,
-                    "max": 4.0,
-                    "min": 4.0,
-                    "q1": 4.0,
-                    "q3": 4.0,
-                    "sd": null
+                    "avg": 217.33333333333334,
+                    "max": 282.0,
+                    "min": 118.0,
+                    "q1": 151.5,
+                    "q3": 274.5,
+                    "sd": 87.32315462312006
                   }
                 }
               },
@@ -10604,7 +10604,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "created_at",
@@ -10827,7 +10827,7 @@
             "made_public_by_id": null,
             "name": "Count of campaign actions per type",
             "public_uuid": null,
-            "query_average_duration": 647,
+            "query_average_duration": 633,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -10868,7 +10868,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "action_type"
@@ -11183,7 +11183,7 @@
               }
             ],
             "table_id": 811,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",6491]]": {
@@ -11360,17 +11360,17 @@
                 "display_name": "Count",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 13,
+                    "distinct-count": 9,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 203.6,
-                      "max": 2363.0,
+                      "avg": 632.0,
+                      "max": 4883.0,
                       "min": 1.0,
-                      "q1": 3.41886116991581,
-                      "q3": 60.25,
-                      "sd": 605.6985105762485
+                      "q1": 6.75,
+                      "q3": 213.75,
+                      "sd": 1597.8363495677522
                     }
                   }
                 },
@@ -11379,7 +11379,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "medium"
@@ -11627,7 +11627,7 @@
             "made_public_by_id": null,
             "name": "Count of campaign actions per tracked source",
             "public_uuid": null,
-            "query_average_duration": 2213,
+            "query_average_duration": 2223,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -11656,17 +11656,17 @@
                 "display_name": "Count",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 13,
+                    "distinct-count": 11,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 19.774193548387096,
-                      "max": 401.0,
+                      "avg": 31.185185185185187,
+                      "max": 544.0,
                       "min": 1.0,
-                      "q1": 1.0991805480332872,
-                      "q3": 11.426785900258878,
-                      "sd": 71.59688525693436
+                      "q1": 1.0638593383654928,
+                      "q3": 5.75,
+                      "sd": 109.0698565976577
                     }
                   }
                 },
@@ -11675,7 +11675,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "card.title": "Sources (other than mailings)",
               "graph.dimensions": [
@@ -11910,12 +11910,12 @@
                 "display_name": "status",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 1,
+                    "distinct-count": 3,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Text": {
-                      "average-length": 7.0,
+                      "average-length": 7.666666666666667,
                       "percent-email": 0.0,
                       "percent-json": 0.0,
                       "percent-url": 0.0
@@ -11930,17 +11930,17 @@
                 "display_name": "COUNT(*)",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 1,
+                    "distinct-count": 3,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 4.0,
-                      "max": 4.0,
-                      "min": 4.0,
-                      "q1": 4.0,
-                      "q3": 4.0,
-                      "sd": null
+                      "avg": 217.33333333333334,
+                      "max": 282.0,
+                      "min": 118.0,
+                      "q1": 151.5,
+                      "q3": 274.5,
+                      "sd": 87.32315462312006
                     }
                   }
                 },
@@ -11949,7 +11949,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "card.title": "Consents",
               "graph.dimensions": [
@@ -12148,11 +12148,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 3054.0,
-                      "max": 3054.0,
-                      "min": 3054.0,
-                      "q1": 3054.0,
-                      "q3": 3054.0,
+                      "avg": 5688.0,
+                      "max": 5688.0,
+                      "min": 5688.0,
+                      "q1": 5688.0,
+                      "q3": 5688.0,
                       "sd": null
                     }
                   }
@@ -12162,7 +12162,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "created_at",
@@ -12360,11 +12360,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 0.0,
-                      "max": 0.0,
-                      "min": 0.0,
-                      "q1": 0.0,
-                      "q3": 0.0,
+                      "avg": 287.0,
+                      "max": 287.0,
+                      "min": 287.0,
+                      "q1": 287.0,
+                      "q3": 287.0,
                       "sd": null
                     }
                   }
@@ -12374,7 +12374,7 @@
               }
             ],
             "table_id": 870,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {}
           },
           "card_id": 488,
@@ -12583,7 +12583,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"sum\"]": {
@@ -12788,17 +12788,17 @@
                 "display_name": "Distinct values of Contact ID",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 0,
-                    "nil%": null
+                    "distinct-count": 8,
+                    "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": null,
-                      "max": null,
-                      "min": null,
-                      "q1": null,
-                      "q3": null,
-                      "sd": null
+                      "avg": 35.875,
+                      "max": 168.0,
+                      "min": 1.0,
+                      "q1": 3.0,
+                      "q3": 38.0,
+                      "sd": 55.576041857723446
                     }
                   }
                 },
@@ -12807,7 +12807,7 @@
               }
             ],
             "table_id": 870,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "created_at",
@@ -13075,12 +13075,12 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 381.75,
-                      "max": 1745.0,
-                      "min": 13.0,
-                      "q1": 40.0,
-                      "q3": 461.0,
-                      "sd": 580.139084308976
+                      "avg": 568.8,
+                      "max": 2976.0,
+                      "min": 1.0,
+                      "q1": 9.785218258752417,
+                      "q3": 448.0,
+                      "sd": 998.2820576704094
                     }
                   }
                 },
@@ -13089,7 +13089,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "medium"
@@ -13348,17 +13348,17 @@
                 "display_name": "Count",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 20,
+                    "distinct-count": 15,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 117.46153846153847,
-                      "max": 1691.0,
+                      "avg": 247.30434782608697,
+                      "max": 2709.0,
                       "min": 1.0,
-                      "q1": 2.76393202250021,
-                      "q3": 77.0,
-                      "sd": 332.0305083294884
+                      "q1": 1.5,
+                      "q3": 159.5,
+                      "sd": 625.8981499182964
                     }
                   }
                 },
@@ -13367,7 +13367,7 @@
               }
             ],
             "table_id": 813,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "medium"
@@ -13765,17 +13765,17 @@
                 "display_name": "Sum of Clickers",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 115,
-                    "nil%": 0.5402298850574713
+                    "distinct-count": 13,
+                    "nil%": 0.1428571428571429
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 70.871875,
-                      "max": 1545.0,
-                      "min": 1.0,
-                      "q1": 5.496801708267508,
-                      "q3": 50.166666666666664,
-                      "sd": 172.92482321799952
+                      "avg": 329.1666666666667,
+                      "max": 1810.0,
+                      "min": 13.0,
+                      "q1": 40.5,
+                      "q3": 218.0,
+                      "sd": 548.2709737037522
                     }
                   }
                 },
@@ -13787,17 +13787,17 @@
                 "display_name": "Sum of Converted",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 82,
-                    "nil%": 0.7313218390804598
+                    "distinct-count": 13,
+                    "nil%": 0.1428571428571429
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 198.76470588235293,
-                      "max": 1873.0,
-                      "min": 1.0,
-                      "q1": 3.158324288234026,
-                      "q3": 86.381071161323,
-                      "sd": 439.9474487813444
+                      "avg": 299.4166666666667,
+                      "max": 1697.0,
+                      "min": 13.0,
+                      "q1": 35.5,
+                      "q3": 202.0,
+                      "sd": 508.34016140471306
                     }
                   }
                 },
@@ -13831,17 +13831,17 @@
                 "display_name": "Sum of Openers",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 251,
-                    "nil%": 0.08189655172413793
+                    "distinct-count": 14,
+                    "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 144.40845070422534,
-                      "max": 2840.0,
-                      "min": 1.0,
-                      "q1": 15.992406618955963,
-                      "q3": 149.75300962507686,
-                      "sd": 278.9483000220824
+                      "avg": 682.5,
+                      "max": 3460.0,
+                      "min": 3.0,
+                      "q1": 60.0,
+                      "q3": 465.0,
+                      "sd": 1151.97981753154
                     }
                   }
                 },
@@ -13853,17 +13853,17 @@
                 "display_name": "Sum of Recipients",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 361,
+                    "distinct-count": 14,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 377.83620689655174,
-                      "max": 8008.0,
-                      "min": 1.0,
-                      "q1": 25.561621538393553,
-                      "q3": 340.8877493233707,
-                      "sd": 802.5457901029744
+                      "avg": 2816.6428571428573,
+                      "max": 15690.0,
+                      "min": 16.0,
+                      "q1": 418.0,
+                      "q3": 2067.0,
+                      "sd": 4795.123670614087
                     }
                   }
                 },
@@ -13875,17 +13875,17 @@
                 "display_name": "Sum of Unsubs",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 17,
-                    "nil%": 0.6738505747126436
+                    "distinct-count": 5,
+                    "nil%": 0.5
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 3.290748898678414,
-                      "max": 44.0,
+                      "avg": 4.428571428571429,
+                      "max": 17.0,
                       "min": 1.0,
-                      "q1": 1.080919051581568,
-                      "q3": 3.953529900650049,
-                      "sd": 4.356264217451044
+                      "q1": 1.0,
+                      "q3": 6.0,
+                      "sd": 5.968169536721256
                     }
                   }
                 },
@@ -13894,7 +13894,7 @@
               }
             ],
             "table_id": 887,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"sum\"]": {
@@ -14197,11 +14197,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 262974.0,
-                      "max": 262974.0,
-                      "min": 262974.0,
-                      "q1": 262974.0,
-                      "q3": 262974.0,
+                      "avg": 39433.0,
+                      "max": 39433.0,
+                      "min": 39433.0,
+                      "q1": 39433.0,
+                      "q3": 39433.0,
                       "sd": null
                     }
                   }
@@ -14211,7 +14211,7 @@
               }
             ],
             "table_id": 862,
-            "updated_at": "2020-06-30T14:08:37.000Z",
+            "updated_at": "2020-07-06T15:10:34.000Z",
             "visualization_settings": {
               "card.title": "Recipients",
               "table.cell_column": "sum",
@@ -14391,11 +14391,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 770.0,
-                      "max": 770.0,
-                      "min": 770.0,
-                      "q1": 770.0,
-                      "q3": 770.0,
+                      "avg": 31.0,
+                      "max": 31.0,
+                      "min": 31.0,
+                      "q1": 31.0,
+                      "q3": 31.0,
                       "sd": null
                     }
                   }
@@ -14405,7 +14405,7 @@
               }
             ],
             "table_id": 827,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-06T15:10:33.000Z",
             "visualization_settings": {}
           },
           "card_id": 527,
@@ -14523,7 +14523,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -14537,11 +14537,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -14551,7 +14551,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -19694,7 +19694,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -19708,11 +19708,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -19722,7 +19722,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -19862,7 +19862,7 @@
             "made_public_by_id": null,
             "name": "Latest campaigns",
             "public_uuid": null,
-            "query_average_duration": 365,
+            "query_average_duration": 372,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -20123,7 +20123,7 @@
               }
             ],
             "table_id": 891,
-            "updated_at": "2020-06-30T14:07:42.000Z",
+            "updated_at": "2020-07-07T13:21:26.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",7087]]": {
@@ -20247,7 +20247,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -20261,11 +20261,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -20275,7 +20275,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -20412,7 +20412,7 @@
             "made_public_by_id": null,
             "name": "Latest campaigns",
             "public_uuid": null,
-            "query_average_duration": 365,
+            "query_average_duration": 372,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -20673,7 +20673,7 @@
               }
             ],
             "table_id": 891,
-            "updated_at": "2020-06-30T14:07:42.000Z",
+            "updated_at": "2020-07-07T13:21:26.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",7087]]": {
@@ -20797,7 +20797,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -20811,11 +20811,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -20825,7 +20825,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -20963,7 +20963,7 @@
             "made_public_by_id": null,
             "name": "Latest campaigns",
             "public_uuid": null,
-            "query_average_duration": 365,
+            "query_average_duration": 372,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -21224,7 +21224,7 @@
               }
             ],
             "table_id": 891,
-            "updated_at": "2020-06-30T14:07:42.000Z",
+            "updated_at": "2020-07-07T13:21:26.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"ref\",[\"field-id\",7087]]": {
@@ -21348,7 +21348,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -21362,11 +21362,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -21376,7 +21376,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -21584,17 +21584,17 @@
               "display_name": "Count",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 789,
+                  "distinct-count": 790,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 389.5405405405405,
+                    "avg": 390.3122913505311,
                     "max": 14886.0,
                     "min": 1.0,
-                    "q1": 18.79502096831625,
-                    "q3": 191.429252222881,
-                    "sd": 1112.431178774479
+                    "q1": 18.800424041453763,
+                    "q3": 192.03088621461728,
+                    "sd": 1112.5087487283784
                   }
                 }
               },
@@ -21688,17 +21688,17 @@
               "display_name": "Count",
               "fingerprint": {
                 "global": {
-                  "distinct-count": 463,
+                  "distinct-count": 466,
                   "nil%": 0.0
                 },
                 "type": {
                   "type/Number": {
-                    "avg": 1519.8542654028436,
+                    "avg": 1520.1879432624114,
                     "max": 148459.0,
                     "min": 1.0,
-                    "q1": 22.132394915668165,
-                    "q3": 966.9815440788183,
-                    "sd": 7362.286031829464
+                    "q1": 22.25158464999797,
+                    "q3": 971.6521458182121,
+                    "sd": 7391.122423004633
                   }
                 }
               },
@@ -21852,7 +21852,7 @@
             "made_public_by_id": null,
             "name": "Segment current size",
             "public_uuid": null,
-            "query_average_duration": 520,
+            "query_average_duration": 536,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -21892,7 +21892,7 @@
               }
             ],
             "table_id": 805,
-            "updated_at": "2020-05-26T07:38:13.000Z",
+            "updated_at": "2020-07-07T07:55:56.000Z",
             "visualization_settings": {
               "scalar.field": "count",
               "table.cell_column": "count",
@@ -21979,7 +21979,7 @@
             "made_public_by_id": null,
             "name": "Count of segment joins by month",
             "public_uuid": null,
-            "query_average_duration": 2093,
+            "query_average_duration": 2063,
             "query_type": "query",
             "read_permissions": null,
             "result_metadata": [
@@ -22020,17 +22020,17 @@
                 "display_name": "Count",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 789,
+                    "distinct-count": 790,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 389.5405405405405,
+                      "avg": 390.3122913505311,
                       "max": 14886.0,
                       "min": 1.0,
-                      "q1": 18.79502096831625,
-                      "q3": 191.429252222881,
-                      "sd": 1112.431178774479
+                      "q1": 18.800424041453763,
+                      "q3": 192.03088621461728,
+                      "sd": 1112.5087487283784
                     }
                   }
                 },
@@ -22039,7 +22039,7 @@
               }
             ],
             "table_id": 805,
-            "updated_at": "2020-05-26T07:38:14.000Z",
+            "updated_at": "2020-07-07T07:55:57.000Z",
             "visualization_settings": {
               "graph.dimensions": [
                 "joined_at"
@@ -22129,7 +22129,7 @@
               "display": "line",
               "id": 474,
               "name": "Count of segment leaves by month",
-              "query_average_duration": 1517,
+              "query_average_duration": 1492,
               "visualization_settings": {
                 "graph.dimensions": [
                   "left_at"
@@ -29694,7 +29694,7 @@
             "made_public_by_id": null,
             "name": "Age of last computation cycle",
             "public_uuid": null,
-            "query_average_duration": 318,
+            "query_average_duration": 331,
             "query_type": "native",
             "read_permissions": null,
             "result_metadata": [
@@ -29708,11 +29708,11 @@
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 17242.0,
-                      "max": 17242.0,
-                      "min": 17242.0,
-                      "q1": 17242.0,
-                      "q3": 17242.0,
+                      "avg": 106.0,
+                      "max": 106.0,
+                      "min": 106.0,
+                      "q1": 106.0,
+                      "q3": 106.0,
                       "sd": null
                     }
                   }
@@ -29722,7 +29722,7 @@
               }
             ],
             "table_id": null,
-            "updated_at": "2020-06-30T14:08:36.000Z",
+            "updated_at": "2020-07-07T15:03:17.000Z",
             "visualization_settings": {
               "column_settings": {
                 "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
@@ -29891,7 +29891,7 @@
         "name": "Latest mailings info"
       },
       "499": {
-        "name": "Open rate"
+        "name": "A/B Open rate"
       },
       "500": {
         "name": "Click vs open rate"
@@ -29903,7 +29903,7 @@
         "name": "Latest campaigns"
       },
       "506": {
-        "name": "Conversion rate (vs clicks)"
+        "name": "A/B Conversion rate (vs clicks)"
       },
       "507": {
         "name": "Converted"
@@ -29912,10 +29912,10 @@
         "name": "Forward rate"
       },
       "509": {
-        "name": "Consents"
+        "name": "A/B Consents"
       },
       "510": {
-        "name": "Unsubscribe rate"
+        "name": "A/B Unsubscribe rate"
       },
       "511": {
         "name": "Delivery KPIs"

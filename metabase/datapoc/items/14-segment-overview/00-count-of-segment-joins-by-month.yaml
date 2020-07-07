@@ -52,16 +52,16 @@ result_metadata:
   display_name: Count
   fingerprint:
     global:
-      distinct-count: 789
+      distinct-count: 790
       nil%: 0.0
     type:
       type/Number:
-        avg: 389.5405405405405
+        avg: 390.3122913505311
         max: 14886.0
         min: 1.0
-        q1: 18.79502096831625
-        q3: 191.429252222881
-        sd: 1112.431178774479
+        q1: 18.800424041453763
+        q3: 192.03088621461728
+        sd: 1112.5087487283784
   name: count
   special_type: type/Quantity
 visualization_settings:

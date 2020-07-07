@@ -68,12 +68,12 @@ result_metadata:
       nil%: 0.0
     type:
       type/Number:
-        avg: 381.75
-        max: 1745.0
-        min: 13.0
-        q1: 40.0
-        q3: 461.0
-        sd: 580.139084308976
+        avg: 568.8
+        max: 2976.0
+        min: 1.0
+        q1: 9.785218258752417
+        q3: 448.0
+        sd: 998.2820576704094
   name: count
   special_type: type/Quantity
 visualization_settings:

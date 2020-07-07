@@ -36,7 +36,7 @@ ordered_cards:
     made_public_by_id: null
     name: Segment current size
     public_uuid: null
-    query_average_duration: 520
+    query_average_duration: 536
     query_type: query
     read_permissions: null
     result_metadata:
@@ -65,7 +65,7 @@ ordered_cards:
       name: count
       special_type: type/Quantity
     table_id: 805
-    updated_at: '2020-05-26T07:38:13.000Z'
+    updated_at: '2020-07-07T07:55:56.000Z'
     visualization_settings:
       scalar.field: count
       table.cell_column: count
@@ -125,7 +125,7 @@ ordered_cards:
     made_public_by_id: null
     name: Count of segment joins by month
     public_uuid: null
-    query_average_duration: 2093
+    query_average_duration: 2063
     query_type: query
     read_permissions: null
     result_metadata:
@@ -159,20 +159,20 @@ ordered_cards:
       display_name: Count
       fingerprint:
         global:
-          distinct-count: 789
+          distinct-count: 790
           nil%: 0.0
         type:
           type/Number:
-            avg: 389.5405405405405
+            avg: 390.3122913505311
             max: 14886.0
             min: 1.0
-            q1: 18.79502096831625
-            q3: 191.429252222881
-            sd: 1112.431178774479
+            q1: 18.800424041453763
+            q3: 192.03088621461728
+            sd: 1112.5087487283784
       name: count
       special_type: type/Quantity
     table_id: 805
-    updated_at: '2020-05-26T07:38:14.000Z'
+    updated_at: '2020-07-07T07:55:57.000Z'
     visualization_settings:
       graph.dimensions:
       - joined_at
@@ -226,7 +226,7 @@ ordered_cards:
     display: line
     id: 474
     name: Count of segment leaves by month
-    query_average_duration: 1517
+    query_average_duration: 1492
     visualization_settings:
       graph.dimensions:
       - left_at

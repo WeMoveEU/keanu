@@ -146,32 +146,32 @@ result_metadata:
   display_name: Sum of Clickers
   fingerprint:
     global:
-      distinct-count: 115
-      nil%: 0.5402298850574713
+      distinct-count: 13
+      nil%: 0.1428571428571429
     type:
       type/Number:
-        avg: 70.871875
-        max: 1545.0
-        min: 1.0
-        q1: 5.496801708267508
-        q3: 50.166666666666664
-        sd: 172.92482321799952
+        avg: 329.1666666666667
+        max: 1810.0
+        min: 13.0
+        q1: 40.5
+        q3: 218.0
+        sd: 548.2709737037522
   name: sum
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Converted
   fingerprint:
     global:
-      distinct-count: 82
-      nil%: 0.7313218390804598
+      distinct-count: 13
+      nil%: 0.1428571428571429
     type:
       type/Number:
-        avg: 198.76470588235293
-        max: 1873.0
-        min: 1.0
-        q1: 3.158324288234026
-        q3: 86.381071161323
-        sd: 439.9474487813444
+        avg: 299.4166666666667
+        max: 1697.0
+        min: 13.0
+        q1: 35.5
+        q3: 202.0
+        sd: 508.34016140471306
   name: sum_2
   special_type: null
 - base_type: type/Decimal
@@ -194,48 +194,48 @@ result_metadata:
   display_name: Sum of Openers
   fingerprint:
     global:
-      distinct-count: 251
-      nil%: 0.08189655172413793
+      distinct-count: 14
+      nil%: 0.0
     type:
       type/Number:
-        avg: 144.40845070422534
-        max: 2840.0
-        min: 1.0
-        q1: 15.992406618955963
-        q3: 149.75300962507686
-        sd: 278.9483000220824
+        avg: 682.5
+        max: 3460.0
+        min: 3.0
+        q1: 60.0
+        q3: 465.0
+        sd: 1151.97981753154
   name: sum_4
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Recipients
   fingerprint:
     global:
-      distinct-count: 361
+      distinct-count: 14
       nil%: 0.0
     type:
       type/Number:
-        avg: 377.83620689655174
-        max: 8008.0
-        min: 1.0
-        q1: 25.561621538393553
-        q3: 340.8877493233707
-        sd: 802.5457901029744
+        avg: 2816.6428571428573
+        max: 15690.0
+        min: 16.0
+        q1: 418.0
+        q3: 2067.0
+        sd: 4795.123670614087
   name: sum_5
   special_type: null
 - base_type: type/Decimal
   display_name: Sum of Unsubs
   fingerprint:
     global:
-      distinct-count: 17
-      nil%: 0.6738505747126436
+      distinct-count: 5
+      nil%: 0.5
     type:
       type/Number:
-        avg: 3.290748898678414
-        max: 44.0
+        avg: 4.428571428571429
+        max: 17.0
         min: 1.0
-        q1: 1.080919051581568
-        q3: 3.953529900650049
-        sd: 4.356264217451044
+        q1: 1.0
+        q3: 6.0
+        sd: 5.968169536721256
   name: sum_6
   special_type: null
 visualization_settings:

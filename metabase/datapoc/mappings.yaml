@@ -84,7 +84,7 @@ cards:
   497:
     name: Latest mailings info
   499:
-    name: Open rate
+    name: A/B Open rate
   500:
     name: Click vs open rate
   504:
@@ -92,15 +92,15 @@ cards:
   505:
     name: Latest campaigns
   506:
-    name: Conversion rate (vs clicks)
+    name: A/B Conversion rate (vs clicks)
   507:
     name: Converted
   508:
     name: Forward rate
   509:
-    name: Consents
+    name: A/B Consents
   510:
-    name: Unsubscribe rate
+    name: A/B Unsubscribe rate
   511:
     name: Delivery KPIs
   513:

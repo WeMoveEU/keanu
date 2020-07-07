@@ -124,7 +124,7 @@ ordered_cards:
       name: campaign_id
       special_type: type/FK
     table_id: 825
-    updated_at: '2020-06-18T14:11:03.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6484]]':
@@ -260,9 +260,9 @@ ordered_cards:
     enable_embedding: false
     id: 499
     made_public_by_id: null
-    name: Open rate
+    name: A/B Open rate
     public_uuid: null
-    query_average_duration: 1017
+    query_average_duration: 967
     query_type: query
     read_permissions: null
     result_metadata:
@@ -276,7 +276,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9755
-          nil%: 0.0
+          nil%: 0
       name: broadcast_id
       special_type: type/FK
     - base_type: type/Text
@@ -284,13 +284,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9669
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 43.4621
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: broadcast_name
       special_type: null
     - base_type: type/*
@@ -298,7 +298,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2
-          nil%: 0.0
+          nil%: 0
       name: metric
       special_type: type/Category
     - base_type: type/Integer
@@ -306,7 +306,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1
-          nil%: 0.0
+          nil%: 0
       name: segment_id
       special_type: type/FK
     - base_type: type/Decimal
@@ -314,12 +314,12 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2602
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
             avg: 940.771
-            max: 16233.0
-            min: 1.0
+            max: 16233
+            min: 1
             q1: 43.88261242616341
             q3: 784.7677438370661
             sd: 1999.358711085584
@@ -331,17 +331,17 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9916
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 39.6161
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:40:28.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -489,7 +489,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -558,9 +558,9 @@ ordered_cards:
     enable_embedding: false
     id: 506
     made_public_by_id: null
-    name: Conversion rate (vs clicks)
+    name: A/B Conversion rate (vs clicks)
     public_uuid: null
-    query_average_duration: 994
+    query_average_duration: 965
     query_type: query
     read_permissions: null
     result_metadata:
@@ -574,7 +574,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9755
-          nil%: 0.0
+          nil%: 0
       name: broadcast_id
       special_type: type/FK
     - base_type: type/Text
@@ -582,13 +582,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9669
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 43.4621
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: broadcast_name
       special_type: null
     - base_type: type/*
@@ -596,7 +596,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2
-          nil%: 0.0
+          nil%: 0
       name: metric
       special_type: type/Category
     - base_type: type/Integer
@@ -604,7 +604,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1
-          nil%: 0.0
+          nil%: 0
       name: segment_id
       special_type: type/FK
     - base_type: type/Decimal
@@ -612,12 +612,12 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2602
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
             avg: 940.771
-            max: 16233.0
-            min: 1.0
+            max: 16233
+            min: 1
             q1: 43.88261242616341
             q3: 784.7677438370661
             sd: 1999.358711085584
@@ -629,17 +629,17 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9916
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 39.6161
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:39:28.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -788,7 +788,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]': {}
@@ -981,7 +981,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1052,7 +1052,7 @@ ordered_cards:
     enable_embedding: false
     id: 509
     made_public_by_id: null
-    name: Consents
+    name: A/B Consents
     public_uuid: null
     query_average_duration: 289
     query_type: native
@@ -1063,13 +1063,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
-            average-length: 6.0
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            average-length: 6
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: version
       special_type: null
     - base_type: type/Text
@@ -1077,13 +1077,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
-            average-length: 8.0
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            average-length: 8
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: consent_status
       special_type: null
     - base_type: type/Integer
@@ -1091,19 +1091,19 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 3
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
             avg: 1.75
-            max: 3.0
-            min: 1.0
-            q1: 1.0
+            max: 3
+            min: 1
+            q1: 1
             q3: 2.5
             sd: 0.9574271077563381
       name: count
       special_type: type/Quantity
     table_id: null
-    updated_at: '2020-06-04T12:33:52.000Z'
+    updated_at: '2020-07-07T15:39:01.000Z'
     visualization_settings:
       graph.dimensions:
       - version
@@ -1172,9 +1172,9 @@ ordered_cards:
     enable_embedding: false
     id: 510
     made_public_by_id: null
-    name: Unsubscribe rate
+    name: A/B Unsubscribe rate
     public_uuid: null
-    query_average_duration: 991
+    query_average_duration: 962
     query_type: query
     read_permissions: null
     result_metadata:
@@ -1188,7 +1188,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9755
-          nil%: 0.0
+          nil%: 0
       name: broadcast_id
       special_type: type/FK
     - base_type: type/Text
@@ -1196,13 +1196,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9669
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 43.4621
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: broadcast_name
       special_type: null
     - base_type: type/*
@@ -1210,7 +1210,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2
-          nil%: 0.0
+          nil%: 0
       name: metric
       special_type: type/Category
     - base_type: type/Integer
@@ -1218,7 +1218,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1
-          nil%: 0.0
+          nil%: 0
       name: segment_id
       special_type: type/FK
     - base_type: type/Decimal
@@ -1226,12 +1226,12 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 2602
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
             avg: 940.771
-            max: 16233.0
-            min: 1.0
+            max: 16233
+            min: 1
             q1: 43.88261242616341
             q3: 784.7677438370661
             sd: 1999.358711085584
@@ -1243,17 +1243,17 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 9916
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 39.6161
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:41:00.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1425,7 +1425,7 @@ ordered_cards:
       name: name
       special_type: type/Name
     table_id: 862
-    updated_at: '2020-06-18T14:11:04.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",6898]]':
@@ -1502,7 +1502,7 @@ ordered_cards:
     made_public_by_id: null
     name: Age of last computation cycle
     public_uuid: null
-    query_average_duration: 256
+    query_average_duration: 331
     query_type: native
     read_permissions: null
     result_metadata:
@@ -1514,16 +1514,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 1181.0
-            max: 1181.0
-            min: 1181.0
-            q1: 1181.0
-            q3: 1181.0
+            avg: 106.0
+            max: 106.0
+            min: 106.0
+            q1: 106.0
+            q3: 106.0
             sd: null
       name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
       special_type: null
     table_id: null
-    updated_at: '2020-06-19T10:27:53.000Z'
+    updated_at: '2020-07-07T15:03:17.000Z'
     visualization_settings:
       column_settings:
         '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
