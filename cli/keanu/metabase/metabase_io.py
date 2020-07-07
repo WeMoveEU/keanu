@@ -392,7 +392,7 @@ class Mapper:
 
     if overwrite:
       def col_location(cid):
-        return '/' if cid == 'root' else "/{}/".format(collection_id)
+        return '/' if cid == 'root' else "/{}/".format(cid)
 
       # map name->id in destination, for collections, cards, and dashboards
       # only for items that are under destination collection
