@@ -67,12 +67,12 @@ CREATE VIEW campaign_summary AS
     d.value AS donations,
     dta.value AS donations_total_amount
   FROM campaign c
-  LEFT JOIN campaign_metric m   ON m.campaign_id   = c.id AND m.metric = 'messages'
-  LEFT JOIN campaign_metric a   ON a.campaign_id   = c.id AND a.segment_id   = m.segment_id AND a.metric = 'actions'
-  LEFT JOIN campaign_metric s   ON s.campaign_id   = c.id AND s.segment_id   = m.segment_id AND s.metric = 'shares'
-  LEFT JOIN campaign_metric n   ON n.campaign_id   = c.id AND n.segment_id   = m.segment_id AND n.metric = 'new_members'
-  LEFT JOIN campaign_metric u   ON u.campaign_id   = c.id AND u.segment_id   = m.segment_id AND u.metric = 'unsubs'
-  LEFT JOIN campaign_metric aed ON aed.campaign_id = c.id AND aed.segment_id = m.segment_id AND aed.metric = 'activated'
-  LEFT JOIN campaign_metric d   ON d.campaign_id   = c.id AND d.segment_id   = m.segment_id AND d.metric = 'donations'
-  LEFT JOIN campaign_metric dta ON dta.campaign_id = c.id AND dta.segment_id = m.segment_id AND dta.metric = 'donations_total_amount'
+  LEFT JOIN campaign_metric a   ON a.campaign_id   = c.id AND a.metric = 'actions'
+  LEFT JOIN campaign_metric m   ON m.campaign_id   = c.id AND m.segment_id   = a.segment_id AND m.metric = 'messages'
+  LEFT JOIN campaign_metric s   ON s.campaign_id   = c.id AND s.segment_id   = a.segment_id AND s.metric = 'shares'
+  LEFT JOIN campaign_metric n   ON n.campaign_id   = c.id AND n.segment_id   = a.segment_id AND n.metric = 'new_members'
+  LEFT JOIN campaign_metric u   ON u.campaign_id   = c.id AND u.segment_id   = a.segment_id AND u.metric = 'unsubs'
+  LEFT JOIN campaign_metric aed ON aed.campaign_id = c.id AND aed.segment_id = a.segment_id AND aed.metric = 'activated'
+  LEFT JOIN campaign_metric d   ON d.campaign_id   = c.id AND d.segment_id   = a.segment_id AND d.metric = 'donations'
+  LEFT JOIN campaign_metric dta ON dta.campaign_id = c.id AND dta.segment_id = a.segment_id AND dta.metric = 'donations_total_amount'
 ;
