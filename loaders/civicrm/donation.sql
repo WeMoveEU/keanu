@@ -24,6 +24,7 @@ SELECT
     WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
     END as payment_method,
     CASE WHEN c.contribution_status_id = 1 THEN 'success'
+    WHEN c.contribution_status_id = 2 THEN 'pending'
     WHEN c.contribution_status_id = 4 THEN 'fail'
     WHEN c.contribution_status_id IN (3, 7) THEN 'cancel'
     END as status,
@@ -47,8 +48,24 @@ FROM
     JOIN currency ON currency.code = c.currency COLLATE utf8_general_ci
 WHERE
     c.payment_instrument_id IN (1,2,5,6,7,8)
-    AND c.contribution_status_id IN (1,3,4,7)
+    AND c.contribution_status_id IN (1,2,3,4,7)
     ;
+
+-- contribution statuses:  rd.contribution_status_id
+-- | Completed      | 1     | <
+-- | Pending        | 2     | <
+-- | Cancelled      | 3     | <
+-- | Failed         | 4     | <
+-- | In Progress    | 5     | <
+-- | Overdue        | 6     |
+-- | Refunded       | 7     |
+-- | Partially paid | 8     |
+-- | Pending refund | 9     |
+-- | Chargeback     | 10    |
+-- | Unprocessed    | 11    |
+-- | Processing     | 12    |
+-- | Failing        | 13    |
+
 
 -- Some indexes to speed up following operations
 CREATE INDEX all_contributions_status ON all_contributions (status);
@@ -57,6 +74,11 @@ CREATE INDEX all_contributions_rc_id ON all_contributions (contribution_recur_id
 CREATE INDEX all_contributions_external_ids ON all_contributions (external_id, external_system);
 
 -- DONATIONS -----------------------------------------------------------------
+
+-- BEGIN INCREMENTAL
+DELETE FROM donation WHERE pending IS TRUE;
+-- END INCREMENTAL
+
 -- Insert donations both one-off and recurring in one go
 -- Use DISTINCT to get recurring donation just once
 INSERT INTO donation (
@@ -66,7 +88,8 @@ INSERT INTO donation (
         payment_count, fail_count,
         external_id, external_system,
         original_currency, amount, total_amount, original_amount,
-        payment_method
+        payment_method,
+        pending
         )
 SELECT
     ca.id,
@@ -85,12 +108,13 @@ SELECT
     -- we use a min(amounts) as a defensive measure against bad data (varying recurring payments)
     ac.original_currency, min(ac.amount), 0, min(ac.original_amount),
     -- we use a min(payment_method) as a defensive measure against bad data (varying payment_method)
-    min(ac.payment_method)
+    min(ac.payment_method),
+    min(CASE WHEN ac.status = 'pending' THEN 1 ELSE 0 END)
 
 FROM all_contributions ac
     JOIN action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
-WHERE ac.status = 'success'
+WHERE ac.status = 'success' or ac.status = 'pending'
 -- BEGIN INCREMENTAL
 -- exclude by action references in donation table
 AND ca.id NOT IN (SELECT action_id FROM donation)
@@ -116,8 +140,9 @@ SELECT
 FROM donation d
     JOIN
     all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
+WHERE  status != 'pending'
 -- BEGIN INCREMENTAL
-WHERE ac.receive_date > @last_receive_date;
+AND ac.receive_date > @last_receive_date;
 -- END INCREMENTAL
     ;
 
@@ -165,6 +190,7 @@ UPDATE donation d
   SET d.fail_count = fail.fail_count
 ;
 
+SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 -- Update campaign aggregate
 INSERT INTO campaign_metric
             (campaign_id, segment_id, metric, value)
