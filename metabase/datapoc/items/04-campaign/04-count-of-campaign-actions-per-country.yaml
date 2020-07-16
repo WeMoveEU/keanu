@@ -5,7 +5,9 @@ dataset_query:
   database: 9
   query:
     aggregation:
-    - - count
+    - - distinct
+      - - field-id
+        - 6874
     breakout:
     - - fk->
       - - field-id
@@ -63,19 +65,19 @@ result_metadata:
   name: country
   special_type: type/Country
 - base_type: type/Integer
-  display_name: Count
+  display_name: Distinct values of Contact ID
   fingerprint:
     global:
       distinct-count: 15
       nil%: 0.0
     type:
       type/Number:
-        avg: 247.30434782608697
-        max: 2709.0
+        avg: 196.8695652173913
+        max: 2235.0
         min: 1.0
-        q1: 1.5
-        q3: 159.5
-        sd: 625.8981499182964
+        q1: 1.3580589092924946
+        q3: 117.0
+        sd: 512.9878878906691
   name: count
   special_type: type/Quantity
 visualization_settings:

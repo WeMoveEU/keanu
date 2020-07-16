@@ -8592,7 +8592,11 @@
             "query": {
               "aggregation": [
                 [
-                  "count"
+                  "distinct",
+                  [
+                    "field-id",
+                    6874
+                  ]
                 ]
               ],
               "breakout": [
@@ -8685,7 +8689,7 @@
             },
             {
               "base_type": "type/Integer",
-              "display_name": "Count",
+              "display_name": "Distinct values of Contact ID",
               "fingerprint": {
                 "global": {
                   "distinct-count": 15,
@@ -8726,7 +8730,11 @@
             "query": {
               "aggregation": [
                 [
-                  "count"
+                  "distinct",
+                  [
+                    "field-id",
+                    6874
+                  ]
                 ]
               ],
               "breakout": [
@@ -8819,7 +8827,7 @@
             },
             {
               "base_type": "type/Integer",
-              "display_name": "Count",
+              "display_name": "Distinct values of Contact ID",
               "fingerprint": {
                 "global": {
                   "distinct-count": 8,
