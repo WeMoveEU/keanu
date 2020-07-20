@@ -683,7 +683,7 @@
                 "name": "id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/47?id={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/PK"
@@ -762,7 +762,7 @@
                 "name": "campaign_id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/61?campaign={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/FK"
@@ -1994,7 +1994,7 @@
                 "name": "id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/62?id={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/PK"
@@ -2444,7 +2444,7 @@
                 "name": "broadcast_id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/47?id={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/FK"
@@ -3311,7 +3311,7 @@
                 "name": "broadcast_test_id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/62?id={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/FK"
@@ -3335,7 +3335,7 @@
                 "name": "id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/47?id={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/PK"
@@ -3359,7 +3359,7 @@
                 "name": "campaign_id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/61?campaign={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/FK"
@@ -3751,7 +3751,7 @@
                 "name": "id",
                 "settings": {
                   "custom_actions": {
-                    "url": "/dashboard/61?campaign={value}"
+                    "url": ""
                   }
                 },
                 "special_type": "type/PK"
@@ -17816,8 +17816,16 @@
               "[\"ref\",[\"field-id\",7088]]": {
                 "column_title": "Total Amount"
               },
+              "[\"ref\",[\"field-id\",7095]]": {
+                "link_url": "/dashboard/61?campaign={id}",
+                "view_as": "custom_link"
+              },
               "[\"ref\",[\"field-id\",7096]]": {
                 "column_title": "Type"
+              },
+              "[\"ref\",[\"field-id\",7098]]": {
+                "link_url": "/dashboard/61?campaign={id}",
+                "view_as": "custom_link"
               }
             },
             "table.cell_column": "messages",
@@ -18153,10 +18161,14 @@
                 "column_title": "Sample size"
               },
               "[\"ref\",[\"field-id\",6655]]": {
-                "column_title": "Name"
+                "column_title": "Name",
+                "link_url": "/dashboard/62?id={id}",
+                "view_as": "custom_link"
               },
               "[\"ref\",[\"field-id\",6656]]": {
-                "column_title": "ID"
+                "column_title": "ID",
+                "link_url": "/dashboard/62?id={id}",
+                "view_as": "custom_link"
               },
               "[\"ref\",[\"field-id\",6657]]": {
                 "column_title": "Sent At",
@@ -18587,15 +18599,29 @@
                 "number_separators": ", "
               },
               "[\"ref\",[\"field-id\",7058]]": {
-                "column_title": "A/B test"
+                "column_title": "A/B test",
+                "link_url": "/dashboard/62?id={broadcast_test_id}",
+                "view_as": "custom_link"
               },
               "[\"ref\",[\"field-id\",7059]]": {
                 "number_style": "percent"
+              },
+              "[\"ref\",[\"field-id\",7060]]": {
+                "link_url": "/dashboard/47?id={id}",
+                "view_as": "custom_link"
+              },
+              "[\"ref\",[\"field-id\",7061]]": {
+                "link_url": "/dashboard/47?id={id}",
+                "view_as": "custom_link"
               },
               "[\"ref\",[\"field-id\",7062]]": {
                 "date_separator": "-",
                 "date_style": "YYYY/M/D",
                 "time_style": "k:mm"
+              },
+              "[\"ref\",[\"field-id\",7063]]": {
+                "link_url": "/dashboard/61?campaign={campaign_id}",
+                "view_as": "custom_link"
               }
             },
             "table.cell_column": "sent_at",
@@ -19164,15 +19190,29 @@
                   "number_separators": ", "
                 },
                 "[\"ref\",[\"field-id\",7058]]": {
-                  "column_title": "A/B test"
+                  "column_title": "A/B test",
+                  "link_url": "/dashboard/62?id={broadcast_test_id}",
+                  "view_as": "custom_link"
                 },
                 "[\"ref\",[\"field-id\",7059]]": {
                   "number_style": "percent"
+                },
+                "[\"ref\",[\"field-id\",7060]]": {
+                  "link_url": "/dashboard/47?id={id}",
+                  "view_as": "custom_link"
+                },
+                "[\"ref\",[\"field-id\",7061]]": {
+                  "link_url": "/dashboard/47?id={id}",
+                  "view_as": "custom_link"
                 },
                 "[\"ref\",[\"field-id\",7062]]": {
                   "date_separator": "-",
                   "date_style": "YYYY/M/D",
                   "time_style": "k:mm"
+                },
+                "[\"ref\",[\"field-id\",7063]]": {
+                  "link_url": "/dashboard/61?campaign={campaign_id}",
+                  "view_as": "custom_link"
                 }
               },
               "table.cell_column": "sent_at",
@@ -19616,10 +19656,14 @@
                   "column_title": "Sample size"
                 },
                 "[\"ref\",[\"field-id\",6655]]": {
-                  "column_title": "Name"
+                  "column_title": "Name",
+                  "link_url": "/dashboard/62?id={id}",
+                  "view_as": "custom_link"
                 },
                 "[\"ref\",[\"field-id\",6656]]": {
-                  "column_title": "ID"
+                  "column_title": "ID",
+                  "link_url": "/dashboard/62?id={id}",
+                  "view_as": "custom_link"
                 },
                 "[\"ref\",[\"field-id\",6657]]": {
                   "column_title": "Sent At",
@@ -20140,8 +20184,16 @@
                 "[\"ref\",[\"field-id\",7088]]": {
                   "column_title": "Total Amount"
                 },
+                "[\"ref\",[\"field-id\",7095]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
+                },
                 "[\"ref\",[\"field-id\",7096]]": {
                   "column_title": "Type"
+                },
+                "[\"ref\",[\"field-id\",7098]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
                 }
               },
               "table.cell_column": "messages",
@@ -20690,8 +20742,16 @@
                 "[\"ref\",[\"field-id\",7088]]": {
                   "column_title": "Total Amount"
                 },
+                "[\"ref\",[\"field-id\",7095]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
+                },
                 "[\"ref\",[\"field-id\",7096]]": {
                   "column_title": "Type"
+                },
+                "[\"ref\",[\"field-id\",7098]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
                 }
               },
               "table.cell_column": "messages",
@@ -21241,8 +21301,16 @@
                 "[\"ref\",[\"field-id\",7088]]": {
                   "column_title": "Total Amount"
                 },
+                "[\"ref\",[\"field-id\",7095]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
+                },
                 "[\"ref\",[\"field-id\",7096]]": {
                   "column_title": "Type"
+                },
+                "[\"ref\",[\"field-id\",7098]]": {
+                  "link_url": "/dashboard/61?campaign={id}",
+                  "view_as": "custom_link"
                 }
               },
               "table.cell_column": "messages",

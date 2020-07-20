@@ -236,8 +236,14 @@ visualization_settings:
       time_enabled: null
     '["ref",["field-id",7088]]':
       column_title: Total Amount
+    '["ref",["field-id",7095]]':
+      link_url: /dashboard/61?campaign={id}
+      view_as: custom_link
     '["ref",["field-id",7096]]':
       column_title: Type
+    '["ref",["field-id",7098]]':
+      link_url: /dashboard/61?campaign={id}
+      view_as: custom_link
   table.cell_column: messages
   table.columns:
   - enabled: true

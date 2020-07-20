@@ -57,7 +57,7 @@ ordered_cards:
     made_public_by_id: null
     name: Latest campaigns
     public_uuid: null
-    query_average_duration: 372
+    query_average_duration: 375
     query_type: query
     read_permissions: null
     result_metadata:
@@ -248,15 +248,21 @@ ordered_cards:
       name: donations_total_amount
       special_type: type/Income
     table_id: 891
-    updated_at: '2020-07-07T13:21:26.000Z'
+    updated_at: '2020-07-20T15:06:46.000Z'
     visualization_settings:
       column_settings:
         '["ref",["field-id",7087]]':
           time_enabled: null
         '["ref",["field-id",7088]]':
           column_title: Total Amount
+        '["ref",["field-id",7095]]':
+          link_url: /dashboard/61?campaign={id}
+          view_as: custom_link
         '["ref",["field-id",7096]]':
           column_title: Type
+        '["ref",["field-id",7098]]':
+          link_url: /dashboard/61?campaign={id}
+          view_as: custom_link
       table.cell_column: messages
       table.columns:
       - enabled: true
@@ -328,7 +334,7 @@ ordered_cards:
     made_public_by_id: null
     name: Age of last computation cycle
     public_uuid: null
-    query_average_duration: 331
+    query_average_duration: 302
     query_type: native
     read_permissions: null
     result_metadata:
@@ -340,16 +346,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 106.0
-            max: 106.0
-            min: 106.0
-            q1: 106.0
-            q3: 106.0
+            avg: 18829.0
+            max: 18829.0
+            min: 18829.0
+            q1: 18829.0
+            q3: 18829.0
             sd: null
       name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
       special_type: null
     table_id: null
-    updated_at: '2020-07-07T15:03:17.000Z'
+    updated_at: '2020-07-20T15:06:51.000Z'
     visualization_settings:
       column_settings:
         '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
