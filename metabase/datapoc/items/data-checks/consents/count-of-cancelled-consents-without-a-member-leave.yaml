@@ -1,0 +1,37 @@
+collection_id: 106
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT COUNT(*)
+      FROM segment s
+      JOIN consent c ON c.status = 'cancelled'
+      LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.left_at)) <= 60
+      WHERE s.name='Member' AND cs.id IS NULL
+  type: native
+description: null
+display: scalar
+id: 521
+model: card
+name: Count of cancelled consents without a member leave
+query_type: native
+result_metadata:
+- base_type: type/Integer
+  display_name: COUNT(*)
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 5438.0
+        max: 5438.0
+        min: 5438.0
+        q1: 5438.0
+        q3: 5438.0
+        sd: null
+  name: COUNT(*)
+  special_type: null
+visualization_settings: {}

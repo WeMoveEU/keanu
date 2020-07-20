@@ -1,0 +1,123 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - avg
+      - - field-id
+        - 6898
+    filter:
+    - and
+    - - '='
+      - - field-id
+        - 6902
+      - likely_forwarders_rate
+    - - '='
+      - - field-id
+        - 6900
+      - 1
+    limit: 1
+    source-table: 862
+  type: query
+description: Number of "contacts" who opened the mailing 3 times or more versus number
+  of recipients
+display: gauge
+id: 470
+model: card
+name: Estimated forward rate
+query_type: query
+result_metadata:
+- base_type: type/Decimal
+  display_name: Average of Value
+  fingerprint:
+    global:
+      distinct-count: 1
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 0.0251
+        max: 0.0251
+        min: 0.0251
+        q1: 0.0251
+        q3: 0.0251
+        sd: null
+  name: avg
+  special_type: null
+visualization_settings:
+  column_settings:
+    '["name","avg"]':
+      number_style: percent
+    '["name","expression"]':
+      number_style: percent
+    '["ref",["expression","rate"]]':
+      number_style: percent
+  gauge.segments:
+  - color: '#ED6E6E'
+    label: ''
+    max: 0.01
+    min: 0
+  - color: '#F9CF48'
+    label: ''
+    max: 0.05
+    min: 0.01
+  - color: '#84BB4C'
+    label: ''
+    max: 1
+    min: 0.05
+  scalar.field: rate
+  table.cell_column: count
+  table.columns:
+  - enabled: false
+    name: id
+  - enabled: true
+    name: expression
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6899
+    name: broadcast_id_2
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6901
+    name: broadcast_name_2
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6903
+    name: id_2
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6902
+    name: metric_2
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6900
+    name: segment_id_2
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast Metric
+    - - field-id
+      - 6898
+    name: value_2
+  - enabled: true
+    field_ref:
+    - expression
+    - rate
+    name: rate
+  table.pivot_column: broadcast_id

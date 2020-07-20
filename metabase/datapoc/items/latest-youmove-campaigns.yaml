@@ -1,0 +1,385 @@
+collection_id: 71
+collection_position: 2
+description: null
+id: 66
+model: dashboard
+name: Latest Youmove campaigns
+ordered_cards:
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 104
+    collection_position: null
+    created_at: '2020-03-26T14:04:13.000Z'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      query:
+        fields:
+        - - field-id
+          - 7098
+        - - field-id
+          - 7095
+        - - field-id
+          - 7096
+        - - field-id
+          - 7087
+        - - field-id
+          - 7090
+        - - field-id
+          - 7089
+        - - field-id
+          - 7085
+        - - field-id
+          - 7092
+        - - field-id
+          - 7091
+        - - field-id
+          - 7093
+        - - field-id
+          - 7097
+        - - field-id
+          - 7094
+        - - field-id
+          - 7088
+        order-by:
+        - - desc
+          - - field-id
+            - 7087
+        source-table: 891
+      type: query
+    description: null
+    display: table
+    embedding_params: null
+    enable_embedding: false
+    id: 505
+    made_public_by_id: null
+    name: Latest campaigns
+    public_uuid: null
+    query_average_duration: 375
+    query_type: query
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: ID
+      fingerprint: null
+      name: id
+      special_type: type/PK
+    - base_type: type/Text
+      description: The internal name of the campaign
+      display_name: Name
+      fingerprint:
+        global:
+          distinct-count: 179
+          nil%: 0.0
+        type:
+          type/Text:
+            average-length: 33.3694
+            percent-email: 0.0
+            percent-json: 0.0
+            percent-url: 0.0
+      name: name
+      special_type: type/Name
+    - base_type: type/*
+      description: "One of the following:\n - wemove: a \"regular\" campaign run by\
+        \ the organisation\n - youmove: a campaign initiated by a citizen or organisation\
+        \ on the Youmove platform\n - eci: European Citizen Initiative\n - trial:\
+        \ a campaign run the organisation to assess its potential success"
+      display_name: Campaign Type
+      fingerprint:
+        global:
+          distinct-count: 3
+          nil%: 0.0
+      name: campaign_type
+      special_type: type/Category
+    - base_type: type/DateTime
+      description: When the campaign was launched
+      display_name: Started At
+      fingerprint:
+        global:
+          distinct-count: 179
+          nil%: 0.0
+        type:
+          type/DateTime:
+            earliest: '2015-10-09T12:32:00.000Z'
+            latest: '2020-03-20T13:05:11.000Z'
+      name: started_at
+      special_type: type/CreationTimestamp
+    - base_type: type/DateTime
+      description: When the campaign was closed
+      display_name: Ended At
+      fingerprint:
+        global:
+          distinct-count: 15
+          nil%: 0.8768
+        type:
+          type/DateTime:
+            earliest: '2016-11-22T00:00:00.000Z'
+            latest: '2020-02-07T11:01:00.000Z'
+      name: ended_at
+      special_type: type/CancelationDate
+    - base_type: type/Decimal
+      display_name: Messages
+      fingerprint:
+        global:
+          distinct-count: 165
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 60630.1599
+            max: 2187473.0
+            min: 1.0
+            q1: 1335.824903652825
+            q3: 60764.95586763111
+            sd: 177969.71149812912
+      name: messages
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Actions
+      fingerprint:
+        global:
+          distinct-count: 173
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 4868.7741
+            max: 25348.0
+            min: 1.0
+            q1: 378.841173372775
+            q3: 7454.673104104468
+            sd: 5316.045837097778
+      name: actions
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Shares
+      fingerprint:
+        global:
+          distinct-count: 51
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 474.0374
+            max: 2502.0
+            min: 1.0
+            q1: 18.26536312849162
+            q3: 704.3397758821027
+            sd: 596.1056047299329
+      name: shares
+      special_type: type/Share
+    - base_type: type/Decimal
+      display_name: New Members
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 437.0
+            max: 437.0
+            min: 437.0
+            q1: 437.0
+            q3: 437.0
+            sd: 0.0
+      name: new_members
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Unsubs
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 31.0
+            max: 31.0
+            min: 31.0
+            q1: 31.0
+            q3: 31.0
+            sd: 0.0
+      name: unsubs
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Activated
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 2.0
+            max: 2.0
+            min: 2.0
+            q1: 2.0
+            q3: 2.0
+            sd: 0.0
+      name: activated
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Donations
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 7.0
+            max: 7.0
+            min: 7.0
+            q1: 7.0
+            q3: 7.0
+            sd: 0.0
+      name: donations
+      special_type: null
+    - base_type: type/Decimal
+      display_name: Donations Total Amount
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 36.0
+            max: 36.0
+            min: 36.0
+            q1: 36.0
+            q3: 36.0
+            sd: 0.0
+      name: donations_total_amount
+      special_type: type/Income
+    table_id: 891
+    updated_at: '2020-07-20T16:39:14.000Z'
+    visualization_settings:
+      column_settings:
+        '["ref",["field-id",7087]]':
+          time_enabled: null
+        '["ref",["field-id",7088]]':
+          column_title: Total Amount
+        '["ref",["field-id",7095]]':
+          link_url: /dashboard/61?campaign={id}
+          view_as: custom_link
+        '["ref",["field-id",7096]]':
+          column_title: Type
+        '["ref",["field-id",7098]]':
+          link_url: /dashboard/61?campaign={id}
+          view_as: custom_link
+      table.cell_column: messages
+      table.columns:
+      - enabled: true
+        name: id
+      - enabled: true
+        name: name
+      - enabled: true
+        name: campaign_type
+      - enabled: true
+        name: started_at
+      - enabled: true
+        name: ended_at
+      - enabled: true
+        name: messages
+      - enabled: true
+        name: actions
+      - enabled: true
+        name: shares
+      - enabled: true
+        name: new_members
+      - enabled: true
+        name: unsubs
+      - enabled: true
+        name: activated
+      - enabled: true
+        name: donations
+      - enabled: true
+        name: donations_total_amount
+      - enabled: false
+        name: segment_id
+      table.pivot_column: ended_at
+  card_id: 505
+  col: 0
+  created_at: '2020-06-02T15:43:38.000Z'
+  dashboard_id: 66
+  id: 501
+  parameter_mappings:
+  - card_id: 505
+    parameter_id: 61f122eb
+    target:
+    - dimension
+    - - field-id
+      - 7096
+  row: 0
+  series: []
+  sizeX: 18
+  sizeY: 11
+  updated_at: '2020-06-18T14:17:02.000Z'
+  visualization_settings: {}
+- card:
+    archived: false
+    cache_ttl: null
+    collection_id: 71
+    collection_position: null
+    created_at: '2020-06-18T10:21:22.000Z'
+    creator_id: 1
+    database_id: 9
+    dataset_query:
+      database: 9
+      native:
+        query: SELECT TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW()) FROM `last_sync_dt`
+          WHERE `last_sync_dt`.`src` = 'query_start'
+      type: native
+    description: null
+    display: scalar
+    embedding_params: null
+    enable_embedding: false
+    id: 528
+    made_public_by_id: null
+    name: Age of last computation cycle
+    public_uuid: null
+    query_average_duration: 277
+    query_type: native
+    read_permissions: null
+    result_metadata:
+    - base_type: type/Integer
+      display_name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
+      fingerprint:
+        global:
+          distinct-count: 1
+          nil%: 0.0
+        type:
+          type/Number:
+            avg: 18931.0
+            max: 18931.0
+            min: 18931.0
+            q1: 18931.0
+            q3: 18931.0
+            sd: null
+      name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
+      special_type: null
+    table_id: null
+    updated_at: '2020-07-20T16:48:01.000Z'
+    visualization_settings:
+      column_settings:
+        '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+          suffix: ' minutes'
+  card_id: 528
+  col: 0
+  created_at: '2020-06-18T14:17:01.000Z'
+  dashboard_id: 66
+  id: 533
+  parameter_mappings: []
+  row: 11
+  series: []
+  sizeX: 18
+  sizeY: 2
+  updated_at: '2020-06-18T14:17:02.000Z'
+  visualization_settings:
+    card.title: This is the maximum age of data used on this dashboard
+    column_settings:
+      '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+        suffix: ' minutes'
+parameters:
+- default:
+  - youmove
+  id: 61f122eb
+  name: Campaign type
+  slug: campaign_type
+  type: category

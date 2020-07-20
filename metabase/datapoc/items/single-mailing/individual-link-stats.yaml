@@ -1,0 +1,154 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    - - distinct
+      - - joined-field
+        - Click
+        - - field-id
+          - 6904
+    breakout:
+    - - field-id
+      - 6623
+    - - joined-field
+      - Broadcast Link
+      - - field-id
+        - 6649
+    filter:
+    - not-null
+    - - joined-field
+      - Click
+      - - field-id
+        - 6503
+    joins:
+    - alias: Broadcast Link
+      condition:
+      - '='
+      - - field-id
+        - 6490
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6648
+      fields:
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6649
+      source-table: 828
+    - alias: Click
+      condition:
+      - '='
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6651
+      - - joined-field
+        - Click
+        - - field-id
+          - 6502
+      fields: none
+      source-table: 814
+    limit: 10
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 809
+  type: query
+description: Number of clicks and clickers for each link of the mailing
+display: table
+id: 464
+model: card
+name: Individual link stats
+query_type: query
+result_metadata:
+- base_type: type/Text
+  description: Internal name of the broadcast
+  display_name: Name
+  fingerprint:
+    global:
+      distinct-count: 9916
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 39.6161
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.0
+  name: name
+  special_type: type/Name
+- base_type: type/Text
+  description: 'Complete target URL of the link, including utm parameters.
+
+    This is not the URL of the click tracking system.'
+  display_name: "Broadcast Link \u2192 URL"
+  fingerprint:
+    global:
+      distinct-count: 8907
+      nil%: 0.0
+    type:
+      type/Text:
+        average-length: 122.1977
+        percent-email: 0.0
+        percent-json: 0.0
+        percent-url: 0.997
+  name: url
+  special_type: type/URL
+- base_type: type/Integer
+  display_name: Count
+  fingerprint:
+    global:
+      distinct-count: 8
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 155.0
+        max: 551.0
+        min: 2.0
+        q1: 3.5
+        q3: 307.0
+        sd: 210.78492762597074
+  name: count
+  special_type: type/Quantity
+- base_type: type/Integer
+  display_name: "Distinct values of Click \u2192 Contact ID"
+  fingerprint:
+    global:
+      distinct-count: 8
+      nil%: 0.0
+    type:
+      type/Number:
+        avg: 142.5
+        max: 501.0
+        min: 2.0
+        q1: 3.5
+        q3: 285.5
+        sd: 193.07511491644902
+  name: count_2
+  special_type: null
+visualization_settings:
+  column_settings:
+    '["name","count"]':
+      column_title: Clicks
+    '["name","count_2"]':
+      column_title: Clickers
+    '["ref",["field-id",6649]]':
+      column_title: Mailing Link URL
+    '["ref",["fk->",["field-id",6502],["field-id",6649]]]':
+      column_title: Mailing Link URL
+  table.cell_column: count
+  table.columns:
+  - enabled: false
+    name: name
+  - enabled: true
+    name: url
+  - enabled: true
+    name: count
+  - enabled: true
+    name: count_2
+  table.pivot_column: url
