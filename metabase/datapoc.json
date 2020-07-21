@@ -13075,7 +13075,7 @@
               },
               {
                 "base_type": "type/Integer",
-                "display_name": "Count",
+                "display_name": "Distinct values of Contact ID",
                 "fingerprint": {
                   "global": {
                     "distinct-count": 8,
@@ -13353,20 +13353,20 @@
               },
               {
                 "base_type": "type/Integer",
-                "display_name": "Count",
+                "display_name": "Distinct values of Contact ID",
                 "fingerprint": {
                   "global": {
-                    "distinct-count": 15,
+                    "distinct-count": 18,
                     "nil%": 0.0
                   },
                   "type": {
                     "type/Number": {
-                      "avg": 247.30434782608697,
-                      "max": 2709.0,
+                      "avg": 46.96153846153846,
+                      "max": 663.0,
                       "min": 1.0,
-                      "q1": 1.5,
-                      "q3": 159.5,
-                      "sd": 625.8981499182964
+                      "q1": 2.23606797749979,
+                      "q3": 28.0,
+                      "sd": 130.90560897661513
                     }
                   }
                 },
