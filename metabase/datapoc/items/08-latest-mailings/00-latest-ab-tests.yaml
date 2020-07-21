@@ -95,13 +95,13 @@ result_metadata:
   fingerprint:
     global:
       distinct-count: 1942
-      nil%: 0.0
+      nil%: 0
     type:
       type/Text:
         average-length: 36.58631256384066
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
+        percent-email: 0
+        percent-json: 0
+        percent-url: 0
   name: name
   special_type: type/Name
 - base_type: type/DateTime
@@ -110,7 +110,7 @@ result_metadata:
   fingerprint:
     global:
       distinct-count: 1766
-      nil%: 0.0
+      nil%: 0
     type:
       type/DateTime:
         earliest: '2015-05-21T14:40:19.000Z'
@@ -123,15 +123,15 @@ result_metadata:
   fingerprint:
     global:
       distinct-count: 1
-      nil%: 0.0
+      nil%: 0
     type:
       type/Number:
-        avg: 2.0
-        max: 2.0
-        min: 2.0
-        q1: 2.0
-        q3: 2.0
-        sd: 0.0
+        avg: 2
+        max: 2
+        min: 2
+        q1: 2
+        q3: 2
+        sd: 0
   name: count
   special_type: type/Quantity
 - base_type: type/Decimal
@@ -139,14 +139,14 @@ result_metadata:
   fingerprint:
     global:
       distinct-count: 30
-      nil%: 0.0
+      nil%: 0
     type:
       type/Number:
         avg: 2386.733333333333
-        max: 19127.0
-        min: 6.0
-        q1: 332.0
-        q3: 2171.0
+        max: 19127
+        min: 6
+        q1: 332
+        q3: 2171
         sd: 4307.7738144872
   name: sum
   special_type: null
@@ -158,8 +158,12 @@ visualization_settings:
       column_title: Sample size
     '["ref",["field-id",6655]]':
       column_title: Name
+      link_url: /dashboard/62?id={id}
+      view_as: custom_link
     '["ref",["field-id",6656]]':
       column_title: ID
+      link_url: /dashboard/62?id={id}
+      view_as: custom_link
     '["ref",["field-id",6657]]':
       column_title: Sent At
       date_separator: '-'

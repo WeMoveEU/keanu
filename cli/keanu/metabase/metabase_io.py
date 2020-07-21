@@ -88,14 +88,6 @@ class MetabaseIO:
 
           if 'settings' in field:
             update_attrs['settings'] = field['settings']
-            # Check if custom action contains a dashboard URL, and replace its id with the mapped one
-            # Remove this part when custom action supports a more structured aproach
-            if field['settings'] is not None and 'custom_actions' in field['settings']:
-              url = field['settings']['custom_actions']['url']
-              m = re.search('/dashboard/(\d+)', url)
-              if m is not None:
-                url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
-                update_attrs['settings']['custom_actions']['url'] = url
           
           if update_attrs:
             metabase_io_log.info("🏷️ setting custom field values for {}.{}: {}".format(table['name'], field['name'], update_attrs))
@@ -544,6 +536,32 @@ def deref_fields(expression, mappings):
     for factor in expression.values():
       deref_fields(factor, mappings)
 
+def deref_column_setting_key(cs, mappings):
+  if cs.startswith('["ref",["field-id",'):
+    csobj = json.loads(cs)
+    try:
+      csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
+    except KeyError:
+      # There could be stale column_settings that have orphan field-id
+      # e.g. referring to archived card
+      return cs
+    return json.dumps(csobj)
+  else:
+    return cs
+
+def deref_column_settings(col_settings, mappings):
+  # Check if custom link contains a dashboard URL, and replace its id with the mapped one
+  # Remove this part when custom drill supports a more structured aproach
+  if col_settings is not None and 'link_url' in col_settings:
+    col_settings = col_settings.copy()
+    url = col_settings['link_url']
+    m = re.search('/dashboard/(\d+)', url)
+    if m is not None:
+      url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
+      col_settings['link_url'] = url
+
+  return col_settings
+
 def deref_card(card, mappings):
 # skipping 'result_metadata', 
   card = {k: card[k] for k in card.keys() & ['name', 'description', 'visualization_settings', 'collection_position', 'metadata_checksum', 'dataset_query', 'display']}
@@ -579,20 +597,8 @@ def deref_card(card, mappings):
   if 'visualization_settings' in card:
     vs = card['visualization_settings']
     if 'column_settings' in vs:
-      def deref_column_setting_key(cs):
-        if cs.startswith('["ref",["field-id",'):
-          csobj = json.loads(cs)
-          try:
-            csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
-          except KeyError:
-            # There could be stale column_settings that have orphan field-id
-            # e.g. referring to archived card
-            return cs
-          return json.dumps(csobj)
-        else:
-          return cs
       vs['column_settings'] = {
-        deref_column_setting_key(k): v
+        deref_column_setting_key(k, mappings): deref_column_settings(v, mappings)
         for k,v in vs['column_settings'].items()
       }
 

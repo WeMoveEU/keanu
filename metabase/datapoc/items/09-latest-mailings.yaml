@@ -95,7 +95,7 @@ ordered_cards:
     made_public_by_id: null
     name: Latest mailings info
     public_uuid: null
-    query_average_duration: 894
+    query_average_duration: 980
     query_type: query
     read_permissions: null
     result_metadata:
@@ -270,7 +270,7 @@ ordered_cards:
       name: sent_at
       special_type: type/CreationTimestamp
     table_id: 887
-    updated_at: '2020-06-19T10:27:20.000Z'
+    updated_at: '2020-07-20T15:03:56.000Z'
     visualization_settings:
       column_settings:
         '["ref",["expression","Act to click"]]':
@@ -292,12 +292,23 @@ ordered_cards:
           number_separators: ', '
         '["ref",["field-id",7058]]':
           column_title: A/B test
+          link_url: /dashboard/62?id={broadcast_test_id}
+          view_as: custom_link
         '["ref",["field-id",7059]]':
           number_style: percent
+        '["ref",["field-id",7060]]':
+          link_url: /dashboard/47?id={id}
+          view_as: custom_link
+        '["ref",["field-id",7061]]':
+          link_url: /dashboard/47?id={id}
+          view_as: custom_link
         '["ref",["field-id",7062]]':
           date_separator: '-'
           date_style: YYYY/M/D
           time_style: k:mm
+        '["ref",["field-id",7063]]':
+          link_url: /dashboard/61?campaign={campaign_id}
+          view_as: custom_link
       table.cell_column: sent_at
       table.columns:
       - enabled: true
@@ -486,7 +497,7 @@ ordered_cards:
     made_public_by_id: null
     name: Latest A/B tests
     public_uuid: null
-    query_average_duration: 463
+    query_average_duration: 507
     query_type: query
     read_permissions: null
     result_metadata:
@@ -501,13 +512,13 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1942
-          nil%: 0.0
+          nil%: 0
         type:
           type/Text:
             average-length: 36.58631256384066
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
+            percent-email: 0
+            percent-json: 0
+            percent-url: 0
       name: name
       special_type: type/Name
     - base_type: type/DateTime
@@ -516,7 +527,7 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1766
-          nil%: 0.0
+          nil%: 0
         type:
           type/DateTime:
             earliest: '2015-05-21T14:40:19.000Z'
@@ -529,15 +540,15 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 1
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
-            avg: 2.0
-            max: 2.0
-            min: 2.0
-            q1: 2.0
-            q3: 2.0
-            sd: 0.0
+            avg: 2
+            max: 2
+            min: 2
+            q1: 2
+            q3: 2
+            sd: 0
       name: count
       special_type: type/Quantity
     - base_type: type/Decimal
@@ -545,19 +556,19 @@ ordered_cards:
       fingerprint:
         global:
           distinct-count: 30
-          nil%: 0.0
+          nil%: 0
         type:
           type/Number:
             avg: 2386.733333333333
-            max: 19127.0
-            min: 6.0
-            q1: 332.0
-            q3: 2171.0
+            max: 19127
+            min: 6
+            q1: 332
+            q3: 2171
             sd: 4307.7738144872
       name: sum
       special_type: null
     table_id: 809
-    updated_at: '2020-06-19T10:27:20.000Z'
+    updated_at: '2020-07-20T15:05:07.000Z'
     visualization_settings:
       column_settings:
         '["name","count"]':
@@ -566,8 +577,12 @@ ordered_cards:
           column_title: Sample size
         '["ref",["field-id",6655]]':
           column_title: Name
+          link_url: /dashboard/62?id={id}
+          view_as: custom_link
         '["ref",["field-id",6656]]':
           column_title: ID
+          link_url: /dashboard/62?id={id}
+          view_as: custom_link
         '["ref",["field-id",6657]]':
           column_title: Sent At
           date_separator: '-'
@@ -626,7 +641,7 @@ ordered_cards:
     made_public_by_id: null
     name: Age of last computation cycle
     public_uuid: null
-    query_average_duration: 331
+    query_average_duration: 302
     query_type: native
     read_permissions: null
     result_metadata:
@@ -638,16 +653,16 @@ ordered_cards:
           nil%: 0.0
         type:
           type/Number:
-            avg: 106.0
-            max: 106.0
-            min: 106.0
-            q1: 106.0
-            q3: 106.0
+            avg: 18829.0
+            max: 18829.0
+            min: 18829.0
+            q1: 18829.0
+            q3: 18829.0
             sd: null
       name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
       special_type: null
     table_id: null
-    updated_at: '2020-07-07T15:03:17.000Z'
+    updated_at: '2020-07-20T15:06:51.000Z'
     visualization_settings:
       column_settings:
         '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':

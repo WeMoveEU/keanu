@@ -273,12 +273,23 @@ visualization_settings:
       number_separators: ', '
     '["ref",["field-id",7058]]':
       column_title: A/B test
+      link_url: /dashboard/62?id={broadcast_test_id}
+      view_as: custom_link
     '["ref",["field-id",7059]]':
       number_style: percent
+    '["ref",["field-id",7060]]':
+      link_url: /dashboard/47?id={id}
+      view_as: custom_link
+    '["ref",["field-id",7061]]':
+      link_url: /dashboard/47?id={id}
+      view_as: custom_link
     '["ref",["field-id",7062]]':
       date_separator: '-'
       date_style: YYYY/M/D
       time_style: k:mm
+    '["ref",["field-id",7063]]':
+      link_url: /dashboard/61?campaign={campaign_id}
+      view_as: custom_link
   table.cell_column: sent_at
   table.columns:
   - enabled: true
