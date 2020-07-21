@@ -2321,7 +2321,9 @@ tables:
         has_field_values: search
         id: 7060
         name: name
-        settings: null
+        settings:
+          custom_actions:
+            url: ''
         special_type: type/Name
       7061:
         description: null
