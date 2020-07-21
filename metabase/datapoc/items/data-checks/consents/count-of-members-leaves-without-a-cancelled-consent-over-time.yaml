@@ -19,37 +19,6 @@ id: 516
 model: card
 name: Count of members leaves without a cancelled consent over time
 query_type: native
-result_metadata:
-- base_type: type/Text
-  display_name: leave_month
-  fingerprint:
-    global:
-      distinct-count: 52
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 7.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: leave_month
-  special_type: null
-- base_type: type/Integer
-  display_name: COUNT(*)
-  fingerprint:
-    global:
-      distinct-count: 49
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 656.1346153846154
-        max: 13407.0
-        min: 2.0
-        q1: 155.5
-        q3: 582.5
-        sd: 1855.5997395149861
-  name: COUNT(*)
-  special_type: null
 visualization_settings:
   graph.dimensions:
   - leave_month

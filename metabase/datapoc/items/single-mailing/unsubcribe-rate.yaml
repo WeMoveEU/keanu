@@ -27,23 +27,6 @@ id: 383
 model: card
 name: Unsubcribe rate
 query_type: query
-result_metadata:
-- base_type: type/Decimal
-  display_name: Average of Value
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 0.0011
-        max: 0.0011
-        min: 0.0011
-        q1: 0.0011
-        q3: 0.0011
-        sd: null
-  name: avg
-  special_type: null
 visualization_settings:
   column_settings:
     '["name","avg"]':

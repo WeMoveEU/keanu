@@ -45,41 +45,6 @@ id: 493
 model: card
 name: Count of campaign actions per country
 query_type: query
-result_metadata:
-- base_type: type/Text
-  description: 'The 2-letter country code of the contact.
-
-    What this country represents is up to the contact (place of birth, place of living,
-    etc).'
-  display_name: "Contact \u2192 Country"
-  fingerprint:
-    global:
-      distinct-count: 62
-      nil%: 0.0606
-    type:
-      type/Text:
-        average-length: 1.8788
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: country
-  special_type: type/Country
-- base_type: type/Integer
-  display_name: Distinct values of Contact ID
-  fingerprint:
-    global:
-      distinct-count: 18
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 46.96153846153846
-        max: 663.0
-        min: 1.0
-        q1: 2.23606797749979
-        q3: 28.0
-        sd: 130.90560897661513
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - medium

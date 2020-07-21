@@ -57,59 +57,6 @@ id: 479
 model: card
 name: Count of campaign actions per language and country
 query_type: query
-result_metadata:
-- base_type: type/Integer
-  display_name: "Action Page \u2192 Campaign ID"
-  fingerprint:
-    global:
-      distinct-count: 297
-      nil%: 0.0
-  name: campaign_id
-  special_type: type/FK
-- base_type: type/Text
-  display_name: "Contact \u2192 Preferred Language"
-  fingerprint:
-    global:
-      distinct-count: 9
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 5.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: preferred_language
-  special_type: type/Category
-- base_type: type/Text
-  display_name: "Contact \u2192 Country"
-  fingerprint:
-    global:
-      distinct-count: 62
-      nil%: 0.0606
-    type:
-      type/Text:
-        average-length: 1.8788
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: country
-  special_type: type/Country
-- base_type: type/Integer
-  display_name: Nombre de lignes
-  fingerprint:
-    global:
-      distinct-count: 661
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 81.64826674799228
-        max: 12524.0
-        min: 1.0
-        q1: 5.342397600223598
-        q3: 35.757291648691016
-        sd: 440.00587691555245
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   column_settings:
     '["name","count"]':

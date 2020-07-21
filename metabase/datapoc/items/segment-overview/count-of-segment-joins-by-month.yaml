@@ -21,49 +21,6 @@ id: 473
 model: card
 name: Count of segment joins by month
 query_type: query
-result_metadata:
-- base_type: type/Integer
-  display_name: Segment ID
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-  name: segment_id
-  special_type: type/FK
-- base_type: type/DateTime
-  description: 'When the contact joined the segment.
-
-    If the contact was in the segment several times, there are several records.
-
-    '
-  display_name: Joined At
-  fingerprint:
-    global:
-      distinct-count: 7770
-      nil%: 0.0
-    type:
-      type/DateTime:
-        earliest: '2015-09-04T00:01:40.000Z'
-        latest: '2018-12-11T16:01:19.000Z'
-  name: joined_at
-  special_type: type/JoinTimestamp
-  unit: month
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 56
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 1934.6785714285713
-        max: 8590.0
-        min: 24.0
-        q1: 695.0
-        q3: 2568.0
-        sd: 1680.4101134397665
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - joined_at

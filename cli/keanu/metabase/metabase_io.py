@@ -188,8 +188,6 @@ class MetabaseIO:
   def add_dashboard_cards(self, cards, dashboard):
     dashboard['ordered_cards'] = []
     for card in cards:
-      if 'card' in card and card['card']['archived'] == True:
-        continue
       c = self.client.add_dashboard_card(card, dashboard['id'])
       dashboard['ordered_cards'].append(c)
     return dashboard
@@ -645,7 +643,6 @@ class Trimmer:
     'visualization_settings',
     'description',
     'collection_position',
-    'result_metadata',
     'metadata_checksum',
     'collection_id',
     'name',
@@ -676,6 +673,17 @@ class Trimmer:
     'parent_id'
   ]
 
+  keep_dashboard_card_keys = [
+    'card_id',
+    'parameter_mappings',
+    'series',
+    'row',
+    'col',
+    'sizeX',
+    'sizeY',
+    'visualization_settings'
+  ]
+
   @staticmethod
   def trim_data(item, keep_keys=None):
     if keep_keys is None:
@@ -688,5 +696,11 @@ class Trimmer:
       else:
         raise Exception('Do not know how to trim_data on hash with no known model key')
 
-    return { k:  item[k] for k in item if k in keep_keys }
+    trimmed = { k:  item[k] for k in item if k in keep_keys }
+
+    if 'ordered_cards' in trimmed:
+      trimmed['ordered_cards'] = filter(lambda c: c.get('card', {}).get('archived', False) == False, trimmed['ordered_cards'])
+      trimmed['ordered_cards'] = list(map(lambda c: Trimmer.trim_data(c, Trimmer.keep_dashboard_card_keys), trimmed['ordered_cards']))
+
+    return trimmed
 

@@ -27,37 +27,6 @@ id: 468
 model: card
 name: Consents
 query_type: native
-result_metadata:
-- base_type: type/Text
-  display_name: status
-  fingerprint:
-    global:
-      distinct-count: 3
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 7.666666666666667
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: status
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: count
-  fingerprint:
-    global:
-      distinct-count: 3
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 19.333333333333332
-        max: 33.0
-        min: 8.0
-        q1: 10.25
-        q3: 29.0
-        sd: 12.662279942148386
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   pie.colors:
     accepted: '#84BB4C'

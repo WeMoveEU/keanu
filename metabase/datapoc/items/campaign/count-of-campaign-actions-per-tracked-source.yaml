@@ -54,37 +54,6 @@ id: 483
 model: card
 name: Count of campaign actions per tracked source
 query_type: query
-result_metadata:
-- base_type: type/Text
-  display_name: "Source \u2192 Source"
-  fingerprint:
-    global:
-      distinct-count: 54
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 6.2891
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: source
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 13
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 19.774193548387096
-        max: 401.0
-        min: 1.0
-        q1: 1.0991805480332872
-        q3: 11.426785900258878
-        sd: 71.59688525693436
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   card.title: Sources (other than mailings)
   graph.dimensions:

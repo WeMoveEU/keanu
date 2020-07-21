@@ -46,37 +46,6 @@ id: 482
 model: card
 name: Count of campaign actions per tracked medium
 query_type: query
-result_metadata:
-- base_type: type/Text
-  display_name: "Source \u2192 Medium"
-  fingerprint:
-    global:
-      distinct-count: 18
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 7.8666
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: medium
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 13
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 203.6
-        max: 2363.0
-        min: 1.0
-        q1: 3.41886116991581
-        q3: 60.25
-        sd: 605.6985105762485
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - medium

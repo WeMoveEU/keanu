@@ -42,51 +42,6 @@ id: 476
 model: card
 name: Count of campaign actions per type over time
 query_type: query
-result_metadata:
-- base_type: type/DateTime
-  description: When the contact did the action
-  display_name: Created At
-  fingerprint:
-    global:
-      distinct-count: 8695
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 19.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: created_at
-  special_type: type/CreationTimestamp
-  unit: day
-- base_type: type/*
-  description: 'Kind of engagement that users can do on the action page.
-
-    The type consent is listed here for technical reasons, consents are not considered
-    as actions and are recorded in the consent table.'
-  display_name: "Action Page \u2192 Action Type"
-  fingerprint:
-    global:
-      distinct-count: 7
-      nil%: 0.0
-  name: action_type
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 24
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 2.9593023255813953
-        max: 49.0
-        min: 1.0
-        q1: 1.0695830385666347
-        q3: 3.5424598286924116
-        sd: 3.460780777005838
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - created_at

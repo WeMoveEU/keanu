@@ -45,39 +45,6 @@ id: 492
 model: card
 name: Count of campaign actions per language
 query_type: query
-result_metadata:
-- base_type: type/Text
-  description: The language used to communicate with the contact, in locale format
-    (xx_YY)
-  display_name: "Contact \u2192 Preferred Language"
-  fingerprint:
-    global:
-      distinct-count: 9
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 5.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: preferred_language
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Distinct values of Contact ID
-  fingerprint:
-    global:
-      distinct-count: 8
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 152.625
-        max: 698.0
-        min: 3.0
-        q1: 21.0
-        q3: 186.5
-        sd: 232.0904611199201
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - medium

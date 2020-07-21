@@ -31,37 +31,6 @@ id: 490
 model: card
 name: Growth media
 query_type: query
-result_metadata:
-- base_type: type/Text
-  display_name: "Source \u2192 Medium"
-  fingerprint:
-    global:
-      distinct-count: 18
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 7.8666
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: medium
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Distinct values of Contact ID
-  fingerprint:
-    global:
-      distinct-count: 0
-      nil%: null
-    type:
-      type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - created_at

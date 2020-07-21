@@ -29,51 +29,6 @@ id: 509
 model: card
 name: A/B Consents
 query_type: native
-result_metadata:
-- base_type: type/Text
-  display_name: version
-  fingerprint:
-    global:
-      distinct-count: 2
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 6.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: version
-  special_type: null
-- base_type: type/Text
-  display_name: consent_status
-  fingerprint:
-    global:
-      distinct-count: 2
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 8.0
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: consent_status
-  special_type: null
-- base_type: type/Integer
-  display_name: count
-  fingerprint:
-    global:
-      distinct-count: 3
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 1.75
-        max: 3.0
-        min: 1.0
-        q1: 1.0
-        q3: 2.5
-        sd: 0.9574271077563381
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - version

@@ -49,23 +49,6 @@ id: 384
 model: card
 name: Bounce rate
 query_type: query
-result_metadata:
-- base_type: type/Float
-  display_name: rate
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 0.01688353
-        max: 0.01688353
-        min: 0.01688353
-        q1: 0.01688353
-        q3: 0.01688353
-        sd: null
-  name: rate
-  special_type: type/Share
 visualization_settings:
   column_settings:
     '["ref",["expression","Bounce rate"]]':

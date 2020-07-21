@@ -46,37 +46,6 @@ id: 484
 model: card
 name: Count of campaign actions per tracked campaign code
 query_type: query
-result_metadata:
-- base_type: type/Text
-  display_name: "Source \u2192 Campaign"
-  fingerprint:
-    global:
-      distinct-count: 9866
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 10.161
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: campaign
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 28
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 23.005847953216374
-        max: 2281.0
-        min: 1.0
-        q1: 1.0
-        q3: 1.7594156902189821
-        sd: 163.19770127600307
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - medium

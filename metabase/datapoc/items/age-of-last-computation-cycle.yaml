@@ -13,23 +13,6 @@ id: 528
 model: card
 name: Age of last computation cycle
 query_type: native
-result_metadata:
-- base_type: type/Integer
-  display_name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 18931.0
-        max: 18931.0
-        min: 18931.0
-        q1: 18931.0
-        q3: 18931.0
-        sd: null
-  name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
-  special_type: null
 visualization_settings:
   column_settings:
     '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':

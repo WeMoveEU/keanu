@@ -31,37 +31,6 @@ id: 491
 model: card
 name: Growth sources
 query_type: query
-result_metadata:
-- base_type: type/Text
-  display_name: "Source \u2192 Source"
-  fingerprint:
-    global:
-      distinct-count: 54
-      nil%: 0.0
-    type:
-      type/Text:
-        average-length: 6.2891
-        percent-email: 0.0
-        percent-json: 0.0
-        percent-url: 0.0
-  name: source
-  special_type: type/Category
-- base_type: type/Integer
-  display_name: Distinct values of Contact ID
-  fingerprint:
-    global:
-      distinct-count: 10
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 3.8125
-        max: 33.0
-        min: 1.0
-        q1: 1.0
-        q3: 3.585786437626905
-        sd: 6.741482080756522
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - created_at

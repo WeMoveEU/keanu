@@ -27,23 +27,6 @@ id: 381
 model: card
 name: Open rate
 query_type: query
-result_metadata:
-- base_type: type/Decimal
-  display_name: Average of Value
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 0.2197
-        max: 0.2197
-        min: 0.2197
-        q1: 0.2197
-        q3: 0.2197
-        sd: null
-  name: avg
-  special_type: null
 visualization_settings:
   column_settings:
     '["name","avg"]':

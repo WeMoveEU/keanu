@@ -33,23 +33,6 @@ id: 486
 model: card
 name: Count of campaign actions
 query_type: query
-result_metadata:
-- base_type: type/Integer
-  display_name: Count
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 3054.0
-        max: 3054.0
-        min: 3054.0
-        q1: 3054.0
-        q3: 3054.0
-        sd: null
-  name: count
-  special_type: type/Quantity
 visualization_settings:
   graph.dimensions:
   - created_at

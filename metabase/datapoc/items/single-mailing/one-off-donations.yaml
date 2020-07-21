@@ -61,23 +61,6 @@ id: 453
 model: card
 name: One-off donations
 query_type: query
-result_metadata:
-- base_type: type/Float
-  display_name: Average of rate
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 1.0
-    type:
-      type/Number:
-        avg: null
-        max: null
-        min: null
-        q1: null
-        q3: null
-        sd: null
-  name: avg
-  special_type: null
 visualization_settings:
   column_settings:
     '["name","avg"]':

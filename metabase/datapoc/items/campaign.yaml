@@ -5,126 +5,8 @@ id: 61
 model: dashboard
 name: Campaign
 ordered_cards:
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-15T15:43:26.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        breakout:
-        - - datetime-field
-          - - field-id
-            - 6872
-          - day
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        filter:
-        - '!='
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        - consent
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        source-table: 813
-      type: query
-    description: null
-    display: area
-    embedding_params: null
-    enable_embedding: false
-    id: 476
-    made_public_by_id: null
-    name: Count of campaign actions per type over time
-    public_uuid: null
-    query_average_duration: 3636
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/DateTime
-      description: When the contact did the action
-      display_name: Created At
-      fingerprint:
-        global:
-          distinct-count: 8695
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 19.0
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: created_at
-      special_type: type/CreationTimestamp
-      unit: day
-    - base_type: type/*
-      description: 'Kind of engagement that users can do on the action page.
-
-        The type consent is listed here for technical reasons, consents are not considered
-        as actions and are recorded in the consent table.'
-      display_name: "Action Page \u2192 Action Type"
-      fingerprint:
-        global:
-          distinct-count: 7
-          nil%: 0.0
-      name: action_type
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 24
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 2.9593023255813953
-            max: 49.0
-            min: 1.0
-            q1: 1.0695830385666347
-            q3: 3.5424598286924116
-            sd: 3.460780777005838
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - created_at
-      - action_type
-      graph.metrics:
-      - count
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 476
+- card_id: 476
   col: 7
-  created_at: '2020-01-15T15:44:33.000Z'
-  dashboard_id: 61
-  id: 440
   parameter_mappings:
   - card_id: 476
     parameter_id: 49572a13
@@ -172,7 +54,6 @@ ordered_cards:
   series: []
   sizeX: 11
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     graph.dimensions:
     - created_at
@@ -188,110 +69,8 @@ ordered_cards:
       sign:
         axis: null
     stackable.stack_type: null
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-15T15:54:18.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        breakout:
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        filter:
-        - '!='
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        - consent
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: null
-    display: bar
-    embedding_params: null
-    enable_embedding: false
-    id: 477
-    made_public_by_id: null
-    name: Count of campaign actions per type
-    public_uuid: null
-    query_average_duration: 656
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/*
-      description: 'Kind of engagement that users can do on the action page.
-
-        The type consent is listed here for technical reasons, consents are not considered
-        as actions and are recorded in the consent table.'
-      display_name: "Action Page \u2192 Action Type"
-      fingerprint:
-        global:
-          distinct-count: 7
-          nil%: 0.0
-      name: action_type
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 5
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 610.8
-            max: 2703.0
-            min: 37.0
-            q1: 40.0
-            q3: 829.5
-            sd: 1171.5934448433893
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - action_type
-      graph.metrics:
-      - count
-      pie.slice_threshold: 0
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 477
+- card_id: 477
   col: 0
-  created_at: '2020-01-15T15:55:41.000Z'
-  dashboard_id: 61
-  id: 441
   parameter_mappings:
   - card_id: 477
     parameter_id: 49572a13
@@ -339,7 +118,6 @@ ordered_cards:
   series: []
   sizeX: 7
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     graph.dimensions:
     - action_type
@@ -355,19 +133,13 @@ ordered_cards:
       sign:
         axis: null
     stackable.stack_type: null
-- card:
-    query_average_duration: null
-  card_id: null
+- card_id: null
   col: 0
-  created_at: '2020-01-15T15:59:35.000Z'
-  dashboard_id: 61
-  id: 442
   parameter_mappings: []
   row: 5
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Actions types'
@@ -377,136 +149,8 @@ ordered_cards:
       display: text
       name: null
       visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-15T15:58:32.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        fields:
-        - - field-id
-          - 6491
-        - - field-id
-          - 6495
-        - - field-id
-          - 6492
-        - - field-id
-          - 6493
-        - - field-id
-          - 6497
-        limit: 1
-        source-table: 811
-      type: query
-    description: null
-    display: table
-    embedding_params: null
-    enable_embedding: false
-    id: 478
-    made_public_by_id: null
-    name: Campaign summary
-    public_uuid: null
-    query_average_duration: 309
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: External ID
-      fingerprint:
-        global:
-          distinct-count: 294
-          nil%: 0.006779661016949153
-        type:
-          type/Number:
-            avg: 831.4914675767918
-            max: 2350.0
-            min: 1.0
-            q1: 218.0430313820163
-            q3: 1514.1737106739033
-            sd: 609.5154490717861
-      name: external_id
-      special_type: type/PK
-    - base_type: type/Text
-      description: The internal name of the campaign
-      display_name: Name
-      fingerprint:
-        global:
-          distinct-count: 290
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 27.769491525423728
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: name
-      special_type: type/Name
-    - base_type: type/DateTime
-      description: When the campaign was launched
-      display_name: Started At
-      fingerprint:
-        global:
-          distinct-count: 293
-          nil%: 0.0
-        type:
-          type/DateTime:
-            earliest: '2015-01-01T00:00:00.000Z'
-            latest: '2019-11-07T17:30:00.000Z'
-      name: started_at
-      special_type: type/CreationTimestamp
-    - base_type: type/DateTime
-      description: When the campaign was closed
-      display_name: Ended At
-      fingerprint:
-        global:
-          distinct-count: 9
-          nil%: 0.9491525423728814
-        type:
-          type/DateTime:
-            earliest: '2016-11-22T00:00:00.000Z'
-            latest: '2018-08-01T00:00:00.000Z'
-      name: ended_at
-      special_type: null
-    - base_type: type/*
-      description: "One of the following:\n - wemove: a \"regular\" campaign run by\
-        \ the organisation\n - youmove: a campaign initiated by a citizen or organisation\
-        \ on the Youmove platform\n - eci: European Citizen Initiative\n - trial:\
-        \ a campaign run the organisation to assess its potential success"
-      display_name: Campaign Type
-      fingerprint:
-        global:
-          distinct-count: 3
-          nil%: 0.0
-      name: campaign_type
-      special_type: type/Category
-    table_id: 811
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings:
-      column_settings:
-        '["ref",["field-id",6491]]':
-          column_title: CiviCRM ID
-      table.cell_column: ended_at
-      table.columns:
-      - enabled: true
-        name: external_id
-      - enabled: true
-        name: name
-      - enabled: true
-        name: started_at
-      - enabled: true
-        name: ended_at
-      - enabled: true
-        name: campaign_type
-      table.pivot_column: id
-  card_id: 478
+- card_id: 478
   col: 0
-  created_at: '2020-01-15T15:59:35.000Z'
-  dashboard_id: 61
-  id: 443
   parameter_mappings:
   - card_id: 478
     parameter_id: 49572a13
@@ -518,111 +162,9 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 3
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:05:39.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        breakout:
-        - - joined-field
-          - Source
-          - - field-id
-            - 6610
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        - alias: Source
-          condition:
-          - '='
-          - - field-id
-            - 6873
-          - - joined-field
-            - Source
-            - - field-id
-              - 6616
-          fields: all
-          source-table: 807
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 482
-    made_public_by_id: null
-    name: Count of campaign actions per tracked medium
-    public_uuid: null
-    query_average_duration: 3111
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: "Source \u2192 Medium"
-      fingerprint:
-        global:
-          distinct-count: 18
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 7.8666
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: medium
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 13
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 203.6
-            max: 2363.0
-            min: 1.0
-            q1: 3.41886116991581
-            q3: 60.25
-            sd: 605.6985105762485
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - medium
-      graph.metrics:
-      - count
-      pie.slice_threshold: 0.5
-      stackable.stack_type: stacked
-  card_id: 482
+- card_id: 482
   col: 0
-  created_at: '2020-01-16T11:06:15.000Z'
-  dashboard_id: 61
-  id: 447
   parameter_mappings:
   - card_id: 482
     parameter_id: 49572a13
@@ -669,7 +211,6 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Media
     graph.dimensions:
@@ -678,19 +219,13 @@ ordered_cards:
     - count
     pie.slice_threshold: 0.5
     stackable.stack_type: stacked
-- card:
-    query_average_duration: null
-  card_id: null
+- card_id: null
   col: 0
-  created_at: '2020-01-16T11:12:43.000Z'
-  dashboard_id: 61
-  id: 448
   parameter_mappings: []
   row: 11
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Actions sources'
@@ -700,118 +235,8 @@ ordered_cards:
       display: text
       name: null
       visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:09:17.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        breakout:
-        - - joined-field
-          - Source
-          - - field-id
-            - 6613
-        filter:
-        - does-not-contain
-        - - joined-field
-          - Source
-          - - field-id
-            - 6613
-        - civimail
-        - case-sensitive: false
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        - alias: Source
-          condition:
-          - '='
-          - - field-id
-            - 6873
-          - - joined-field
-            - Source
-            - - field-id
-              - 6616
-          fields: all
-          source-table: 807
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 483
-    made_public_by_id: null
-    name: Count of campaign actions per tracked source
-    public_uuid: null
-    query_average_duration: 2486
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: "Source \u2192 Source"
-      fingerprint:
-        global:
-          distinct-count: 54
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 6.2891
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: source
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 13
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 19.774193548387096
-            max: 401.0
-            min: 1.0
-            q1: 1.0991805480332872
-            q3: 11.426785900258878
-            sd: 71.59688525693436
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      card.title: Sources (other than mailings)
-      graph.dimensions:
-      - medium
-      graph.metrics:
-      - count
-      pie.slice_threshold: 1
-      stackable.stack_type: stacked
-  card_id: 483
+- card_id: 483
   col: 9
-  created_at: '2020-01-16T11:12:43.000Z'
-  dashboard_id: 61
-  id: 449
   parameter_mappings:
   - card_id: 483
     parameter_id: 49572a13
@@ -858,7 +283,6 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Sources (other than mailings)
     graph.dimensions:
@@ -867,19 +291,13 @@ ordered_cards:
     - count
     pie.slice_threshold: 1
     stackable.stack_type: stacked
-- card:
-    query_average_duration: null
-  card_id: null
+- card_id: null
   col: 0
-  created_at: '2020-01-16T11:31:26.000Z'
-  dashboard_id: 61
-  id: 451
   parameter_mappings: []
   row: 17
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Growth'
@@ -889,141 +307,8 @@ ordered_cards:
       display: text
       name: null
       visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:29:08.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      native:
-        query: "SELECT \n    c.status, COUNT(*)\nFROM consent c\nJOIN (\n    SELECT\
-          \ contact_id, MAX(created_at) latest FROM consent WHERE {{campaign_id}}\
-          \ AND {{consent_date}} GROUP BY contact_id\n) l ON l.contact_id=c.contact_id\
-          \ AND l.latest=c.created_at\nJOIN contact ON contact.id=c.contact_id\nLEFT\
-          \ JOIN source ON source.id=c.source_id\nWHERE {{lang}} AND {{country}} AND\
-          \ {{consent_medium}}\nGROUP BY status\n"
-        template-tags:
-          campaign_id:
-            dimension:
-            - field-id
-            - 7134
-            display-name: Campaign id
-            id: 62d6ffae-1ee6-2b15-7252-fd639a7d6317
-            name: campaign_id
-            required: true
-            type: dimension
-            widget-type: id
-          consent_date:
-            dimension:
-            - field-id
-            - 7136
-            display-name: Consent date
-            id: 29f27702-28ac-1c8d-3d1d-002d7c34ae29
-            name: consent_date
-            type: dimension
-            widget-type: date/all-options
-          consent_medium:
-            dimension:
-            - field-id
-            - 6610
-            display-name: Medium
-            id: b8820690-3f18-b2a2-5b59-722a69ca9aa5
-            name: consent_medium
-            type: dimension
-            widget-type: category
-          country:
-            dimension:
-            - field-id
-            - 6509
-            display-name: Country
-            id: 92ab47b8-7ae2-b52c-5d13-91130d30b353
-            name: country
-            type: dimension
-            widget-type: location/country
-          lang:
-            dimension:
-            - field-id
-            - 6504
-            display-name: Language
-            id: 5c1f89cf-49fc-3482-39d6-ca468bb0d837
-            name: lang
-            type: dimension
-            widget-type: category
-      type: native
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 485
-    made_public_by_id: null
-    name: Repartition of consent statuses
-    public_uuid: null
-    query_average_duration: 226
-    query_type: native
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: status
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 7.0
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: status
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: COUNT(*)
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 4.0
-            max: 4.0
-            min: 4.0
-            q1: 4.0
-            q3: 4.0
-            sd: null
-      name: COUNT(*)
-      special_type: null
-    table_id: null
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings:
-      card.title: Consents
-      graph.dimensions:
-      - created_at
-      - action_type
-      graph.metrics:
-      - count
-      pie.colors:
-        accepted: '#84BB4C'
-        cancelled: '#EF8C8C'
-        pending: '#F9D45C'
-        rejected: '#F2A86F'
-      pie.slice_threshold: 0
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 485
+- card_id: 485
   col: 0
-  created_at: '2020-01-16T11:31:26.000Z'
-  dashboard_id: 61
-  id: 452
   parameter_mappings:
   - card_id: 485
     parameter_id: 49572a13
@@ -1059,7 +344,6 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Consents
     graph.dimensions:
@@ -1076,90 +360,8 @@ ordered_cards:
       sign:
         axis: null
     stackable.stack_type: null
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:48:58.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - count
-        filter:
-        - '!='
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        - consent
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        source-table: 813
-      type: query
-    description: null
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 486
-    made_public_by_id: null
-    name: Count of campaign actions
-    public_uuid: null
-    query_average_duration: 1389
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: Count
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 3054.0
-            max: 3054.0
-            min: 3054.0
-            q1: 3054.0
-            q3: 3054.0
-            sd: null
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - created_at
-      - action_type
-      graph.metrics:
-      - count
-      pie.slice_threshold: 0
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 486
+- card_id: 486
   col: 3
-  created_at: '2020-01-16T11:53:11.000Z'
-  dashboard_id: 61
-  id: 453
   parameter_mappings:
   - card_id: 486
     parameter_id: 49572a13
@@ -1207,7 +409,6 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: actions
     graph.dimensions:
@@ -1224,64 +425,8 @@ ordered_cards:
       sign:
         axis: null
     stackable.stack_type: null
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:59:09.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 7135
-        filter:
-        - '='
-        - - field-id
-          - 6977
-        - accepted
-        source-table: 870
-      type: query
-    description: null
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 488
-    made_public_by_id: null
-    name: New members from a campaign
-    public_uuid: null
-    query_average_duration: 470
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 0.0
-            max: 0.0
-            min: 0.0
-            q1: 0.0
-            q3: 0.0
-            sd: null
-      name: count
-      special_type: type/Quantity
-    table_id: 870
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings: {}
-  card_id: 488
+- card_id: 488
   col: 6
-  created_at: '2020-01-16T12:00:32.000Z'
-  dashboard_id: 61
-  id: 455
   parameter_mappings:
   - card_id: 488
     parameter_id: 49572a13
@@ -1329,90 +474,10 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: new members
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T12:49:40.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - sum
-          - - joined-field
-            - Donation
-            - - field-id
-              - 6567
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        - alias: Donation
-          condition:
-          - '='
-          - - field-id
-            - 6480
-          - - joined-field
-            - Donation
-            - - field-id
-              - 6883
-          fields: all
-          source-table: 815
-        source-table: 813
-      type: query
-    description: null
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 489
-    made_public_by_id: null
-    name: Total money raised from a campaign
-    public_uuid: null
-    query_average_duration: 4777
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Decimal
-      display_name: "Sum of Donation \u2192 Total Amount"
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 116937.78
-            max: 116937.78
-            min: 116937.78
-            q1: 116937.78
-            q3: 116937.78
-            sd: null
-      name: sum
-      special_type: type/Income
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      column_settings:
-        '["name","sum"]':
-          currency: EUR
-  card_id: 489
+- card_id: 489
   col: 12
-  created_at: '2020-01-16T12:51:08.000Z'
-  dashboard_id: 61
-  id: 456
   parameter_mappings:
   - card_id: 489
     parameter_id: 49572a13
@@ -1460,108 +525,13 @@ ordered_cards:
   series: []
   sizeX: 6
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: raised (one-off and total from recurring)
     column_settings:
       '["name","sum"]':
         currency: EUR
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T12:54:08.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 7135
-        breakout:
-        - - fk->
-          - - field-id
-            - 7133
-          - - field-id
-            - 6610
-        filter:
-        - '='
-        - - field-id
-          - 6977
-        - accepted
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 870
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 490
-    made_public_by_id: null
-    name: Growth media
-    public_uuid: null
-    query_average_duration: 794
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      display_name: "Source \u2192 Medium"
-      fingerprint:
-        global:
-          distinct-count: 18
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 7.8666
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: medium
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 0
-          nil%: null
-        type:
-          type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
-      name: count
-      special_type: type/Quantity
-    table_id: 870
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - created_at
-      - action_type
-      graph.metrics:
-      - count
-      pie.slice_threshold: 0
-      series_settings:
-        donate:
-          axis: null
-        share:
-          axis: null
-        sign:
-          axis: null
-      stackable.stack_type: null
-  card_id: 490
+- card_id: 490
   col: 9
-  created_at: '2020-01-16T12:55:06.000Z'
-  dashboard_id: 61
-  id: 457
   parameter_mappings:
   - card_id: 490
     parameter_id: 49572a13
@@ -1609,21 +579,14 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings: {}
-- card:
-    query_average_duration: null
-  card_id: null
+- card_id: null
   col: 0
-  created_at: '2020-01-20T09:04:15.000Z'
-  dashboard_id: 61
-  id: 458
   parameter_mappings: []
   row: 23
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Contact segmentation'
@@ -1633,134 +596,8 @@ ordered_cards:
       display: text
       name: null
       visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-20T09:06:50.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 6874
-        breakout:
-        - - fk->
-          - - field-id
-            - 6874
-          - - field-id
-            - 6504
-        filter:
-        - '!='
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        - consent
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: null
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 492
-    made_public_by_id: null
-    name: Count of campaign actions per language
-    public_uuid: null
-    query_average_duration: 3116
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      description: The language used to communicate with the contact, in locale format
-        (xx_YY)
-      display_name: "Contact \u2192 Preferred Language"
-      fingerprint:
-        global:
-          distinct-count: 9
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 5.0
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: preferred_language
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 8
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 152.625
-            max: 698.0
-            min: 3.0
-            q1: 21.0
-            q3: 186.5
-            sd: 232.0904611199201
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - medium
-      graph.metrics:
-      - count
-      pie.colors:
-        ZZ: '#96C11F'
-        bg_BG: '#7172AD'
-        cs_CZ: '#98D9D9'
-        da_DK: '#9CC177'
-        de_DE: '#A989C5'
-        el_GR: '#EF8C8C'
-        en_GB: '#F2A86F'
-        en_US: '#F9D45C'
-        es_ES: '#7172AD'
-        et_EE: '#1f38c1'
-        fr_FR: '#96C11F'
-        hr_HR: '#89c3c5'
-        hu_HU: '#c17777'
-        it_IT: '#F9D45C'
-        ka_GE: '#b5f95c'
-        lt_LT: '#7d77c1'
-        nl_NL: '#be8cef'
-        pl_PL: '#9CC177'
-        pt_PT: '#74838f'
-        ro_RO: '#899bc5'
-        sk_SK: '#2ac11f'
-        sr_RS: '#F2A86F'
-        sv_SE: '#c1651f'
-      pie.slice_threshold: 0.5
-      stackable.stack_type: stacked
-  card_id: 492
+- card_id: 492
   col: 0
-  created_at: '2020-01-20T09:13:59.000Z'
-  dashboard_id: 61
-  id: 459
   parameter_mappings:
   - card_id: 492
     parameter_id: 49572a13
@@ -1808,7 +645,6 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Preferred language
     graph.dimensions:
@@ -1817,112 +653,8 @@ ordered_cards:
     - count
     pie.slice_threshold: 0.5
     stackable.stack_type: stacked
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-20T09:35:38.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 6874
-        breakout:
-        - - fk->
-          - - field-id
-            - 6874
-          - - field-id
-            - 6509
-        filter:
-        - '!='
-        - - joined-field
-          - Action Page
-          - - field-id
-            - 6879
-        - consent
-        joins:
-        - alias: Action Page
-          condition:
-          - '='
-          - - field-id
-            - 6876
-          - - joined-field
-            - Action Page
-            - - field-id
-              - 6881
-          fields: all
-          source-table: 861
-        order-by:
-        - - desc
-          - - aggregation
-            - 0
-        source-table: 813
-      type: query
-    description: Distribution of the primary country of the contacts who took action
-    display: pie
-    embedding_params: null
-    enable_embedding: false
-    id: 493
-    made_public_by_id: null
-    name: Count of campaign actions per country
-    public_uuid: null
-    query_average_duration: 4039
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Text
-      description: 'The 2-letter country code of the contact.
-
-        What this country represents is up to the contact (place of birth, place of
-        living, etc).'
-      display_name: "Contact \u2192 Country"
-      fingerprint:
-        global:
-          distinct-count: 62
-          nil%: 0.0606
-        type:
-          type/Text:
-            average-length: 1.8788
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: country
-      special_type: type/Country
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 18
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 46.96153846153846
-            max: 663.0
-            min: 1.0
-            q1: 2.23606797749979
-            q3: 28.0
-            sd: 130.90560897661513
-      name: count
-      special_type: type/Quantity
-    table_id: 813
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      graph.dimensions:
-      - medium
-      graph.metrics:
-      - count
-      pie.slice_threshold: 1
-      stackable.stack_type: stacked
-  card_id: 493
+- card_id: 493
   col: 9
-  created_at: '2020-01-20T09:41:47.000Z'
-  dashboard_id: 61
-  id: 460
   parameter_mappings:
   - card_id: 493
     parameter_id: 49572a13
@@ -1970,7 +702,6 @@ ordered_cards:
   series: []
   sizeX: 9
   sizeY: 5
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Primary country
     graph.dimensions:
@@ -1979,19 +710,13 @@ ordered_cards:
     - count
     pie.slice_threshold: 1
     stackable.stack_type: stacked
-- card:
-    query_average_duration: null
-  card_id: null
+- card_id: null
   col: 0
-  created_at: '2020-01-20T13:30:33.000Z'
-  dashboard_id: 61
-  id: 462
   parameter_mappings: []
   row: 29
   series: []
   sizeX: 18
   sizeY: 1
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     dashcard.background: false
     text: '### Mailings'
@@ -2001,306 +726,8 @@ ordered_cards:
       display: text
       name: null
       visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-20T13:26:10.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - sum
-          - - field-id
-            - 7065
-        - - sum
-          - - field-id
-            - 7064
-        - - sum
-          - - field-id
-            - 7068
-        - - sum
-          - - field-id
-            - 7066
-        - - sum
-          - - field-id
-            - 7056
-        - - sum
-          - - field-id
-            - 7067
-        breakout:
-        - - field-id
-          - 7061
-        - - field-id
-          - 7060
-        - - datetime-field
-          - - field-id
-            - 7062
-          - minute
-        - - field-id
-          - 7070
-        - - field-id
-          - 7063
-        filter:
-        - '='
-        - - joined-field
-          - Segmentation
-          - - field-id
-            - 6603
-        - Country
-        joins:
-        - alias: Segment
-          condition:
-          - '='
-          - - field-id
-            - 7055
-          - - joined-field
-            - Segment
-            - - field-id
-              - 6601
-          fields: none
-          source-table: 797
-        - alias: Segmentation
-          condition:
-          - '='
-          - - joined-field
-            - Segment
-            - - field-id
-              - 6598
-          - - joined-field
-            - Segmentation
-            - - field-id
-              - 6604
-          fields: none
-          source-table: 812
-        source-table: 887
-      type: query
-    description: null
-    display: table
-    embedding_params: null
-    enable_embedding: false
-    id: 494
-    made_public_by_id: null
-    name: Campaign mailings
-    public_uuid: null
-    query_average_duration: 4530
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: ID
-      fingerprint: null
-      name: id
-      special_type: type/PK
-    - base_type: type/Text
-      description: Internal name of the broadcast
-      display_name: Name
-      fingerprint:
-        global:
-          distinct-count: 8632
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 45.32542607093505
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: name
-      special_type: type/Name
-    - base_type: type/DateTime
-      description: When the sending of the broadcast started
-      display_name: Sent At
-      fingerprint:
-        global:
-          distinct-count: 5725
-          nil%: 0.0
-        type:
-          type/DateTime:
-            earliest: '2015-02-09T15:44:24.000Z'
-            latest: '2020-01-16T14:16:45.000Z'
-      name: sent_at
-      special_type: type/CreationTimestamp
-      unit: minute
-    - base_type: type/Text
-      description: The language in which the broadcast was written, in locale format
-        (xx_YY).
-      display_name: Language
-      fingerprint:
-        global:
-          distinct-count: 10
-          nil%: 0.0
-        type:
-          type/Text:
-            average-length: 4.89194826866917
-            percent-email: 0.0
-            percent-json: 0.0
-            percent-url: 0.0
-      name: language
-      special_type: type/Category
-    - base_type: type/Integer
-      display_name: Campaign ID
-      fingerprint:
-        global:
-          distinct-count: 129
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 1166.1568627450981
-            max: 2405.0
-            min: 13.0
-            q1: 338.19606929911623
-            q3: 1864.4625859495798
-            sd: 766.5889212559152
-      name: campaign_id
-      special_type: type/FK
-    - base_type: type/Decimal
-      display_name: Sum of Clickers
-      fingerprint:
-        global:
-          distinct-count: 115
-          nil%: 0.5402298850574713
-        type:
-          type/Number:
-            avg: 70.871875
-            max: 1545.0
-            min: 1.0
-            q1: 5.496801708267508
-            q3: 50.166666666666664
-            sd: 172.92482321799952
-      name: sum
-      special_type: null
-    - base_type: type/Decimal
-      display_name: Sum of Converted
-      fingerprint:
-        global:
-          distinct-count: 82
-          nil%: 0.7313218390804598
-        type:
-          type/Number:
-            avg: 198.76470588235293
-            max: 1873.0
-            min: 1.0
-            q1: 3.158324288234026
-            q3: 86.381071161323
-            sd: 439.9474487813444
-      name: sum_2
-      special_type: null
-    - base_type: type/Decimal
-      display_name: Sum of Likely Forwarders
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 1.0
-        type:
-          type/Number:
-            avg: null
-            max: null
-            min: null
-            q1: null
-            q3: null
-            sd: null
-      name: sum_3
-      special_type: null
-    - base_type: type/Decimal
-      display_name: Sum of Openers
-      fingerprint:
-        global:
-          distinct-count: 251
-          nil%: 0.08189655172413793
-        type:
-          type/Number:
-            avg: 144.40845070422534
-            max: 2840.0
-            min: 1.0
-            q1: 15.992406618955963
-            q3: 149.75300962507686
-            sd: 278.9483000220824
-      name: sum_4
-      special_type: null
-    - base_type: type/Decimal
-      display_name: Sum of Recipients
-      fingerprint:
-        global:
-          distinct-count: 361
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 377.83620689655174
-            max: 8008.0
-            min: 1.0
-            q1: 25.561621538393553
-            q3: 340.8877493233707
-            sd: 802.5457901029744
-      name: sum_5
-      special_type: null
-    - base_type: type/Decimal
-      display_name: Sum of Unsubs
-      fingerprint:
-        global:
-          distinct-count: 17
-          nil%: 0.6738505747126436
-        type:
-          type/Number:
-            avg: 3.290748898678414
-            max: 44.0
-            min: 1.0
-            q1: 1.080919051581568
-            q3: 3.953529900650049
-            sd: 4.356264217451044
-      name: sum_6
-      special_type: null
-    table_id: 887
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      column_settings:
-        '["name","sum"]':
-          column_title: Clickers
-        '["name","sum_2"]':
-          column_title: Converted
-        '["name","sum_3"]':
-          column_title: Likely forwarders
-        '["name","sum_4"]':
-          column_title: Openers
-        '["name","sum_5"]':
-          column_title: Recipients
-        '["name","sum_6"]':
-          column_title: Unsubs
-        '["ref",["field-id",7062]]':
-          column_title: Sent At
-      table.cell_column: value
-      table.columns:
-      - enabled: true
-        name: id
-      - enabled: true
-        name: name
-      - enabled: true
-        name: language
-      - enabled: true
-        name: sum_5
-      - enabled: true
-        name: sum_4
-      - enabled: true
-        name: sum
-      - enabled: true
-        name: sum_2
-      - enabled: true
-        name: sum_6
-      - enabled: true
-        name: sum_3
-      - enabled: true
-        name: sent_at
-      - enabled: false
-        name: campaign_id
-      table.pivot: false
-      table.pivot_column: metric
-  card_id: 494
+- card_id: 494
   col: 0
-  created_at: '2020-01-20T13:32:39.000Z'
-  dashboard_id: 61
-  id: 463
   parameter_mappings:
   - card_id: 494
     parameter_id: f70dcfbe
@@ -2345,114 +772,9 @@ ordered_cards:
   series: []
   sizeX: 18
   sizeY: 10
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings: {}
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-01-16T11:56:10.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - sum
-          - - field-id
-            - 6898
-        filter:
-        - and
-        - - '='
-          - - field-id
-            - 6902
-          - recipients
-        - - '='
-          - - joined-field
-            - Segmentation
-            - - field-id
-              - 6603
-          - Country
-        joins:
-        - alias: Broadcast
-          condition:
-          - '='
-          - - field-id
-            - 6899
-          - - joined-field
-            - Broadcast
-            - - field-id
-              - 6490
-          fields: all
-          source-table: 809
-        - alias: Segment
-          condition:
-          - '='
-          - - field-id
-            - 6900
-          - - joined-field
-            - Segment
-            - - field-id
-              - 6601
-          fields: all
-          source-table: 797
-        - alias: Segmentation
-          condition:
-          - '='
-          - - joined-field
-            - Segment
-            - - field-id
-              - 6598
-          - - joined-field
-            - Segmentation
-            - - field-id
-              - 6604
-          fields: all
-          source-table: 812
-        limit: 1
-        source-table: 862
-      type: query
-    description: Number of emails sent for this campaign
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 487
-    made_public_by_id: null
-    name: Campaign emails sent
-    public_uuid: null
-    query_average_duration: 744
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Decimal
-      display_name: Sum of Value
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 262974.0
-            max: 262974.0
-            min: 262974.0
-            q1: 262974.0
-            q3: 262974.0
-            sd: null
-      name: sum
-      special_type: null
-    table_id: 862
-    updated_at: '2020-07-20T16:48:02.000Z'
-    visualization_settings:
-      card.title: Recipients
-      table.cell_column: sum
-      table.pivot_column: name
-      table.row_details: false
-  card_id: 487
+- card_id: 487
   col: 0
-  created_at: '2020-02-03T16:01:05.000Z'
-  dashboard_id: 61
-  id: 464
   parameter_mappings:
   - card_id: 487
     parameter_id: 49572a13
@@ -2501,77 +823,13 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: Emails
     table.cell_column: sum
     table.pivot_column: name
     table.row_details: false
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 101
-    collection_position: null
-    created_at: '2020-06-16T12:33:09.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      query:
-        aggregation:
-        - - distinct
-          - - field-id
-            - 6906
-        joins:
-        - alias: Broadcast
-          condition:
-          - '='
-          - - field-id
-            - 6662
-          - - joined-field
-            - Broadcast
-            - - field-id
-              - 6490
-          fields: all
-          source-table: 809
-        source-table: 827
-      type: query
-    description: null
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 527
-    made_public_by_id: null
-    name: Count of unsubscribes for a campaign
-    public_uuid: null
-    query_average_duration: 260
-    query_type: query
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: Distinct values of Contact ID
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 770.0
-            max: 770.0
-            min: 770.0
-            q1: 770.0
-            q3: 770.0
-            sd: null
-      name: count
-      special_type: type/Quantity
-    table_id: 827
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings: {}
-  card_id: 527
+- card_id: 527
   col: 9
-  created_at: '2020-06-16T12:36:56.000Z'
-  dashboard_id: 61
-  id: 528
   parameter_mappings:
   - card_id: 527
     parameter_id: 49572a13
@@ -2616,69 +874,16 @@ ordered_cards:
   series: []
   sizeX: 3
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.description: Number of people who unsubscribed through this campaign
     card.title: unsubscribes
-- card:
-    archived: false
-    cache_ttl: null
-    collection_id: 71
-    collection_position: null
-    created_at: '2020-06-18T10:21:22.000Z'
-    creator_id: 1
-    database_id: 9
-    dataset_query:
-      database: 9
-      native:
-        query: SELECT TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW()) FROM `last_sync_dt`
-          WHERE `last_sync_dt`.`src` = 'query_start'
-      type: native
-    description: null
-    display: scalar
-    embedding_params: null
-    enable_embedding: false
-    id: 528
-    made_public_by_id: null
-    name: Age of last computation cycle
-    public_uuid: null
-    query_average_duration: 277
-    query_type: native
-    read_permissions: null
-    result_metadata:
-    - base_type: type/Integer
-      display_name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
-      fingerprint:
-        global:
-          distinct-count: 1
-          nil%: 0.0
-        type:
-          type/Number:
-            avg: 18931.0
-            max: 18931.0
-            min: 18931.0
-            q1: 18931.0
-            q3: 18931.0
-            sd: null
-      name: TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())
-      special_type: null
-    table_id: null
-    updated_at: '2020-07-20T16:48:01.000Z'
-    visualization_settings:
-      column_settings:
-        '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
-          suffix: ' minutes'
-  card_id: 528
+- card_id: 528
   col: 0
-  created_at: '2020-06-18T14:23:13.000Z'
-  dashboard_id: 61
-  id: 536
   parameter_mappings: []
   row: 40
   series: []
   sizeX: 18
   sizeY: 2
-  updated_at: '2020-07-20T16:47:58.000Z'
   visualization_settings:
     card.title: This is the maximum age of data used on this dashboard
     column_settings:

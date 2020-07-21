@@ -28,23 +28,6 @@ id: 471
 model: card
 name: Activation rate
 query_type: query
-result_metadata:
-- base_type: type/Decimal
-  display_name: Average of Value
-  fingerprint:
-    global:
-      distinct-count: 1
-      nil%: 0.0
-    type:
-      type/Number:
-        avg: 0.057
-        max: 0.057
-        min: 0.057
-        q1: 0.057
-        q3: 0.057
-        sd: null
-  name: avg
-  special_type: null
 visualization_settings:
   column_settings:
     '["name","avg"]':
