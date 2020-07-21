@@ -1,0 +1,31 @@
+collection_id: 100
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - field-id
+      - 6520
+    - - datetime-field
+      - - field-id
+        - 6525
+      - month
+    source-table: 805
+  type: query
+description: null
+display: line
+id: 473
+model: card
+name: Count of segment joins by month
+query_type: query
+visualization_settings:
+  graph.dimensions:
+  - joined_at
+  graph.metrics:
+  - count
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: segment_id

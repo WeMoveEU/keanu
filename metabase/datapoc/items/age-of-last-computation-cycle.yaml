@@ -1,0 +1,19 @@
+collection_id: 71
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW()) FROM `last_sync_dt` WHERE `last_sync_dt`.`src` = 'query_start'
+  type: native
+description: null
+display: scalar
+id: 528
+model: card
+name: Age of last computation cycle
+query_type: native
+visualization_settings:
+  column_settings:
+    '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+      suffix: ' minutes'

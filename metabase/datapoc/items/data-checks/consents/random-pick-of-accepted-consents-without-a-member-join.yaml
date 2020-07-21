@@ -1,0 +1,37 @@
+collection_id: 106
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT contact.id, contact.created_at AS contact_created_at, contact.country, contact.preferred_language, c.created_at AS consent_date, CONCAT('https://www.wemove.eu/civicrm/contact/view?cid=', contact.id) AS crm_url
+      FROM segment s
+      JOIN consent c ON c.status = 'accepted'
+      JOIN contact ON contact.id = c.contact_id
+      LEFT JOIN contact_segment cs ON cs.segment_id = s.id AND c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at)) <= 60
+      WHERE s.name='Member' AND cs.id IS NULL
+      ORDER BY RAND() LIMIT 5
+  type: native
+description: null
+display: table
+id: 524
+model: card
+name: Random pick of accepted consents without a member join
+query_type: native
+visualization_settings:
+  column_settings:
+    '["name","consent_date"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_style: k:mm
+    '["name","contact_created_at"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_enabled: null
+    '["name","joined_at"]':
+      date_separator: '-'
+      date_style: YYYY/M/D
+      time_style: k:mm
+  table.cell_column: id
+  table.pivot_column: country

@@ -1,0 +1,48 @@
+collection_id: 101
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - distinct
+      - - field-id
+        - 7135
+    breakout:
+    - - fk->
+      - - field-id
+        - 7133
+      - - field-id
+        - 6610
+    filter:
+    - '='
+    - - field-id
+      - 6977
+    - accepted
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 870
+  type: query
+description: null
+display: pie
+id: 490
+model: card
+name: Growth media
+query_type: query
+visualization_settings:
+  graph.dimensions:
+  - created_at
+  - action_type
+  graph.metrics:
+  - count
+  pie.slice_threshold: 0
+  series_settings:
+    donate:
+      axis: null
+    share:
+      axis: null
+    sign:
+      axis: null
+  stackable.stack_type: null

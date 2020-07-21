@@ -1,0 +1,93 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - distinct
+      - - joined-field
+        - Source
+        - - field-id
+          - 6480
+    breakout:
+    - - field-id
+      - 6623
+    - - joined-field
+      - Action Page
+      - - field-id
+        - 6879
+    filter:
+    - and
+    - - not-null
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6879
+    - - '!='
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6879
+      - consent
+    joins:
+    - alias: Broadcast Link
+      condition:
+      - '='
+      - - field-id
+        - 6490
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6648
+      fields: all
+      source-table: 828
+    - alias: Source
+      condition:
+      - '='
+      - - joined-field
+        - Broadcast Link
+        - - field-id
+          - 6650
+      - - joined-field
+        - Source
+        - - field-id
+          - 6873
+      fields: all
+      source-table: 813
+    - alias: Action Page
+      condition:
+      - '='
+      - - joined-field
+        - Source
+        - - field-id
+          - 6876
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6881
+      fields: all
+      source-table: 861
+    limit: 10
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 809
+  type: query
+description: For each action type, count of number of actions originating from one
+  of the  links of the mailing
+display: bar
+id: 463
+model: card
+name: Action types
+query_type: query
+visualization_settings:
+  graph.dimensions:
+  - action_type
+  graph.metrics:
+  - count
+  graph.x_axis.title_text: Action Type
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: name

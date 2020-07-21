@@ -54,13 +54,13 @@ class Splitter:
                 if i['model'] == 'card':
                     _.format_query_as_block(i)
 
-                file_name = "{:02}-{}".format(idx, slug(i['name']))
+                file_name = slug(i['name'])
                 loc = path.join('items', *prefix, file_name)
 
                 _.store_to(i, loc)
 
             elif i['model'] == 'collection':
-                dir_name = "{:02}-{}".format(idx, slug(i['name']))
+                dir_name = slug(i['name'])
                 loc = path.join('items', *prefix, dir_name, '__meta__')
 
                 col_items = i['items']

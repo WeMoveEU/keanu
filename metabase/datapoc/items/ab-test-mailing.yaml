@@ -1,0 +1,237 @@
+collection_id: 71
+collection_position: null
+description: null
+id: 62
+model: dashboard
+name: A/B test mailing
+ordered_cards:
+- card_id: 496
+  col: 0
+  parameter_mappings:
+  - card_id: 496
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - field-id
+      - 6656
+  row: 0
+  series: []
+  sizeX: 18
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 499
+  col: 1
+  parameter_mappings:
+  - card_id: 499
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 500
+  col: 5
+  parameter_mappings:
+  - card_id: 500
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 506
+  col: 9
+  parameter_mappings:
+  - card_id: 506
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 507
+  col: 13
+  parameter_mappings:
+  - card_id: 507
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 5
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: null
+  col: 0
+  parameter_mappings: []
+  row: 4
+  series: []
+  sizeX: 18
+  sizeY: 1
+  visualization_settings:
+    dashcard.background: false
+    text: '## Conversions'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card_id: null
+  col: 0
+  parameter_mappings: []
+  row: 9
+  series: []
+  sizeX: 12
+  sizeY: 1
+  visualization_settings:
+    dashcard.background: false
+    text: '## Growth'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card_id: 508
+  col: 0
+  parameter_mappings:
+  - card_id: 508
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 509
+  col: 4
+  parameter_mappings:
+  - card_id: 509
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - template-tag
+      - broadcast_test_id
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: 510
+  col: 8
+  parameter_mappings:
+  - card_id: 510
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 4
+  sizeY: 4
+  visualization_settings: {}
+- card_id: null
+  col: 12
+  parameter_mappings: []
+  row: 9
+  series: []
+  sizeX: 6
+  sizeY: 1
+  visualization_settings:
+    dashcard.background: false
+    text: '### Delivery'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
+- card_id: 511
+  col: 12
+  parameter_mappings:
+  - card_id: 511
+    parameter_id: 62b0b39f
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6899
+      - - field-id
+        - 6643
+  row: 10
+  series: []
+  sizeX: 6
+  sizeY: 4
+  visualization_settings:
+    column_settings:
+      '["ref",["field-id",6898]]':
+        number_style: percent
+    graph.dimensions:
+    - broadcast_id
+    - metric
+    graph.metrics:
+    - value
+    graph.x_axis.labels_enabled: false
+    graph.y_axis.labels_enabled: false
+    graph.y_axis.title_text: Forward rate
+    series_settings:
+      bounce_rate:
+        color: '#F2A86F'
+      spam_rate:
+        color: '#EF8C8C'
+      value:
+        title: Forward rate
+- card_id: 528
+  col: 0
+  parameter_mappings: []
+  row: 14
+  series: []
+  sizeX: 18
+  sizeY: 2
+  visualization_settings:
+    card.title: This is the maximum age of the data used on this dashboard
+    column_settings:
+      '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
+        suffix: ' minutes'
+parameters:
+- id: 62b0b39f
+  name: ID
+  slug: id
+  type: id

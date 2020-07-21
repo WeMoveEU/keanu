@@ -1,0 +1,47 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    fields:
+    - - field-id
+      - 6490
+    - - field-id
+      - 6623
+    - - field-id
+      - 6484
+    - - field-id
+      - 6643
+    - - field-id
+      - 6624
+    - - field-id
+      - 6644
+    limit: 1
+    source-table: 809
+  type: query
+description: null
+display: table
+id: 460
+model: card
+name: Summary
+query_type: query
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6643]]':
+      column_title: AB Test
+  table.cell_column: sent_at
+  table.columns:
+  - enabled: true
+    name: id
+  - enabled: true
+    name: name
+  - enabled: true
+    name: ask_type
+  - enabled: true
+    name: broadcast_test_id
+  - enabled: true
+    name: sent_at
+  - enabled: true
+    name: campaign_id
+  table.pivot_column: id

@@ -1,0 +1,70 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - avg
+      - - expression
+        - rate
+    expressions:
+      rate:
+      - /
+      - - '*'
+        - - field-id
+          - 6898
+        - 10000
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6898
+    filter:
+    - and
+    - - '='
+      - - field-id
+        - 6902
+      - oneoff_donations
+    - - '='
+      - - field-id
+        - 6900
+      - 1
+    - - '='
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6902
+      - recipients
+    - - '='
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6900
+      - 1
+    joins:
+    - alias: Broadcast
+      condition:
+      - '='
+      - - field-id
+        - 6899
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6899
+      fields: all
+      source-table: 862
+    source-table: 862
+  type: query
+description: Number of one-off donations per 10k recipients
+display: scalar
+id: 453
+model: card
+name: One-off donations
+query_type: query
+visualization_settings:
+  column_settings:
+    '["name","avg"]':
+      suffix: ' / 10k'
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: name
