@@ -1,6 +1,6 @@
 -- ORDER: 31
 -- DELETE FROM action
--- DELETE FROM campaign_metric WHERE metric IN ('actions', 'shares', 'donations')
+-- DELETE FROM campaign_metric WHERE metric IN ('actions', 'actors', 'shares', 'sharers', 'donations', 'donors')
 
 SET @query_start := NOW();
 
@@ -109,6 +109,18 @@ INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
   ON DUPLICATE KEY UPDATE value = value + VALUES(value)
 ;
 
+
+INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
+SELECT
+  ap.campaign_id, @everyone, 'actors', COUNT(DISTINCT a.contact_id)
+  FROM action a
+         JOIN action_page ap ON ap.id = a.action_page_id
+ WHERE ap.id IN (SELECT la.action_page_id FROM action la WHERE la.id > @last_action)
+ GROUP BY ap.campaign_id
+
+          ON DUPLICATE KEY UPDATE value = VALUES(value)
+;
+
 INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
   SELECT
     ap.campaign_id,
@@ -123,5 +135,20 @@ INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
 
   ON DUPLICATE KEY UPDATE value = value + VALUES(value)
 ;
+
+INSERT INTO campaign_metric (campaign_id, segment_id, metric, value)
+SELECT
+  ap.campaign_id,
+  @everyone,
+  IF(ap.action_type = 'share', 'sharers', 'donors') AS metric,
+    COUNT(DISTINCT a.contact_id)
+    FROM action a
+    JOIN action_page ap ON ap.id = a.action_page_id
+    WHERE ap.action_type IN ('share', 'donate')
+    AND ap.id IN (SELECT la.action_page_id FROM action la WHERE la.id > @last_action)
+    GROUP BY ap.campaign_id, metric
+
+    ON DUPLICATE KEY UPDATE value = value + VALUES(value)
+    ;
 
 SELECT save_last_sync_dt('action', 'query_start', @query_start);
