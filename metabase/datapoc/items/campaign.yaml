@@ -743,16 +743,18 @@ ordered_cards:
     parameter_id: f70dcfbe
     target:
     - dimension
-    - - joined-field
-      - Broadcast
+    - - fk->
+      - - field-id
+        - 6899
       - - field-id
         - 6485
   - card_id: 487
     parameter_id: eb0b4e45
     target:
     - dimension
-    - - joined-field
-      - Segment
+    - - fk->
+      - - field-id
+        - 6900
       - - field-id
         - 6600
   row: 3
@@ -790,14 +792,6 @@ ordered_cards:
     - - field-id
       - 6664
   - card_id: 527
-    parameter_id: f70dcfbe
-    target:
-    - dimension
-    - - joined-field
-      - Broadcast
-      - - field-id
-        - 6485
-  - card_id: 527
     parameter_id: eb0b4e45
     target:
     - dimension
@@ -806,6 +800,15 @@ ordered_cards:
         - 6906
       - - field-id
         - 6509
+  - card_id: 527
+    parameter_id: f70dcfbe
+    target:
+    - dimension
+    - - fk->
+      - - field-id
+        - 6662
+      - - field-id
+        - 6485
   row: 3
   series: []
   sizeX: 3

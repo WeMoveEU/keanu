@@ -8007,8 +8007,11 @@
               "target": [
                 "dimension",
                 [
-                  "joined-field",
-                  "Broadcast",
+                  "fk->",
+                  [
+                    "field-id",
+                    6899
+                  ],
                   [
                     "field-id",
                     6485
@@ -8022,8 +8025,11 @@
               "target": [
                 "dimension",
                 [
-                  "joined-field",
-                  "Segment",
+                  "fk->",
+                  [
+                    "field-id",
+                    6900
+                  ],
                   [
                     "field-id",
                     6600
@@ -8090,21 +8096,6 @@
             },
             {
               "card_id": 527,
-              "parameter_id": "f70dcfbe",
-              "target": [
-                "dimension",
-                [
-                  "joined-field",
-                  "Broadcast",
-                  [
-                    "field-id",
-                    6485
-                  ]
-                ]
-              ]
-            },
-            {
-              "card_id": 527,
               "parameter_id": "eb0b4e45",
               "target": [
                 "dimension",
@@ -8117,6 +8108,24 @@
                   [
                     "field-id",
                     6509
+                  ]
+                ]
+              ]
+            },
+            {
+              "card_id": 527,
+              "parameter_id": "f70dcfbe",
+              "target": [
+                "dimension",
+                [
+                  "fk->",
+                  [
+                    "field-id",
+                    6662
+                  ],
+                  [
+                    "field-id",
+                    6485
                   ]
                 ]
               ]
