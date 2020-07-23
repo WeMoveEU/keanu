@@ -856,7 +856,7 @@ tables:
         - - Active status
         - - Country
         - - Everyone
-        - - Mailing list
+        - - Language group
         - - Membership
         - - Preferred language
         - - Recurring donors
@@ -1816,34 +1816,10 @@ tables:
         settings: null
         special_type: type/Category
         values:
-        - - recipients
         - - opens
         - - openers
-        - - clicks
-        - - clickers
-        - - conversions
-        - - converted
-        - - activated
         - - unsubs
-        - - bounces
-        - - spams
         - - likely_forwarders
-        - - openers_rate
-        - - clickers_rate
-        - - sharers_rate
-        - - likely_forwarders_rate
-        - - sharers
-        - - shares
-        - - clickers_to_openers
-        - - converted_to_clickers
-        - - bounce_rate
-        - - spam_rate
-        - - oneoff_donations
-        - - oneoff_amount
-        - - monthly_donations
-        - - monthly_amount
-        - - unsub_rate
-        - - activated_rate
       6903:
         description: null
         display_name: ID
@@ -1868,7 +1844,19 @@ tables:
         name: m
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - 1
+        - - 2
+        - - 3
+        - - 4
+        - - 5
+        - - 6
+        - - 7
+        - - 8
+        - - 9
+        - - 10
+        - - 11
+        - - 12
       6967:
         description: null
         display_name: Y
@@ -1878,7 +1866,13 @@ tables:
         name: y
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - 2015
+        - - 2016
+        - - 2017
+        - - 2018
+        - - 2019
+        - - 2020
       6968:
         description: null
         display_name: Day Name
@@ -1888,7 +1882,14 @@ tables:
         name: day_name
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - Friday
+        - - Monday
+        - - Saturday
+        - - Sunday
+        - - Thursday
+        - - Tuesday
+        - - Wednesday
       6969:
         description: null
         display_name: Isweekday
@@ -1898,7 +1899,9 @@ tables:
         name: isWeekday
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - false
+        - - true
       6970:
         description: null
         display_name: Dt
@@ -1917,7 +1920,11 @@ tables:
         name: q
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - 1
+        - - 2
+        - - 3
+        - - 4
       6972:
         description: null
         display_name: Dw
@@ -1927,7 +1934,14 @@ tables:
         name: dw
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - 1
+        - - 2
+        - - 3
+        - - 4
+        - - 5
+        - - 6
+        - - 7
       6973:
         description: null
         display_name: W
@@ -1937,7 +1951,60 @@ tables:
         name: w
         settings: null
         special_type: null
-        values: []
+        values:
+        - - 1
+        - - 2
+        - - 3
+        - - 4
+        - - 5
+        - - 6
+        - - 7
+        - - 8
+        - - 9
+        - - 10
+        - - 11
+        - - 12
+        - - 13
+        - - 14
+        - - 15
+        - - 16
+        - - 17
+        - - 18
+        - - 19
+        - - 20
+        - - 21
+        - - 22
+        - - 23
+        - - 24
+        - - 25
+        - - 26
+        - - 27
+        - - 28
+        - - 29
+        - - 30
+        - - 31
+        - - 32
+        - - 33
+        - - 34
+        - - 35
+        - - 36
+        - - 37
+        - - 38
+        - - 39
+        - - 40
+        - - 41
+        - - 42
+        - - 43
+        - - 44
+        - - 45
+        - - 46
+        - - 47
+        - - 48
+        - - 49
+        - - 50
+        - - 51
+        - - 52
+        - - 53
       6974:
         description: null
         display_name: D
@@ -1947,7 +2014,38 @@ tables:
         name: d
         settings: null
         special_type: null
-        values: []
+        values:
+        - - 1
+        - - 2
+        - - 3
+        - - 4
+        - - 5
+        - - 6
+        - - 7
+        - - 8
+        - - 9
+        - - 10
+        - - 11
+        - - 12
+        - - 13
+        - - 14
+        - - 15
+        - - 16
+        - - 17
+        - - 18
+        - - 19
+        - - 20
+        - - 21
+        - - 22
+        - - 23
+        - - 24
+        - - 25
+        - - 26
+        - - 27
+        - - 28
+        - - 29
+        - - 30
+        - - 31
       6975:
         description: null
         display_name: Month Name
@@ -1957,7 +2055,19 @@ tables:
         name: month_name
         settings: null
         special_type: type/Category
-        values: []
+        values:
+        - - April
+        - - August
+        - - December
+        - - February
+        - - January
+        - - July
+        - - June
+        - - March
+        - - May
+        - - November
+        - - October
+        - - September
     id: 869
     name: calendar
   870:
@@ -2189,9 +2299,6 @@ tables:
         - - action_page
         - - broadcast
         - - broadcast_link
-        - - broadcast_metric
-        - - broadcast_metric_activated
-        - - broadcast_metric_rates
         - - broadcast_test
         - - campaign
         - - click
@@ -2244,45 +2351,6 @@ tables:
         special_type: type/FK
         values:
         - - null
-        - - 1
-        - - 67
-        - - 68
-        - - 69
-        - - 70
-        - - 71
-        - - 72
-        - - 73
-        - - 74
-        - - 75
-        - - 76
-        - - 77
-        - - 78
-        - - 79
-        - - 80
-        - - 81
-        - - 82
-        - - 83
-        - - 84
-        - - 85
-        - - 86
-        - - 87
-        - - 88
-        - - 89
-        - - 90
-        - - 91
-        - - 92
-        - - 93
-        - - 94
-        - - 95
-        - - 96
-        - - 97
-        - - 98
-        - - 99
-        - - 100
-        - - 101
-        - - 102
-        - - 103
-        - - 104
       7056:
         description: null
         display_name: Recipients
@@ -2482,13 +2550,14 @@ tables:
         settings: null
         special_type: type/Category
         values:
-        - - messages
         - - unsubs
         - - actions
+        - - actors
         - - new_members
-        - - activated
         - - shares
+        - - sharers
         - - donations
+        - - donors
         - - donations_total_amount
       7083:
         description: null
@@ -2534,7 +2603,6 @@ tables:
         special_type: type/Category
         values:
         - - null
-        - - 1
       7087:
         description: When the campaign was launched
         display_name: Started At

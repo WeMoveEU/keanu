@@ -18,9 +18,9 @@ insert into segment (name, segmentation_id, external_id, external_system)
                    ('Expiring', @seg, NULL, NULL),
                    ('Expired', @seg, NULL, NULL);
 
--- Mailing list
-set @seg = (select id from segmentation where name = 'Mailing list');
-set @ext_id = (select external_id from segmentation where name = 'Mailing list');
+-- Language group
+set @seg = (select id from segmentation where name = 'Language group');
+set @ext_id = (select external_id from segmentation where name = 'Language group');
 
 insert into segment (name, segmentation_id, external_id, external_system)
 SELECT
