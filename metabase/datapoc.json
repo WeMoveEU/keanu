@@ -6073,6 +6073,13 @@
               "aggregation": [
                 [
                   "count"
+                ],
+                [
+                  "distinct",
+                  [
+                    "field-id",
+                    6874
+                  ]
                 ]
               ],
               "breakout": [
@@ -6143,10 +6150,19 @@
               "action_type"
             ],
             "graph.metrics": [
-              "count"
+              "count",
+              "count_2"
             ],
+            "graph.x_axis.title_text": "Action Type",
+            "graph.y_axis.auto_split": false,
             "pie.slice_threshold": 0,
             "series_settings": {
+              "count": {
+                "title": "Actions"
+              },
+              "count_2": {
+                "title": "Contacts"
+              },
               "donate": {
                 "axis": null
               },
@@ -6799,121 +6815,6 @@
               "count"
             ],
             "graph.x_axis.labels_enabled": false,
-            "series_settings": {
-              "donate": {
-                "axis": null
-              },
-              "share": {
-                "axis": null
-              },
-              "sign": {
-                "axis": null
-              }
-            },
-            "stackable.stack_type": null
-          }
-        },
-        {
-          "card_id": 477,
-          "col": 0,
-          "parameter_mappings": [
-            {
-              "card_id": 477,
-              "parameter_id": "49572a13",
-              "target": [
-                "dimension",
-                [
-                  "fk->",
-                  [
-                    "field-id",
-                    6876
-                  ],
-                  [
-                    "field-id",
-                    6878
-                  ]
-                ]
-              ]
-            },
-            {
-              "card_id": 477,
-              "parameter_id": "485c0e15",
-              "target": [
-                "dimension",
-                [
-                  "fk->",
-                  [
-                    "field-id",
-                    6876
-                  ],
-                  [
-                    "field-id",
-                    6882
-                  ]
-                ]
-              ]
-            },
-            {
-              "card_id": 477,
-              "parameter_id": "15d95ec",
-              "target": [
-                "dimension",
-                [
-                  "field-id",
-                  6872
-                ]
-              ]
-            },
-            {
-              "card_id": 477,
-              "parameter_id": "f70dcfbe",
-              "target": [
-                "dimension",
-                [
-                  "fk->",
-                  [
-                    "field-id",
-                    6873
-                  ],
-                  [
-                    "field-id",
-                    6610
-                  ]
-                ]
-              ]
-            },
-            {
-              "card_id": 477,
-              "parameter_id": "eb0b4e45",
-              "target": [
-                "dimension",
-                [
-                  "fk->",
-                  [
-                    "field-id",
-                    6874
-                  ],
-                  [
-                    "field-id",
-                    6509
-                  ]
-                ]
-              ]
-            }
-          ],
-          "row": 6,
-          "series": [],
-          "sizeX": 7,
-          "sizeY": 5,
-          "visualization_settings": {
-            "graph.dimensions": [
-              "action_type"
-            ],
-            "graph.metrics": [
-              "count"
-            ],
-            "graph.x_axis.title_text": "Action Type",
-            "pie.slice_threshold": 0,
             "series_settings": {
               "donate": {
                 "axis": null
@@ -8246,6 +8147,100 @@
               }
             }
           }
+        },
+        {
+          "card_id": 477,
+          "col": 0,
+          "parameter_mappings": [
+            {
+              "card_id": 477,
+              "parameter_id": "49572a13",
+              "target": [
+                "dimension",
+                [
+                  "fk->",
+                  [
+                    "field-id",
+                    6876
+                  ],
+                  [
+                    "field-id",
+                    6878
+                  ]
+                ]
+              ]
+            },
+            {
+              "card_id": 477,
+              "parameter_id": "485c0e15",
+              "target": [
+                "dimension",
+                [
+                  "fk->",
+                  [
+                    "field-id",
+                    6876
+                  ],
+                  [
+                    "field-id",
+                    6882
+                  ]
+                ]
+              ]
+            },
+            {
+              "card_id": 477,
+              "parameter_id": "15d95ec",
+              "target": [
+                "dimension",
+                [
+                  "field-id",
+                  6872
+                ]
+              ]
+            },
+            {
+              "card_id": 477,
+              "parameter_id": "f70dcfbe",
+              "target": [
+                "dimension",
+                [
+                  "fk->",
+                  [
+                    "field-id",
+                    6873
+                  ],
+                  [
+                    "field-id",
+                    6610
+                  ]
+                ]
+              ]
+            },
+            {
+              "card_id": 477,
+              "parameter_id": "eb0b4e45",
+              "target": [
+                "dimension",
+                [
+                  "fk->",
+                  [
+                    "field-id",
+                    6874
+                  ],
+                  [
+                    "field-id",
+                    6509
+                  ]
+                ]
+              ]
+            }
+          ],
+          "row": 6,
+          "series": [],
+          "sizeX": 7,
+          "sizeY": 5,
+          "visualization_settings": {}
         }
       ],
       "parameters": [

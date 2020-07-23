@@ -6,6 +6,9 @@ dataset_query:
   query:
     aggregation:
     - - count
+    - - distinct
+      - - field-id
+        - 6874
     breakout:
     - - joined-field
       - Action Page
@@ -47,8 +50,15 @@ visualization_settings:
   - action_type
   graph.metrics:
   - count
+  - count_2
+  graph.x_axis.title_text: Action Type
+  graph.y_axis.auto_split: false
   pie.slice_threshold: 0
   series_settings:
+    count:
+      title: Actions
+    count_2:
+      title: Contacts
     donate:
       axis: null
     share:
