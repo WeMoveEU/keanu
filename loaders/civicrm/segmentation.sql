@@ -10,7 +10,7 @@ INSERT INTO segmentation (name, external_id, external_system)
 VALUES
 ('Everyone', NULL, NULL),
 ('Membership', 42, 'civicrm_group'),
-('Mailing list', 32, 'civicrm_group'),
+('Language group', 32, 'civicrm_group'),
 ('Preferred language', 77, 'civicrm_option_group'),
 ('Active status', 122, 'civicrm_option_group'),
 ('Recurring donors', 121, 'civicrm_option_group'),
