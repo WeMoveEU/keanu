@@ -90,6 +90,12 @@ visualization_settings:
       column_title: Recipients
     '["name","sum_6"]':
       column_title: Unsubs
+    '["ref",["field-id",7060]]':
+      link_url: https://datapoc.wemove.support/dashboard/47?id={id}
+      view_as: custom_link
+    '["ref",["field-id",7061]]':
+      link_url: https://datapoc.wemove.support/dashboard/47?id={id}
+      view_as: custom_link
     '["ref",["field-id",7062]]':
       column_title: Sent At
   table.cell_column: value
