@@ -1816,10 +1816,34 @@ tables:
         settings: null
         special_type: type/Category
         values:
+        - - recipients
         - - opens
         - - openers
+        - - clicks
+        - - clickers
+        - - conversions
+        - - converted
+        - - activated
         - - unsubs
+        - - bounces
+        - - spams
         - - likely_forwarders
+        - - openers_rate
+        - - clickers_rate
+        - - sharers_rate
+        - - likely_forwarders_rate
+        - - sharers
+        - - shares
+        - - clickers_to_openers
+        - - converted_to_clickers
+        - - bounce_rate
+        - - spam_rate
+        - - oneoff_donations
+        - - oneoff_amount
+        - - monthly_donations
+        - - monthly_amount
+        - - unsub_rate
+        - - activated_rate
       6903:
         description: null
         display_name: ID
@@ -2299,6 +2323,9 @@ tables:
         - - action_page
         - - broadcast
         - - broadcast_link
+        - - broadcast_metric
+        - - broadcast_metric_activated
+        - - broadcast_metric_rates
         - - broadcast_test
         - - campaign
         - - click
@@ -2351,6 +2378,45 @@ tables:
         special_type: type/FK
         values:
         - - null
+        - - 1
+        - - 67
+        - - 68
+        - - 69
+        - - 70
+        - - 71
+        - - 72
+        - - 73
+        - - 74
+        - - 75
+        - - 76
+        - - 77
+        - - 78
+        - - 79
+        - - 80
+        - - 81
+        - - 82
+        - - 83
+        - - 84
+        - - 85
+        - - 86
+        - - 87
+        - - 88
+        - - 89
+        - - 90
+        - - 91
+        - - 92
+        - - 93
+        - - 94
+        - - 95
+        - - 96
+        - - 97
+        - - 98
+        - - 99
+        - - 100
+        - - 101
+        - - 102
+        - - 103
+        - - 104
       7056:
         description: null
         display_name: Recipients
@@ -2550,10 +2616,12 @@ tables:
         settings: null
         special_type: type/Category
         values:
+        - - messages
         - - unsubs
         - - actions
         - - actors
         - - new_members
+        - - activated
         - - shares
         - - sharers
         - - donations
@@ -2603,6 +2671,7 @@ tables:
         special_type: type/Category
         values:
         - - null
+        - - 1
       7087:
         description: When the campaign was launched
         display_name: Started At
