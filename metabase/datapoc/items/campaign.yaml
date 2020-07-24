@@ -78,7 +78,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Actions types'
+    text: '### [Actions types](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Actiontypes)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -164,7 +164,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Actions sources'
+    text: '### [Actions sources](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Actionsources)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -236,7 +236,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Growth'
+    text: '### [Growth](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Growth)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -525,7 +525,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Contact segmentation'
+    text: '### [Contact segmentation](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Contactsegmentation)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -655,7 +655,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Mailings'
+    text: '### [Mailings](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Mailings)'
     virtual_card:
       archived: false
       dataset_query: {}

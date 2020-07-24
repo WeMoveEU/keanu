@@ -150,7 +150,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Conversions'
+    text: '### [Conversions](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Conversions)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -166,7 +166,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Donations'
+    text: '### [Donations](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Donations)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -182,7 +182,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Delivery'
+    text: '### [Delivery](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Delivery)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -246,7 +246,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Growth'
+    text: '### [Growth](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Growth)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -276,7 +276,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Links'
+    text: '### [Links](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Links)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -388,7 +388,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '### Activation'
+    text: '### [Activation](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Activation)'
     virtual_card:
       archived: false
       dataset_query: {}

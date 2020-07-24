@@ -23,7 +23,7 @@ ordered_cards:
     - dimension
     - - field-id
       - 7070
-  row: 0
+  row: 1
   series: []
   sizeX: 18
   sizeY: 14
@@ -46,7 +46,7 @@ ordered_cards:
         - 6643
       - - field-id
         - 6657
-  row: 14
+  row: 15
   series: []
   sizeX: 18
   sizeY: 10
@@ -54,7 +54,7 @@ ordered_cards:
 - card_id: 528
   col: 0
   parameter_mappings: []
-  row: 24
+  row: 25
   series: []
   sizeX: 18
   sizeY: 2
@@ -63,6 +63,22 @@ ordered_cards:
     column_settings:
       '["name","TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())"]':
         suffix: ' minutes'
+- card_id: null
+  col: 0
+  parameter_mappings: []
+  row: 0
+  series: []
+  sizeX: 18
+  sizeY: 1
+  visualization_settings:
+    dashcard.background: false
+    text: '**Documentation:** https://wiki.wemove.eu/display/NUMBERS/Keanu+dashboards#Keanudashboards-Latestmailings'
+    virtual_card:
+      archived: false
+      dataset_query: {}
+      display: text
+      name: null
+      visualization_settings: {}
 parameters:
 - id: 54519c1d
   name: Send date

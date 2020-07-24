@@ -96,7 +96,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '## Conversions'
+    text: '## [Conversions](https://wiki.wemove.eu/pages/viewpage.action?pageId=121768467)'
     virtual_card:
       archived: false
       dataset_query: {}
@@ -112,7 +112,7 @@ ordered_cards:
   sizeY: 1
   visualization_settings:
     dashcard.background: false
-    text: '## Growth'
+    text: '## [Growth](https://wiki.wemove.eu/pages/viewpage.action?pageId=121768467)'
     virtual_card:
       archived: false
       dataset_query: {}

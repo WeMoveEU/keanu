@@ -4871,7 +4871,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "## Conversions",
+            "text": "## [Conversions](https://wiki.wemove.eu/pages/viewpage.action?pageId=121768467)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -4891,7 +4891,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "## Growth",
+            "text": "## [Growth](https://wiki.wemove.eu/pages/viewpage.action?pageId=121768467)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -7267,7 +7267,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Actions types",
+            "text": "### [Actions types](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Actiontypes)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -7410,7 +7410,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Actions sources",
+            "text": "### [Actions sources](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Actionsources)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -7531,7 +7531,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Growth",
+            "text": "### [Growth](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Growth)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -8046,7 +8046,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Contact segmentation",
+            "text": "### [Contact segmentation](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Contactsegmentation)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -8274,7 +8274,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Mailings",
+            "text": "### [Mailings](https://wiki.wemove.eu/display/NUMBERS/Campaign+dashboard#Campaigndashboard-Mailings)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -10146,7 +10146,7 @@
               ]
             }
           ],
-          "row": 0,
+          "row": 1,
           "series": [],
           "sizeX": 18,
           "sizeY": 14,
@@ -10186,7 +10186,7 @@
               ]
             }
           ],
-          "row": 14,
+          "row": 15,
           "series": [],
           "sizeX": 18,
           "sizeY": 10,
@@ -10196,7 +10196,7 @@
           "card_id": 528,
           "col": 0,
           "parameter_mappings": [],
-          "row": 24,
+          "row": 25,
           "series": [],
           "sizeX": 18,
           "sizeY": 2,
@@ -10206,6 +10206,26 @@
               "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
                 "suffix": " minutes"
               }
+            }
+          }
+        },
+        {
+          "card_id": null,
+          "col": 0,
+          "parameter_mappings": [],
+          "row": 0,
+          "series": [],
+          "sizeX": 18,
+          "sizeY": 1,
+          "visualization_settings": {
+            "dashcard.background": false,
+            "text": "**Documentation:** https://wiki.wemove.eu/display/NUMBERS/Keanu+dashboards#Keanudashboards-Latestmailings",
+            "virtual_card": {
+              "archived": false,
+              "dataset_query": {},
+              "display": "text",
+              "name": null,
+              "visualization_settings": {}
             }
           }
         }
@@ -10249,7 +10269,7 @@
               ]
             }
           ],
-          "row": 0,
+          "row": 1,
           "series": [],
           "sizeX": 18,
           "sizeY": 11,
@@ -10259,7 +10279,7 @@
           "card_id": 528,
           "col": 0,
           "parameter_mappings": [],
-          "row": 11,
+          "row": 12,
           "series": [],
           "sizeX": 18,
           "sizeY": 2,
@@ -10269,6 +10289,26 @@
               "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
                 "suffix": " minutes"
               }
+            }
+          }
+        },
+        {
+          "card_id": null,
+          "col": 0,
+          "parameter_mappings": [],
+          "row": 0,
+          "series": [],
+          "sizeX": 18,
+          "sizeY": 1,
+          "visualization_settings": {
+            "dashcard.background": false,
+            "text": "**Documentation:** https://wiki.wemove.eu/display/NUMBERS/Keanu+dashboards#Keanudashboards-Latestcampaigns",
+            "virtual_card": {
+              "archived": false,
+              "dataset_query": {},
+              "display": "text",
+              "name": null,
+              "visualization_settings": {}
             }
           }
         }
@@ -10309,7 +10349,7 @@
               ]
             }
           ],
-          "row": 0,
+          "row": 1,
           "series": [],
           "sizeX": 18,
           "sizeY": 11,
@@ -10319,7 +10359,7 @@
           "card_id": 528,
           "col": 0,
           "parameter_mappings": [],
-          "row": 11,
+          "row": 12,
           "series": [],
           "sizeX": 18,
           "sizeY": 2,
@@ -10329,6 +10369,26 @@
               "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
                 "suffix": " minutes"
               }
+            }
+          }
+        },
+        {
+          "card_id": null,
+          "col": 0,
+          "parameter_mappings": [],
+          "row": 0,
+          "series": [],
+          "sizeX": 18,
+          "sizeY": 1,
+          "visualization_settings": {
+            "dashcard.background": false,
+            "text": "**Documentation:** https://wiki.wemove.eu/display/NUMBERS/Keanu+dashboards#Keanudashboards-Latestcampaigns",
+            "virtual_card": {
+              "archived": false,
+              "dataset_query": {},
+              "display": "text",
+              "name": null,
+              "visualization_settings": {}
             }
           }
         }
@@ -10370,7 +10430,7 @@
               ]
             }
           ],
-          "row": 0,
+          "row": 1,
           "series": [],
           "sizeX": 18,
           "sizeY": 11,
@@ -10380,7 +10440,7 @@
           "card_id": 528,
           "col": 0,
           "parameter_mappings": [],
-          "row": 11,
+          "row": 12,
           "series": [],
           "sizeX": 18,
           "sizeY": 2,
@@ -10390,6 +10450,26 @@
               "[\"name\",\"TIMESTAMPDIFF(MINUTE, MIN(`last_dt`), NOW())\"]": {
                 "suffix": " minutes"
               }
+            }
+          }
+        },
+        {
+          "card_id": null,
+          "col": 0,
+          "parameter_mappings": [],
+          "row": 0,
+          "series": [],
+          "sizeX": 18,
+          "sizeY": 1,
+          "visualization_settings": {
+            "dashcard.background": false,
+            "text": "**Documentation:** https://wiki.wemove.eu/display/NUMBERS/Keanu+dashboards#Keanudashboards-Latestcampaigns",
+            "virtual_card": {
+              "archived": false,
+              "dataset_query": {},
+              "display": "text",
+              "name": null,
+              "visualization_settings": {}
             }
           }
         }
@@ -13481,7 +13561,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Conversions",
+            "text": "### [Conversions](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Conversions)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -13501,7 +13581,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Donations",
+            "text": "### [Donations](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Donations)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -13521,7 +13601,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Delivery",
+            "text": "### [Delivery](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Delivery)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -13621,7 +13701,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Growth",
+            "text": "### [Growth](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Growth)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -13663,7 +13743,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Links",
+            "text": "### [Links](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Links)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
@@ -13843,7 +13923,7 @@
           "sizeY": 1,
           "visualization_settings": {
             "dashcard.background": false,
-            "text": "### Activation",
+            "text": "### [Activation](https://wiki.wemove.eu/display/NUMBERS/Mailing+dashboard#Mailingdashboard-Activation)",
             "virtual_card": {
               "archived": false,
               "dataset_query": {},
