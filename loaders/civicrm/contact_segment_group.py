@@ -33,11 +33,12 @@ def delete(_):
     group_segments = non_member_group_segments(dst)
     segment_ids = list(map(lambda gs: gs[0], group_segments))
 
-    sql = text("""
-    DELETE FROM contact_segment where segment_id IN :ids
-    """).bindparams(ids=segment_ids)
+    if len(segment_ids) > 0:
+        sql = text("""
+        DELETE FROM contact_segment where segment_id IN :ids
+        """).bindparams(ids=segment_ids)
 
-    return dst.execute(sql)
+        return dst.execute(sql)
 
 def execute(_):
     """Run the loader.
