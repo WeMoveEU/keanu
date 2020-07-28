@@ -24,7 +24,7 @@ SELECT
     WHEN c.payment_instrument_id in (6,7,8) THEN 'sepa'
     END as payment_method,
     CASE WHEN c.contribution_status_id = 1 THEN 'success'
-    WHEN c.contribution_status_id = 2 THEN 'pending'
+    WHEN c.contribution_status_id IN (2, 5) THEN 'pending'  -- Pending or In progress
     WHEN c.contribution_status_id = 4 THEN 'fail'
     WHEN c.contribution_status_id IN (3, 7) THEN 'cancel'
     END as status,
@@ -76,11 +76,16 @@ CREATE INDEX all_contributions_external_ids ON all_contributions (external_id, e
 -- DONATIONS -----------------------------------------------------------------
 
 -- BEGIN INCREMENTAL
+-- Remove pending donations, so we can re-load them again with their current status
+-- We only load donations that match loaded actions.
 DELETE FROM donation WHERE pending IS TRUE;
 -- END INCREMENTAL
 
 -- Insert donations both one-off and recurring in one go
 -- Use DISTINCT to get recurring donation just once
+
+-- Insert also pending donations (pending flag) if all_contrib is pending or if
+-- all are pending (when grouping for recurring donations)
 INSERT INTO donation (
         action_id,
         started_at, ended_at, 
@@ -92,6 +97,7 @@ INSERT INTO donation (
         pending
         )
 SELECT
+-- BEGINNING OF GROUP BY HERE --
     ca.id,
 -- start, end dates
     COALESCE(ac.recur_start_date, ac.receive_date),
@@ -106,7 +112,9 @@ SELECT
     ac.external_system,
     -- total_amount will be updated for recurring donations below
     -- we use a min(amounts) as a defensive measure against bad data (varying recurring payments)
-    ac.original_currency, min(ac.amount), 0, min(ac.original_amount),
+    ac.original_currency,
+-- ENDING OF GROUP BY HERE --
+    min(ac.amount), 0, min(ac.original_amount),
     -- we use a min(payment_method) as a defensive measure against bad data (varying payment_method)
     min(ac.payment_method),
     min(CASE WHEN ac.status = 'pending' THEN 1 ELSE 0 END)
@@ -114,7 +122,7 @@ SELECT
 FROM all_contributions ac
     JOIN action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
-WHERE ac.status = 'success' or ac.status = 'pending'
+WHERE (ac.status = 'success' OR (ac.status = 'pending' AND ac.payment_method = 'sepa'))
 -- BEGIN INCREMENTAL
 -- exclude by action references in donation table
 AND ca.id NOT IN (SELECT action_id FROM donation)
@@ -133,6 +141,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9,10
 SET @last_receive_date  = (SELECT max(receive_date) FROM payment); 
 -- END INCREMENTAL
 
+-- Insert new payments for all_contributions except pending ones.
 INSERT INTO payment
     (donation_id, receive_date, status)
 SELECT
@@ -147,6 +156,7 @@ AND ac.receive_date > @last_receive_date;
     ;
 
 -- BEGIN INCREMENTAL
+
 -- if we just inserted new payments, check if old payments did not change status
 UPDATE payment p -- update statuses
     JOIN donation d ON p.donation_id = d.id
@@ -157,11 +167,31 @@ UPDATE payment p -- update statuses
 SET p.status = ac.status
 WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
     ;
+
+-- if there were pending payments, we did not load them; see with a LEFT JOIN
+-- the missing payments and insert if they are not pending anymore
+INSERT INTO payment
+            (donation_id, receive_date, status)
+SELECT
+  d.id,
+  ac.receive_date,
+  ac.status
+  FROM
+      donation d JOIN all_contributions ac
+                     ON d.external_system = ac.external_system
+                     AND d.external_id = ac.external_id
+      LEFT JOIN payment p ON
+      p.donation_id = d.id
+          AND p.receive_date = ac.receive_date
+ WHERE ac.receive_date <= @last_receive_date
+   AND ac.status != 'pending'
+   AND p.id IS NULL -- missing in payments, was pending before
+       ;
 -- END INCREMENTAL
 
 -- AGGREGATIONS ------------------------------------------------------------
 -- Now update donations to set all aggregates for success payments
-UPDATE donation d
+UPDATE donation d -- update total_amount, payment_count form success payments
   JOIN (
     SELECT
       d.id,
@@ -177,8 +207,7 @@ UPDATE donation d
     d.payment_count = succ.payment_count
 ;
 
--- Update donations with failed_count
-UPDATE donation d
+UPDATE donation d  -- Update donations with failed_count
   JOIN (
     SELECT
       d.id,
@@ -189,6 +218,7 @@ UPDATE donation d
   ) fail ON d.id = fail.id
   SET d.fail_count = fail.fail_count
 ;
+
 
 SET @everyone = (SELECT id FROM segment WHERE name = 'Everyone');
 -- Update campaign aggregate
