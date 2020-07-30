@@ -131,9 +131,9 @@ def delete(order, display, dry_run, warn, config_or_dir):
 
 @cli.command(aliases=['s'])
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
-@click.option('-L', '--load', default=None, help='Load this SQL file')
+@click.option('-L', '--loads', default=[], multiple=True, help='Load this SQL file')
 @click.argument('database_url')
-def schema(drop, load, database_url):
+def schema(drop, loads, database_url):
     dest = DBDestination({'url': environ['DATABASE_URL']})
     connection = dest.connection()
 
@@ -143,24 +143,25 @@ def schema(drop, load, database_url):
             click.echo('💥 Dropping table {}'.format(table))
             connection.execute('DROP TABLE {}'.format(table))
 
-    if load:
-        script = SqlLoader(load, {}, None, dest)
-        script.replace_sql_object('keanu', dest.schema)
-        click.echo("🚚 Loading {}...".format(script.filename))
-        with connection.begin() as tx:
-            for event, data in script.execute():
-                scr = data['script']
-                if event.startswith('sql.statement.start'):
-                    click.echo("📦 {0}...".format(
-                        util.highlight_sql(
-                            scr.statement_abbrev(data['sql']))),
-                               nl=False)
-                elif event.startswith('sql.statement.end'):
-                    click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
-                        data['result'].rowcount,
-                        data['time'],
-                        util.highlight_sql(scr.statement_abbrev(data['sql']))
-                    ))
+    if loads:
+        for load in loads:
+            script = SqlLoader(load, {}, None, dest)
+            script.replace_sql_object('keanu', dest.schema)
+            click.echo("🚚 Loading {}...".format(script.filename))
+            with connection.begin() as tx:
+                for event, data in script.execute():
+                    scr = data['script']
+                    if event.startswith('sql.statement.start'):
+                        click.echo("📦 {0}...".format(
+                            util.highlight_sql(
+                                scr.statement_abbrev(data['sql']))),
+                                   nl=False)
+                    elif event.startswith('sql.statement.end'):
+                        click.echo("\r✅️ {} rows in {:0.2f}s {:}".format(
+                            data['result'].rowcount,
+                            data['time'],
+                            util.highlight_sql(scr.statement_abbrev(data['sql']))
+                        ))
 
 
 @cli.group('metabase', cls=ClickAliasedGroup, aliases=['mb'])
