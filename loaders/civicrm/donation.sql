@@ -48,7 +48,7 @@ FROM
     JOIN currency ON currency.code = c.currency COLLATE utf8_general_ci
 WHERE
     c.payment_instrument_id IN (1,2,5,6,7,8)
-    AND c.contribution_status_id IN (1,2,3,4,7)
+    AND c.contribution_status_id IN (1,2,3,4,5,7)
     ;
 
 -- contribution statuses:  rd.contribution_status_id
