@@ -22,6 +22,7 @@ ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # -- Add loader files --
 ADD erd/keanu-schema.sql /queries/
+ADD erd/currency-schema.sql /queries/
 ADD loaders/civicrm_currency /queries/currency
 ADD loaders/civicrm /queries/civicrm
 
