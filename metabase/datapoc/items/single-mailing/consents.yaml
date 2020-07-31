@@ -1,0 +1,40 @@
+collection_id: 72
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: "SELECT \n    c.status, COUNT(*) AS `count`\nFROM consent c\nJOIN (\n \
+      \   SELECT \n        contact_id, MAX(created_at) latest \n    FROM broadcast_link\n\
+      \    JOIN source s ON s.id = broadcast_link.source_id\n    JOIN consent ON consent.source_id=s.id\n\
+      \    WHERE {{broadcast_id}}\n    GROUP BY contact_id\n) l ON l.contact_id=c.contact_id\
+      \ AND l.latest=c.created_at\nGROUP BY status\n"
+    template-tags:
+      broadcast_id:
+        dimension:
+        - field-id
+        - 6648
+        display-name: Broadcast id
+        id: 533c2fdc-6e2e-174a-e25c-e8e6ac205aeb
+        name: broadcast_id
+        required: true
+        type: dimension
+        widget-type: id
+  type: native
+description: null
+display: pie
+id: 468
+model: card
+name: Consents
+query_type: native
+visualization_settings:
+  pie.colors:
+    accepted: '#84BB4C'
+    pending: '#F2A86F'
+    rejected: '#ED6E6E'
+  pie.dimension: status
+  pie.metric: count
+  pie.slice_threshold: 0
+  scalar.field: count
+  table.cell_column: count
+  table.pivot_column: name

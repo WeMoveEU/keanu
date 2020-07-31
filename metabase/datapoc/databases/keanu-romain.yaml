@@ -519,7 +519,7 @@ tables:
         name: id
         settings:
           custom_actions:
-            url: /dashboard/47?id={value}
+            url: ''
         special_type: type/PK
       6623:
         description: Internal name of the broadcast
@@ -585,7 +585,7 @@ tables:
         name: campaign_id
         settings:
           custom_actions:
-            url: /dashboard/61?campaign={value}
+            url: ''
         special_type: type/FK
       7069:
         description: The language in which the broadcast was written, in locale format
@@ -1439,7 +1439,7 @@ tables:
         name: id
         settings:
           custom_actions:
-            url: /dashboard/62?id={value}
+            url: ''
         special_type: type/PK
       6657:
         description: When the sending of the test started
@@ -1786,7 +1786,7 @@ tables:
         name: broadcast_id
         settings:
           custom_actions:
-            url: /dashboard/47?id={value}
+            url: ''
         special_type: type/FK
       6900:
         description: null
@@ -2312,7 +2312,7 @@ tables:
         name: broadcast_test_id
         settings:
           custom_actions:
-            url: /dashboard/62?id={value}
+            url: ''
         special_type: type/FK
       7060:
         description: Internal name of the broadcast
@@ -2321,7 +2321,9 @@ tables:
         has_field_values: search
         id: 7060
         name: name
-        settings: null
+        settings:
+          custom_actions:
+            url: ''
         special_type: type/Name
       7061:
         description: null
@@ -2332,7 +2334,7 @@ tables:
         name: id
         settings:
           custom_actions:
-            url: /dashboard/47?id={value}
+            url: ''
         special_type: type/PK
       7062:
         description: When the sending of the broadcast started
@@ -2352,7 +2354,7 @@ tables:
         name: campaign_id
         settings:
           custom_actions:
-            url: /dashboard/61?campaign={value}
+            url: ''
         special_type: type/FK
       7064:
         description: null
@@ -2649,7 +2651,7 @@ tables:
         name: id
         settings:
           custom_actions:
-            url: /dashboard/61?campaign={value}
+            url: ''
         special_type: type/PK
     id: 891
     name: campaign_summary

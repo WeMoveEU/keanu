@@ -1,0 +1,24 @@
+collection_id: 101
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - distinct
+      - - field-id
+        - 7135
+    filter:
+    - '='
+    - - field-id
+      - 6977
+    - accepted
+    source-table: 870
+  type: query
+description: null
+display: scalar
+id: 488
+model: card
+name: New members from a campaign
+query_type: query
+visualization_settings: {}

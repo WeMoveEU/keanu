@@ -5,6 +5,7 @@ import re
 from sqlalchemy import text
 import click
 from .run_statement import RunStatement
+from .batch import RetryScript
 from . import util
 from . import tracing
 import os
@@ -220,6 +221,12 @@ class SqlLoader(RunStatement, tracing.Tags):
                     raise ctrlc
                 yield 'sql.script.end.delete', { 'script': _ }
 
+    def display_error(_, e):
+        msg = str(e.args[0])
+        msg = msg.replace('\\n', "\n")
+        click.echo(message=msg, err=True)
+        return msg
+
     def execute(_):
         if len(_.statements) == 0:
             return
@@ -237,10 +244,14 @@ class SqlLoader(RunStatement, tracing.Tags):
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     raise click.Abort("aborted.")
-                except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+                except (ProgrammingError, MySQLError, DataError) as e:
                     transaction.rollback()
-                    msg = str(e.args[0])
-                    msg = msg.replace('\\n', "\n")
-                    click.echo(message=msg, err=True)
-                    raise click.Abort(msg)
+                    raise click.Abort(_.display_error(e))
+                except InternalError as e:
+                    if 'Lock wait timeout exceeded' in e.orig.args[1]:
+                        raise RetryScript() from e
+                    else:
+                        transaction.rollback()
+                        raise click.Abort(_.display_error(e))
+
 

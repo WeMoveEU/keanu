@@ -1,0 +1,42 @@
+collection_id: 102
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    filter:
+    - and
+    - - '='
+      - - field-id
+        - 6902
+      - likely_forwarders_rate
+    - - '='
+      - - field-id
+        - 6900
+      - 1
+    order-by:
+    - - asc
+      - - field-id
+        - 6899
+    source-table: 862
+  type: query
+description: Number of "contacts" who opened the mailing 3 times or more vs number
+  of recipients
+display: bar
+id: 508
+model: card
+name: Forward rate
+query_type: query
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6898]]':
+      number_style: percent
+  graph.dimensions:
+  - broadcast_id
+  graph.metrics:
+  - value
+  graph.x_axis.labels_enabled: false
+  graph.y_axis.title_text: Forward rate
+  series_settings:
+    value:
+      title: Forward rate

@@ -1,0 +1,43 @@
+collection_id: 101
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    fields:
+    - - field-id
+      - 6491
+    - - field-id
+      - 6495
+    - - field-id
+      - 6492
+    - - field-id
+      - 6493
+    - - field-id
+      - 6497
+    limit: 1
+    source-table: 811
+  type: query
+description: null
+display: table
+id: 478
+model: card
+name: Campaign summary
+query_type: query
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6491]]':
+      column_title: CiviCRM ID
+  table.cell_column: ended_at
+  table.columns:
+  - enabled: true
+    name: external_id
+  - enabled: true
+    name: name
+  - enabled: true
+    name: started_at
+  - enabled: true
+    name: ended_at
+  - enabled: true
+    name: campaign_type
+  table.pivot_column: id

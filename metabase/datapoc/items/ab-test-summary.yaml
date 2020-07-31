@@ -1,0 +1,128 @@
+collection_id: 71
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    fields:
+    - - field-id
+      - 6656
+    - - field-id
+      - 6655
+    - - field-id
+      - 6653
+    - - field-id
+      - 6657
+    joins:
+    - alias: Broadcast
+      condition:
+      - '='
+      - - field-id
+        - 6656
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6643
+      fields:
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6484
+      - - joined-field
+        - Broadcast
+        - - field-id
+          - 6644
+      source-table: 809
+    limit: 1
+    source-table: 825
+  type: query
+description: null
+display: table
+id: 496
+model: card
+name: A/B test summary
+query_type: query
+visualization_settings:
+  column_settings:
+    '["ref",["field-id",6484]]':
+      column_title: Ask Type
+    '["ref",["field-id",6644]]':
+      column_title: Campaign
+  table.cell_column: sent_at
+  table.columns:
+  - enabled: true
+    name: id
+  - enabled: true
+    name: name
+  - enabled: true
+    name: created_at
+  - enabled: false
+    name: external_id
+  - enabled: false
+    name: external_system
+  - enabled: true
+    name: sent_at
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6484
+    name: ask_type
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6643
+    name: broadcast_test_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6485
+    name: broadcast_type
+  - enabled: true
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6644
+    name: campaign_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6633
+    name: external_id
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6634
+    name: external_system
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6490
+    name: id_2
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6623
+    name: name_2
+  - enabled: false
+    field_ref:
+    - joined-field
+    - Broadcast
+    - - field-id
+      - 6624
+    name: sent_at_2
+  table.pivot_column: id

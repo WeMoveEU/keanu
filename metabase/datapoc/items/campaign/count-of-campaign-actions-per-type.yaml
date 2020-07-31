@@ -1,0 +1,58 @@
+collection_id: 101
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - joined-field
+      - Action Page
+      - - field-id
+        - 6879
+    filter:
+    - '!='
+    - - joined-field
+      - Action Page
+      - - field-id
+        - 6879
+    - consent
+    joins:
+    - alias: Action Page
+      condition:
+      - '='
+      - - field-id
+        - 6876
+      - - joined-field
+        - Action Page
+        - - field-id
+          - 6881
+      fields: all
+      source-table: 861
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 813
+  type: query
+description: null
+display: bar
+id: 477
+model: card
+name: Count of campaign actions per type
+query_type: query
+visualization_settings:
+  graph.dimensions:
+  - action_type
+  graph.metrics:
+  - count
+  pie.slice_threshold: 0
+  series_settings:
+    donate:
+      axis: null
+    share:
+      axis: null
+    sign:
+      axis: null
+  stackable.stack_type: null

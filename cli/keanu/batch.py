@@ -1,5 +1,6 @@
 import operator
 import click
+from time import sleep
 from . import util
 from .tracing import tracer
 
@@ -12,6 +13,12 @@ def sighup(_a, _b):
     sighup_received = True
 
 signal(SIGUSR1, sighup)
+
+class RetryScript(Exception):
+    pass
+
+RETRY_COUNT = 3
+RETRY_SLEEP = 10
 
 
 class Batch:
@@ -68,14 +75,26 @@ class Batch:
     def execute(_):
         with tracer.start_active_span('batch', tags=_.tracer_tags):
             for scr in _.scripts:
-                if _.mode['rewind'] == False:
-                    for e,d in scr.execute():
-                        yield e, d
-                else:
-                    for e,d in scr.delete():
-                        yield e, d
-                if sighup_received:
-                    raise click.Abort("Stopped gracefully due to USR1 signal")
+                for tries in range(RETRY_COUNT):
+                    try:
+                        if _.mode['rewind'] == False:
+                            for e,d in scr.execute():
+                                yield e, d
+                        else:
+                            for e,d in scr.delete():
+                                yield e, d
+
+                        if sighup_received:
+                            raise click.Abort("Stopped gracefully due to USR1 signal")
+
+                        break # from retry loop
+                    except RetryScript as rse:
+                        if tries + 1 == RETRY_COUNT:
+                            raise click.Abort("Too many retries, aborting") from rse
+                        else:
+                            click.echo("Encountered error that can be retried: {}.\n😴  Sleeping 10 seconds....".format(rse.__cause__))
+                            sleep(RETRY_SLEEP)
+                            click.echo("Retrying....")
 
     def find_source(_, criteria):
         for s in reversed(_.sources):

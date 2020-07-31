@@ -1,0 +1,20 @@
+collection_id: 106
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  native:
+    query: |-
+      SELECT COUNT(*)
+      FROM segment s
+      JOIN contact_segment cs ON cs.segment_id = s.id
+      LEFT JOIN consent c ON c.contact_id = cs.contact_id AND ABS(TIMESTAMPDIFF(MINUTE, c.created_at, cs.joined_at)) <= 60 AND c.status = 'accepted'
+      WHERE s.name='Member' AND c.id IS NULL
+  type: native
+description: null
+display: scalar
+id: 513
+model: card
+name: Count of member joins without an accepted consent
+query_type: native
+visualization_settings: {}
