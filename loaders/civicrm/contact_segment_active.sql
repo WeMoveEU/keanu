@@ -168,11 +168,11 @@ INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at,
 ;
 
 -- FINALIZE
-INSERT INTO contact_segment (segmentation_id, segment_id, contact_id, joined_at, left_at, trigger_action_id)
-VALUES (@active_status, @active_active,
-       @grouping,
-       @acc_start_at, @acc_opt_end_at,
-       @acc_trigger_action_id);
+INSERT INTO contact_segment
+        (segmentation_id, segment_id,     contact_id, joined_at,     left_at,         trigger_action_id)
+  SELECT @active_status,  @active_active, @grouping,  @acc_start_at, @acc_opt_end_at, @acc_trigger_action_id
+   WHERE @grouping IS NOT NULL
+;
 
 
 UPDATE contact_segment cs SET left_at = NULL
