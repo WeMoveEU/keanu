@@ -135,7 +135,6 @@ INSERT INTO broadcast_metric -- converted by country
   SELECT
     b.id, b.name, seg.id, 'converted', COUNT(DISTINCT a.contact_id)
     FROM action a
-    JOIN action_page ap ON ap.id = a.action_page_id
     JOIN broadcast_link l ON l.source_id = a.source_id
     JOIN broadcast b ON b.id = l.broadcast_id
     JOIN bm_segment seg
@@ -156,9 +155,8 @@ INSERT INTO broadcast_metric -- converted by country
 INSERT INTO broadcast_metric -- conversions
             (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
-    b.id, b.name, @Everyone, 'conversions', COUNT(a.id)
+    b.id, b.name, @Everyone, 'conversions', COUNT(DISTINCT a.id)
   FROM action a
-  JOIN action_page ap ON ap.id = a.action_page_id
   JOIN broadcast_link l ON l.source_id = a.source_id
   JOIN broadcast b ON b.id = l.broadcast_id
 -- BEGIN INCREMENTAL
@@ -190,7 +188,7 @@ SELECT
 INSERT INTO broadcast_metric -- shares
             (broadcast_id, broadcast_name, segment_id, metric, value)
 SELECT
-  b.id, b.name, @Everyone, 'shares', COUNT(a.id)
+  b.id, b.name, @Everyone, 'shares', COUNT(DISTINCT a.id)
   FROM action a
   JOIN action_page ap ON ap.id = a.action_page_id AND ap.action_type = 'share'
   JOIN broadcast_link l ON l.source_id = a.source_id
@@ -206,7 +204,7 @@ SELECT
 -- DONATIONS
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
-    b.id, b.name, @Everyone, 'oneoff_donations', COUNT(d.id)
+    b.id, b.name, @Everyone, 'oneoff_donations', COUNT(DISTINCT d.id)
   FROM donation d
   JOIN action a ON d.action_id = a.id
   JOIN broadcast_link l ON l.source_id = a.source_id
@@ -225,9 +223,8 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
     b.id, b.name, @Everyone, 'oneoff_amount', SUM(d.amount)
   FROM donation d
   JOIN action a ON d.action_id = a.id
-  JOIN broadcast_link l ON l.source_id = a.source_id
-  JOIN broadcast b ON b.id = l.broadcast_id
-  WHERE d.frequency_unit = 'one-off'
+  JOIN broadcast b
+  WHERE d.frequency_unit = 'one-off' AND b.id IN (SELECT broadcast_id FROM broadcast_link bl WHERE bl.source_id = a.source_id)
   -- BEGIN INCREMENTAL
    AND DATEDIFF(NOW(), b.sent_at) <= 10
   -- END INCREMENTAL
@@ -238,7 +235,7 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
 
 INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, value)
   SELECT
-    b.id, b.name, @Everyone, 'monthly_donations', COUNT(d.id)
+    b.id, b.name, @Everyone, 'monthly_donations', COUNT(DISTINCT d.id)
   FROM donation d
   JOIN action a ON d.action_id = a.id
   JOIN broadcast_link l ON l.source_id = a.source_id
@@ -257,9 +254,8 @@ INSERT INTO broadcast_metric (broadcast_id, broadcast_name, segment_id, metric, 
     b.id, b.name, @Everyone, 'monthly_amount', SUM(d.amount)
   FROM donation d
   JOIN action a ON d.action_id = a.id
-  JOIN broadcast_link l ON l.source_id = a.source_id
-  JOIN broadcast b ON b.id = l.broadcast_id
-  WHERE d.frequency_unit = 'month'
+  JOIN broadcast b
+  WHERE d.frequency_unit = 'month' AND b.id IN (SELECT broadcast_id FROM broadcast_link bl WHERE bl.source_id = a.source_id)
   -- BEGIN INCREMENTAL
    AND DATEDIFF(NOW(), b.sent_at) <= 10
   -- END INCREMENTAL
