@@ -49,7 +49,7 @@ FROM
 WHERE
     c.payment_instrument_id IN (1,2,5,6,7,8)
     AND c.contribution_status_id IN (1,2,3,4,5,7)
-    ;
+;
 
 -- contribution statuses:  rd.contribution_status_id
 -- | Completed      | 1     | <
@@ -95,8 +95,8 @@ INSERT INTO donation (
         original_currency, amount, total_amount, original_amount,
         payment_method,
         pending
-        )
-SELECT
+      )
+  SELECT
 -- BEGINNING OF GROUP BY HERE --
     ca.id,
 -- start, end dates
@@ -119,20 +119,20 @@ SELECT
     min(ac.payment_method),
     min(CASE WHEN ac.status = 'pending' THEN 1 ELSE 0 END)
 
-FROM all_contributions ac
+  FROM all_contributions ac
     JOIN action ca ON ca.external_id = ac.external_id AND ca.external_system = ac.external_system
 
-WHERE (ac.status = 'success' OR (ac.status = 'pending' AND ac.payment_method = 'sepa'))
+  WHERE (ac.status != 'pending' OR ac.payment_method = 'sepa')
 -- BEGIN INCREMENTAL
 -- exclude by action references in donation table
-AND ca.id NOT IN (SELECT action_id FROM donation)
+  AND ca.id NOT IN (SELECT action_id FROM donation)
 -- END INCREMENTAL
 
 -- It would be better to use DISTINCT but we have to do min(amount)
 -- to handle the recurring donations with changing amounts...
--- we grup by all columns untill original_currency (inclusive)
-GROUP BY 1,2,3,4,5,6,7,8,9,10
-    ;
+-- we group by all columns untill original_currency (inclusive)
+  GROUP BY 1,2,3,4,5,6,7,8,9,10
+;
 
 
 
