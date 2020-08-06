@@ -1,0 +1,27 @@
+---
+- source:
+    name: rates
+    db:
+      schema: civicrm_test
+- source:
+    name: testset
+    db:
+      schema: civicrm_test
+- destination:
+    fixtures:
+      - erd/currency-schema.sql
+      - erd/keanu-schema.sql 
+    db:
+      url: mysql+pymysql://root@mysql.docker/keanu_test
+- transform:
+    source: rates
+    sql:
+      directory: loaders/civicrm_currency
+- transform:
+    source: testset
+    sql:
+      directory: loaders/civicrm
+- transform:
+    source: testset
+    py:
+      directory: loaders/civicrm

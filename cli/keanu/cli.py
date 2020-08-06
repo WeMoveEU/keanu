@@ -9,6 +9,7 @@ from os import environ
 from . import db, util, metabase, config
 from .sql_loader import SqlLoader
 from .db_destination import DBDestination
+from .test_loaders import TestLoaders
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 import re
@@ -163,7 +164,6 @@ def schema(drop, loads, database_url):
                             util.highlight_sql(scr.statement_abbrev(data['sql']))
                         ))
 
-
 @cli.group('metabase', cls=ClickAliasedGroup, aliases=['mb'])
 def metabase_cli():
   pass
@@ -238,8 +238,28 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
     mio.import_json(source, collection, metadata,
                     overwrite,
                     db_mapping)
-                
 
+
+@cli.command(aliases=['t'])
+@click.argument('test_config', default='keanu.yaml', type=click.Path(exists=True))
+@click.argument('test_dir', default='tests', type=click.Path(exists=True))
+def test(test_config, test_dir):
+    configuration = config.configuration_from_argument(test_config)
+    suite = TestLoaders(configuration)
+    result = suite.run(test_dir)
+
+    # if result.wasSuccessful():
+    #     click.echo("All {} tests pass".format(result.testsRun))
+    #     return 0
+
+    # for (t, tb) in result.errors:
+    #     click.echo("💔  Error in {}\n{}".format(t,tb))
+
+    # for (t, tb) in result.failures:
+    #     click.echo("😞  Failure in {}\n{}".format(t, tb))
+
+    # click.echo("{} tests failed".format(len(result.failures)))
+    # sys.exit(1)
 
 @metabase_cli.command('query', aliases=['q'])
 @click.option('-j', '--json', is_flag=True, default=False, help="Print in JSON instead of Python")
