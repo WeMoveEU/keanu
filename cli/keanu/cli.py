@@ -9,7 +9,7 @@ from os import environ
 from . import db, util, metabase, config
 from .sql_loader import SqlLoader
 from .db_destination import DBDestination
-from .test_loaders import TestLoaders
+from .test import TestLoaders
 from pymysql.err import MySQLError
 from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
 import re
@@ -241,12 +241,19 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
 
 
 @cli.command(aliases=['t'])
-@click.argument('test_config', default='keanu.yaml', type=click.Path(exists=True))
+@click.argument('test_config', default='keanu-test.yaml', type=click.Path(exists=True))
 @click.argument('test_dir', default='tests', type=click.Path(exists=True))
-def test(test_config, test_dir):
+@click.argument('spec',  required=False)
+def test(test_config, test_dir, spec):
+    """
+    Run tests from TEST_DIR (default tests), using batch configuration from TEST_CONFIG (default keanu-test.yaml).
+    You should configure the batch in test file in a way that is similar to your production setup. Each test will make a full load of loaders defined by script ORDER variable, similar to load -o option format.
+
+    Use spec to limit test files, it defaults to test*.py when omitted.
+    """
     configuration = config.configuration_from_argument(test_config)
     suite = TestLoaders(configuration)
-    result = suite.run(test_dir)
+    result = suite.run(test_dir, spec)
 
     # if result.wasSuccessful():
     #     click.echo("All {} tests pass".format(result.testsRun))

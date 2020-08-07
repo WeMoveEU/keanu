@@ -14,3 +14,6 @@ class DataStore:
 
     def set_batch(_, b):
         _.batch = b
+
+    def use(_):
+        _.connection().execute("USE {}".format(_.schema))

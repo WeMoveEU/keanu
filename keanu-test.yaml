@@ -2,17 +2,19 @@
 - source:
     name: rates
     db:
-      schema: civicrm_test
+      schema: civicrm_tiny
 - source:
     name: testset
+    fixtures:
+      - tests/civicrm_tiny.sql
     db:
-      schema: civicrm_test
+      schema: civicrm_tiny
 - destination:
     fixtures:
       - erd/currency-schema.sql
       - erd/keanu-schema.sql 
     db:
-      url: mysql+pymysql://root@mysql.docker/keanu_test
+      url: ${DATABASE_TEST_URL}
 - transform:
     source: rates
     sql:
