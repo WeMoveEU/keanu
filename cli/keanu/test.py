@@ -17,9 +17,9 @@ class BatchTestCase(unittest.TestCase):
         return current_config
 
     def setUp(_):
-        batch = _.load_all_fixtures()
-        batch.destination.use()
-        _.connection = batch.destination.connection()
+        _.batch = _.load_all_fixtures()
+        _.batch.destination.use()
+        _.connection = _.batch.destination.connection()
 
         if hasattr(_, "ORDER"):
             _.full_load(_.ORDER)
@@ -30,8 +30,10 @@ class BatchTestCase(unittest.TestCase):
         for e,d in batch.execute():
             pass
 
-    def incremental_load(_, order):
-        batch = config.build_batch({'incremental': False, 'order': order}, _.config)
+    def incremental_load(_, order=None):
+        if order is None:
+            order = _.ORDER
+        batch = config.build_batch({'incremental': True, 'order': order}, _.config)
 
         for e,d in batch.execute():
             pass

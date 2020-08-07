@@ -102,6 +102,9 @@ class Batch:
                 return s
         return None
 
+    def find_source_by_name(_, name):
+        return _.find_source(lambda s: s.name == name)
+
     @staticmethod
     def sort(scripts):
         scripts.sort(key=operator.attrgetter('order'))
