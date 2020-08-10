@@ -241,10 +241,11 @@ def metabase_import(collection, json_file, metadata, overwrite, db_map, validate
 
 
 @cli.command(aliases=['t'])
+@click.option('--no-fixtures', is_flag=True, help="Do not load configured fixtures before running the test suite")
 @click.argument('test_config', default='keanu-test.yaml', type=click.Path(exists=True))
 @click.argument('test_dir', default='tests', type=click.Path(exists=True))
 @click.argument('spec',  required=False)
-def test(test_config, test_dir, spec):
+def test(test_config, test_dir, spec, no_fixtures):
     """
     Run tests from TEST_DIR (default tests), using batch configuration from TEST_CONFIG (default keanu-test.yaml).
     You should configure the batch in test file in a way that is similar to your production setup. Each test will make a full load of loaders defined by script ORDER variable, similar to load -o option format.
@@ -252,7 +253,7 @@ def test(test_config, test_dir, spec):
     Use spec to limit test files, it defaults to test*.py when omitted.
     """
     configuration = config.configuration_from_argument(test_config)
-    suite = TestLoaders(configuration)
+    suite = TestLoaders(configuration, no_fixtures)
     result = suite.run(test_dir, spec)
 
     # if result.wasSuccessful():
