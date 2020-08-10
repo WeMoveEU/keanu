@@ -5,8 +5,9 @@
       schema: civicrm_tiny
 - source:
     name: testset
-    fixtures:
-      - tests/civicrm_tiny.sql
+# Much faster to pre-load with mysql client
+#    fixtures:
+#      - tests/civicrm_tiny.sql
     db:
       schema: civicrm_tiny
 - destination:
