@@ -134,8 +134,6 @@ INSERT INTO donation (
   GROUP BY 1,2,3,4,5,6,7,8,9,10
 ;
 
-
-
 -- PAYMENTS -----------------------------------------------------------------
 -- BEGIN INCREMENTAL
 SET @last_receive_date  = (SELECT max(receive_date) FROM payment); 
@@ -143,17 +141,16 @@ SET @last_receive_date  = (SELECT max(receive_date) FROM payment);
 
 -- Insert new payments for all_contributions except pending ones.
 INSERT INTO payment
-    (donation_id, receive_date, status)
-SELECT
-    d.id, ac.receive_date, ac.status
-FROM donation d
-    JOIN
-    all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
-WHERE  status != 'pending'
+    (donation_id, receive_date, status, external_system, external_id)
+  SELECT
+    d.id, ac.receive_date, ac.status, 'civicrm_contribution', ac.contribution_id
+  FROM donation d
+  JOIN all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
+  WHERE  status != 'pending'
 -- BEGIN INCREMENTAL
-AND ac.receive_date > @last_receive_date;
+  AND ac.receive_date > @last_receive_date;
 -- END INCREMENTAL
-    ;
+;
 
 -- BEGIN INCREMENTAL
 
@@ -161,32 +158,26 @@ AND ac.receive_date > @last_receive_date;
 UPDATE payment p -- update statuses
     JOIN donation d ON p.donation_id = d.id
     JOIN all_contributions ac
-    ON d.external_system = ac.external_system
-    AND d.external_id = ac.external_id
-    AND p.receive_date = ac.receive_date
-SET p.status = ac.status
-WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
-    ;
+      ON d.external_system = ac.external_system
+      AND d.external_id = ac.external_id
+      AND p.receive_date = ac.receive_date
+  SET p.status = ac.status
+  WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
+;
 
 -- if there were pending payments, we did not load them; see with a LEFT JOIN
 -- the missing payments and insert if they are not pending anymore
 INSERT INTO payment
-            (donation_id, receive_date, status)
-SELECT
-  d.id,
-  ac.receive_date,
-  ac.status
-  FROM
-      donation d JOIN all_contributions ac
-                     ON d.external_system = ac.external_system
-                     AND d.external_id = ac.external_id
-      LEFT JOIN payment p ON
-      p.donation_id = d.id
-          AND p.receive_date = ac.receive_date
- WHERE ac.receive_date <= @last_receive_date
-   AND ac.status != 'pending'
-   AND p.id IS NULL -- missing in payments, was pending before
-       ;
+    (donation_id, receive_date, status, external_system, external_id)
+  SELECT
+    d.id, ac.receive_date, ac.status, 'civicrm_contribution', ac.contribution_id
+  FROM donation d
+  JOIN all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
+  LEFT JOIN payment p ON p.donation_id = d.id AND p.receive_date = ac.receive_date
+  WHERE ac.receive_date <= @last_receive_date
+    AND ac.status != 'pending'
+    AND p.id IS NULL -- missing in payments, was pending before
+;
 -- END INCREMENTAL
 
 -- AGGREGATIONS ------------------------------------------------------------
