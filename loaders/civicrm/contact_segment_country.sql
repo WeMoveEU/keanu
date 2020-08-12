@@ -4,7 +4,9 @@
 SET @query_start := NOW();
 
 SET @max_modified_date := (SELECT max(modified_date) FROM ${SOURCE}.civicrm_contact); 
+-- BEGIN INCREMENTAL
 SET @last_update_dt := (SELECT last_sync_dt('contact_segment.country', 'civicrm_contact'));
+-- END INCREMENTAL
 
 
 INSERT INTO contact_segment -- Country
