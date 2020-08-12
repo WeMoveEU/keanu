@@ -2,6 +2,7 @@
 -- TRUNCATE calendar
 -- ORDER: 2
 
+-- BEGIN INITIAL
 drop table if exists calendar;
 create table calendar (
         dt date not null primary key,
@@ -43,7 +44,6 @@ SET currentdate = ADDDATE(currentdate,INTERVAL 1 DAY);
     //
 DELIMITER ;
 
--- BEGIN INITIAL
 CALL fill_calendar('2015-01-01','2021-01-01');
 
 CREATE INDEX calendar_d ON calendar (d);
