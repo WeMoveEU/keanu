@@ -1,0 +1,30 @@
+---
+- source:
+    name: rates
+    db:
+      schema: civicrm_tiny
+- source:
+    name: testset
+# Much faster to pre-load with mysql client
+#    fixtures:
+#      - tests/civicrm_tiny.sql
+    db:
+      schema: civicrm_tiny
+- destination:
+    fixtures:
+      - erd/currency-schema.sql
+      - erd/keanu-schema.sql 
+    db:
+      url: ${DATABASE_TEST_URL}
+- transform:
+    source: rates
+    sql:
+      directory: loaders/civicrm_currency
+- transform:
+    source: testset
+    sql:
+      directory: loaders/civicrm
+- transform:
+    source: testset
+    py:
+      directory: loaders/civicrm

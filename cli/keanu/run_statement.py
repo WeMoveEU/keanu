@@ -15,6 +15,7 @@ class RunStatement:
                 warnings.simplefilter("ignore", category=Warning)
             try:
                 for sql in statements:
+                    sql = sql.replace(":", "\\:")
                     yield 'sql.statement.start', {'sql': sql, 'script': _ }
                     start_time = time()
                     result = connection.execute(text(sql))
