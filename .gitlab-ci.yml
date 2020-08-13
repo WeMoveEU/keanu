@@ -15,6 +15,9 @@ test_loader:
     - name: mysql:5.7
       alias: mysql-keanu
       command: ["--character-set-server=utf8", "--collation-server=utf8_general_ci"]
+  rules:
+   - if: $CI_COMMIT_TAG == null
+     when: always
   before_script:
     - apt-get update && apt-get install -y default-mysql-client wait-for-it
   script:
@@ -28,6 +31,18 @@ build:
   services:
     - docker:18-dind
   stage: build
+  rules:
+   - if: $CI_COMMIT_TAG == null
+     when: always
   script:
     - docker build -t $CONTAINER_IMAGE .
     - docker push $CONTAINER_IMAGE
+
+release:
+  stage: build
+  rules:
+   - if: $CI_COMMIT_TAG != null
+     when: always
+  script:
+   - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG .
+   - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
