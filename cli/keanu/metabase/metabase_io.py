@@ -409,55 +409,44 @@ class Mapper:
           result['fields'][int(field_id)] = dest_field[0]['id']
 
     if overwrite:
+      self.resolve_with_names(source_map, collection_id, result)
+
+    return result
+
+  def resolve_with_names(self, source_map, collection_id, result):
       def col_location(cid):
         return '/' if cid == 'root' else "/{}/".format(cid)
 
       # map name->id in destination, for collections, cards, and dashboards
       # only for items that are under destination collection
-      collection_names_to_id = {
-        col['name']: col['id']
-        for col in self.client.get('collection')
-        if col_location(collection_id) in col.get('location', '')
+      names_to_id = {
+        'collections': {
+          col['name']: col['id']
+          for col in self.client.get('collection')
+          if col_location(collection_id) in col.get('location', '')
+        }
       }
 
-      collection_ids = set(collection_names_to_id.values())
+      collection_ids = set(names_to_id['collections'].values())
       # The collection ids are going to be compared to ids returned by the API, so they need to be api_collection_id'ed
       # But this affects only the root collection, and we know that root collection cannot be listed in the imported one
       # so only `collection_id` needs this treatment
       collection_ids.add(api_collection_id(collection_id))
 
-      card_names_to_id = {
-        card['name']: card['id']
-        for card in self.client.get('card')
-        if card["collection_id"] in collection_ids
-      }
-
-      dashboard_names_to_id = {
-        dash['name']: dash['id']
-        for dash in self.client.get('dashboard')
-        if dash["collection_id"] in collection_ids
-      }
+      for model in ['card', 'dashboard']:
+        names_to_id[model + 's'] = {
+          item['name']: item['id']
+          for item in self.client.get(model)
+          if item["collection_id"] in collection_ids
+        }
 
       # now iterate throught source items and build src id->dest id using names
-      result['cards'] = {
-        int(k): card_names_to_id[v['name']]
-        for k, v in source_map['cards'].items()
-        if v['name'] in card_names_to_id
-      }
-
-      result['collections'] = {
-        int(k): collection_names_to_id[v['name']]
-        for k, v in source_map['collections'].items()
-        if v['name'] in collection_names_to_id
-      }
-
-      result['dashboards'] = {
-        int(k): dashboard_names_to_id[v['name']]
-        for k, v in source_map['dashboards'].items()
-        if v['name'] in dashboard_names_to_id
-      }
-
-    return result
+      for model in ['cards', 'collections', 'dashboards']:
+        result[model] = {
+          int(k): names_to_id[model][v['name']]
+          for k, v in source_map[model].items()
+          if v['name'] in names_to_id[model]
+        }
 
   def deref(self, obj, prop, mapping):
     obj[prop] = mapping[obj[prop]]
