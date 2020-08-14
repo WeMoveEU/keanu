@@ -41,9 +41,9 @@ class MetabaseIO:
       mapper = Mapper(self.client)
       mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
       if has_items:
-        self.add_items(source['items'], destination['id'], mappings)
+        self.add_items(source['items'], destination['id'], mappings, mapper)
       if with_metadata:
-        self.import_metadata(source['datamodel'], mappings)
+        self.import_metadata(source['datamodel'], mappings, mapper)
     
   def get_items(self, collection_id):
     """
@@ -67,7 +67,7 @@ class MetabaseIO:
 
     return result
 
-  def import_metadata(self, datamodel, mappings):
+  def import_metadata(self, datamodel, mappings, mapper):
     for db in datamodel['databases'].values():
       for table in db['tables'].values():
         for field in table['fields'].values():
@@ -98,14 +98,14 @@ class MetabaseIO:
 
             dimensions = field['dimensions'].copy()
             if 'human_readable_field_id' in dimensions:
-              deref(dimensions, 'human_readable_field_id', mappings['fields'])
+              mapper.deref(dimensions, 'human_readable_field_id', mappings['fields'])
 
             metabase_io_log.info("🏷️ setting custom dimensions for {}.{}: {}".format(table['name'], field['name'], dimensions))
             # XXX should we not always update this ?  what if dimensions change ?
             # if 'dimensions' not in dest_field:
             self.client.add_dimension(dimensions, dest_field_id)
 
-  def add_items(self, items, collection_id, mappings, only_model='all', result=[]):
+  def add_items(self, items, collection_id, mappings, mapper, only_model='all', result=[]):
     """
       Create the given items into the given collection.
       Collections are created recursively.
@@ -114,9 +114,9 @@ class MetabaseIO:
       Return the nested list of created items.
     """
     if only_model == 'all':
-      self.add_items(items, collection_id, mappings, 'collection', result)
-      self.add_items(items, collection_id, mappings, 'card', result)
-      self.add_items(items, collection_id, mappings, 'dashboard', result)
+      self.add_items(items, collection_id, mappings, mapper, 'collection', result)
+      self.add_items(items, collection_id, mappings, mapper, 'card', result)
+      self.add_items(items, collection_id, mappings, mapper, 'dashboard', result)
     else:
       for item in items:
         if item['model'] == 'collection':
@@ -137,11 +137,11 @@ class MetabaseIO:
           # This can lead to errors if caution is not taken. Immutable data structures would be
           # useful here.
           if only_model == 'collection':
-            metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
             # Is this an only-collection phase? If so, get or create the collection
+            metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
             if item['id'] in mappings['collections']:
               dst_item = item.copy() # shallow copy is fine
-              deref(dst_item, 'id', mappings['collections'])
+              mapper.deref(dst_item, 'id', mappings['collections'])
               c = self.client.update_collection(dst_item, collection_id)
             else:
               c = self.client.add_collection(item, collection_id)
@@ -154,11 +154,11 @@ class MetabaseIO:
 
           # Whether its collection or non-collection phase, add all items with
           # destination collection as parent
-          self.add_items(item['items'], c['id'], mappings, only_model, c['items'])
+          self.add_items(item['items'], c['id'], mappings, mapper, only_model, c['items'])
 
         elif item['model'] == 'card' and only_model == 'card':
           metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
-          card = deref_card(item, mappings)
+          card = mapper.deref_card(item, mappings)
 
           if item['id'] in mappings['cards']:
             card['id'] = mappings['cards'][item['id']]
@@ -172,9 +172,9 @@ class MetabaseIO:
           metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
           exists = item['id'] in mappings['dashboards']
 
-          deref_dashboard(item, mappings)
+          mapper.deref_dashboard(item, mappings)
           if exists:
-            deref(item, 'id', mappings['dashboards'])
+            mapper.deref(item, 'id', mappings['dashboards'])
             d = self.client.update_dashboard(item, collection_id)
             self.client.clear_dashboard(d)
           else:
@@ -431,6 +431,122 @@ class Mapper:
 
     return result
 
+  def deref(self, obj, prop, mapping):
+    obj[prop] = mapping[obj[prop]]
+
+  def deref_table(self, table_id, mappings):
+    if str(table_id).startswith('card__'):
+      return mappings['cards'][int(table_id[6:])]
+    else:
+      return mappings['tables'][table_id]
+
+  def deref_fields(self, expression, mappings):
+    if isinstance(expression, list):
+      if len(expression) == 2 and expression[0] == 'field-id':
+        expression[1] = mappings['fields'][expression[1]]
+      else:
+        for factor in expression:
+          self.deref_fields(factor, mappings)
+    elif isinstance(expression, dict):
+      for factor in expression.values():
+        self.deref_fields(factor, mappings)
+
+  def deref_column_setting_key(self, cs, mappings):
+    if cs.startswith('["ref",["field-id",'):
+      csobj = json.loads(cs)
+      try:
+        csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
+      except KeyError:
+        # There could be stale column_settings that have orphan field-id
+        # e.g. referring to archived card
+        return cs
+      return json.dumps(csobj)
+    else:
+      return cs
+
+  def deref_column_settings(self, col_settings, mappings):
+    # Check if custom link contains a dashboard URL, and replace its id with the mapped one
+    # Remove this part when custom drill supports a more structured aproach
+    if col_settings is not None and 'link_url' in col_settings:
+      col_settings = col_settings.copy()
+      url = col_settings['link_url']
+      m = re.search('/dashboard/(\d+)', url)
+      if m is not None:
+        url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
+        col_settings['link_url'] = url
+
+    return col_settings
+
+  def deref_card(self, card, mappings):
+# skipping 'result_metadata', 
+    card = {k: card[k] for k in card.keys() & ['name', 'description', 'visualization_settings', 'collection_position', 'metadata_checksum', 'dataset_query', 'display']}
+
+    if 'dataset_query' in card:
+      dquery = card['dataset_query']
+      if 'database' in dquery:
+        dquery['database'] = mappings['databases'][dquery['database']]
+
+        if 'query' in dquery:
+          query = dquery['query']
+          if 'source-table' in query:
+            query['source-table'] = self.deref_table(query['source-table'], mappings)
+
+            for exp in query.get('expressions', {}).values():
+              self.deref_fields(exp, mappings)
+
+          for join in query.get('joins', []):
+            join['source-table'] = self.deref_table(join['source-table'], mappings)
+            self.deref_fields(join['condition'], mappings)
+            self.deref_fields(join.get('fields', []), mappings)
+
+          self.deref_fields(query.get('fields', []), mappings)
+          self.deref_fields(query.get('filter', []), mappings)
+          self.deref_fields(query.get('breakout', []), mappings)
+          self.deref_fields(query.get('order-by', []), mappings)
+          self.deref_fields(query.get('aggregation', []), mappings)
+
+        if 'native' in dquery and 'template-tags' in dquery['native']:
+          for tag in dquery['native']['template-tags'].values():
+            self.deref_fields(tag['dimension'], mappings)
+
+    if 'visualization_settings' in card:
+      vs = card['visualization_settings']
+      if 'column_settings' in vs:
+        vs['column_settings'] = {
+          self.deref_column_setting_key(k, mappings): self.deref_column_settings(v, mappings)
+          for k,v in vs['column_settings'].items()
+        }
+
+      if 'table.columns' in vs:
+        self.deref_fields(vs['table.columns'], mappings)
+
+    return card
+
+  def deref_dashboard(self, dashboard, mappings):
+    dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
+    for c, card in enumerate(dashboard['ordered_cards']):
+      card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY', 'visualization_settings']}
+
+      if not is_virtual_card(card):
+        card['card_id'] = mappings['cards'][card['card_id']]
+        card['cardId'] = card['card_id']  # Inconsistency in dashboard API
+
+      if 'series' in card:
+        for s, serie in enumerate(card['series']):
+          card_id = mappings['cards'][serie['id']]
+          serie = self.deref_card(serie, mappings)
+          serie['id'] = card_id
+          card['series'][s] = serie
+
+      for pm in card['parameter_mappings']:
+        pm['card_id'] = card['card_id']
+        for target_spec in pm['target']:
+          if isinstance(target_spec, list):
+            self.deref_fields(target_spec, mappings)
+
+      dashboard['ordered_cards'][c] = card
+    return dashboard
+
 def broken_cards(items, datamodel, broken=set()):
   def check_field(card, fld_id, db_id):
     if not datamodel_has_field(datamodel, db_id, fld_id):
@@ -514,121 +630,6 @@ def datamodel_has_field(datamodel, db_id, fld_id):
 
           
 
-def deref(obj, prop, mapping):
-  obj[prop] = mapping[obj[prop]]
-
-def deref_table(table_id, mappings):
-  if str(table_id).startswith('card__'):
-    return mappings['cards'][int(table_id[6:])]
-  else:
-    return mappings['tables'][table_id]
-
-def deref_fields(expression, mappings):
-  if isinstance(expression, list):
-    if len(expression) == 2 and expression[0] == 'field-id':
-      expression[1] = mappings['fields'][expression[1]]
-    else:
-      for factor in expression:
-        deref_fields(factor, mappings)
-  elif isinstance(expression, dict):
-    for factor in expression.values():
-      deref_fields(factor, mappings)
-
-def deref_column_setting_key(cs, mappings):
-  if cs.startswith('["ref",["field-id",'):
-    csobj = json.loads(cs)
-    try:
-      csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
-    except KeyError:
-      # There could be stale column_settings that have orphan field-id
-      # e.g. referring to archived card
-      return cs
-    return json.dumps(csobj)
-  else:
-    return cs
-
-def deref_column_settings(col_settings, mappings):
-  # Check if custom link contains a dashboard URL, and replace its id with the mapped one
-  # Remove this part when custom drill supports a more structured aproach
-  if col_settings is not None and 'link_url' in col_settings:
-    col_settings = col_settings.copy()
-    url = col_settings['link_url']
-    m = re.search('/dashboard/(\d+)', url)
-    if m is not None:
-      url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
-      col_settings['link_url'] = url
-
-  return col_settings
-
-def deref_card(card, mappings):
-# skipping 'result_metadata', 
-  card = {k: card[k] for k in card.keys() & ['name', 'description', 'visualization_settings', 'collection_position', 'metadata_checksum', 'dataset_query', 'display']}
-
-  if 'dataset_query' in card:
-    dquery = card['dataset_query']
-    if 'database' in dquery:
-      dquery['database'] = mappings['databases'][dquery['database']]
-
-      if 'query' in dquery:
-        query = dquery['query']
-        if 'source-table' in query:
-          query['source-table'] = deref_table(query['source-table'], mappings)
-
-          for exp in query.get('expressions', {}).values():
-            deref_fields(exp, mappings)
-
-        for join in query.get('joins', []):
-          join['source-table'] = deref_table(join['source-table'], mappings)
-          deref_fields(join['condition'], mappings)
-          deref_fields(join.get('fields', []), mappings)
-
-        deref_fields(query.get('fields', []), mappings)
-        deref_fields(query.get('filter', []), mappings)
-        deref_fields(query.get('breakout', []), mappings)
-        deref_fields(query.get('order-by', []), mappings)
-        deref_fields(query.get('aggregation', []), mappings)
-
-      if 'native' in dquery and 'template-tags' in dquery['native']:
-        for tag in dquery['native']['template-tags'].values():
-          deref_fields(tag['dimension'], mappings)
-
-  if 'visualization_settings' in card:
-    vs = card['visualization_settings']
-    if 'column_settings' in vs:
-      vs['column_settings'] = {
-        deref_column_setting_key(k, mappings): deref_column_settings(v, mappings)
-        for k,v in vs['column_settings'].items()
-      }
-
-    if 'table.columns' in vs:
-      deref_fields(vs['table.columns'], mappings)
-
-  return card
-
-def deref_dashboard(dashboard, mappings):
-  dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
-  for c, card in enumerate(dashboard['ordered_cards']):
-    card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY', 'visualization_settings']}
-
-    if not is_virtual_card(card):
-      card['card_id'] = mappings['cards'][card['card_id']]
-      card['cardId'] = card['card_id']  # Inconsistency in dashboard API
-
-    if 'series' in card:
-      for s, serie in enumerate(card['series']):
-        card_id = mappings['cards'][serie['id']]
-        serie = deref_card(serie, mappings)
-        serie['id'] = card_id
-        card['series'][s] = serie
-
-    for pm in card['parameter_mappings']:
-      pm['card_id'] = card['card_id']
-      for target_spec in pm['target']:
-        if isinstance(target_spec, list):
-          deref_fields(target_spec, mappings)
-
-    dashboard['ordered_cards'][c] = card
-  return dashboard
 
 def is_virtual_card(card):
   """
