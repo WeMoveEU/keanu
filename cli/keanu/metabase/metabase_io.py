@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import re
@@ -117,6 +118,12 @@ class MetabaseIO:
       self.add_items(items, collection_id, mappings, mapper, 'collection', result)
       self.add_items(items, collection_id, mappings, mapper, 'card', result)
       self.add_items(items, collection_id, mappings, mapper, 'dashboard', result)
+      if len(mapper.missing_mapping_cards) > 0:
+        # Some cards refer to dashboards that were imported after the card, update them now
+        for card in mapper.missing_mapping_cards:
+          c = next(filter(lambda r: r['id'] == mappings['collections'][card['collection_id']], result))
+          self.add_items([card], c['id'], mappings, mapper, 'card', c['items'])
+
     else:
       for item in items:
         if item['model'] == 'collection':
@@ -247,6 +254,7 @@ class Mapper:
   """
   def __init__(self, client):
     self.client = client
+    self.missing_mapping_cards = []
 
   def add_cards(self, items, result = None):
     """
@@ -464,22 +472,30 @@ class Mapper:
     else:
       return cs
 
-  def deref_column_settings(self, col_settings, mappings):
-    # Check if custom link contains a dashboard URL, and replace its id with the mapped one
-    # Remove this part when custom drill supports a more structured aproach
+  def deref_column_settings(self, col_settings, mappings, for_card):
+    '''Check if custom link contains a dashboard URL, and replace its id with the mapped one.
+    As column settings may refer to a dashboard and as dashboards are imported after cards,
+    the mapping for the referenced dashboard may not be available yet. In such a case,
+    the column setting is not deref'ed and the card id (for_card) is queued, to fix the reference after
+    dashboards are imported.
+    '''
     if col_settings is not None and 'link_url' in col_settings:
       col_settings = col_settings.copy()
       url = col_settings['link_url']
       m = re.search('/dashboard/(\d+)', url)
       if m is not None:
-        url = url.replace(m.group(1), str(mappings['dashboards'][int(m.group(1))]))
-        col_settings['link_url'] = url
+        ref_id = int(m.group(1))
+        if ref_id in mappings['dashboards']:
+          url = url.replace(m.group(1), str(mappings['dashboards'][ref_id]))
+          col_settings['link_url'] = url
+        elif for_card['id'] not in map(lambda c: c['id'], self.missing_mapping_cards):
+          self.missing_mapping_cards.append(for_card)
 
     return col_settings
 
   def deref_card(self, card, mappings):
-# skipping 'result_metadata', 
-    card = {k: card[k] for k in card.keys() & ['name', 'description', 'visualization_settings', 'collection_position', 'metadata_checksum', 'dataset_query', 'display']}
+    original_card = card
+    card = copy.deepcopy(original_card)
 
     if 'dataset_query' in card:
       dquery = card['dataset_query']
@@ -513,7 +529,7 @@ class Mapper:
       vs = card['visualization_settings']
       if 'column_settings' in vs:
         vs['column_settings'] = {
-          self.deref_column_setting_key(k, mappings): self.deref_column_settings(v, mappings)
+          self.deref_column_setting_key(k, mappings): self.deref_column_settings(v, mappings, original_card)
           for k,v in vs['column_settings'].items()
         }
 
