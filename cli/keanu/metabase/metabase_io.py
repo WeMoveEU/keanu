@@ -43,7 +43,7 @@ class MetabaseIO:
       mapper = Mapper(self.client)
       mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
       if has_items:
-        self.add_items(source['items'], destination['id'], mappings, mapper)
+        self.add_items(source['items'], destination['id'], mappings, mapper, overwrite)
       if with_metadata:
         self.import_metadata(source['datamodel'], mappings, mapper)
     
@@ -107,7 +107,7 @@ class MetabaseIO:
             # if 'dimensions' not in dest_field:
             self.client.add_dimension(dimensions, dest_field_id)
 
-  def add_items(self, items, collection_id, mappings, mapper, only_model='all', result=[]):
+  def add_items(self, items, collection_id, mappings, mapper, overwrite, only_model='all', result=[]):
     """
       Create the given items into the given collection.
       Collections are created recursively.
@@ -116,17 +116,20 @@ class MetabaseIO:
       Return the nested list of created items.
     """
     if only_model == 'all':
-      self.add_items(items, collection_id, mappings, mapper, 'collection', result)
-      self.add_items(items, collection_id, mappings, mapper, 'card', result)
-      self.add_items(items, collection_id, mappings, mapper, 'dashboard', result)
+      self.add_items(items, collection_id, mappings, mapper, overwrite, 'collection', result)
+      self.add_items(items, collection_id, mappings, mapper, overwrite, 'card', result)
+      self.add_items(items, collection_id, mappings, mapper, overwrite, 'dashboard', result)
       if len(mapper.missing_mapping_cards) > 0:
         # Some cards refer to dashboards that were imported after the card, update them now
         for card in mapper.missing_mapping_cards:
           c = next(filter(lambda r: r['id'] == mappings['collections'][card['collection_id']], result))
-          self.add_items([card], c['id'], mappings, mapper, 'card', c['items'])
+          self.add_items([card], c['id'], mappings, mapper, overwrite, 'card', c['items'])
 
     else:
       for item in items:
+        if overwrite:
+          mapper.add_version_to(item)
+
         if item['model'] == 'collection':
           # Inserting collection
           # 
@@ -162,7 +165,7 @@ class MetabaseIO:
 
           # Whether its collection or non-collection phase, add all items with
           # destination collection as parent
-          self.add_items(item['items'], c['id'], mappings, mapper, only_model, c['items'])
+          self.add_items(item['items'], c['id'], mappings, mapper, overwrite, only_model, c['items'])
 
         elif item['model'] == 'card' and only_model == 'card':
           metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
@@ -256,6 +259,20 @@ class Mapper:
   def __init__(self, client):
     self.client = client
     self.missing_mapping_cards = []
+
+  def add_version_to(self, item):
+    source_desc = self.source_map[item['model'] + 's'][str(item['id'])]
+    version_str = "Version: {}:{}".format(source_desc['uuid'], source_desc['content_hash'])
+    pattern = 'Version: .{32}:.{32}'
+    if item['description']:
+      if re.search(pattern, item['description']):
+        item['description'] = re.sub(pattern, version_str, item['description'])
+      else:
+        item['description'] += "\n" + version_str
+    else:
+      item['description'] = version_str
+
+    return item
 
   def add_items(self, items, result = None):
     """
@@ -369,6 +386,7 @@ class Mapper:
       known after creating them. They will be added to mapping on the go.
 
     """
+    self.source_map = source_map
     result = {'databases': {}, 'tables': {}, 'fields': {},
               'cards': {}, 'collections': {}, 'dashboards': {}}
 
