@@ -24,7 +24,8 @@ class MetabaseIO:
     }
     result['datamodel'] = self.get_datamodel(result['items'])
     mapper = Mapper(self.client)
-    result['mappings'] = mapper.add_cards(result['items'])
+    metabase_io_log.info("⬇️ mappings")
+    result['mappings'] = mapper.add_items(result['items'])
     return result
 
   def import_json(self, source, collection, with_metadata=False, overwrite=False, db_map=[]):
@@ -256,7 +257,7 @@ class Mapper:
     self.client = client
     self.missing_mapping_cards = []
 
-  def add_cards(self, items, result = None):
+  def add_items(self, items, result = None):
     """
       Browse recursively a nested list of items and record into `result` the ids
       that will need to be translated during import.
@@ -267,13 +268,14 @@ class Mapper:
       result = {'cards': {}, 'collections': {}, 'dashboards': {}, 'databases': {}}
 
     for item in items:
+      result[item['model'] + 's'][item['id']] = {
+        'name': item['name'],
+        'uuid': uuid(item),
+        'content_hash': content_hash(item)
+      }
       if item['model'] == 'collection':
-        result['collections'][item['id']] = { 'name': item['name'] }
-        self.add_cards(item['items'], result)
-      elif item['model'] == 'dashboard':
-        result['dashboards'][item['id']] = { 'name': item['name'] }
+        self.add_items(item['items'], result)
       elif item['model'] == 'card':
-        result['cards'][item['id']] = { 'name': item['name'] }
         self.add_card(item, result)
 
     return result
