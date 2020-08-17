@@ -168,7 +168,7 @@ class MetabaseIO:
 
           else:
             log_item_io('⬆️', item)
-            card = mapper.deref_card(item, mapper.mappings)
+            card = mapper.deref_card(item)
             if item in mapper:
               card['id'] = mapper[item]
               upserted_card = self.client.update_card(card, collection_id)
@@ -190,7 +190,7 @@ class MetabaseIO:
 
           else:
             log_item_io('⬆️', item)
-            mapper.deref_dashboard(item, mapper.mappings)
+            mapper.deref_dashboard(item)
             if item in mapper:
               mapper.deref(item, 'id', mapper.mappings['dashboards'])
               d = self.client.update_dashboard(item, collection_id)
@@ -499,28 +499,28 @@ class Mapper:
   def deref(self, obj, prop, mapping):
     obj[prop] = mapping[obj[prop]]
 
-  def deref_table(self, table_id, mappings):
+  def deref_table(self, table_id):
     if str(table_id).startswith('card__'):
-      return mappings['cards'][int(table_id[6:])]
+      return self.mappings['cards'][int(table_id[6:])]
     else:
-      return mappings['tables'][table_id]
+      return self.mappings['tables'][table_id]
 
-  def deref_fields(self, expression, mappings):
+  def deref_fields(self, expression):
     if isinstance(expression, list):
       if len(expression) == 2 and expression[0] == 'field-id':
-        expression[1] = mappings['fields'][expression[1]]
+        expression[1] = self.mappings['fields'][expression[1]]
       else:
         for factor in expression:
-          self.deref_fields(factor, mappings)
+          self.deref_fields(factor)
     elif isinstance(expression, dict):
       for factor in expression.values():
-        self.deref_fields(factor, mappings)
+        self.deref_fields(factor)
 
-  def deref_column_setting_key(self, cs, mappings):
+  def deref_column_setting_key(self, cs):
     if cs.startswith('["ref",["field-id",'):
       csobj = json.loads(cs)
       try:
-        csobj = ["ref", ["field-id", mappings['fields'][csobj[1][1]]]]
+        csobj = ["ref", ["field-id", self.mappings['fields'][csobj[1][1]]]]
       except KeyError:
         # There could be stale column_settings that have orphan field-id
         # e.g. referring to archived card
@@ -529,7 +529,7 @@ class Mapper:
     else:
       return cs
 
-  def deref_column_settings(self, col_settings, mappings, for_card):
+  def deref_column_settings(self, col_settings, for_card):
     '''Check if custom link contains a dashboard URL, and replace its id with the mapped one.
     As column settings may refer to a dashboard and as dashboards are imported after cards,
     the mapping for the referenced dashboard may not be available yet. In such a case,
@@ -542,72 +542,72 @@ class Mapper:
       m = re.search('/dashboard/(\d+)', url)
       if m is not None:
         ref_id = int(m.group(1))
-        if ref_id in mappings['dashboards']:
-          url = url.replace(m.group(1), str(mappings['dashboards'][ref_id]))
+        if ref_id in self.mappings['dashboards']:
+          url = url.replace(m.group(1), str(self.mappings['dashboards'][ref_id]))
           col_settings['link_url'] = url
         elif for_card['id'] not in map(lambda c: c['id'], self.missing_mapping_cards):
           self.missing_mapping_cards.append(for_card)
 
     return col_settings
 
-  def deref_card(self, card, mappings):
+  def deref_card(self, card):
     original_card = card
     card = copy.deepcopy(original_card)
 
     if 'dataset_query' in card:
       dquery = card['dataset_query']
       if 'database' in dquery:
-        dquery['database'] = mappings['databases'][dquery['database']]
+        dquery['database'] = self.mappings['databases'][dquery['database']]
 
         if 'query' in dquery:
           query = dquery['query']
           if 'source-table' in query:
-            query['source-table'] = self.deref_table(query['source-table'], mappings)
+            query['source-table'] = self.deref_table(query['source-table'])
 
             for exp in query.get('expressions', {}).values():
-              self.deref_fields(exp, mappings)
+              self.deref_fields(exp)
 
           for join in query.get('joins', []):
-            join['source-table'] = self.deref_table(join['source-table'], mappings)
-            self.deref_fields(join['condition'], mappings)
-            self.deref_fields(join.get('fields', []), mappings)
+            join['source-table'] = self.deref_table(join['source-table'])
+            self.deref_fields(join['condition'])
+            self.deref_fields(join.get('fields', []))
 
-          self.deref_fields(query.get('fields', []), mappings)
-          self.deref_fields(query.get('filter', []), mappings)
-          self.deref_fields(query.get('breakout', []), mappings)
-          self.deref_fields(query.get('order-by', []), mappings)
-          self.deref_fields(query.get('aggregation', []), mappings)
+          self.deref_fields(query.get('fields', []))
+          self.deref_fields(query.get('filter', []))
+          self.deref_fields(query.get('breakout', []))
+          self.deref_fields(query.get('order-by', []))
+          self.deref_fields(query.get('aggregation', []))
 
         if 'native' in dquery and 'template-tags' in dquery['native']:
           for tag in dquery['native']['template-tags'].values():
-            self.deref_fields(tag['dimension'], mappings)
+            self.deref_fields(tag['dimension'])
 
     if 'visualization_settings' in card:
       vs = card['visualization_settings']
       if 'column_settings' in vs:
         vs['column_settings'] = {
-          self.deref_column_setting_key(k, mappings): self.deref_column_settings(v, mappings, original_card)
+          self.deref_column_setting_key(k): self.deref_column_settings(v, original_card)
           for k,v in vs['column_settings'].items()
         }
 
       if 'table.columns' in vs:
-        self.deref_fields(vs['table.columns'], mappings)
+        self.deref_fields(vs['table.columns'])
 
     return card
 
-  def deref_dashboard(self, dashboard, mappings):
+  def deref_dashboard(self, dashboard):
     dashboard = {k: dashboard[k] for k in dashboard.keys() & ['name', 'description', 'parameters', 'collection_position', 'ordered_cards']}
     for c, card in enumerate(dashboard['ordered_cards']):
       card = {k: card[k] for k in card.keys() & ['card_id', 'parameter_mappings', 'series', 'row', 'col', 'sizeX', 'sizeY', 'visualization_settings']}
 
       if not is_virtual_card(card):
-        card['card_id'] = mappings['cards'][card['card_id']]
+        card['card_id'] = self.mappings['cards'][card['card_id']]
         card['cardId'] = card['card_id']  # Inconsistency in dashboard API
 
       if 'series' in card:
         for s, serie in enumerate(card['series']):
-          card_id = mappings['cards'][serie['id']]
-          serie = self.deref_card(serie, mappings)
+          card_id = self.mappings['cards'][serie['id']]
+          serie = self.deref_card(serie)
           serie['id'] = card_id
           card['series'][s] = serie
 
@@ -615,7 +615,7 @@ class Mapper:
         pm['card_id'] = card['card_id']
         for target_spec in pm['target']:
           if isinstance(target_spec, list):
-            self.deref_fields(target_spec, mappings)
+            self.deref_fields(target_spec)
 
       dashboard['ordered_cards'][c] = card
     return dashboard
