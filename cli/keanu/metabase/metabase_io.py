@@ -3,9 +3,13 @@ import json
 import logging
 import re
 
-from .helpers import *
+from .helpers import api_collection_id, uuid, content_hash
 
 metabase_io_log = logging.getLogger('metabase.io')
+
+def log_item_io(activity, item):
+  metabase_io_log.info("{} {} {}: {}".format(activity, item['model'], item['id'], item.get('name', '')))
+
 
 class MetabaseIO:
   """
@@ -41,11 +45,11 @@ class MetabaseIO:
 
     if has_items or with_metadata:
       mapper = Mapper(self.client)
-      mappings = mapper.resolved_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
+      mapper.resolve_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
       if has_items:
-        self.add_items(source['items'], destination['id'], mappings, mapper, overwrite)
+        self.add_items(source['items'], destination['id'], mapper, overwrite)
       if with_metadata:
-        self.import_metadata(source['datamodel'], mappings, mapper)
+        self.import_metadata(source['datamodel'], mapper)
     
   def get_items(self, collection_id):
     """
@@ -56,7 +60,7 @@ class MetabaseIO:
     items = self.client.get('collection', collection_id, 'items')
 
     for i in items:
-      metabase_io_log.info("⬇️ {} {}: {}".format(i['model'], i['id'], i.get('name', '')))
+      log_item_io('⬇️', i)
       item = self.client.get(i['model'], i['id'])
       item['model'] = i['model']
       item = Trimmer.trim_data(item)
@@ -69,11 +73,11 @@ class MetabaseIO:
 
     return result
 
-  def import_metadata(self, datamodel, mappings, mapper):
+  def import_metadata(self, datamodel, mapper):
     for db in datamodel['databases'].values():
       for table in db['tables'].values():
         for field in table['fields'].values():
-          dest_field_id = mappings['fields'][field['id']]
+          dest_field_id = mapper.mappings['fields'][field['id']]
 
           update_attrs = {}
           field_values = field.get('has_field_values', 'none')
@@ -86,7 +90,7 @@ class MetabaseIO:
 
           fk_target_field_id = field.get('fk_target_field_id', None)
           if fk_target_field_id is not None:
-            update_attrs['fk_target_field_id'] = mappings['fields'][fk_target_field_id]
+            update_attrs['fk_target_field_id'] = mapper.mappings['fields'][fk_target_field_id]
 
           if 'settings' in field:
             update_attrs['settings'] = field['settings']
@@ -100,14 +104,14 @@ class MetabaseIO:
 
             dimensions = field['dimensions'].copy()
             if 'human_readable_field_id' in dimensions:
-              mapper.deref(dimensions, 'human_readable_field_id', mappings['fields'])
+              mapper.deref(dimensions, 'human_readable_field_id', mapper.mappings['fields'])
 
             metabase_io_log.info("🏷️ setting custom dimensions for {}.{}: {}".format(table['name'], field['name'], dimensions))
             # XXX should we not always update this ?  what if dimensions change ?
             # if 'dimensions' not in dest_field:
             self.client.add_dimension(dimensions, dest_field_id)
 
-  def add_items(self, items, collection_id, mappings, mapper, overwrite, only_model='all', result=[]):
+  def add_items(self, items, collection_id, mapper, overwrite, only_model='all', result=[]):
     """
       Create the given items into the given collection.
       Collections are created recursively.
@@ -116,14 +120,14 @@ class MetabaseIO:
       Return the nested list of created items.
     """
     if only_model == 'all':
-      self.add_items(items, collection_id, mappings, mapper, overwrite, 'collection', result)
-      self.add_items(items, collection_id, mappings, mapper, overwrite, 'card', result)
-      self.add_items(items, collection_id, mappings, mapper, overwrite, 'dashboard', result)
+      self.add_items(items, collection_id, mapper, overwrite, 'collection', result)
+      self.add_items(items, collection_id, mapper, overwrite, 'card', result)
+      self.add_items(items, collection_id, mapper, overwrite, 'dashboard', result)
       if len(mapper.missing_mapping_cards) > 0:
         # Some cards refer to dashboards that were imported after the card, update them now
         for card in mapper.missing_mapping_cards:
-          c = next(filter(lambda r: r['id'] == mappings['collections'][card['collection_id']], result))
-          self.add_items([card], c['id'], mappings, mapper, overwrite, 'card', c['items'])
+          c = next(filter(lambda r: r['id'] == mapper.mappings['collections'][card['collection_id']], result))
+          self.add_items([card], c['id'], mapper, overwrite, 'card', c['items'])
 
     else:
       for item in items:
@@ -131,79 +135,71 @@ class MetabaseIO:
           mapper.add_version_to(item)
 
         if item['model'] == 'collection':
-          # Inserting collection
-          # 
-          # Please note:
-          #      ,- ITEMS -                             ,- RESULT -
-          #      |  coll  ----> INSERT or UPDATE ---->  |  coll (shallow copy)
-          #      |  card  ----> new id is given  ---->  |  card (same dict!)
-          #      |  dash  ----> or from mapping  ---->  |  dash (same dict!)
-          # items hold dicts with source ids, whereas result holds items with destination ids
-          # For collection, we need to have a copy of the item because the source collections
-          # are used when inserting cards and dashboards.
-          # When we overwrite, we do an explicit shallow copy, when we create a new collection,
-          # we will get a new dict back.
-          # For cards and dashboards this is not so important because we use them only once,
-          # but this code will modify cards and dashboards also in items (in source data).
-          # This can lead to errors if caution is not taken. Immutable data structures would be
-          # useful here.
           if only_model == 'collection':
             # Is this an only-collection phase? If so, get or create the collection
-            metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
-            if item['id'] in mappings['collections']:
-              dst_item = item.copy() # shallow copy is fine
-              mapper.deref(dst_item, 'id', mappings['collections'])
-              if mapper.has_changed(item):
+            if item in mapper and not mapper.has_changed(item):
+              log_item_io('⏭️', item)
+              c = self.client.get('collection', mapper[item])
+
+            else:
+              log_item_io('⬆️', item)
+              if item in mapper:
+                dst_item = item.copy() # shallow copy is fine
+                mapper.deref(dst_item, 'id', mapper.mappings['collections'])
                 c = self.client.update_collection(dst_item, collection_id)
               else:
-                c = self.client.get('collection', dst_item['id'])
-            else:
-              c = self.client.add_collection(item, collection_id)
-              mappings['collections'][item['id']] = c['id']
+                c = self.client.add_collection(item, collection_id)
+                mapper[item] = c['id']
+
             c['items'] = []
             result.append(c)
           else:
             # Is this non-collection insert phase? Get the collection id that was created
-            c = next(filter(lambda r: r['id'] == mappings['collections'][item['id']], result))
+            c = next(filter(lambda r: r['id'] == mapper[item], result))
 
           # Whether its collection or non-collection phase, add all items with
           # destination collection as parent
-          self.add_items(item['items'], c['id'], mappings, mapper, overwrite, only_model, c['items'])
+          self.add_items(item['items'], c['id'], mapper, overwrite, only_model, c['items'])
 
         elif item['model'] == 'card' and only_model == 'card':
-          metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
-          card = mapper.deref_card(item, mappings)
+          if item in mapper and not mapper.has_changed(item):
+            log_item_io('⏭️', item)
+            upserted_card = self.client.get('card', mapper[item])
 
-          if item['id'] in mappings['cards']:
-            card['id'] = mappings['cards'][item['id']]
-            if mapper.has_changed(item):
+          else:
+            log_item_io('⬆️', item)
+            card = mapper.deref_card(item, mapper.mappings)
+            if item in mapper:
+              card['id'] = mapper[item]
               upserted_card = self.client.update_card(card, collection_id)
             else:
-              upserted_card = self.client.get('card', card['id'])
-          else:
-            upserted_card = self.client.add_card(card, collection_id)
-          mappings['cards'][item['id']] = upserted_card['id']
+              upserted_card = self.client.add_card(card, collection_id)
+              mapper[item] = upserted_card['id']
+
           result.append(upserted_card)
 
+        # Note:
+        # For cards and collections we did a copy of the object before dereferencing it,
+        # while for dashboards we modify the source item.
+        # this is not so important because we use them only once, but this can lead to errors if caution is not taken.
+        # Immutable data structures would be useful here.
         elif item['model'] == 'dashboard' and only_model == 'dashboard':
-          metabase_io_log.info("⬆️ {} {}: {}".format(item['model'], item['id'], item['name']))
-          exists = item['id'] in mappings['dashboards']
+          if item in mapper and not mapper.has_changed(item):
+            log_item_io('⏭️', item)
+            d = self.client.get('dashboard', mapper[item])
 
-          mapper.deref_dashboard(item, mappings)
-          need_cards = True
-          if exists:
-            if mapper.has_changed(item):
-              mapper.deref(item, 'id', mappings['dashboards'])
+          else:
+            log_item_io('⬆️', item)
+            mapper.deref_dashboard(item, mapper.mappings)
+            if item in mapper:
+              mapper.deref(item, 'id', mapper.mappings['dashboards'])
               d = self.client.update_dashboard(item, collection_id)
               self.client.clear_dashboard(d)
             else:
-              need_cards = False
-              d = self.client.get('dashboard', mappings['dashboards'][item['id']])
-          else:
-            d = self.client.add_dashboard(item, collection_id)
-            mappings['dashboards'][item['id']] = d['id']
-          if need_cards:
+              d = self.client.add_dashboard(item, collection_id)
+              mapper[item] = d['id']
             d = self.add_dashboard_cards(item['ordered_cards'], d)
+
           result.append(d)
 
     return result
@@ -396,25 +392,25 @@ class Mapper:
           if isinstance(target_spec, list):
             self.add_fields(target_spec, mappings)
 
-  def resolved_mappings(self, source_map, datamodel, overwrite, collection_id, db_map):
+  def resolve_mappings(self, source_map, datamodel, overwrite, collection_id, db_map):
     """Translates all the ids found in source_map into corresponding ids for the
     current Metabase instance Return a dictionary { model => { source_id =>
-    translated_id } }
+    translated_id } }, also stored in this object
 
-      When overwrite is True, cards, collections and dashboards are found by
-      name under collection_id in destination MB.
+      When overwrite is True, cards, collections and dashboards are searched
+      under collection_id in destination MB.
 
       When overwrite is False, these are not resolved because their id will be
       known after creating them. They will be added to mapping on the go.
 
     """
     self.source_map = source_map
-    result = {'databases': {}, 'tables': {}, 'fields': {},
-              'cards': {}, 'collections': {}, 'dashboards': {}}
+    self.mappings = {'databases': {}, 'tables': {}, 'fields': {},
+                     'cards': {}, 'collections': {}, 'dashboards': {}}
 
     for db_id, db in datamodel['databases'].items():
       dest_db = self.client.get_by_name('database', db_map.get(db['name'], db['name']))
-      result['databases'][int(db_id)] = dest_db['id']
+      self.mappings['databases'][int(db_id)] = dest_db['id']
 
       db_data = self.client.get('database', dest_db['id'], 'metadata')
       for table_id, table in db['tables'].items():
@@ -422,21 +418,20 @@ class Mapper:
         if len(dest_table) == 0:
           raise Exception("Table {}.{} could not be mapped".format(db['name'], table['name']))
         dest_table = dest_table[0]
-        result['tables'][int(table_id)] = dest_table['id']
+        self.mappings['tables'][int(table_id)] = dest_table['id']
 
         for field_id, field in table['fields'].items():
           dest_field = list(filter(lambda f: f['name'] == field['name'], dest_table['fields']))
           if len(dest_field) == 0:
             raise Exception("Field {}.{}.{} could not be mapped".format(db['name'], table['name'], field['name']))
-          result['fields'][int(field_id)] = dest_field[0]['id']
+          self.mappings['fields'][int(field_id)] = dest_field[0]['id']
 
     if overwrite:
       dest_items = self.existing_items(collection_id)
-      unmapped = self.resolve_with('uuid', source_map, dest_items, result)
-      self.resolve_with('name', unmapped, dest_items, result)
+      unmapped = self.resolve_with('uuid', source_map, dest_items)
+      self.resolve_with('name', unmapped, dest_items)
 
-    self.mappings = result
-    return result
+    return self.mappings
 
   def existing_items(self, collection_id):
     dest_location = '/' if collection_id == 'root' else "/{}/".format(collection_id)
@@ -465,32 +460,40 @@ class Mapper:
 
     return dest_items
 
-  def resolve_with(self, resolve_key, source_map, dest_items, result):
+  def resolve_with(self, resolve_key, source_map, dest_items):
     '''Use the `resolve_key` property to map the id of items in source_map to those in dest_items,
     when they have the same value for that property.
     Return the subset of source_map that could not be matched.'''
 
-    property_to_id = {}
-    unmapped = {}
-    for model in ['collections', 'cards', 'dashboards']:
-      property_to_id[model] = {
-        item[resolve_key]: item['id'] for item in dest_items[model] if resolve_key in item
-      }
+    models = ['collections', 'cards', 'dashboards']
+    unmapped = { model: {} for model in models }
+    property_to_id = {
+      model: { item[resolve_key]: item['id'] for item in dest_items[model] if resolve_key in item }
+      for model in models
+    }
 
-    for model in ['cards', 'collections', 'dashboards']:
-      unmapped[model] = {}
+    for model in models:
       for k, v in source_map[model].items():
         if v[resolve_key] in property_to_id[model]:
-          result[model][int(k)] = property_to_id[model][v[resolve_key]]
+          self.mappings[model][int(k)] = property_to_id[model][v[resolve_key]]
         else:
           unmapped[model][k] = v
 
     return unmapped
 
+  def __setitem__(self, item, mapped_id):
+    self.mappings[item['model'] + 's'][item['id']] = mapped_id
+
+  def __getitem__(self, item):
+    return self.mappings[item['model'] + 's'][item['id']]
+
+  def __contains__(self, item):
+    return item['id'] in self.mappings[item['model'] + 's']
+
   def has_changed(self, item):
     model = item['model'] + 's'
     source_h = self.source_map[model][str(item['id'])]['content_hash']
-    dest_h = self.dest_content_hashes[model][self.mappings[model][item['id']]]
+    dest_h = self.dest_content_hashes[model].get(self[item], None)
     return dest_h != source_h
 
   def deref(self, obj, prop, mapping):
