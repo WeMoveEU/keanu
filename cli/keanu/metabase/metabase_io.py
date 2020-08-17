@@ -153,7 +153,10 @@ class MetabaseIO:
             if item['id'] in mappings['collections']:
               dst_item = item.copy() # shallow copy is fine
               mapper.deref(dst_item, 'id', mappings['collections'])
-              c = self.client.update_collection(dst_item, collection_id)
+              if mapper.has_changed(item):
+                c = self.client.update_collection(dst_item, collection_id)
+              else:
+                c = self.client.get('collection', dst_item['id'])
             else:
               c = self.client.add_collection(item, collection_id)
               mappings['collections'][item['id']] = c['id']
@@ -173,7 +176,10 @@ class MetabaseIO:
 
           if item['id'] in mappings['cards']:
             card['id'] = mappings['cards'][item['id']]
-            upserted_card = self.client.update_card(card, collection_id)
+            if mapper.has_changed(item):
+              upserted_card = self.client.update_card(card, collection_id)
+            else:
+              upserted_card = self.client.get('card', card['id'])
           else:
             upserted_card = self.client.add_card(card, collection_id)
           mappings['cards'][item['id']] = upserted_card['id']
@@ -184,14 +190,20 @@ class MetabaseIO:
           exists = item['id'] in mappings['dashboards']
 
           mapper.deref_dashboard(item, mappings)
+          need_cards = True
           if exists:
-            mapper.deref(item, 'id', mappings['dashboards'])
-            d = self.client.update_dashboard(item, collection_id)
-            self.client.clear_dashboard(d)
+            if mapper.has_changed(item):
+              mapper.deref(item, 'id', mappings['dashboards'])
+              d = self.client.update_dashboard(item, collection_id)
+              self.client.clear_dashboard(d)
+            else:
+              need_cards = False
+              d = self.client.get('dashboard', mappings['dashboards'][item['id']])
           else:
             d = self.client.add_dashboard(item, collection_id)
             mappings['dashboards'][item['id']] = d['id']
-          d = self.add_dashboard_cards(item['ordered_cards'], d)
+          if need_cards:
+            d = self.add_dashboard_cards(item['ordered_cards'], d)
           result.append(d)
 
     return result
@@ -259,6 +271,7 @@ class Mapper:
   def __init__(self, client):
     self.client = client
     self.missing_mapping_cards = []
+    self.dest_content_hashes = {}
 
   def add_version_to(self, item):
     source_desc = self.source_map[item['model'] + 's'][str(item['id'])]
@@ -273,6 +286,15 @@ class Mapper:
       item['description'] = version_str
 
     return item
+
+  def extract_version(self, item):
+    version = None
+    if item['description'] is not None:
+      pattern = 'Version: (.{32}):(.{32})'
+      m = re.search(pattern, item['description'])
+      if m:
+        version = { 'uuid': m.group(1), 'content_hash': m.group(2) }
+    return version
 
   def add_items(self, items, result = None):
     """
@@ -409,44 +431,67 @@ class Mapper:
           result['fields'][int(field_id)] = dest_field[0]['id']
 
     if overwrite:
-      self.resolve_with_names(source_map, collection_id, result)
+      dest_items = self.existing_items(collection_id)
+      unmapped = self.resolve_with('uuid', source_map, dest_items, result)
+      self.resolve_with('name', unmapped, dest_items, result)
 
+    self.mappings = result
     return result
 
-  def resolve_with_names(self, source_map, collection_id, result):
-      def col_location(cid):
-        return '/' if cid == 'root' else "/{}/".format(cid)
+  def existing_items(self, collection_id):
+    dest_location = '/' if collection_id == 'root' else "/{}/".format(collection_id)
+    dest_items = {
+      'collections': list(filter(lambda c: dest_location in c.get('location', ''), self.client.get('collection')))
+    }
 
-      # map name->id in destination, for collections, cards, and dashboards
-      # only for items that are under destination collection
-      names_to_id = {
-        'collections': {
-          col['name']: col['id']
-          for col in self.client.get('collection')
-          if col_location(collection_id) in col.get('location', '')
-        }
+    collection_ids = set(map(lambda c: c['id'], dest_items['collections']))
+    # The collection ids are going to be compared to ids returned by the API, so they need to be api_collection_id'ed
+    # But this affects only the root collection, and we know that root collection cannot be listed in the imported one
+    # so only `collection_id` needs this treatment
+    collection_ids.add(api_collection_id(collection_id))
+
+    dest_items['cards'] = list(filter(lambda m: m['collection_id'] in collection_ids, self.client.get('card')))
+    dest_items['dashboards'] = list(filter(lambda m: m['collection_id'] in collection_ids, self.client.get('dashboard')))
+
+    for model in ['collections', 'cards', 'dashboards']:
+      self.dest_content_hashes[model] = {}
+      for item in dest_items[model]:
+        version = self.extract_version(item)
+        if version:
+          item['uuid'] = version['uuid']
+          self.dest_content_hashes[model][int(item['id'])] = version['content_hash']
+        else:
+          self.dest_content_hashes[model][int(item['id'])] = None
+
+    return dest_items
+
+  def resolve_with(self, resolve_key, source_map, dest_items, result):
+    '''Use the `resolve_key` property to map the id of items in source_map to those in dest_items,
+    when they have the same value for that property.
+    Return the subset of source_map that could not be matched.'''
+
+    property_to_id = {}
+    unmapped = {}
+    for model in ['collections', 'cards', 'dashboards']:
+      property_to_id[model] = {
+        item[resolve_key]: item['id'] for item in dest_items[model] if resolve_key in item
       }
 
-      collection_ids = set(names_to_id['collections'].values())
-      # The collection ids are going to be compared to ids returned by the API, so they need to be api_collection_id'ed
-      # But this affects only the root collection, and we know that root collection cannot be listed in the imported one
-      # so only `collection_id` needs this treatment
-      collection_ids.add(api_collection_id(collection_id))
+    for model in ['cards', 'collections', 'dashboards']:
+      unmapped[model] = {}
+      for k, v in source_map[model].items():
+        if v[resolve_key] in property_to_id[model]:
+          result[model][int(k)] = property_to_id[model][v[resolve_key]]
+        else:
+          unmapped[model][k] = v
 
-      for model in ['card', 'dashboard']:
-        names_to_id[model + 's'] = {
-          item['name']: item['id']
-          for item in self.client.get(model)
-          if item["collection_id"] in collection_ids
-        }
+    return unmapped
 
-      # now iterate throught source items and build src id->dest id using names
-      for model in ['cards', 'collections', 'dashboards']:
-        result[model] = {
-          int(k): names_to_id[model][v['name']]
-          for k, v in source_map[model].items()
-          if v['name'] in names_to_id[model]
-        }
+  def has_changed(self, item):
+    model = item['model'] + 's'
+    source_h = self.source_map[model][str(item['id'])]['content_hash']
+    dest_h = self.dest_content_hashes[model][self.mappings[model][item['id']]]
+    return dest_h != source_h
 
   def deref(self, obj, prop, mapping):
     obj[prop] = mapping[obj[prop]]
