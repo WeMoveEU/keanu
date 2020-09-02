@@ -4,4 +4,4 @@
 .env.*
 cli/dist
 cli/build
-cli/keanu.egg-info
+cli/*.egg*
