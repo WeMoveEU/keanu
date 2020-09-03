@@ -135,10 +135,6 @@ INSERT INTO donation (
 ;
 
 -- PAYMENTS -----------------------------------------------------------------
--- BEGIN INCREMENTAL
-SET @last_receive_date  = (SELECT max(receive_date) FROM payment); 
--- END INCREMENTAL
-
 -- Insert new payments for all_contributions except pending ones.
 INSERT INTO payment
     (donation_id, receive_date, status, external_system, external_id)
@@ -146,13 +142,17 @@ INSERT INTO payment
     d.id, ac.receive_date, ac.status, 'civicrm_contribution', ac.contribution_id
   FROM donation d
   JOIN all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
-  WHERE  status != 'pending'
 -- BEGIN INCREMENTAL
-  AND ac.receive_date > @last_receive_date;
+  LEFT JOIN payment p ON p.external_id = ac.contribution_id AND p.external_system = 'civicrm_contribution'
+-- END INCREMENTAL
+  WHERE ac.status != 'pending'
+-- BEGIN INCREMENTAL
+  AND p.id IS NULL
 -- END INCREMENTAL
 ;
 
 -- BEGIN INCREMENTAL
+SET @last_receive_date  = (SELECT max(receive_date) FROM payment);
 
 -- if we just inserted new payments, check if old payments did not change status
 UPDATE payment p -- update statuses
@@ -163,20 +163,6 @@ UPDATE payment p -- update statuses
       AND p.receive_date = ac.receive_date
   SET p.status = ac.status
   WHERE p.status != ac.status AND ac.receive_date <= @last_receive_date
-;
-
--- if there were pending payments, we did not load them; see with a LEFT JOIN
--- the missing payments and insert if they are not pending anymore
-INSERT INTO payment
-    (donation_id, receive_date, status, external_system, external_id)
-  SELECT
-    d.id, ac.receive_date, ac.status, 'civicrm_contribution', ac.contribution_id
-  FROM donation d
-  JOIN all_contributions ac ON d.external_system = ac.external_system AND d.external_id = ac.external_id
-  LEFT JOIN payment p ON p.donation_id = d.id AND p.receive_date = ac.receive_date
-  WHERE ac.receive_date <= @last_receive_date
-    AND ac.status != 'pending'
-    AND p.id IS NULL -- missing in payments, was pending before
 ;
 -- END INCREMENTAL
 
