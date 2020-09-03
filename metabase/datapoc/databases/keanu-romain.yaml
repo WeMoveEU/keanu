@@ -1141,6 +1141,7 @@ tables:
         settings: null
         special_type: type/Quantity
         values:
+        - - 0
         - - 1
         - - 2
         - - 3
@@ -1257,6 +1258,18 @@ tables:
         - - 6
         - - 7
         - - 8
+      7194:
+        description: null
+        display_name: Pending
+        fk_target_field_id: null
+        has_field_values: list
+        id: 7194
+        name: pending
+        settings: null
+        special_type: type/Category
+        values:
+        - - false
+        - - true
     id: 815
     name: donation
   817:
@@ -1338,8 +1351,7 @@ tables:
         name: external_id
         settings: null
         special_type: null
-        values:
-        - - null
+        values: []
       6886:
         description: null
         display_name: External System
@@ -1350,7 +1362,7 @@ tables:
         settings: null
         special_type: null
         values:
-        - - null
+        - - civicrm_contribution
     id: 819
     name: payment
   821:
@@ -2215,7 +2227,7 @@ tables:
         - - 130735
         - - 194441
         - - 223819
-        - - 290562
+        - - 294717
         - - 910655
         - - 910658
         - - 2537692

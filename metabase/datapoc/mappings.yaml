@@ -1,176 +1,346 @@
 cards:
   381:
+    content_hash: 336e4e1bc384a11c3900ba42c4c2dd00
     name: Open rate
+    uuid: 00ec53c4682d36f5c4359f4ae7bd7ba1
   382:
+    content_hash: 9ef389d5d5f715e92bb3eb6f7e5b795f
     name: Click rate (vs opens)
+    uuid: 4f6ffe13a5d75b2d6a3923922b3922e5
   383:
+    content_hash: 4cd201159a28b6d2c36af70af8dcf3b8
     name: Unsubcribe rate
+    uuid: beed13602b9b0e6ecb5b568ff5058f07
   384:
+    content_hash: 32f4127819e82a85391c6439e038de40
     name: Bounce rate
+    uuid: 0584ce565c824b7b7f50282d9a19945b
   385:
+    content_hash: 694d0c74420e56d74ae3b3593176e457
     name: Spam rate
+    uuid: dc912a253d1e9ba40e2c597ed2376640
   408:
+    content_hash: b77851b0f766d8912a292fa02ac58102
     name: Conversion rate (vs clicks)
+    uuid: 0d0fd7c6e093f7b804fa0150b875b868
   409:
+    content_hash: d57ad5436366f7d1ae190d0402817345
     name: Conversion funnel
+    uuid: a96b65a721e561e1e3de768ac819ffbb
   453:
+    content_hash: f4f9f25660769de95c8a1d3de1994849
     name: One-off donations
+    uuid: 49ae49a23f67c759bf4fc791ba842aa2
   460:
+    content_hash: a5a7455c3213cbd34416adce872810a5
     name: Summary
+    uuid: 98b297950041a42470269d56260243a1
   461:
+    content_hash: 93227fa7b1fa4883ae7abf951815fffb
     name: One-off total amount
+    uuid: 0353ab4cbed5beae847a7ff6e220b5cf
   462:
+    content_hash: 1e4190f03081525a793e80715b318568
     name: One-off average amount
+    uuid: 51d92be1c60d1db1d2e5e7a07da55b26
   463:
+    content_hash: 050535515300b8191504d02e30d8afba
     name: Action types
+    uuid: 428fca9bc1921c25c5121f9da7815cde
   464:
+    content_hash: 5d56f8db28591fddb6d444e60f8771e4
     name: Individual link stats
+    uuid: f1b6f2857fb6d44dd73c7041e0aa0f19
   465:
+    content_hash: ebef34f2ab6eb12d1b140dd1ad4a3c8e
     name: Monthly donations
+    uuid: 68ce199ec2c5517597ce0a4d89620f55
   466:
+    content_hash: 9f634643f0ff12eb92c01dc9a24c4c4f
     name: Monthly average amount
+    uuid: e836d813fd184325132fca8edcdfb40e
   467:
+    content_hash: 535c232a61b4148ebd7336b352d88749
     name: Monthly total amount
+    uuid: ab817c9349cf9c4f6877e1894a1faa00
   468:
+    content_hash: e57f29faf1177e7c58f8fdeac86207f8
     name: Consents
+    uuid: 877a9ba7a98f75b90a9d49f53f15a858
   469:
+    content_hash: 6c1b430a76a5552b82ce253d7339dcf2
     name: Opens per contact
+    uuid: dc6a6489640ca02b0d42dabeb8e46bb7
   470:
+    content_hash: 60d0b48b22d183fa9faab5e3d1d9ad65
     name: Estimated forward rate
+    uuid: 26337353b7962f533d78c762373b3318
   471:
+    content_hash: 6958f897344e33b66e5e0197a677dda2
     name: Activation rate
+    uuid: 8e6b42f1644ecb1327dc03ab345e618b
   472:
+    content_hash: c7ec35f62b3e40a009609e1ae2b3a423
     name: Segment current size
+    uuid: ef575e8837d065a1683c022d2077d342
   473:
+    content_hash: e7ea65bb52aa6a22b6490745c3fbcdd5
     name: Count of segment joins by month
+    uuid: 2050e03ca119580f74cca14cc6e97462
   474:
+    content_hash: f57227b7f1f772d5cae6be6f580a489e
     name: Count of segment leaves by month
+    uuid: 25ddc0f8c9d3e22e03d3076f98d83cb2
   476:
+    content_hash: d0c640cc1838880e776f536ae63e0c18
     name: Count of campaign actions per type over time
+    uuid: 598b3e71ec378bd83e0a727608b5db01
   477:
+    content_hash: 9b14b95a26b61ea422ad3003fe502d6e
     name: Count of campaign actions per type
+    uuid: 74071a673307ca7459bcf75fbd024e09
   478:
+    content_hash: 8751f0958ba1955c18238683eff0eed8
     name: Campaign summary
+    uuid: cfee398643cbc3dc5eefc89334cacdc1
   479:
+    content_hash: a53a22f49e3d2344ff89874b8b29e8e6
     name: Count of campaign actions per language and country
+    uuid: d18f655c3fce66ca401d5f38b48c89af
   482:
+    content_hash: 6dad4bc88fc6537cd1911536b505cf3a
     name: Count of campaign actions per tracked medium
+    uuid: f770b62bc8f42a0b66751fe636fc6eb0
   483:
+    content_hash: bf1275756268e090daf7cebdddbd700a
     name: Count of campaign actions per tracked source
+    uuid: e1e32e235eee1f970470a3a6658dfdd5
   484:
+    content_hash: e321ec129415e5af666b5278d4d813c3
     name: Count of campaign actions per tracked campaign code
+    uuid: eba0dc302bcd9a273f8bbb72be3a687b
   485:
+    content_hash: d8baab91d7cb1c7a19402b26420d6920
     name: Repartition of consent statuses
+    uuid: 218a0aefd1d1a4be65601cc6ddc1520e
   486:
+    content_hash: 5c651b3613d251cb48d5d4ad277b05a6
     name: Count of campaign actions
+    uuid: 7d04bbbe5494ae9d2f5a76aa1c00fa2f
   487:
+    content_hash: 3d0eec67778655a6addc095a3a3ab110
     name: Campaign emails sent
+    uuid: a516a87cfcaef229b342c437fe2b95f7
   488:
+    content_hash: fc1a64142cf33f2f4dce8f87761ad18b
     name: New members from a campaign
+    uuid: c3c59e5f8b3e9753913f4d435b53c308
   489:
+    content_hash: 59314b9ccdf7ad534bc9ca03896c70f7
     name: Total money raised from a campaign
+    uuid: 854d9fca60b4bd07f9bb215d59ef5561
   490:
+    content_hash: 505eafebd612ba6b1c556e7e9154d3ef
     name: Growth media
+    uuid: c410003ef13d451727aeff9082c29a5c
   491:
+    content_hash: 0f8ada2299585c00a9c6188244eb7b12
     name: Growth sources
+    uuid: 559cb990c9dffd8675f6bc2186971dc2
   492:
+    content_hash: 31bf6a7db079b38a197ea6b62b8c1ace
     name: Count of campaign actions per language
+    uuid: 55a7cf9c71f1c9c495413f934dd1a158
   493:
+    content_hash: d900766198d82915c6110c174f2eb143
     name: Count of campaign actions per country
+    uuid: 2f55707d4193dc27118a0f19a1985716
   494:
+    content_hash: 922c83882a797419c9984a31a18dc7e0
     name: Campaign mailings
+    uuid: 1be3bc32e6564055d5ca3e5a354acbef
   496:
+    content_hash: 5ae93fb660cb6ac9eb7d76651a028245
     name: A/B test summary
+    uuid: b534ba68236ba543ae44b22bd110a1d6
   497:
+    content_hash: 4dffcbe0f3373e98964504eb82ad58dd
     name: Latest mailings info
+    uuid: 7380ad8a673226ae47fce7bff88e9c33
   499:
+    content_hash: 1f5e4ceb4dc00129fc52a1712b50b652
     name: A/B Open rate
+    uuid: 3cf166c6b73f030b4f67eeaeba301103
   500:
+    content_hash: aa40fef4329729f8863442f28d9d70ba
     name: Click vs open rate
+    uuid: cee631121c2ec9232f3a2f028ad5c89b
   504:
+    content_hash: b40e4ffa890841b0922548d19a153054
     name: Latest A/B tests
+    uuid: b337e84de8752b27eda3a12363109e80
   505:
+    content_hash: d6623b364865bfae6c37af43f6a31f0c
     name: Latest campaigns
+    uuid: e8c0653fea13f91bf3c48159f7c24f78
   506:
+    content_hash: af2d6448324e607022a49019e99d2bda
     name: A/B Conversion rate (vs clicks)
+    uuid: ff4d5fbbafdf976cfdc032e3bde78de5
   507:
+    content_hash: 08b7a5c0b82bed7ad5134d4e79d1e49b
     name: Converted
+    uuid: 2d6cc4b2d139a53512fb8cbb3086ae2e
   508:
+    content_hash: e23edb61a386aebc28d57de3f1e68735
     name: Forward rate
+    uuid: 389bc7bb1e1c2a5e7e147703232a88f6
   509:
+    content_hash: 830c99653acd06d782c101380b3c8549
     name: A/B Consents
+    uuid: e2230b853516e7b05d79744fbd4c9c13
   510:
+    content_hash: ecc514c77483165a278664c388f7f1ad
     name: A/B Unsubscribe rate
+    uuid: 087408522c31eeb1f982bc0eaf81d35f
   511:
+    content_hash: 8aee73347c5dbd9f85281ed3d0b2fcfe
     name: Delivery KPIs
+    uuid: a760880003e7ddedfef56acb3b09697f
   513:
+    content_hash: 6a7608667bab4669511ea4ae70a3bf5f
     name: Count of member joins without an accepted consent
+    uuid: 3dc4876f3f08201c7c76cb71fa1da439
   514:
+    content_hash: 273e6f6ce9f070a2253a38276551ef06
     name: Count of member leaves without a cancelled consent
+    uuid: 59b90e1005a220e2ebc542eb9d950b1e
   515:
+    content_hash: d8537e8f76bb068031caeff37a527ab4
     name: Count of member joins without an accepted consent over time
+    uuid: 2b8a61594b1f4c4db0902a8a395ced93
   516:
+    content_hash: 663c3c4862c6b76cf2315ef259b905ad
     name: Count of members leaves without a cancelled consent over time
+    uuid: f3f27a324736617f20abbf2ffd806f6d
   517:
+    content_hash: d86a6b52fcc043f38bf37f5491cdb4ae
     name: Count of accepted consents without a member join
+    uuid: 38913e1d6a7b94cb0f55994f679f5956
   518:
+    content_hash: 812fc90a2a47aa43900cfa943b5ab8ea
     name: Count of accepted consents without a member join, over time
+    uuid: ebd9629fc3ae5e9f6611e2ee05a31cef
   519:
+    content_hash: 433f785d105b90fc205e6e7f4bda3e22
     name: Count of contacts
+    uuid: 63538fe6ef330c13a05a3ed7e599d5f7
   520:
+    content_hash: 808752f77d2cc7f19460f01439426eec
     name: Count of members
+    uuid: cf67355a3333e6e143439161adc2d82e
   521:
+    content_hash: 79ea708271d8db6ca61dc9e440e5790c
     name: Count of cancelled consents without a member leave
+    uuid: 07563a3fe3bbe7e3ba84431ad9d055af
   522:
+    content_hash: fa11dc583791ec3ecea14b6b6ba76ca7
     name: Count of cancelled consents without a member leave, over time
+    uuid: 53fde96fcc4b4ce72d7739202324cd49
   523:
+    content_hash: dd93c5f9b910fc3762ee79e85e9694aa
     name: Random pick of member joins without an accepted consent
+    uuid: 2bb232c0b13c774965ef8558f0fbd615
   524:
+    content_hash: e1241beaf57ead72c5caaa7589c3ab43
     name: Random pick of accepted consents without a member join
+    uuid: ba2fd310dcaa8781a9a652a31baf3c68
   525:
+    content_hash: 71fdaae2026f2fd0c73318b6c46d0eca
     name: Random pick of member leaves without a cancelled consent
+    uuid: 69421f032498c97020180038fddb8e24
   526:
+    content_hash: 78103a95def3ce6eda30e63173aae249
     name: Random pick of cancelled consents without a member leave
+    uuid: 85422afb467e9456013a2a51d4dff702
   527:
+    content_hash: 76a59ae73028597fac53215a8dab749b
     name: Count of unsubscribes for a campaign
+    uuid: 13f320e7b5ead1024ac95c3b208610db
   528:
+    content_hash: 033aa2de5605d0f1eebca287ce241153
     name: Age of last computation cycle
+    uuid: f4be00279ee2e0a53eafdaa94a151e2c
 collections:
   72:
+    content_hash: 441deb4ddecad79affe4a26717a817e0
     name: Single mailing
+    uuid: 32bb90e8976aab5298d5da10fe66f21d
   100:
+    content_hash: c32837cebb064cdcbc1a2a1737df221e
     name: Segment overview
+    uuid: f899139df5e1059396431415e770c6dd
   101:
+    content_hash: fee1508fcb3960ab5fec2e5957bc5d5f
     name: Campaign
+    uuid: 38b3eff8baf56627478ec76a704e9b52
   102:
+    content_hash: 87d000ef19a26528119755cad3cc853b
     name: A/B test mailing
+    uuid: ec8956637a99787bd197eacd77acce5e
   103:
+    content_hash: 1ac10f2286c922dd7e9fc3b29f360410
     name: Latest mailings
+    uuid: 6974ce5ac660610b44d9b9fed0ff9548
   104:
+    content_hash: e9951833ee42b70104f78489191541c7
     name: Latest campaigns
+    uuid: c9e1074f5b3f9fc8ea15d152add07294
   105:
+    content_hash: e8990bd3ec6622790bae001d6463ee00
     name: Data checks
+    uuid: 65b9eea6e1cc6bb9f0cd2a47751a186f
   106:
+    content_hash: 3a4f2d7fbab752ddae740cc43e928502
     name: Consents
+    uuid: f0935e4cd5920aa6c7c996a5ee53a70f
 dashboards:
   47:
+    content_hash: bade20ccd7ec24021e452b38b8863eb1
     name: Single mailing
+    uuid: 67c6a1e7ce56d3d6fa748ab6d9af3fd7
   60:
+    content_hash: cc34863db19083795d03bc4ded4d9b1b
     name: Segment overview
+    uuid: 072b030ba126b2f4b2374f342be9ed44
   61:
+    content_hash: 82552ec8336d0daefc450d88bdd90446
     name: Campaign
+    uuid: 7f39f8317fbdb1988ef4c628eba02591
   62:
+    content_hash: 77f6eee5a0f7e0c4b748363a97e2fe64
     name: A/B test mailing
+    uuid: 44f683a84163b3523afe57c2e008bc8c
   63:
+    content_hash: 3e65c0f7b95ba482087b54d93fd7ab5c
     name: Latest mailings
+    uuid: 03afdbd66e7929b125f8597834fa83a4
   64:
+    content_hash: 5ede6fc7246c4785e72709195be26f01
     name: Latest WeMove Europe campaigns
+    uuid: ea5d2f1c4608232e07d3aa3d998e5135
   65:
+    content_hash: 3cc3d80629cac7cac3b312e3dec2851e
     name: Consents
+    uuid: fc490ca45c00b1249bbe3554a4fdf6fb
   66:
+    content_hash: de25d56dcd68ab1555dae465ba6c1f4e
     name: Latest Youmove campaigns
+    uuid: 3295c76acbf4caaed33c36b1b5fc2cb1
   67:
+    content_hash: 36b82c20c131697a1dd7aca77e9ff057
     name: Latest trial campaigns
+    uuid: 735b90b4568125ed6c3f678819b6e058
 databases:
   9:
     name: Keanu Romain
