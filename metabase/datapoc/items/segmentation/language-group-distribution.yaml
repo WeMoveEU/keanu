@@ -1,0 +1,40 @@
+collection_id: 100
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - fk->
+      - - field-id
+        - 6520
+      - - field-id
+        - 6600
+    filter:
+    - and
+    - - is-null
+      - - field-id
+        - 6523
+    - - '='
+      - - fk->
+        - - field-id
+          - 6521
+        - - field-id
+          - 6603
+      - Language group
+    order-by:
+    - - desc
+      - - aggregation
+        - 0
+    source-table: 805
+  type: query
+description: null
+display: pie
+id: 1090
+model: card
+name: Language group distribution
+query_type: query
+visualization_settings:
+  pie.slice_threshold: 0.5

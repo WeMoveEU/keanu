@@ -1,0 +1,46 @@
+collection_id: 100
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - fk->
+      - - field-id
+        - 6520
+      - - field-id
+        - 6600
+    filter:
+    - and
+    - - is-null
+      - - field-id
+        - 6523
+    - - '='
+      - - fk->
+        - - field-id
+          - 6521
+        - - field-id
+          - 6603
+      - Membership
+    order-by:
+    - - desc
+      - - fk->
+        - - field-id
+          - 6520
+        - - field-id
+          - 6600
+    source-table: 805
+  type: query
+description: null
+display: pie
+id: 1089
+model: card
+name: Contact membership status distribution
+query_type: query
+visualization_settings:
+  pie.colors:
+    Expired: '#74838f'
+    Expiring: '#F9D45C'
+    Member: '#96C11F'

@@ -1,0 +1,66 @@
+collection_id: 71
+collection_position: null
+description: null
+id: 60
+model: dashboard
+name: Segmentation overview
+ordered_cards:
+- card_id: 1094
+  col: 9
+  parameter_mappings: []
+  row: 12
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings:
+    card.title: Recurring donors
+    pie.colors:
+      Current recurring donor: '#96C11F'
+      Failed recurring donor: '#EF8C8C'
+      Past recurring donor: '#F9D45C'
+- card_id: 1092
+  col: 9
+  parameter_mappings: []
+  row: 6
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings: {}
+- card_id: 1090
+  col: 0
+  parameter_mappings: []
+  row: 6
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings: {}
+- card_id: 1088
+  col: 9
+  parameter_mappings: []
+  row: 0
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings: {}
+- card_id: 1093
+  col: 0
+  parameter_mappings: []
+  row: 12
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings: {}
+- card_id: 1089
+  col: 0
+  parameter_mappings: []
+  row: 0
+  series: []
+  sizeX: 9
+  sizeY: 6
+  visualization_settings:
+    card.title: Membership status distribution
+    pie.colors:
+      Expired: '#74838f'
+      Expiring: '#F9D45C'
+      Member: '#96C11F'
+parameters: []
