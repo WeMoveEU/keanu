@@ -15,11 +15,9 @@ from segment import ContactSegment, Segment, update_segments
 ORDER = 40
 
 # Calculate membership
-# Member -> civicrm group subscription on Mamber
-# Expiring -> from then 1 year
-# Expired ->
-#
-#
+# Member -> civicrm group subscription on Member
+# Expiring -> from leaving member group until 1 year later or joining again
+# Expired -> after 1 year of expiring
 #
 # update will check existing rows
 
@@ -45,7 +43,7 @@ def execute(_):
     table = Table("contact_segment", meta, autoload=True)
     query_start = dst.execute("SELECT NOW()").fetchone()[0]
 
-    # Get all reveland segment and group ids
+    # Get all revelant segment and group ids
     member_segment_id, member_group_id, membership_sn_id = dst.execute("SELECT id, external_id, segmentation_id FROM segment WHERE name = 'Member'").fetchone()
     expiring_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expiring'").fetchone()[0]
     expired_segment_id = dst.execute("SELECT id FROM segment WHERE name = 'Expired'").fetchone()[0]
@@ -58,6 +56,7 @@ def execute(_):
     # generate contact segments for membership segmentation
     def history_to_segments(hist, cont):
         acc = []
+        processed = set()
         for contact_id, events in itertools.groupby(hist, lambda r: r["contact_id"]):
             mem_segment = group_history_to_segments(list(events), contact_id,
                                                     Segment(membership_sn_id, member_segment_id))
@@ -69,6 +68,17 @@ def execute(_):
                                                  Segment(membership_sn_id, expired_segment_id))
 
             acc.append(mem_segment)
+            acc.append(exp_segments)
+            processed.add(contact_id)
+
+        # Take care of all contacts who never became member: they don't appear in history
+        unprocessed = cont.keys() - processed
+        for contact_id in unprocessed:
+            exp_segments = add_expiring_segments([],
+                                                 contact_id,
+                                                 cont[contact_id]["created_at"],
+                                                 Segment(membership_sn_id, expiring_segment_id),
+                                                 Segment(membership_sn_id, expired_segment_id))
             acc.append(exp_segments)
 
         return itertools.chain(*acc)
@@ -125,7 +135,7 @@ def group_history_to_segments(events, contact_id, segment):
     """
 events - list of subscription events from CiviCRM, returned by group_history(...)
 contact_id
-segment - the segment this gorup maps to
+segment - the segment this group maps to
     """
     cs = []
 
