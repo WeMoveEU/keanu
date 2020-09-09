@@ -3,14 +3,23 @@
 
 SET @query_start := NOW();
 
+-- BEGIN INCREMENTAL
+UPDATE broadcast b
+  JOIN ${SOURCE}.civicrm_mailing m ON m.id=b.id
+  LEFT JOIN ${SOURCE}.civicrm_value_mailingdata data ON data.entity_id=m.id
+  SET b.name=m.name, b.ask_type=COALESCE(data.mailing_ask_type, 'noop_read'), b.language=m.language
+;
+-- END INCREMENTAL
+
 INSERT INTO broadcast 
-  (id, name, broadcast_type, language, sent_at, broadcast_test_id, campaign_id, external_id, external_system)
+  (id, name, broadcast_type, ask_type, language, sent_at, broadcast_test_id, campaign_id, external_id, external_system)
   SELECT
     m.id, -- identity with source
-    m.name, 'email', m.language, m.scheduled_date, t.id, camp.id, m.id, 'civicrm_mailing'
+    m.name, 'email', COALESCE(data.mailing_ask_type, 'noop_read'), m.language, m.scheduled_date, t.id, camp.id, m.id, 'civicrm_mailing'
   FROM ${SOURCE}.civicrm_mailing m
   JOIN ${SOURCE}.civicrm_campaign c ON c.id=m.campaign_id
   JOIN campaign camp ON c.parent_id=camp.external_id AND camp.external_system='civicrm_campaign'
+  LEFT JOIN ${SOURCE}.civicrm_value_mailingdata data ON data.entity_id=m.id
   LEFT JOIN ${SOURCE}.civicrm_mailing_abtest ab ON m.id IN (mailing_id_a, mailing_id_b)
   LEFT JOIN broadcast_test t ON t.external_id=ab.id AND t.external_system='civicrm_mailing_abtest'
   WHERE scheduled_date IS NOT NULL AND language IS NOT NULL
