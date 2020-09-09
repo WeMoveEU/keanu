@@ -501,6 +501,10 @@ tables:
         special_type: type/Category
         values:
         - - sign
+        - - share
+        - - donate
+        - - consent
+        - - noop_read
       6485:
         description: Broadcast medium
         display_name: Broadcast Type
@@ -2449,6 +2453,10 @@ tables:
         special_type: type/Category
         values:
         - - sign
+        - - share
+        - - donate
+        - - consent
+        - - noop_read
       7058:
         description: null
         display_name: Broadcast Test ID

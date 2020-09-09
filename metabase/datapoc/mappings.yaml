@@ -346,7 +346,7 @@ dashboards:
     name: A/B test mailing
     uuid: 44f683a84163b3523afe57c2e008bc8c
   63:
-    content_hash: 011ec32afad24abcfac7c5300b4bb808
+    content_hash: e463b60be4e17236b912fdc68453d676
     name: Latest mailings
     uuid: 03afdbd66e7929b125f8597834fa83a4
   64:
