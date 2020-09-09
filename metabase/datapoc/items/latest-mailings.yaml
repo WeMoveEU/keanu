@@ -23,6 +23,12 @@ ordered_cards:
     - dimension
     - - field-id
       - 7070
+  - card_id: 497
+    parameter_id: 1604fb26
+    target:
+    - dimension
+    - - field-id
+      - 7057
   row: 1
   series: []
   sizeX: 18
@@ -46,6 +52,12 @@ ordered_cards:
         - 6643
       - - field-id
         - 6657
+  - card_id: 504
+    parameter_id: 1604fb26
+    target:
+    - dimension
+    - - field-id
+      - 6484
   row: 15
   series: []
   sizeX: 18
@@ -87,4 +99,13 @@ parameters:
 - id: d1bc35ab
   name: Language
   slug: language
+  type: category
+- default:
+  - donate
+  - noop_read
+  - share
+  - sign
+  id: 1604fb26
+  name: Ask
+  slug: ask
   type: category
