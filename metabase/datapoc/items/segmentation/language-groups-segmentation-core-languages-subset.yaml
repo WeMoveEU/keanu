@@ -1,0 +1,52 @@
+collection_id: 100
+collection_position: null
+database_id: 9
+dataset_query:
+  database: 9
+  query:
+    aggregation:
+    - - count
+    breakout:
+    - - field-id
+      - 6600
+    filter:
+    - and
+    - - '='
+      - - fk->
+        - - field-id
+          - 6598
+        - - field-id
+          - 6603
+      - Language group
+    - - is-null
+      - - joined-field
+        - Contact Segment
+        - - field-id
+          - 6523
+    - - segment
+      - 13
+    joins:
+    - alias: Contact Segment
+      condition:
+      - '='
+      - - field-id
+        - 6601
+      - - joined-field
+        - Contact Segment
+        - - field-id
+          - 6520
+      fields: all
+      source-table: 805
+    source-table: 797
+  type: query
+description: null
+display: pie
+id: 1095
+model: card
+name: Language groups segmentation (core languages subset)
+query_type: query
+visualization_settings:
+  graph.dimensions:
+  - name
+  graph.metrics:
+  - count
