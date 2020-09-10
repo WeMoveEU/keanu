@@ -36,7 +36,7 @@ parents = @ext_id;
 set @seg = (select id from segmentation where name = 'Preferred language');
 set @ext_id = (select external_id from segmentation where name = 'Preferred language');
 
-insert into segment (name, segmentation_id, external_id, external_system)
+INSERT INTO segment (name, segmentation_id, external_id, external_system)
 SELECT
 ov.name,
 @seg,
@@ -48,6 +48,8 @@ JOIN ${SOURCE}.civicrm_option_value ov ON ov.option_group_id = og.id COLLATE utf
 JOIN (SELECT DISTINCT preferred_language FROM contact) pf ON ov.name = pf.preferred_language COLLATE utf8_general_ci
 WHERE og.id = @ext_id;
 
+INSERT INTO segment (name, segmentation_id, external_id, external_system)
+            SELECT 'Unknown', @seg, NULL, NULL;
 
 -- COUNTRIES
 
