@@ -122,6 +122,18 @@ class Client:
       raise Exception("Could not add dimension to field {}".format(field_id))
     return result
 
+  def add_segment(self, segment):
+    status, result = self.client.post('/segment/', json=segment)
+    if not status:
+      raise Exception("Could not create segment {}".format(segment['name']))
+    return result
+
+  def update_segment(self, segment):
+    status = self.client.put('/segment/{}'.format(segment['id']), json=segment)
+    if not status:
+      raise Exception("Could not update segment {} (id {})".format(segment['name'], segment['id']))
+    return segment
+
   def update_field(self, field_id, params):
     status = self.client.put('/field/{}'.format(field_id), json=params)
     if not status:

@@ -437,10 +437,13 @@
                     "undefined"
                   ],
                   [
-                    "wemove_en"
+                    "website"
                   ],
                   [
-                    "wemove_it"
+                    "wemove_de"
+                  ],
+                  [
+                    "wemove_en"
                   ],
                   [
                     "widget"
@@ -661,6 +664,18 @@
                 "values": [
                   [
                     "sign"
+                  ],
+                  [
+                    "share"
+                  ],
+                  [
+                    "donate"
+                  ],
+                  [
+                    "consent"
+                  ],
+                  [
+                    "noop_read"
                   ]
                 ]
               },
@@ -805,6 +820,9 @@
                     "es_ES"
                   ],
                   [
+                    "fi_FI"
+                  ],
+                  [
                     "fr_FR"
                   ],
                   [
@@ -870,16 +888,10 @@
                 "special_type": "type/Category",
                 "values": [
                   [
-                    "bg"
-                  ],
-                  [
                     "bg_BG"
                   ],
                   [
                     "cs_CZ"
-                  ],
-                  [
-                    "da"
                   ],
                   [
                     "da_DK"
@@ -891,25 +903,16 @@
                     "el_GR"
                   ],
                   [
-                    "en"
-                  ],
-                  [
                     "en_GB"
                   ],
                   [
                     "en_US"
                   ],
                   [
-                    "es"
-                  ],
-                  [
                     "es_ES"
                   ],
                   [
                     "et_EE"
-                  ],
-                  [
-                    "fr"
                   ],
                   [
                     "fr_FR"
@@ -931,9 +934,6 @@
                   ],
                   [
                     "nl_NL"
-                  ],
-                  [
-                    "pl"
                   ],
                   [
                     "pl_PL"
@@ -1673,6 +1673,18 @@
                   ],
                   [
                     49
+                  ],
+                  [
+                    50
+                  ],
+                  [
+                    51
+                  ],
+                  [
+                    52
+                  ],
+                  [
+                    53
                   ]
                 ]
               },
@@ -3256,49 +3268,49 @@
                 "special_type": "type/Category",
                 "values": [
                   [
-                    4281
+                    5152
                   ],
                   [
-                    13678
+                    14710
                   ],
                   [
-                    130735
+                    157524
                   ],
                   [
-                    194441
+                    213520
                   ],
                   [
-                    223819
+                    236869
                   ],
                   [
-                    294717
+                    338801
                   ],
                   [
-                    910655
+                    977892
                   ],
                   [
-                    910658
+                    977899
                   ],
                   [
-                    2537692
+                    2634269
                   ],
                   [
-                    2668471
+                    2879309
                   ],
                   [
-                    17816204
+                    19221105
                   ],
                   [
-                    24512842
+                    26193452
                   ],
                   [
-                    24512843
+                    26193489
                   ],
                   [
-                    96067398
+                    108137534
                   ],
                   [
-                    96067399
+                    108137611
                   ]
                 ]
               },
@@ -3727,6 +3739,18 @@
                 "values": [
                   [
                     "sign"
+                  ],
+                  [
+                    "share"
+                  ],
+                  [
+                    "donate"
+                  ],
+                  [
+                    "consent"
+                  ],
+                  [
+                    "noop_read"
                   ]
                 ]
               },
@@ -3882,6 +3906,9 @@
                   ],
                   [
                     "es_ES"
+                  ],
+                  [
+                    "fi_FI"
                   ],
                   [
                     "fr_FR"
@@ -4202,6 +4229,93 @@
             "name": "campaign_summary"
           }
         }
+      }
+    },
+    "segments": {
+      "13": {
+        "definition": {
+          "filter": [
+            "and",
+            [
+              "=",
+              [
+                "field-id",
+                6600
+              ],
+              "German language Members",
+              "French language Members",
+              "Spanish language Members",
+              "Portuguese language Members",
+              "Polish language Members",
+              "Italian language Members",
+              "English language Members INT",
+              "English language Members UK"
+            ],
+            [
+              "=",
+              [
+                "fk->",
+                [
+                  "field-id",
+                  6598
+                ],
+                [
+                  "field-id",
+                  6603
+                ]
+              ],
+              "Language group"
+            ]
+          ],
+          "source-table": 797
+        },
+        "description": "This is language group list division containing only core language lists.",
+        "id": 13,
+        "name": "Metasegment - core language groups",
+        "table_id": 797
+      },
+      "14": {
+        "definition": {
+          "filter": [
+            "and",
+            [
+              "!=",
+              [
+                "field-id",
+                6600
+              ],
+              "German language Members",
+              "French language Members",
+              "Spanish language Members",
+              "Portuguese language Members",
+              "Polish language Members",
+              "Italian language Members",
+              "English language Members INT",
+              "English language Members UK",
+              "Other speaking Activists"
+            ],
+            [
+              "=",
+              [
+                "fk->",
+                [
+                  "field-id",
+                  6598
+                ],
+                [
+                  "field-id",
+                  6603
+                ]
+              ],
+              "Language group"
+            ]
+          ],
+          "source-table": 797
+        },
+        "description": "This is metabase data model segmentation containing non-core languages.",
+        "id": 14,
+        "name": "Metasegment - non-core language groups",
+        "table_id": 797
       }
     }
   },
@@ -11023,6 +11137,309 @@
               ],
               "breakout": [
                 [
+                  "field-id",
+                  6600
+                ]
+              ],
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "fk->",
+                    [
+                      "field-id",
+                      6598
+                    ],
+                    [
+                      "field-id",
+                      6603
+                    ]
+                  ],
+                  "Language group"
+                ],
+                [
+                  "is-null",
+                  [
+                    "joined-field",
+                    "Contact Segment",
+                    [
+                      "field-id",
+                      6523
+                    ]
+                  ]
+                ],
+                [
+                  "segment",
+                  13
+                ]
+              ],
+              "joins": [
+                {
+                  "alias": "Contact Segment",
+                  "condition": [
+                    "=",
+                    [
+                      "field-id",
+                      6601
+                    ],
+                    [
+                      "joined-field",
+                      "Contact Segment",
+                      [
+                        "field-id",
+                        6520
+                      ]
+                    ]
+                  ],
+                  "fields": "all",
+                  "source-table": 805
+                }
+              ],
+              "source-table": 797
+            },
+            "type": "query"
+          },
+          "description": null,
+          "display": "pie",
+          "id": 1095,
+          "model": "card",
+          "name": "Language groups segmentation (core languages subset)",
+          "query_type": "query",
+          "visualization_settings": {
+            "graph.dimensions": [
+              "name"
+            ],
+            "graph.metrics": [
+              "count"
+            ]
+          }
+        },
+        {
+          "collection_id": 100,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "aggregation": [
+                [
+                  "count"
+                ]
+              ],
+              "breakout": [
+                [
+                  "field-id",
+                  6600
+                ]
+              ],
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "fk->",
+                    [
+                      "field-id",
+                      6598
+                    ],
+                    [
+                      "field-id",
+                      6603
+                    ]
+                  ],
+                  "Language group"
+                ],
+                [
+                  "is-null",
+                  [
+                    "joined-field",
+                    "Contact Segment",
+                    [
+                      "field-id",
+                      6523
+                    ]
+                  ]
+                ],
+                [
+                  "segment",
+                  14
+                ]
+              ],
+              "joins": [
+                {
+                  "alias": "Contact Segment",
+                  "condition": [
+                    "=",
+                    [
+                      "field-id",
+                      6601
+                    ],
+                    [
+                      "joined-field",
+                      "Contact Segment",
+                      [
+                        "field-id",
+                        6520
+                      ]
+                    ]
+                  ],
+                  "fields": "all",
+                  "source-table": 805
+                }
+              ],
+              "order-by": [
+                [
+                  "desc",
+                  [
+                    "aggregation",
+                    0
+                  ]
+                ]
+              ],
+              "source-table": 797
+            },
+            "type": "query"
+          },
+          "description": null,
+          "display": "table",
+          "id": 1096,
+          "model": "card",
+          "name": "Language groups segmentation (non-core languages subset)",
+          "query_type": "query",
+          "visualization_settings": {
+            "graph.dimensions": [
+              "name"
+            ],
+            "graph.metrics": [
+              "count"
+            ],
+            "table.cell_column": "count",
+            "table.pivot_column": "name"
+          }
+        },
+        {
+          "collection_id": 100,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "aggregation": [
+                [
+                  "count"
+                ]
+              ],
+              "breakout": [
+                [
+                  "field-id",
+                  6600
+                ]
+              ],
+              "filter": [
+                "and",
+                [
+                  "=",
+                  [
+                    "fk->",
+                    [
+                      "field-id",
+                      6598
+                    ],
+                    [
+                      "field-id",
+                      6603
+                    ]
+                  ],
+                  "Language group"
+                ],
+                [
+                  "is-null",
+                  [
+                    "joined-field",
+                    "Contact Segment",
+                    [
+                      "field-id",
+                      6523
+                    ]
+                  ]
+                ],
+                [
+                  "=",
+                  [
+                    "field-id",
+                    6600
+                  ],
+                  "Other speaking Activists"
+                ]
+              ],
+              "joins": [
+                {
+                  "alias": "Contact Segment",
+                  "condition": [
+                    "=",
+                    [
+                      "field-id",
+                      6601
+                    ],
+                    [
+                      "joined-field",
+                      "Contact Segment",
+                      [
+                        "field-id",
+                        6520
+                      ]
+                    ]
+                  ],
+                  "fields": "all",
+                  "source-table": 805
+                }
+              ],
+              "order-by": [
+                [
+                  "desc",
+                  [
+                    "aggregation",
+                    0
+                  ]
+                ]
+              ],
+              "source-table": 797
+            },
+            "type": "query"
+          },
+          "description": null,
+          "display": "scalar",
+          "id": 1097,
+          "model": "card",
+          "name": "Language groups segmentation (undefined languages)",
+          "query_type": "query",
+          "visualization_settings": {
+            "graph.dimensions": [
+              "name"
+            ],
+            "graph.metrics": [
+              "count"
+            ],
+            "scalar.field": "count",
+            "table.cell_column": "count",
+            "table.pivot_column": "name"
+          }
+        },
+        {
+          "collection_id": 100,
+          "collection_position": null,
+          "database_id": 9,
+          "dataset_query": {
+            "database": 9,
+            "query": {
+              "aggregation": [
+                [
+                  "count"
+                ]
+              ],
+              "breakout": [
+                [
                   "fk->",
                   [
                     "field-id",
@@ -14936,6 +15353,21 @@
         "content_hash": "5144af43bafa4690cddca59acb6cccd3",
         "name": "Recurring donors distribution",
         "uuid": "41bfd20a38bb1b0bec75acf0845530a7"
+      },
+      "1095": {
+        "content_hash": "65014d00ca81d7a29762684636ac019a",
+        "name": "Language groups segmentation (core languages subset)",
+        "uuid": "d6723e7cd6735df68d1ce4c704c29a04"
+      },
+      "1096": {
+        "content_hash": "6437fc7ff51aaab843a1cd1654af0b85",
+        "name": "Language groups segmentation (non-core languages subset)",
+        "uuid": "4e2545f819e67f0615003dd7e04a6087"
+      },
+      "1097": {
+        "content_hash": "7baecb4808a9b25063a156c48aaff6f8",
+        "name": "Language groups segmentation (undefined languages)",
+        "uuid": "db2b4182156b2f1f817860ac9f409ad7"
       }
     },
     "collections": {
@@ -14945,7 +15377,7 @@
         "uuid": "32bb90e8976aab5298d5da10fe66f21d"
       },
       "100": {
-        "content_hash": "2021158a820a8c0c48f98515ded7880d",
+        "content_hash": "5578d70cd849b538324aa0bde13d8d1a",
         "name": "Segmentation",
         "uuid": "f899139df5e1059396431415e770c6dd"
       },
@@ -15002,7 +15434,7 @@
         "uuid": "44f683a84163b3523afe57c2e008bc8c"
       },
       "63": {
-        "content_hash": "011ec32afad24abcfac7c5300b4bb808",
+        "content_hash": "e463b60be4e17236b912fdc68453d676",
         "name": "Latest mailings",
         "uuid": "03afdbd66e7929b125f8597834fa83a4"
       },
@@ -15211,6 +15643,18 @@
             "name": "campaign_summary"
           }
         }
+      }
+    },
+    "segments": {
+      "13": {
+        "content_hash": "b32d798bf3ed62399e8374f26840b440",
+        "name": "Metasegment - core language groups",
+        "uuid": "c51ce410c124a10e0db5e4b97fc2af39"
+      },
+      "14": {
+        "content_hash": "ce233cc7010307cd48690234bf0a246d",
+        "name": "Metasegment - non-core language groups",
+        "uuid": "aab3238922bcc25a6f606eb525ffdc56"
       }
     }
   }

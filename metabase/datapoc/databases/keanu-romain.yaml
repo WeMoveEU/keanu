@@ -319,8 +319,9 @@ tables:
         - - facebook
         - - speakout
         - - undefined
+        - - website
+        - - wemove_de
         - - wemove_en
-        - - wemove_it
         - - widget
       6538:
         description: null
@@ -611,6 +612,7 @@ tables:
         - - en_GB
         - - en_UK
         - - es_ES
+        - - fi_FI
         - - fr_FR
         - - hr_HR
         - - hu_HU
@@ -643,20 +645,15 @@ tables:
         settings: null
         special_type: type/Category
         values:
-        - - bg
         - - bg_BG
         - - cs_CZ
-        - - da
         - - da_DK
         - - de_DE
         - - el_GR
-        - - en
         - - en_GB
         - - en_US
-        - - es
         - - es_ES
         - - et_EE
-        - - fr
         - - fr_FR
         - - hr_HR
         - - hu_HU
@@ -664,7 +661,6 @@ tables:
         - - ka_GE
         - - lt_LT
         - - nl_NL
-        - - pl
         - - pl_PL
         - - pt_PT
         - - ro_RO
@@ -1195,6 +1191,10 @@ tables:
         - - 47
         - - 48
         - - 49
+        - - 50
+        - - 51
+        - - 52
+        - - 53
       6576:
         description: The currency in which the donation is made
         display_name: Original Currency
@@ -2226,21 +2226,21 @@ tables:
         settings: null
         special_type: type/Category
         values:
-        - - 4281
-        - - 13678
-        - - 130735
-        - - 194441
-        - - 223819
-        - - 294717
-        - - 910655
-        - - 910658
-        - - 2537692
-        - - 2668471
-        - - 17816204
-        - - 24512842
-        - - 24512843
-        - - 96067398
-        - - 96067399
+        - - 5152
+        - - 14710
+        - - 157524
+        - - 213520
+        - - 236869
+        - - 338801
+        - - 977892
+        - - 977899
+        - - 2634269
+        - - 2879309
+        - - 19221105
+        - - 26193452
+        - - 26193489
+        - - 108137534
+        - - 108137611
       7024:
         description: null
         display_name: Dst
@@ -2575,6 +2575,7 @@ tables:
         - - en_GB
         - - en_UK
         - - es_ES
+        - - fi_FI
         - - fr_FR
         - - hr_HR
         - - hu_HU

@@ -295,13 +295,25 @@ cards:
     content_hash: 5144af43bafa4690cddca59acb6cccd3
     name: Recurring donors distribution
     uuid: 41bfd20a38bb1b0bec75acf0845530a7
+  1095:
+    content_hash: 65014d00ca81d7a29762684636ac019a
+    name: Language groups segmentation (core languages subset)
+    uuid: d6723e7cd6735df68d1ce4c704c29a04
+  1096:
+    content_hash: 6437fc7ff51aaab843a1cd1654af0b85
+    name: Language groups segmentation (non-core languages subset)
+    uuid: 4e2545f819e67f0615003dd7e04a6087
+  1097:
+    content_hash: 7baecb4808a9b25063a156c48aaff6f8
+    name: Language groups segmentation (undefined languages)
+    uuid: db2b4182156b2f1f817860ac9f409ad7
 collections:
   72:
     content_hash: 1f2c1d865114b062d4cd184a0a2e553b
     name: Single mailing
     uuid: 32bb90e8976aab5298d5da10fe66f21d
   100:
-    content_hash: 2021158a820a8c0c48f98515ded7880d
+    content_hash: 5578d70cd849b538324aa0bde13d8d1a
     name: Segmentation
     uuid: f899139df5e1059396431415e770c6dd
   101:
@@ -510,3 +522,12 @@ databases:
           7097: activated
           7098: id
         name: campaign_summary
+segments:
+  13:
+    content_hash: b32d798bf3ed62399e8374f26840b440
+    name: Metasegment - core language groups
+    uuid: c51ce410c124a10e0db5e4b97fc2af39
+  14:
+    content_hash: ce233cc7010307cd48690234bf0a246d
+    name: Metasegment - non-core language groups
+    uuid: aab3238922bcc25a6f606eb525ffdc56
