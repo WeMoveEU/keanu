@@ -26,10 +26,11 @@ class MetabaseIO:
     result = {
         'items': self.get_items(source['id']),
     }
+    metabase_io_log.info("⬇️ datamodel")
     result['datamodel'] = self.get_datamodel(result['items'])
     mapper = Mapper(self.client)
     metabase_io_log.info("⬇️ mappings")
-    result['mappings'] = mapper.add_items(result['items'])
+    result['mappings'] = mapper.add_items(result['items'], result['datamodel'])
     return result
 
   def import_json(self, source, collection, with_metadata=False, overwrite=False, db_map=[]):
@@ -46,10 +47,10 @@ class MetabaseIO:
     if has_items or with_metadata:
       mapper = Mapper(self.client)
       mapper.resolve_mappings(source['mappings'], source['datamodel'], overwrite, destination['id'], db_map)
-      if has_items:
-        self.add_items(source['items'], destination['id'], mapper, overwrite)
       if with_metadata:
         self.import_metadata(source['datamodel'], mapper)
+      if has_items:
+        self.add_items(source['items'], destination['id'], mapper, overwrite)
     
   def get_items(self, collection_id):
     """
@@ -110,6 +111,25 @@ class MetabaseIO:
             # XXX should we not always update this ?  what if dimensions change ?
             # if 'dimensions' not in dest_field:
             self.client.add_dimension(dimensions, dest_field_id)
+
+    for seg_id, segment in datamodel['segments'].items():
+      segment['model'] = 'segment'
+      if segment in mapper and not mapper.has_changed(segment):
+        log_item_io('⏭️', segment)
+
+      else:
+        log_item_io('⬆️', segment)
+        segment = mapper.deref_segment(segment)
+        mapper.add_version_to(segment)
+        if segment in mapper:
+          segment['id'] = mapper[segment]
+          # Mandatory revision message
+          segment['revision_message'] = "Keanu update"
+          upserted_segment = self.client.update_segment(segment)
+        else:
+          upserted_segment = self.client.add_segment(segment)
+          mapper[segment] = upserted_segment['id']
+
 
   def add_items(self, items, collection_id, mapper, overwrite, only_model='all', result=[]):
     """
@@ -212,10 +232,20 @@ class MetabaseIO:
     return dashboard
 
   def get_datamodel(self, items):
+    """
+    Return a description (with properties of databases, tables and fields) of all databases used in items,
+    as well as of all segments used by any of these databases
+    """
     db_ids = self.get_database_ids(items)
+    table_ids = set()
     result = { 'databases': {} }
     for db_id in db_ids:
       result['databases'][db_id] = self.db_data(self.client.get('database', db_id, 'metadata'))
+      table_ids |= result['databases'][db_id]['tables'].keys()
+
+    segments = filter(lambda s: s['table_id'] in table_ids, self.client.get('segment'))
+    result['segments'] = dict(map(lambda s: (s['id'], Trimmer.trim_data(s, Trimmer.keep_segment_keys)), segments))
+
     return result
 
   def get_database_ids(self, items, result = None):
@@ -292,7 +322,14 @@ class Mapper:
         version = { 'uuid': m.group(1), 'content_hash': m.group(2) }
     return version
 
-  def add_items(self, items, result = None):
+  def versionned_mapping(self, item):
+    return {
+      'name': item['name'],
+      'uuid': uuid(item),
+      'content_hash': content_hash(item)
+    }
+
+  def add_items(self, items, datamodel, result = None):
     """
       Browse recursively a nested list of items and record into `result` the ids
       that will need to be translated during import.
@@ -300,18 +337,14 @@ class Mapper:
       Return the updated result.
     """
     if result is None:
-      result = {'cards': {}, 'collections': {}, 'dashboards': {}, 'databases': {}}
+      result = {'cards': {}, 'collections': {}, 'dashboards': {}, 'databases': {}, 'segments': {}}
 
     for item in items:
-      result[item['model'] + 's'][item['id']] = {
-        'name': item['name'],
-        'uuid': uuid(item),
-        'content_hash': content_hash(item)
-      }
+      result[item['model'] + 's'][item['id']] = self.versionned_mapping(item)
       if item['model'] == 'collection':
-        self.add_items(item['items'], result)
+        self.add_items(item['items'], datamodel, result)
       elif item['model'] == 'card':
-        self.add_card(item, result)
+        self.add_card(item, datamodel, result)
 
     return result
 
@@ -328,7 +361,11 @@ class Mapper:
         'fields': {}
       }
 
-  def add_fields(self, expression, mappings):
+  def add_fields(self, expression, datamodel, mappings):
+    """
+    Browse recursively a metabase expression object and add to mappings all the datamodel items (db, table, field, segment)
+    (Could be better named)
+    """
     if isinstance(expression, list):
       if len(expression) == 2 and expression[0] == 'field-id':
         field_id = expression[1]
@@ -340,11 +377,16 @@ class Mapper:
         if table_id not in mappings['databases'][db_id]['tables']:
           mappings['databases'][db_id]['tables'][table_id] = { 'name': field['table']['name'], 'fields': {} }
         mappings['databases'][db_id]['tables'][table_id]['fields'][field_id] = field['name']
+      elif len(expression) == 2 and expression[0] == 'segment':
+        segment_id = expression[1]
+        if segment_id not in mappings['segments']:
+          segment = datamodel['segments'][segment_id]
+          mappings['segments'][segment_id] = self.versionned_mapping(segment)
       else:
         for factor in expression:
-          self.add_fields(factor, mappings)
+          self.add_fields(factor, datamodel, mappings)
 
-  def add_card(self, card, mappings):
+  def add_card(self, card, datamodel, mappings):
     if 'dataset_query' in card:
       dquery = card['dataset_query']
       if 'database' in dquery:
@@ -362,21 +404,21 @@ class Mapper:
             self.add_table(db_id, table_id, mappings)
 
           for exp in query.get('expressions', {}).values():
-            self.add_fields(exp, mappings)
+            self.add_fields(exp, datamodel, mappings)
 
           for join in query.get('joins', []):
             table_id = join['source-table']
             self.add_table(db_id, table_id, mappings)
-            self.add_fields(join['condition'], mappings)
+            self.add_fields(join['condition'], datamodel, mappings)
 
-          self.add_fields(query.get('fields', []), mappings)
-          self.add_fields(query.get('filter', []), mappings)
-          self.add_fields(query.get('breakout', []), mappings)
-          self.add_fields(query.get('order-by', []), mappings)
+          self.add_fields(query.get('fields', []), datamodel, mappings)
+          self.add_fields(query.get('filter', []), datamodel, mappings)
+          self.add_fields(query.get('breakout', []), datamodel, mappings)
+          self.add_fields(query.get('order-by', []), datamodel, mappings)
           
         if 'native' in dquery and 'template-tags' in dquery['native']:
           for tag in dquery['native']['template-tags'].values():
-            self.add_fields(tag['dimension'], mappings)
+            self.add_fields(tag['dimension'], datamodel, mappings)
 
   def add_dashboard(self, dashboard, mappings):
     for card in dashboard['ordered_cards']:
@@ -390,7 +432,7 @@ class Mapper:
         pm['card_id'] = card['card_id']
         for target_spec in pm['target']:
           if isinstance(target_spec, list):
-            self.add_fields(target_spec, mappings)
+            self.add_fields(target_spec, datamodel, mappings)
 
   def resolve_mappings(self, source_map, datamodel, overwrite, collection_id, db_map):
     """Translates all the ids found in source_map into corresponding ids for the
@@ -405,7 +447,7 @@ class Mapper:
 
     """
     self.source_map = source_map
-    self.mappings = {'databases': {}, 'tables': {}, 'fields': {},
+    self.mappings = {'databases': {}, 'tables': {}, 'fields': {}, 'segments': {},
                      'cards': {}, 'collections': {}, 'dashboards': {}}
 
     for db_id, db in datamodel['databases'].items():
@@ -447,8 +489,9 @@ class Mapper:
 
     dest_items['cards'] = list(filter(lambda m: m['collection_id'] in collection_ids, self.client.get('card')))
     dest_items['dashboards'] = list(filter(lambda m: m['collection_id'] in collection_ids, self.client.get('dashboard')))
+    dest_items['segments'] = self.client.get('segment')
 
-    for model in ['collections', 'cards', 'dashboards']:
+    for model in ['collections', 'cards', 'dashboards', 'segments']:
       self.dest_content_hashes[model] = {}
       for item in dest_items[model]:
         version = self.extract_version(item)
@@ -465,7 +508,7 @@ class Mapper:
     when they have the same value for that property.
     Return the subset of source_map that could not be matched.'''
 
-    models = ['collections', 'cards', 'dashboards']
+    models = dest_items.keys()
     unmapped = { model: {} for model in models }
     property_to_id = {
       model: { item[resolve_key]: item['id'] for item in dest_items[model] if resolve_key in item }
@@ -509,6 +552,8 @@ class Mapper:
     if isinstance(expression, list):
       if len(expression) == 2 and expression[0] == 'field-id':
         expression[1] = self.mappings['fields'][expression[1]]
+      elif len(expression) == 2 and expression[0] == 'segment':
+        expression[1] = self.mappings['segments'][expression[1]]
       else:
         for factor in expression:
           self.deref_fields(factor)
@@ -549,6 +594,16 @@ class Mapper:
           self.missing_mapping_cards.append(for_card)
 
     return col_settings
+
+  def deref_segment(self, segment):
+    segment = copy.deepcopy(segment)
+    segment['table_id'] = self.deref_table(segment['table_id'])
+    if 'definition' in segment:
+      defon = segment['definition']
+      defon['source-table'] = self.deref_table(defon['source-table'])
+      self.deref_fields(defon.get('filter', []))
+
+    return segment
 
   def deref_card(self, card):
     original_card = card
@@ -756,6 +811,14 @@ class Trimmer:
     'sizeX',
     'sizeY',
     'visualization_settings'
+  ]
+
+  keep_segment_keys = [
+    'id',
+    'name',
+    'description',
+    'table_id',
+    'definition'
   ]
 
   @staticmethod
