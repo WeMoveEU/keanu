@@ -6,7 +6,7 @@ with open("../README.MD", "r") as fh:
 
 setuptools.setup(
     name='keanu-etl',
-    version='0.10.0',
+    version='0.10.1-rc',
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
@@ -24,7 +24,8 @@ setuptools.setup(
     },
     setup_requires='setuptools-pipfile',
     extras_require={
-      'stripe': "stripe"
+      'stripe': "stripe",
+      'paypal': ["paypalhttp", "paypal-checkout-serversdk"]
     },
     use_pipfile=True
  )
