@@ -4,63 +4,9 @@ Welcome to Project Keanu!
 
 ![](https://media.giphy.com/media/MC6eSuC3yypCU/source.gif)
 
-Project Keanu constist of:
-- Handbook for analytic terms, metrics and their definitions,
-- Common data model for campaign evaluation,
-- Set of queries to load data from sources (Currently CiviCRM, Identity in the future) to common data model
+Project Keanu consists of:
 - ETL tool to run the queries
-- Set of queries to visualize metrics and key indicators in Metabase
 - Metabase setup tool (mainly import/export of questions, dashboards) 
-
-
-## Handbook
-
-The handbook is not part of this repository. It is developed within WeMove wiki. The release data is unknown.
-
-## Common data model
-
-We have developed a common, standard model based on our experience in online
-campaigning. It should allow to accommodate most if not all of analytical data
-used to display key indicators to your campaign team. If something is missing
-for you - you can easily extend it.
-
-![](doc/img/keanu-erd.svg)
-
-The model is defined as _MySQL Workbench_ project in `erd/keanu-erd.mwb`, and
-exported to MySQL SQL dile in `erd/keanu-schema.sql`. We realize the limitation
-of MySQL only workfiles, yet we were unable to find portable ERD IDE that would
-fit our needs. The schema can be transformed to PostgreSQL using analyze
-database tool in an IDE that supports PostgreSQL. Ideally, we should develop
-further in some portable format.
-
-A basic documentation for tables and columns is embedded in the schema, in table
-and column comment metadata.
-
-## Loader queries
-
-Under `queries` directory, you will find subdirectories with loaders for
-different data sources. At the time of writing, we are using CiviCRCM and both
-sources are using it as a source.
-
-Loaders are meant to be single-concern files which transform source data into
-destination database (keanu database). One loader can populate the contacts
-table, or actions table from particular source. A loader has one destination db
-(usually with Keanu schema), and one source.
-
-Currently we support two kinds of loaders:
-
-- SQL loader - consists of SQL file, containing special metadata in comments. It is run in the destination database server, and the source data must be available on the same server (in another database/schema).
-- Python loader - consists of Python file, and is run on the local machine. Keanu bundles sqlalchemy and pands libraries in case you need them. Right now keanu does not contain sqlalchemy definitions of keanu schema, so you will need to use sqlalchemy.core instead of the ORM.
-
-Loaders are run in order specified in each loader's metadata (`ORDER` key), unless they are ingored (`IGNORE` key). See other metadata keys in sql and py loader reference.
-
-## ETL tool to run queries
-
-The `cli` directory contains command line python app, publishd in PyPI as `keanu-etl`, which lets you run loaders agains source and destination database in two modes - full load and incremental load (meant to just load new data from source to destination), load keanu schema, and delete it. See Keanu CLI.
-
-## Set of queries to visualize metrics and key indicators in Metabase
-
-Under `metabase` you can find an export of questions and dashboard collections used to visualize data from a Keanu database. 
 
 ## Metabase import/export tool
 
@@ -228,7 +174,13 @@ These are the commands related to creating and filling in the Keanu schema (from
 
 #### load: loading data
 
-`keanu.py load SQLDIR` loads data from CiviCRM to keanu db in ordered steps. Every SQL file in `SQLDIR` directory has `-- ORDER: 12` comment which specifies an order. The default order is 100.
+`keanu.py load CONFIGFILE` loads data from source to destination db in ordered steps. The queries to run are specified in the configuration file.
+Currently we support two kinds of loaders:
+
+- SQL loader - consists of SQL file, containing special metadata in comments. It is run in the destination database server, and the source data must be available on the same server (in another database/schema).
+- Python loader - consists of Python file, and is run on the local machine. Keanu bundles sqlalchemy and pandas libraries in case you need them. 
+
+Loaders are run in order specified in each loader's metadata (`ORDER` key), unless they are ingored (`IGNORE` key). See other metadata keys in sql and py loader reference.
 
 Options:
 
@@ -323,26 +275,4 @@ Options:
 Options:
  - `-c "Some collection"` - The name of the collection into which the objects should be imported. The collection must exist and be empty (no support for overwrite / merge at the moment).
  - `-j /path/to/file.json` - The JSON file to import.
-
-## Product vision
-
-Right now during initial development, we run keanu command from the source
-directory `cli`, and the SQL scripts are kept in `sql`. The vision for the
-future product is the following:
-
-Keanu will be a command installed gloablly into the system, with `pip install
-keanu`. It will work like git or heroku, a multi-tool to do everything
-conntected to common DB model, ETL, running AI logic, installing dashboards in
-Metabase (this last function fits this command least, but let's see).
-
-It will download a repository of SQL files, properly divided between general
-use, CiviCRM users, Identity users, etc, and be able to configure itself with
-`keanu setup` - saving information about source and target DBs. It will be able
-also to upload SQL files that were changed and verion manage them somehow, to
-help in collaboration (this could be done using git).
-
-Similarly, it will enable import and export of Metabase questions (called
-_cards_) and dashboards. Not only their SQL, but also their JSON configuration
-(using [python Metabase API client
-library](https://github.com/stunitas/metabase-py)).
 
