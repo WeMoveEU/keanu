@@ -1,6 +1,0 @@
-#!/bin/bash
-set -u
-set -e
-
-mysql -u root -h mysql.docker -e "CREATE DATABASE IF NOT EXISTS keanu_test"
-mysql -u root -h mysql.docker -e "CREATE DATABASE IF NOT EXISTS civicrm_test"

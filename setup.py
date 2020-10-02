@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import setuptools
 
-with open("../README.MD", "r") as fh:
+with open("README.MD", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name='keanu-etl',
-    version='0.10.1-rc',
+    version='0.11.0',
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
@@ -23,9 +23,5 @@ setuptools.setup(
         'console_scripts': ['keanu = keanu.cli:cli']
     },
     setup_requires='setuptools-pipfile',
-    extras_require={
-      'stripe': "stripe",
-      'paypal': ["paypalhttp", "paypal-checkout-serversdk"]
-    },
     use_pipfile=True
  )
