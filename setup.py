@@ -6,7 +6,7 @@ with open("README.MD", "r") as fh:
 
 setuptools.setup(
     name='keanu-etl',
-    version='0.11.0',
+    version='0.11.1',
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
@@ -23,5 +23,7 @@ setuptools.setup(
         'console_scripts': ['keanu = keanu.cli:cli']
     },
     setup_requires='setuptools-pipfile',
-    use_pipfile=True
+    use_pipfile=True,
+    package_data={'keanu': ['helpers/*.sql']},
+    include_package_data=True
  )
