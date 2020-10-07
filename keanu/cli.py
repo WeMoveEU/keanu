@@ -6,7 +6,7 @@ from click_aliases import ClickAliasedGroup
 import json
 from glob import glob
 from os import environ
-from . import db, util, metabase, config
+from . import db, util, metabase, config, helpers
 from .sql_loader import SqlLoader
 from .db_destination import DBDestination
 from .test import TestLoaders
@@ -133,8 +133,9 @@ def delete(order, display, dry_run, warn, config_or_dir):
 @cli.command(aliases=['s'])
 @click.option('-D', '--drop', is_flag=True, default=False, help='DROP TABLEs before running the script')
 @click.option('-L', '--loads', default=[], multiple=True, help='Load this SQL file')
+@click.option('-H', '--helper', default=[], multiple=True, help='Load this helper SQL')
 @click.argument('database_url')
-def schema(drop, loads, database_url):
+def schema(drop, loads, helper, database_url):
     dest = DBDestination({'url': environ['DATABASE_URL']})
     connection = dest.connection()
 
@@ -143,6 +144,8 @@ def schema(drop, loads, database_url):
             connection.execute('SET FOREIGN_KEY_CHECKS = 0')
             click.echo('💥 Dropping table {}'.format(table))
             connection.execute('DROP TABLE {}'.format(table))
+
+    loads = [helpers.schema_path(x) for x in helper] + list(loads)
 
     if loads:
         for load in loads:
