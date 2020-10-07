@@ -1,7 +1,3 @@
--- ORDER: 2
--- TRUNCATE last_sync
--- Just overwrite the rows with INSERT IGNORE INTO
--- BEGIN INITIAL
 
 -- LAST SYNC ID
 DROP TABLE IF EXISTS last_sync;
