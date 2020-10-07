@@ -95,4 +95,3 @@ END
 //
 DELIMITER ;
 
--- END INITIAL
