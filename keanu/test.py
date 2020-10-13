@@ -1,5 +1,5 @@
 import click
-from . import config
+from . import config, helpers
 from .sql_loader import SqlLoader
 from glob import glob
 from os import path
@@ -67,16 +67,12 @@ class TestLoaders():
         db.use()
         for fixture in fixtures:
             click.echo("🚚 Loading fixture {}...".format(fixture))
+            if not fixture.endswith('.sql'):
+                fixture = helpers.schema_path(fixture)
             loader = SqlLoader(fixture, {}, None, db)
             loader.replace_sql_object('keanu', db.schema)
             for event, d in loader.execute():
                 pass
-                # if event.startswith('sql.script.start'):
-                #     click.echo("🚚 [{:3d}] {} ({} lines, {} statements)".format(
-                #         loader.order,
-                #         loader.filename,
-                #         len(loader.lines),
-                #         len(loader.statements)))
 
     def full_load(_):
         click.echo("🚚  Perform full initial load...")
