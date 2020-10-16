@@ -5,6 +5,7 @@ class DataStore:
     spec - connection specification
     dry_run - do not really execute reads or writes on store
     """
+
     def __init__(self, name, db_spec, dry_run=False):
         self.name = name
         self.local = False

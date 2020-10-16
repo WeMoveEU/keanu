@@ -3,11 +3,12 @@ from . import db
 
 from sqlalchemy.orm import sessionmaker
 
+
 class DBDestination(DataStore):
     def __init__(self, db_spec, name=None, dry_run=False):
         super().__init__(name, db_spec, dry_run)
 
-        self.url = db_spec['url']
+        self.url = db_spec["url"]
         self.schema = db.url_to_schema(self.url)
         if not self.local:
             self.engine = db.get_engine(self.url, self.dry_run)

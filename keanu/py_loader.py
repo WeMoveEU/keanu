@@ -12,51 +12,57 @@ from threading import Thread, Lock
 from collections import namedtuple
 import itertools
 
-ThreadInfo = namedtuple('ThreadInfo', ['index', 'count'])
+ThreadInfo = namedtuple("ThreadInfo", ["index", "count"])
+
 
 class PyLoader(tracing.Tags):
     """
     Class that runs load modules, that is Python modules that load some data in keanu database.
     """
+
     def __init__(self, filename, mode, source, destination):
         super().__init__()
         self.filename = filename
-        
+
         self.module = PyLoader.import_module(filename)
         self.lock = Lock()
 
         self.options = {
-            'incremental': False,
-            'display': False,
-            'warn': False,
-            'dry_run': False,
-            'threads': 1
+            "incremental": False,
+            "display": False,
+            "warn": False,
+            "dry_run": False,
+            "threads": 1,
         }
         self.options.update(mode)
 
         self.source = source
         self.destination = destination
 
-        if self.defines('TAGS'):
+        if self.defines("TAGS"):
             if isinstance(self.module.TAGS, dict):
                 self.tracing_tags = self.module.TAGS
             else:
-                raise click.ClickException("TAGS in {} should be a dict".format(self.filename))
+                raise click.ClickException(
+                    "TAGS in {} should be a dict".format(self.filename)
+                )
         else:
             self.tracing_tags = {}
 
-        if self.defines('ORDER'):
+        if self.defines("ORDER"):
             if isinstance(self.module.ORDER, int):
                 self.order = self.module.ORDER
             else:
-                raise click.ClickException("ORDER in {} should be a number".format(self.filename))
+                raise click.ClickException(
+                    "ORDER in {} should be a number".format(self.filename)
+                )
         else:
             self.order = 100
 
-        if self.defines('IGNORE'):
+        if self.defines("IGNORE"):
             self.ignore = self.module.IGNORE
         else:
-            self.ignore = not self.defines('execute')
+            self.ignore = not self.defines("execute")
 
         self.checkpoint = None
 
@@ -74,66 +80,72 @@ class PyLoader(tracing.Tags):
 
     @staticmethod
     def from_directory(sqldir, mode, source, destination):
-        files = glob(os.path.join(sqldir, '**/*.py'), recursive=True)
+        files = glob(os.path.join(sqldir, "**/*.py"), recursive=True)
         if len(files) == 0:
-            raise click.BadParameter('No py files found in {}'.format(sqldir), param_hint='config_or_dir')
+            raise click.BadParameter(
+                "No py files found in {}".format(sqldir), param_hint="config_or_dir"
+            )
         # skip __init__.py
         files = filter(lambda x: os.path.basename(x) != "__init__.py", files)
         scripts = list(map(lambda fn: PyLoader(fn, mode, source, destination), files))
         return scripts
 
     def __str__(self):
-        return '{} ({})'.format(self.filename, self.order)
-
+        return "{} ({})".format(self.filename, self.order)
 
     def delete(self):
-        if self.ignore or not self.defines('delete'):
+        if self.ignore or not self.defines("delete"):
             return
         try:
-            yield 'py.script.start.delete', { 'script': self }
+            yield "py.script.start.delete", {"script": self}
             start_time = time()
 
-            if self.options['dry_run']:
+            if self.options["dry_run"]:
                 return
             with tracing.tracer.start_active_span(
-                    'delete.{}'.format(self.filename.replace('/', '.')),
-                    tags=self.tracing_tags
-                    ):
+                "delete.{}".format(self.filename.replace("/", ".")),
+                tags=self.tracing_tags,
+            ):
                 self.module.delete(self)
-            yield 'py.script.end.delete', { 'script': self, 'time': time() - start_time }
+            yield "py.script.end.delete", {"script": self, "time": time() - start_time}
 
         except KeyboardInterrupt as ctrlc:
             raise ctrlc
-
 
     def execute(self):
         if self.ignore:
             return
 
         try:
-            yield 'py.script.start', { 'script': self }
+            yield "py.script.start", {"script": self}
             start_time = time()
 
-            if self.options['dry_run']:
+            if self.options["dry_run"]:
                 return
 
             with tracing.tracer.start_active_span(
-                    'script.{}'.format(self.filename.replace('/', '.')),
-                    tags=self.tracing_tags
-                    ):
+                "script.{}".format(self.filename.replace("/", ".")),
+                tags=self.tracing_tags,
+            ):
 
                 result = self.module.execute(self)
 
-            yield 'py.script.end', {
-                'script': self,
-                'time': time() - start_time,
-                'result': result
+            yield "py.script.end", {
+                "script": self,
+                "time": time() - start_time,
+                "result": result,
             }
         except KeyboardInterrupt as ctrlc:
             raise click.Abort("aborted.")
-        except (ProgrammingError, IntegrityError, MySQLError, InternalError, DataError) as e:
+        except (
+            ProgrammingError,
+            IntegrityError,
+            MySQLError,
+            InternalError,
+            DataError,
+        ) as e:
             msg = str(e.args[0])
-            msg = msg.replace('\\n', "\n")
+            msg = msg.replace("\\n", "\n")
             click.echo(message=msg, err=True)
             raise click.Abort(msg)
 
@@ -155,17 +167,18 @@ class PyLoader(tracing.Tags):
         p = Path(path)
 
         def strip_py(x):
-            if x.endswith('.py'):
+            if x.endswith(".py"):
                 return x[0:-3]
             else:
                 return x
 
-        m = '.'.join(map(lambda a: strip_py(a), p.parts))
+        m = ".".join(map(lambda a: strip_py(a), p.parts))
 
         return m
 
     def threaded(self, function):
-        if self.options['threads'] > 1:
+        if self.options["threads"] > 1:
+
             def execute_then_close_connections(thr):
                 try:
                     r = function(thr)
@@ -176,9 +189,13 @@ class PyLoader(tracing.Tags):
                 finally:
                     db.close_connections()
 
-            thr_ct  = self.options['threads']
-            threads = [Thread(target=execute_then_close_connections, args=(ThreadInfo(i, thr_ct),))
-                       for i in range(thr_ct)]
+            thr_ct = self.options["threads"]
+            threads = [
+                Thread(
+                    target=execute_then_close_connections, args=(ThreadInfo(i, thr_ct),)
+                )
+                for i in range(thr_ct)
+            ]
 
             [t.start() for t in threads]
 
@@ -196,13 +213,12 @@ class PyLoader(tracing.Tags):
             #     return list(map(lambda a: a[1], results))
 
         else:
-            return function(ThreadInfo(0,1))
-
+            return function(ThreadInfo(0, 1))
 
     def get_checkpoint(self, checkpoint):
         """
-Used to synchronize the checkpoint, which will be max processed id of imput data, between all processing threads. Because input data can grow realtime, we would run into problems if some threads would use a different input boundary.
-        This is the value that should also be saved to last_sync tables.
+        Used to synchronize the checkpoint, which will be max processed id of imput data, between all processing threads. Because input data can grow realtime, we would run into problems if some threads would use a different input boundary.
+                This is the value that should also be saved to last_sync tables.
         """
         try:
             self.lock.acquire()

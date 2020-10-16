@@ -5,7 +5,8 @@ from glob import glob
 from os import path
 import unittest
 
-current_config =  None
+current_config = None
+
 
 class BatchTestCase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -24,12 +25,13 @@ class BatchTestCase(unittest.TestCase):
     def incremental_load(self, order=None):
         if order is None:
             order = self.ORDER
-        batch = config.build_batch({'incremental': True, 'order': order}, self.config)
+        batch = config.build_batch({"incremental": True, "order": order}, self.config)
 
-        for e,d in batch.execute():
+        for e, d in batch.execute():
             pass
 
-class TestLoaders():
+
+class TestLoaders:
     def __init__(self, configuration, no_fixtures):
         super().__init__()
         self.config = configuration
@@ -40,12 +42,12 @@ class TestLoaders():
         current_config = self.config
 
         if not self.no_fixtures:
-          self.load_all_fixtures()
-          self.full_load()
+            self.load_all_fixtures()
+            self.full_load()
 
         test_loader = unittest.TestLoader()
 
-        pattern = spec or 'test*.py'
+        pattern = spec or "test*.py"
         suite = test_loader.discover(directory, pattern)
 
         unittest.TextTestRunner(verbosity=2).run(suite)
@@ -55,11 +57,11 @@ class TestLoaders():
         batch = config.build_batch(mode, self.config)
 
         for step in self.config:
-            if 'destination' in step and 'fixtures' in step['destination']:
-                self.load_fixtures(batch.destination, step['destination']['fixtures'])
-            elif 'source' in step and 'fixtures' in step['source']:
-                src = batch.find_source(lambda s: s.name == step['source']['name'])
-                self.load_fixtures(src, step['source']['fixtures'])
+            if "destination" in step and "fixtures" in step["destination"]:
+                self.load_fixtures(batch.destination, step["destination"]["fixtures"])
+            elif "source" in step and "fixtures" in step["source"]:
+                src = batch.find_source(lambda s: s.name == step["source"]["name"])
+                self.load_fixtures(src, step["source"]["fixtures"])
 
         return batch
 
@@ -67,16 +69,15 @@ class TestLoaders():
         db.use()
         for fixture in fixtures:
             click.echo("🚚 Loading fixture {}...".format(fixture))
-            if not fixture.endswith('.sql'):
+            if not fixture.endswith(".sql"):
                 fixture = helpers.schema_path(fixture)
             loader = SqlLoader(fixture, {}, None, db)
-            loader.replace_sql_object('keanu', db.schema)
+            loader.replace_sql_object("keanu", db.schema)
             for event, d in loader.execute():
                 pass
 
     def full_load(self):
         click.echo("🚚  Perform full initial load...")
-        batch = config.build_batch({'incremental': False}, self.config)
-        for e,d in batch.execute():
+        batch = config.build_batch({"incremental": False}, self.config)
+        for e, d in batch.execute():
             pass
-
