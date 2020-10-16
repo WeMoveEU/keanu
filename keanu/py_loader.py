@@ -18,47 +18,47 @@ class PyLoader(tracing.Tags):
     """
     Class that runs load modules, that is Python modules that load some data in keanu database.
     """
-    def __init__(_, filename, mode, source, destination):
+    def __init__(self, filename, mode, source, destination):
         super().__init__()
-        _.filename = filename
+        self.filename = filename
         
-        _.module = PyLoader.import_module(filename)
-        _.lock = Lock()
+        self.module = PyLoader.import_module(filename)
+        self.lock = Lock()
 
-        _.options = {
+        self.options = {
             'incremental': False,
             'display': False,
             'warn': False,
             'dry_run': False,
             'threads': 1
         }
-        _.options.update(mode)
+        self.options.update(mode)
 
-        _.source = source
-        _.destination = destination
+        self.source = source
+        self.destination = destination
 
-        if _.defines('TAGS'):
-            if isinstance(_.module.TAGS, dict):
-                _.tracing_tags = _.module.TAGS
+        if self.defines('TAGS'):
+            if isinstance(self.module.TAGS, dict):
+                self.tracing_tags = self.module.TAGS
             else:
-                raise click.ClickException("TAGS in {} should be a dict".format(_.filename))
+                raise click.ClickException("TAGS in {} should be a dict".format(self.filename))
         else:
-            _.tracing_tags = {}
+            self.tracing_tags = {}
 
-        if _.defines('ORDER'):
-            if isinstance(_.module.ORDER, int):
-                _.order = _.module.ORDER
+        if self.defines('ORDER'):
+            if isinstance(self.module.ORDER, int):
+                self.order = self.module.ORDER
             else:
-                raise click.ClickException("ORDER in {} should be a number".format(_.filename))
+                raise click.ClickException("ORDER in {} should be a number".format(self.filename))
         else:
-            _.order = 100
+            self.order = 100
 
-        if _.defines('IGNORE'):
-            _.ignore = _.module.IGNORE
+        if self.defines('IGNORE'):
+            self.ignore = self.module.IGNORE
         else:
-            _.ignore = not _.defines('execute')
+            self.ignore = not self.defines('execute')
 
-        _.checkpoint = None
+        self.checkpoint = None
 
     @staticmethod
     def import_module(filename):
@@ -82,50 +82,50 @@ class PyLoader(tracing.Tags):
         scripts = list(map(lambda fn: PyLoader(fn, mode, source, destination), files))
         return scripts
 
-    def __str__(_):
-        return '{} ({})'.format(_.filename, _.order)
+    def __str__(self):
+        return '{} ({})'.format(self.filename, self.order)
 
 
-    def delete(_):
-        if _.ignore or not _.defines('delete'):
+    def delete(self):
+        if self.ignore or not self.defines('delete'):
             return
         try:
-            yield 'py.script.start.delete', { 'script': _ }
+            yield 'py.script.start.delete', { 'script': self }
             start_time = time()
 
-            if _.options['dry_run']:
+            if self.options['dry_run']:
                 return
             with tracing.tracer.start_active_span(
-                    'delete.{}'.format(_.filename.replace('/', '.')),
-                    tags=_.tracing_tags
+                    'delete.{}'.format(self.filename.replace('/', '.')),
+                    tags=self.tracing_tags
                     ):
-                _.module.delete(_)
-            yield 'py.script.end.delete', { 'script': _, 'time': time() - start_time }
+                self.module.delete(self)
+            yield 'py.script.end.delete', { 'script': self, 'time': time() - start_time }
 
         except KeyboardInterrupt as ctrlc:
             raise ctrlc
 
 
-    def execute(_):
-        if _.ignore:
+    def execute(self):
+        if self.ignore:
             return
 
         try:
-            yield 'py.script.start', { 'script': _ }
+            yield 'py.script.start', { 'script': self }
             start_time = time()
 
-            if _.options['dry_run']:
+            if self.options['dry_run']:
                 return
 
             with tracing.tracer.start_active_span(
-                    'script.{}'.format(_.filename.replace('/', '.')),
-                    tags=_.tracing_tags
+                    'script.{}'.format(self.filename.replace('/', '.')),
+                    tags=self.tracing_tags
                     ):
 
-                result = _.module.execute(_)
+                result = self.module.execute(self)
 
             yield 'py.script.end', {
-                'script': _,
+                'script': self,
                 'time': time() - start_time,
                 'result': result
             }
@@ -147,8 +147,8 @@ class PyLoader(tracing.Tags):
     def thread_info(thread_index, thread_count):
         return ThreadInfo(thread_index, thread_count)
 
-    def defines(_, varname):
-        return varname in dir(_.module)
+    def defines(self, varname):
+        return varname in dir(self.module)
 
     @staticmethod
     def path_to_module(path):
@@ -164,8 +164,8 @@ class PyLoader(tracing.Tags):
 
         return m
 
-    def threaded(_, function):
-        if _.options['threads'] > 1:
+    def threaded(self, function):
+        if self.options['threads'] > 1:
             def execute_then_close_connections(thr):
                 try:
                     r = function(thr)
@@ -176,7 +176,7 @@ class PyLoader(tracing.Tags):
                 finally:
                     db.close_connections()
 
-            thr_ct  = _.options['threads']
+            thr_ct  = self.options['threads']
             threads = [Thread(target=execute_then_close_connections, args=(ThreadInfo(i, thr_ct),))
                        for i in range(thr_ct)]
 
@@ -199,15 +199,15 @@ class PyLoader(tracing.Tags):
             return function(ThreadInfo(0,1))
 
 
-    def get_checkpoint(_, checkpoint):
+    def get_checkpoint(self, checkpoint):
         """
 Used to synchronize the checkpoint, which will be max processed id of imput data, between all processing threads. Because input data can grow realtime, we would run into problems if some threads would use a different input boundary.
         This is the value that should also be saved to last_sync tables.
         """
         try:
-            _.lock.acquire()
-            if _.checkpoint is None:
-                _.checkpoint = checkpoint
-            return _.checkpoint
+            self.lock.acquire()
+            if self.checkpoint is None:
+                self.checkpoint = checkpoint
+            return self.checkpoint
         finally:
-            _.lock.release()
+            self.lock.release()

@@ -1,8 +1,8 @@
 class Transform:
-    def __init__(_, mode, source, destination):
-        _.mode = mode
-        _.source = source
-        _.destination = destination
+    def __init__(self, mode, source, destination):
+        self.mode = mode
+        self.source = source
+        self.destination = destination
 
-    def get_scripts(_):
+    def get_scripts(self):
         return []

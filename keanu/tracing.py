@@ -32,21 +32,21 @@ register(close_tracer)
 
 
 class Tags:
-    def __init__(_):
-        _._tracing_tags = {}
+    def __init__(self):
+        self._tracing_tags = {}
 
     @property
-    def tracing_tags(_):
+    def tracing_tags(self):
         t = {
-            'incremental': _.options['incremental'] == True,
+            'incremental': self.options['incremental'] == True,
             }
-        if _.source:
-            t['source_name'] = _.source.name
-        if _.destination:
-            t['destination_name'] = _.destination.name
-        t.update(_._tracing_tags)
+        if self.source:
+            t['source_name'] = self.source.name
+        if self.destination:
+            t['destination_name'] = self.destination.name
+        t.update(self._tracing_tags)
         return t
 
     @tracing_tags.setter
-    def tracing_tags(_, tags):
-        _._tracing_tags = tags
+    def tracing_tags(self, tags):
+        self._tracing_tags = tags

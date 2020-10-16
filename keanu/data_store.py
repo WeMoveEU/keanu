@@ -5,15 +5,15 @@ class DataStore:
     spec - connection specification
     dry_run - do not really execute reads or writes on store
     """
-    def __init__(_, name, db_spec, dry_run=False):
-        _.name = name
-        _.local = False
-        _.spec = db_spec
-        _.dry_run = dry_run
-        _.batch = None
+    def __init__(self, name, db_spec, dry_run=False):
+        self.name = name
+        self.local = False
+        self.spec = db_spec
+        self.dry_run = dry_run
+        self.batch = None
 
-    def set_batch(_, b):
-        _.batch = b
+    def set_batch(self, b):
+        self.batch = b
 
-    def use(_):
-        _.connection().execute("USE {}".format(_.schema))
+    def use(self):
+        self.connection().execute("USE {}".format(self.schema))

@@ -140,7 +140,7 @@ def schema(drop, loads, helper, database_url):
     connection = dest.connection()
 
     if drop:
-        for (table, _) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):
+        for (table, self) in connection.execute("show full tables where Table_Type = 'BASE TABLE'"):
             connection.execute('SET FOREIGN_KEY_CHECKS = 0')
             click.echo('💥 Dropping table {}'.format(table))
             connection.execute('DROP TABLE {}'.format(table))
