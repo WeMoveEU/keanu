@@ -1,5 +1,6 @@
-from sqlalchemy import text
 from datetime import datetime
+
+from sqlalchemy import text
 
 
 def last_sync_id(conn, dst, src):
