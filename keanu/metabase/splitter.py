@@ -1,7 +1,8 @@
-import yaml
 from os import path, makedirs, listdir, unlink
-from slug import slug
 from shutil import rmtree
+
+from slug import slug
+import yaml
 
 
 class sql_code(str):
