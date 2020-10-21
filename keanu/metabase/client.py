@@ -1,7 +1,6 @@
-from metabase import Metabase
-import json
 import logging
-import re
+
+from metabase import Metabase
 
 from .helpers import *
 
