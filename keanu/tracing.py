@@ -24,9 +24,8 @@ def close_tracer(*a):
         tracer.close()
     except RuntimeError:
         pass
-    sleep(
-        1
-    )  # this is unfortunately needed as silly jaeger does not let to sync flush spans :(
+    # this is unfortunately needed as silly jaeger does not let to sync flush spans :(
+    sleep(1)
 
 
 register(close_tracer)
