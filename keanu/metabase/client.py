@@ -114,7 +114,7 @@ class Client:
             )
 
             if not status:
-                raise Existing(
+                raise Exception(
                     "Could not clear dashboard {} (id {})".format(
                         dashboard["name"], dashboard["id"]
                     )
