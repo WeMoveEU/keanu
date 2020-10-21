@@ -55,7 +55,7 @@ class Splitter:
             self.store_to(db_spec, "databases/{}".format(db_file))
 
     def store_items(self, items, prefix=[]):
-        for idx, i in enumerate(items):
+        for i in items:
             if i["model"] == "card" or i["model"] == "dashboard":
                 if i["model"] == "card":
                     self.format_query_as_block(i)
