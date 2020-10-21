@@ -1,7 +1,3 @@
-from dotenv import load_dotenv
-
-load_dotenv()
-
 import click
 from click_aliases import ClickAliasedGroup
 import json
