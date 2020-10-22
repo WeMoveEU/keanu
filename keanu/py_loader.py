@@ -1,16 +1,17 @@
 import os
 import sys
-from pathlib import Path
+from collections import namedtuple
 from glob import glob
 from importlib import import_module
-from . import tracing, db
+from pathlib import Path
+from threading import Lock, Thread
 from time import time
+
 import click
 from pymysql.err import MySQLError
-from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
-from threading import Thread, Lock
-from collections import namedtuple
-import itertools
+from sqlalchemy.exc import DataError, IntegrityError, InternalError, ProgrammingError
+
+from . import db, tracing
 
 ThreadInfo = namedtuple("ThreadInfo", ["index", "count"])
 
@@ -135,7 +136,7 @@ class PyLoader(tracing.Tags):
                 "time": time() - start_time,
                 "result": result,
             }
-        except KeyboardInterrupt as ctrlc:
+        except KeyboardInterrupt:
             raise click.Abort("aborted.")
         except (
             ProgrammingError,

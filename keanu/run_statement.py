@@ -1,10 +1,9 @@
 import warnings
-from sqlalchemy import text
-from .db import get_engine
-from click import echo, exceptions
+from signal import SIGTERM, signal
 from time import time
 
-from signal import signal, SIGTERM
+from click import echo, exceptions
+from sqlalchemy import text
 
 
 class RunStatement:

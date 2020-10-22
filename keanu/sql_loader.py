@@ -1,17 +1,15 @@
-import operator
-import click
-from glob import glob
-import re
-from sqlalchemy import text
-import click
-from .run_statement import RunStatement
-from .batch import RetryScript
-from . import util
-from . import tracing
 import os
+import re
 import shutil
+from glob import glob
+
+import click
 from pymysql.err import MySQLError
-from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
+from sqlalchemy.exc import DataError, InternalError, ProgrammingError
+
+from . import tracing
+from .batch import RetryScript
+from .run_statement import RunStatement
 
 
 class SqlLoader(RunStatement, tracing.Tags):
@@ -27,7 +25,7 @@ class SqlLoader(RunStatement, tracing.Tags):
     warn - do show warnings from mysql driver (no by default)
     """
 
-    def __init__(self, filename, mode, source, destination):
+    def __init__(self, filename, mode=None, source=None, destination=None):
         super().__init__()
 
         # filename and class options
@@ -121,7 +119,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             out.insert(0, l)
 
         if len(contexts) > 0:
-            raise VelueError(
+            raise ValueError(
                 "Script {} ended with contexts {} unclosed",
                 self.filename,
                 ", ".join(contexts),
@@ -259,7 +257,7 @@ class SqlLoader(RunStatement, tracing.Tags):
                     ):
                         yield event, data
                     yield "sql.script.end", {"script": self}
-                except KeyboardInterrupt as ctrlc:
+                except KeyboardInterrupt:
                     transaction.rollback()
                     raise click.Abort("aborted.")
                 except (ProgrammingError, MySQLError, DataError) as e:

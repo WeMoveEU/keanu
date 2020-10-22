@@ -1,9 +1,9 @@
+import unittest
+
+
 import click
 from . import config, helpers
 from .sql_loader import SqlLoader
-from glob import glob
-from os import path
-import unittest
 
 current_config = None
 
@@ -11,6 +11,7 @@ current_config = None
 class BatchTestCase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.default_order = 0
         self.connection = None
 
     @property
@@ -24,10 +25,10 @@ class BatchTestCase(unittest.TestCase):
 
     def incremental_load(self, order=None):
         if order is None:
-            order = self.ORDER
+            order = self.default_order
         batch = config.build_batch({"incremental": True, "order": order}, self.config)
 
-        for e, d in batch.execute():
+        for _ in batch.execute():
             pass
 
 
@@ -50,7 +51,7 @@ class TestLoaders:
         pattern = spec or "test*.py"
         suite = test_loader.discover(directory, pattern)
 
-        unittest.TextTestRunner(verbosity=2).run(suite)
+        return unittest.TextTestRunner(verbosity=2).run(suite)
 
     def load_all_fixtures(self):
         mode = {}
@@ -73,11 +74,11 @@ class TestLoaders:
                 fixture = helpers.schema_path(fixture)
             loader = SqlLoader(fixture, {}, None, db)
             loader.replace_sql_object("keanu", db.schema)
-            for event, d in loader.execute():
+            for _ in loader.execute():
                 pass
 
     def full_load(self):
         click.echo("🚚  Perform full initial load...")
         batch = config.build_batch({"incremental": False}, self.config)
-        for e, d in batch.execute():
+        for _ in batch.execute():
             pass

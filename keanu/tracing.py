@@ -1,7 +1,8 @@
-from jaeger_client import Config
-from getpass import getuser
 from atexit import register
+from getpass import getuser
 from time import sleep
+
+from jaeger_client import Config
 
 config = Config(
     {
@@ -35,6 +36,7 @@ class Tags:
     def __init__(self):
         self._tracing_tags = {}
 
+    # pylint: disable=no-member
     @property
     def tracing_tags(self):
         t = {

@@ -1,13 +1,16 @@
-import re
+import operator
 import os
-import click
+import re
 from functools import reduce
-from operator import setitem
 from glob import glob
-from .sql_loader import SqlLoader
+from operator import setitem
+
+import click
 import pygments
 import pygments.formatters
 import pygments.lexers
+
+from .sql_loader import SqlLoader
 
 terminal = pygments.formatters.get_formatter_by_name("console256")
 mysql = pygments.lexers.get_lexer_by_name("mysql")
@@ -27,8 +30,10 @@ def get_scripts(sqldir, mode, source, destination):
         raise click.BadParameter(
             "No script files found in {}".format(sqldir), param_hint="sqldir"
         )
-    scripts = list(map(lambda fn: SqlLoader(fn, **opts), files))
-    SqlLoader.sort(scripts)
+    scripts = list(map(lambda fn: SqlLoader(fn), files))
+    # XXX: removed the next line, pylint noticed that SqlLoader has no sort
+    # method. I think get_scripts got moved to the transform step.
+    # SqlLoader.sort(scripts)
     return scripts
 
 

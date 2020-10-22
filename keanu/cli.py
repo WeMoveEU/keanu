@@ -1,18 +1,15 @@
+import json
+import logging
+import sys
+from os import environ
+
 import click
 from click_aliases import ClickAliasedGroup
-import json
-from glob import glob
-from os import environ
-from . import db, util, metabase, config, helpers
-from .sql_loader import SqlLoader
+
+from . import config, helpers, metabase, util
 from .db_destination import DBDestination
+from .sql_loader import SqlLoader
 from .test import TestLoaders
-from pymysql.err import MySQLError
-from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
-import re
-import sys
-import traceback
-import logging
 
 
 @click.group(cls=ClickAliasedGroup)
@@ -54,7 +51,6 @@ def load(incremental, order, dry_run, display, warn, threads, config_or_dir, ver
     set_verbose(verbose)
     mode = {
         "incremental": incremental,
-        "order": order,
         "display": display,
         "warn": warn,
         "order": order,
@@ -171,7 +167,7 @@ def schema(drop, loads, helper, database_url):
     connection = dest.connection()
 
     if drop:
-        for (table, self) in connection.execute(
+        for (table, _) in connection.execute(
             "show full tables where Table_Type = 'BASE TABLE'"
         ):
             connection.execute("SET FOREIGN_KEY_CHECKS = 0")
@@ -185,7 +181,7 @@ def schema(drop, loads, helper, database_url):
             script = SqlLoader(load, {}, None, dest)
             script.replace_sql_object("keanu", dest.schema)
             click.echo("🚚 Loading {}...".format(script.filename))
-            with connection.begin() as tx:
+            with connection.begin():
                 for event, data in script.execute():
                     scr = data["script"]
                     if event.startswith("sql.statement.start"):
@@ -321,18 +317,19 @@ def test(test_config, test_dir, spec, no_fixtures):
     suite = TestLoaders(configuration, no_fixtures)
     result = suite.run(test_dir, spec)
 
-    # if result.wasSuccessful():
-    #     click.echo("All {} tests pass".format(result.testsRun))
-    #     return 0
+    if result.wasSuccessful():
+        click.echo("All {} tests pass".format(result.testsRun))
+        return 0
 
-    # for (t, tb) in result.errors:
-    #     click.echo("💔  Error in {}\n{}".format(t,tb))
+    for (t, tb) in result.errors:
+        click.echo("💔  Error in {}\n{}".format(t, tb))
 
-    # for (t, tb) in result.failures:
-    #     click.echo("😞  Failure in {}\n{}".format(t, tb))
+    for (t, tb) in result.failures:
+        click.echo("😞  Failure in {}\n{}".format(t, tb))
 
-    # click.echo("{} tests failed".format(len(result.failures)))
-    # sys.exit(1)
+    click.echo("{} tests failed".format(len(result.failures)))
+
+    sys.exit(1)
 
 
 @metabase_cli.command("query", aliases=["q"])
@@ -367,7 +364,7 @@ def metabase_split(json_file, yaml_dir):
 @metabase_cli.command("join", aliases=["j"])
 @click.option("-j", "--json-file", default=None, help="path to JSON file to import")
 @click.option("-y", "--yaml-dir", help="path to directory with yaml files")
-def metabase_split(json_file, yaml_dir):
+def metabase_join(json_file, yaml_dir):
     splitter = metabase.Splitter(yaml_dir)
     data = splitter.load()
     if json_file:

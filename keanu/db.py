@@ -1,7 +1,7 @@
 import threading
-import os
-import click
 from urllib.parse import urlparse
+
+import click
 from sqlalchemy import create_engine
 
 

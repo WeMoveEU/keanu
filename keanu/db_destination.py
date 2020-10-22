@@ -1,7 +1,7 @@
+from sqlalchemy.orm import sessionmaker
+
 from .data_store import DataStore
 from . import db
-
-from sqlalchemy.orm import sessionmaker
 
 
 class DBDestination(DataStore):

@@ -1,7 +1,6 @@
 from . import config
-from .transform import Transform
-from . import util
 from .sql_loader import SqlLoader
+from .transform import Transform
 
 
 class SQLTransform(Transform):

@@ -102,7 +102,7 @@ def build_batch(mode, configuration):
                 if "source" in step:
                     source_spec = lambda s: s.name == step["source"]
                 else:
-                    source_spec = lambda s: true
+                    source_spec = lambda s: True
                 src = batch.find_source(source_spec)
 
                 if "directory" in step["py"]:

@@ -7,9 +7,9 @@ def last_sync_id(conn, dst, src):
     last_id = conn.execute(
         text(
             """
-        SELECT last_id FROM last_sync
-        WHERE dst = :dst AND src = :src
-        """
+            SELECT last_id FROM last_sync
+            WHERE dst = :dst AND src = :src
+            """
         ),
         dst=dst,
         src=src,
@@ -37,9 +37,9 @@ def last_sync_dt(conn, dst, src):
     last_dt = conn.execute(
         text(
             """
-        SELECT last_dt FROM last_sync_dt
-        WHERE dst = :dst AND src = :src
-        """
+            SELECT last_dt FROM last_sync_dt
+            WHERE dst = :dst AND src = :src
+            """
         ),
         dst=dst,
         src=src,
