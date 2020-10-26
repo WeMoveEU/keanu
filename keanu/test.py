@@ -1,82 +1,84 @@
+import unittest
+
+
 import click
 from . import config, helpers
 from .sql_loader import SqlLoader
-from glob import glob
-from os import path
-import unittest
 
-current_config =  None
+current_config = None
+
 
 class BatchTestCase(unittest.TestCase):
-    def __init__(_, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _.connection = None
+        self.default_order = 0
+        self.connection = None
 
     @property
-    def config(_):
+    def config(self):
         return current_config
 
-    def setUp(_):
-        _.batch = config.build_batch({}, _.config)
-        _.batch.destination.use()
-        _.connection = _.batch.destination.connection()
+    def setUp(self):
+        self.batch = config.build_batch({}, self.config)
+        self.batch.destination.use()
+        self.connection = self.batch.destination.connection()
 
-    def incremental_load(_, order=None):
+    def incremental_load(self, order=None):
         if order is None:
-            order = _.ORDER
-        batch = config.build_batch({'incremental': True, 'order': order}, _.config)
+            order = self.default_order
+        batch = config.build_batch({"incremental": True, "order": order}, self.config)
 
-        for e,d in batch.execute():
+        for _ in batch.execute():
             pass
 
-class TestLoaders():
-    def __init__(_, configuration, no_fixtures):
+
+class TestLoaders:
+    def __init__(self, configuration, no_fixtures):
         super().__init__()
-        _.config = configuration
-        _.no_fixtures = no_fixtures
+        self.config = configuration
+        self.no_fixtures = no_fixtures
 
-    def run(_, directory, spec=None):
+    def run(self, directory, spec=None):
         global current_config
-        current_config = _.config
+        current_config = self.config
 
-        if not _.no_fixtures:
-          _.load_all_fixtures()
-          _.full_load()
+        if not self.no_fixtures:
+            self.load_all_fixtures()
+            self.full_load()
 
         test_loader = unittest.TestLoader()
 
-        pattern = spec or 'test*.py'
+        pattern = spec or "test*.py"
         suite = test_loader.discover(directory, pattern)
 
-        unittest.TextTestRunner(verbosity=2).run(suite)
+        return unittest.TextTestRunner(verbosity=2).run(suite)
 
-    def load_all_fixtures(_):
+    def load_all_fixtures(self):
         mode = {}
-        batch = config.build_batch(mode, _.config)
+        batch = config.build_batch(mode, self.config)
 
-        for step in _.config:
-            if 'destination' in step and 'fixtures' in step['destination']:
-                _.load_fixtures(batch.destination, step['destination']['fixtures'])
-            elif 'source' in step and 'fixtures' in step['source']:
-                src = batch.find_source(lambda s: s.name == step['source']['name'])
-                _.load_fixtures(src, step['source']['fixtures'])
+        for step in self.config:
+            if "destination" in step and "fixtures" in step["destination"]:
+                self.load_fixtures(batch.destination, step["destination"]["fixtures"])
+            elif "source" in step and "fixtures" in step["source"]:
+                src = batch.find_source(lambda s: s.name == step["source"]["name"])
+                self.load_fixtures(src, step["source"]["fixtures"])
 
         return batch
 
-    def load_fixtures(_, db, fixtures):
+    def load_fixtures(self, db, fixtures):
         db.use()
         for fixture in fixtures:
             click.echo("🚚 Loading fixture {}...".format(fixture))
-            if not fixture.endswith('.sql'):
+            if not fixture.endswith(".sql"):
                 fixture = helpers.schema_path(fixture)
             loader = SqlLoader(fixture, {}, None, db)
-            loader.replace_sql_object('keanu', db.schema)
-            for event, d in loader.execute():
+            loader.replace_sql_object("keanu", db.schema)
+            for _ in loader.execute():
                 pass
 
-    def full_load(_):
+    def full_load(self):
         click.echo("🚚  Perform full initial load...")
-        batch = config.build_batch({'incremental': False}, _.config)
-        for e,d in batch.execute():
+        batch = config.build_batch({"incremental": False}, self.config)
+        for _ in batch.execute():
             pass
-

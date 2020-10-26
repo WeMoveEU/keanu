@@ -1,23 +1,22 @@
-import operator
-import click
-from glob import glob
-import re
-from sqlalchemy import text
-import click
-from .run_statement import RunStatement
-from .batch import RetryScript
-from . import util
-from . import tracing
 import os
+import re
 import shutil
+from glob import glob
+
+import click
 from pymysql.err import MySQLError
-from sqlalchemy.exc import IntegrityError, InternalError, ProgrammingError, DataError
+from sqlalchemy.exc import DataError, InternalError, ProgrammingError
+
+from . import tracing
+from .batch import RetryScript
+from .run_statement import RunStatement
+
 
 class SqlLoader(RunStatement, tracing.Tags):
     """
     Class that runs load scripts, that is SQL that loads some data in keanu database.
     It can read extra metadata from the script comments.
-    
+
     Pass path to file of SQL script.
 
     options can be:
@@ -25,70 +24,70 @@ class SqlLoader(RunStatement, tracing.Tags):
     display - displays full SQL while executing (no by default)
     warn - do show warnings from mysql driver (no by default)
     """
-    def __init__(_, filename, mode, source, destination):
+
+    def __init__(self, filename, mode=None, source=None, destination=None):
         super().__init__()
 
         # filename and class options
-        _.filename = filename
-        _.options = {
-            'incremental': False,
-            'display': False,
-            'warn': False
-        }
-        _.options.update(mode)
-        _.source = source
-        _.destination = destination
+        self.filename = filename
+        self.options = {"incremental": False, "display": False, "warn": False}
+        self.options.update(mode)
+        self.source = source
+        self.destination = destination
 
         # defaults
-        _.deleteSql = []
-        _.order = 100
+        self.deleteSql = []
+        self.order = 100
 
         # parse SQL
-        _.lines = _.parse(open(filename, 'r').readlines())
-        _.statements = _.split_statements(_.lines)
+        self.lines = self.parse(open(filename, "r").readlines())
+        self.statements = self.split_statements(self.lines)
 
     @staticmethod
     def from_directory(sqldir, mode, source, destination):
-        files = glob(os.path.join(sqldir, '**/*.sql'), recursive=True)
+        files = glob(os.path.join(sqldir, "**/*.sql"), recursive=True)
         if len(files) == 0:
-            raise click.BadParameter('No script files found in {}'.format(sqldir), param_hint='config_or_dir')
+            raise click.BadParameter(
+                "No script files found in {}".format(sqldir), param_hint="config_or_dir"
+            )
         scripts = list(map(lambda fn: SqlLoader(fn, mode, source, destination), files))
         return scripts
 
-    def __str__(_):
-        return '{} ({})'.format(_.filename, _.order)
+    def __str__(self):
+        return "{} ({})".format(self.filename, self.order)
 
     """
     Parse script lines and load metadata. Returns list of lines after parsing (will be modified).
     Has effects of setting fields on object.
     """
-    def parse(_, lines):
+
+    def parse(self, lines):
         out = []
         contexts = []
-        comment_line = lambda x: '-- ' + x
+        comment_line = lambda x: "-- " + x
 
-        lines = map(_.interpolate_environ, lines)
+        lines = map(self.interpolate_environ, lines)
 
         for l in lines:
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
-                _.order = int(m.group(1))
+                self.order = int(m.group(1))
                 continue
 
             m = re.match(r" *-- *TAGS: ?(.+)$", l)
             if m:
-                kv = {x.group(1) : x.group(2)
-                      for x in
-                      re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))}
-                _.tracing_tags.update(kv)
+                kv = {
+                    x.group(1): x.group(2)
+                    for x in re.finditer(r"([\w\d_-]+) *= *([\w\d_-]+)", m.group(1))
+                }
+                self.tracing_tags.update(kv)
 
                 continue
 
             m = re.match(r" *-- *((DELETE|TRUNCATE) .*)$", l)
             if m:
-                _.deleteSql.append(m.group(1))
+                self.deleteSql.append(m.group(1))
                 continue
-
 
             m = re.match(r" *-- *BEGIN (\w+)", l)
             if m:
@@ -100,28 +99,31 @@ class SqlLoader(RunStatement, tracing.Tags):
                 try:
                     contexts.remove(m.group(1).upper())
                 except ValueError:
-                    raise ValueError("{}: found END {} but context stack is {}".format(
-                        _.filename,
-                        m.group(1),
-                        ', '.join(contexts)))
+                    raise ValueError(
+                        "{}: found END {} but context stack is {}".format(
+                            self.filename, m.group(1), ", ".join(contexts)
+                        )
+                    )
                 continue
 
             m = re.match(r" *-- *IGNORE", l)
             if m:
                 break
 
-            if 'INCREMENTAL' in contexts and not _.options['incremental']:
+            if "INCREMENTAL" in contexts and not self.options["incremental"]:
                 l = comment_line(l)
 
-            if 'INITIAL' in contexts and _.options['incremental']:
+            if "INITIAL" in contexts and self.options["incremental"]:
                 l = comment_line(l)
-
 
             out.insert(0, l)
 
         if len(contexts) > 0:
-            raise VelueError("Script {} ended with contexts {} unclosed",
-                             _.filename, ', '.join(contexts))
+            raise ValueError(
+                "Script {} ended with contexts {} unclosed",
+                self.filename,
+                ", ".join(contexts),
+            )
 
         out.reverse()
         return out
@@ -129,37 +131,43 @@ class SqlLoader(RunStatement, tracing.Tags):
     """
     Performs interpolation on string, replacing ${FOO} with FOO environment variable.
     """
-    def interpolate_environ(_, line):
+
+    def interpolate_environ(self, line):
         env = {}
-        if _.source:
-            env.update(_.source.environ())
-        if _.destination:
-            env.update(_.destination.environ())
+        if self.source:
+            env.update(self.source.environ())
+        if self.destination:
+            env.update(self.destination.environ())
+
         def get_var(m):
             return env[m.group(1)]
+
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
 
     """
     Predicate - is this line just a comment line?
     """
+
     @staticmethod
     def noop_line(line):
-        return (re.match(r" *--", line)
-                or re.match(r"^[\s;]*$", line)) is not None
+        return (re.match(r" *--", line) or re.match(r"^[\s;]*$", line)) is not None
 
     """
     Will split the lines of script into SQL statements (separated by semicolon)
     """
-    def split_statements(_, lines):
+
+    def split_statements(self, lines):
         def non_empty_block(statements):
-            return len(statements) > 0 and any(map(lambda a: not _.noop_line(a), statements))
+            return len(statements) > 0 and any(
+                map(lambda a: not self.noop_line(a), statements)
+            )
 
         # output list of statement lists, and current list
         out = []
         c = []
 
         # current delimiter
-        delimiter = ';'
+        delimiter = ";"
 
         for l in lines:
             # For delimiter MySQL client command, change the regex and continue
@@ -180,78 +188,84 @@ class SqlLoader(RunStatement, tracing.Tags):
                 c.append(l)
 
         # join lines into str for each statement
-        return list(map(lambda a: ''.join(a).lstrip(), out))
+        return list(map(lambda a: "".join(a).lstrip(), out))
 
-    def replace_sql_object(_, before, after):
+    def replace_sql_object(self, before, after):
         before = "`{}`".format(before)
         after = "`{}`".format(after)
-        _.statements = list(map(lambda st: st.replace(before, after), _.statements))
+        self.statements = list(
+            map(lambda st: st.replace(before, after), self.statements)
+        )
 
-    def statement_abbrev(_, statement):
-        if _.options['display']:
+    def statement_abbrev(self, statement):
+        if self.options["display"]:
             return statement
 
         trim_to = int(shutil.get_terminal_size((200, 20)).columns * 0.7)
 
         lines = statement.split("\n")
-        lines = filter(lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines)
+        lines = filter(
+            lambda x: not re.match(r" *--", x) and not re.match(r"\s*$", x), lines
+        )
         try:
             first = next(lines)
             if len(first) > trim_to:
-                first =  first[0:trim_to] + '...'
+                first = first[0:trim_to] + "..."
             return first
         except StopIteration:
-            return ''
+            return ""
 
-    def delete(_):
-        if len(_.deleteSql) == 0:
+    def delete(self):
+        if len(self.deleteSql) == 0:
             return
 
-        connection = _.destination.connection()
+        connection = self.destination.connection()
         with tracing.tracer.start_active_span(
-                'delete.{}'.format(_.filename.replace('/', '.')),
-                tags=_.tracing_tags):
+            "delete.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
+        ):
             with connection.begin() as transaction:
-                yield 'sql.script.start.delete', { 'script': _ }
+                yield "sql.script.start.delete", {"script": self}
                 try:
-                    for event, data in super().execute(connection, _.deleteSql, warn=_.options['warn']):
+                    for event, data in super().execute(
+                        connection, self.deleteSql, warn=self.options["warn"]
+                    ):
                         yield event, data
                 except KeyboardInterrupt as ctrlc:
                     transaction.rollback()
                     raise ctrlc
-                yield 'sql.script.end.delete', { 'script': _ }
+                yield "sql.script.end.delete", {"script": self}
 
-    def display_error(_, e):
+    def display_error(self, e):
         msg = str(e.args[0])
-        msg = msg.replace('\\n', "\n")
+        msg = msg.replace("\\n", "\n")
         click.echo(message=msg, err=True)
         return msg
 
-    def execute(_):
-        if len(_.statements) == 0:
+    def execute(self):
+        if len(self.statements) == 0:
             return
 
-        connection = _.destination.connection()
+        connection = self.destination.connection()
         with tracing.tracer.start_active_span(
-                'script.{}'.format(_.filename.replace('/', '.')),
-                tags=_.tracing_tags):
+            "script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
+        ):
             with connection.begin() as transaction:
                 try:
-                    yield 'sql.script.start', { 'script': _ }
-                    for event, data in super().execute(connection, _.statements, warn=_.options['warn']):
+                    yield "sql.script.start", {"script": self}
+                    for event, data in super().execute(
+                        connection, self.statements, warn=self.options["warn"]
+                    ):
                         yield event, data
-                    yield 'sql.script.end', { 'script': _ }
-                except KeyboardInterrupt as ctrlc:
+                    yield "sql.script.end", {"script": self}
+                except KeyboardInterrupt:
                     transaction.rollback()
                     raise click.Abort("aborted.")
                 except (ProgrammingError, MySQLError, DataError) as e:
                     transaction.rollback()
-                    raise click.Abort(_.display_error(e))
+                    raise click.Abort(self.display_error(e))
                 except InternalError as e:
-                    if 'Lock wait timeout exceeded' in e.orig.args[1]:
+                    if "Lock wait timeout exceeded" in e.orig.args[1]:
                         raise RetryScript() from e
                     else:
                         transaction.rollback()
-                        raise click.Abort(_.display_error(e))
-
-
+                        raise click.Abort(self.display_error(e))

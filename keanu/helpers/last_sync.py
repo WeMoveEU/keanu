@@ -1,13 +1,19 @@
-from sqlalchemy import text
 from datetime import datetime
+
+from sqlalchemy import text
+
 
 def last_sync_id(conn, dst, src):
     last_id = conn.execute(
-        text("""
-        SELECT last_id FROM last_sync
-        WHERE dst = :dst AND src = :src
-        """),
-        dst=dst, src=src).fetchone()
+        text(
+            """
+            SELECT last_id FROM last_sync
+            WHERE dst = :dst AND src = :src
+            """
+        ),
+        dst=dst,
+        src=src,
+    ).fetchone()
 
     if last_id is None:
         last_id = 0
@@ -29,11 +35,15 @@ def save_last_sync_id(conn, destination, source, last_id):
 
 def last_sync_dt(conn, dst, src):
     last_dt = conn.execute(
-        text("""
-        SELECT last_dt FROM last_sync_dt
-        WHERE dst = :dst AND src = :src
-        """),
-        dst=dst, src=src).fetchone()
+        text(
+            """
+            SELECT last_dt FROM last_sync_dt
+            WHERE dst = :dst AND src = :src
+            """
+        ),
+        dst=dst,
+        src=src,
+    ).fetchone()
 
     if last_dt is None:
         last_dt = datetime(1, 1, 1)
