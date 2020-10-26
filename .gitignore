@@ -1,7 +1,10 @@
 *.bak
 *.pyc
-.env
-.env.*
+.env*
 dist
 build
 *.egg*
+.venv
+.vscode
+.flake8.log
+tags

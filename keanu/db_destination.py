@@ -1,31 +1,32 @@
+from sqlalchemy.orm import sessionmaker
+
 from .data_store import DataStore
 from . import db
 
-from sqlalchemy.orm import sessionmaker
 
 class DBDestination(DataStore):
-    def __init__(_, db_spec, name=None, dry_run=False):
+    def __init__(self, db_spec, name=None, dry_run=False):
         super().__init__(name, db_spec, dry_run)
 
-        _.url = db_spec['url']
-        _.schema = db.url_to_schema(_.url)
-        if not _.local:
-            _.engine = db.get_engine(_.url, _.dry_run)
-            _.Session = sessionmaker(bind=_.engine)
+        self.url = db_spec["url"]
+        self.schema = db.url_to_schema(self.url)
+        if not self.local:
+            self.engine = db.get_engine(self.url, self.dry_run)
+            self.Session = sessionmaker(bind=self.engine)
 
-    def connection(_):
-        if not _.local:
-            conn = db.get_connection(_.engine)
+    def connection(self):
+        if not self.local:
+            conn = db.get_connection(self.engine)
         else:
-            src = _.batch.find_source(lambda s: s.local == False)
+            src = self.batch.find_source(lambda s: s.local == False)
             conn = src.connection()
         return conn
 
-    def session(_):
-        if not _.local:
-            return _.Session()
+    def session(self):
+        if not self.local:
+            return self.Session()
         # Not implemented
         return None
 
-    def environ(_):
+    def environ(self):
         return {}

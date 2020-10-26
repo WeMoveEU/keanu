@@ -276,3 +276,14 @@ Options:
  - `-c "Some collection"` - The name of the collection into which the objects should be imported. The collection must exist and be empty (no support for overwrite / merge at the moment).
  - `-j /path/to/file.json` - The JSON file to import.
 
+### Contributing
+
+TODO
+
+#### Code Linting and Formatting
+
+Pylint should be configured with:
+
+`pylint --disable all --enable=F,E,unreachable,duplicate-key,unnecessary-semicolon,global-variable-not-assigned,unused-variable,binary-op-exception,bad-format-string,anomalous-backslash-in-string,bad-open-mode,bad-whitespace,mixed-line-endings,mixed-indentation,bad-indentation,trailing-comma-tuple,wrong-import-order,ungrouped-imports,wrong-import-position,unused-import`
+
+Use black for formatting.
