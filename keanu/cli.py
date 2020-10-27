@@ -163,7 +163,7 @@ def delete(order, display, dry_run, warn, config_or_dir):
 @click.option("-H", "--helper", default=[], multiple=True, help="Load this helper SQL")
 @click.argument("database_url")
 def schema(drop, loads, helper, database_url):
-    dest = DBDestination({"url": environ["DATABASE_URL"]})
+    dest = DBDestination({"url": database_url or environ.get("DATABASE_URL")})
     connection = dest.connection()
 
     if drop:
@@ -199,6 +199,10 @@ def schema(drop, loads, helper, database_url):
                                 util.highlight_sql(scr.statement_abbrev(data["sql"])),
                             )
                         )
+
+    if not drop and not loads:
+        click.echo("Specify -D to drop tables and/or")
+        click.echo("Specify -L schema_file.sql and/or -H helper_name to load anything to the database")
 
 
 @cli.group("metabase", cls=ClickAliasedGroup, aliases=["mb"])
