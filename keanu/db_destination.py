@@ -16,6 +16,7 @@ class DBDestination(DataStore):
     def connection(_):
         if not _.local:
             conn = db.get_connection(_.engine)
+            conn.execute("SET time_zone = '+0:00'")
         else:
             src = _.batch.find_source(lambda s: s.local == False)
             conn = src.connection()
