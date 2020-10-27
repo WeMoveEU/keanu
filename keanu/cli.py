@@ -179,7 +179,6 @@ def schema(drop, loads, helper, database_url):
     if loads:
         for load in loads:
             script = SqlLoader(load, {}, None, dest)
-            script.replace_sql_object("keanu", dest.schema)
             click.echo("🚚 Loading {}...".format(script.filename))
             with connection.begin():
                 for event, data in script.execute():
