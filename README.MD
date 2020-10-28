@@ -282,8 +282,4 @@ TODO
 
 #### Code Linting and Formatting
 
-Pylint should be configured with:
-
-`pylint --disable all --enable=F,E,unreachable,duplicate-key,unnecessary-semicolon,global-variable-not-assigned,unused-variable,binary-op-exception,bad-format-string,anomalous-backslash-in-string,bad-open-mode,bad-whitespace,mixed-line-endings,mixed-indentation,bad-indentation,trailing-comma-tuple,wrong-import-order,ungrouped-imports,wrong-import-position,unused-import`
-
-Use black for formatting.
+A pylint configuration is in pylintrc - configure your editor to run it automatically. Use black for formatting.
