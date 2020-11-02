@@ -1,4 +1,3 @@
-import json
 import logging
 import sys
 from os import environ
@@ -6,7 +5,7 @@ from os import environ
 import click
 from click_aliases import ClickAliasedGroup
 
-from . import config, helpers, metabase, util
+from . import config, helpers, util
 from .db_destination import DBDestination
 from .sql_loader import SqlLoader
 from .test import TestLoaders
@@ -201,103 +200,9 @@ def schema(drop, loads, helper, database_url):
 
     if not drop and not loads:
         click.echo("Specify -D to drop tables and/or")
-        click.echo("Specify -L schema_file.sql and/or -H helper_name to load anything to the database")
-
-
-@cli.group("metabase", cls=ClickAliasedGroup, aliases=["mb"])
-def metabase_cli():
-    pass
-
-
-@metabase_cli.command("export", aliases=["e"])
-@click.option("-c", "--collection", help="Name of the collection to export")
-@click.option("-j", "--json-file", default=None, help="path to JSON file to import")
-@click.option(
-    "-y", "--yaml-dir", default=None, help="path to directory with yaml files"
-)
-@click.option("-v", "--verbose", is_flag=True, default=False, help="More logging")
-def metabase_export(collection, json_file, yaml_dir, verbose):
-    set_verbose(verbose)
-    client = metabase.Client()
-    mio = metabase.MetabaseIO(client)
-    result = mio.export_json(collection)
-    if json_file:
-        with open(json_file, "w") as out:
-            out.write(json.dumps(result, indent=2, sort_keys=True))
-    if yaml_dir:
-        splitter = metabase.Splitter(yaml_dir)
-        splitter.store(result)
-    if not (json_file or yaml_dir):
-        print(json.dumps(result, indent=2, sort_keys=True))
-
-
-@metabase_cli.command("import", aliases=["i"])
-@click.option("-c", "--collection", help="Name of the collection to import into")
-@click.option("-j", "--json-file", default=None, help="path to JSON file to import")
-@click.option(
-    "-y", "--yaml-dir", default=None, help="path to directory with yaml files"
-)
-@click.option(
-    "-m",
-    "--metadata",
-    is_flag=True,
-    help="Also import metadata before importing the collection",
-)
-@click.option("-o", "--overwrite", is_flag=True, help="Overwrite cards")
-@click.option(
-    "-D", "--db-map", multiple=True, help="Map Metabase database names fromname:toname."
-)
-@click.option("-V", "--validate", is_flag=True, help="Validate JSON before load")
-@click.option("-v", "--verbose", is_flag=True, default=False, help="More logging")
-def metabase_import(
-    collection, json_file, metadata, overwrite, db_map, validate, yaml_dir, verbose
-):
-    set_verbose(verbose)
-    client = metabase.Client()
-    mio = metabase.MetabaseIO(client)
-    db_mapping = {d1: d2 for (d1, d2) in map(lambda x: x.split(":"), db_map)}
-    if json_file:
-        with open(json_file, "r") as f:
-            source = json.loads(f.read())
-    elif yaml_dir:
-        splitter = metabase.Splitter(yaml_dir)
-        source = splitter.load()
-    else:
-        raise click.Abort(
-            "You need to specify json file with -j or yaml directory with -y"
+        click.echo(
+            "Specify -L schema_file.sql and/or -H helper_name to load anything to the database"
         )
-
-    if validate:
-        if verbose:
-            click.echo("🔍 Validating import file coherence...")
-        broken_cards = metabase.broken_cards(source["items"], source["datamodel"])
-        if len(broken_cards) > 0:
-            print("There are broken cards:")
-            for bc in broken_cards:
-                print("{}: {}".format(*bc))
-
-        broken_dashboards = metabase.broken_dashboards(source["items"])
-        if len(broken_dashboards) > 0:
-            print(
-                "There are broken dashboards (with questions outside of imported collection):"
-            )
-            for bd in broken_dashboards:
-                print("{}: {} (missing card id {})".format(*bd))
-
-        broken_datamodel = metabase.broken_datamodel(source["datamodel"])
-        if len(broken_datamodel) > 0:
-            print("This is broken in the data model:")
-            for bd in broken_datamodel:
-                print("{}: {} - {}".format(*bd))
-
-        if (
-            len(broken_cards) > 0
-            or len(broken_dashboards) > 0
-            or len(broken_datamodel) > 0
-        ):
-            return 1
-
-    mio.import_json(source, collection, metadata, overwrite, db_mapping)
 
 
 @cli.command(aliases=["t"])
@@ -335,50 +240,7 @@ def test(test_config, test_dir, spec, no_fixtures):
     sys.exit(1)
 
 
-@metabase_cli.command("query", aliases=["q"])
-@click.option(
-    "-j", "--json", is_flag=True, default=False, help="Print in JSON instead of Python"
-)
-@click.argument("model")
-@click.argument("oid", default=None, required=False)
-@click.argument("sub", default=None, required=False)
-def metabase_query(model, oid, sub, **opts):
-    from pprint import pprint
-
-    client = metabase.Client()
-
-    r = client.get(model, oid, sub)
-
-    if opts["json"]:
-        print(json.dumps(r, indent=2))
-    else:
-        pprint(r)
-
-
-@metabase_cli.command("split", aliases=["s"])
-@click.option("-j", "--json-file", help="path to JSON file to import")
-@click.option("-y", "--yaml-dir", help="path to directory with yaml files")
-def metabase_split(json_file, yaml_dir):
-    data = json.load(open(json_file))
-    splitter = metabase.Splitter(yaml_dir)
-    splitter.store(data)
-
-
-@metabase_cli.command("join", aliases=["j"])
-@click.option("-j", "--json-file", default=None, help="path to JSON file to import")
-@click.option("-y", "--yaml-dir", help="path to directory with yaml files")
-def metabase_join(json_file, yaml_dir):
-    splitter = metabase.Splitter(yaml_dir)
-    data = splitter.load()
-    if json_file:
-        with open(json_file, "w") as out:
-            out.write(json.dumps(data, indent=2, sort_keys=True))
-    else:
-        print(json.dumps(data, indent=2, sort_keys=True))
-
-
 def set_verbose(verbose):
     if verbose:
         logging.basicConfig()
         logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
-        logging.getLogger("metabase.io").setLevel(logging.INFO)
