@@ -32,6 +32,8 @@ def save_last_sync_id(conn, destination, source, last_id):
     conn.execute(text(sql), dst=destination, src=source, last_id=last_id)
     return last_id
 
+def zero_dt():
+    return datetime(1, 1, 1)
 
 def last_sync_dt(conn, dst, src):
     last_dt = conn.execute(
@@ -46,7 +48,7 @@ def last_sync_dt(conn, dst, src):
     ).fetchone()
 
     if last_dt is None:
-        last_dt = datetime(1, 1, 1)
+        last_dt = zero_dt()
     else:
         last_dt = last_dt[0]
 
