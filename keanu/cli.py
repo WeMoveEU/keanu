@@ -86,20 +86,24 @@ def load(incremental, order, dry_run, display, warn, threads, config_or_dir, ver
             if display:
                 code = ""
 
+            
+            util.clear_line()
             click.echo(
-                "\r✅️ {} rows in {:0.2f}s {:}".format(
+                "✅️ {} rows in {:0.2f}s {:}".format(
                     data["result"].rowcount, data["time"], code
                 )
             )
 
         elif event.startswith("py.script.start"):
+            util.clear_line()
             click.echo(
                 "🐍 [{:3d}] {}".format(scr.order, scr.filename), nl=(display or dry_run)
             )
 
         elif event.startswith("py.script.end"):
+            util.clear_line()
             click.echo(
-                "\r✅ [{:3d}] {} in {:0.2f}s".format(
+                "✅ [{:3d}] {} in {:0.2f}s".format(
                     scr.order, scr.filename, data["time"]
                 )
             )
@@ -190,8 +194,9 @@ def schema(drop, loads, helper, database_url):
                             nl=False,
                         )
                     elif event.startswith("sql.statement.end"):
+                        util.clear_line()
                         click.echo(
-                            "\r✅️ {} rows in {:0.2f}s {:}".format(
+                            "✅️ {} rows in {:0.2f}s {:}".format(
                                 data["result"].rowcount,
                                 data["time"],
                                 util.highlight_sql(scr.statement_abbrev(data["sql"])),

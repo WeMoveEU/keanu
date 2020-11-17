@@ -12,7 +12,8 @@ sighup_received = False
 
 
 def sighup(_a, _b):
-    click.echo("\r🛬 Received SIGUSR1, stopping as soon as possible...")
+    util.clear_line()
+    click.echo("🛬 Received SIGUSR1, stopping as soon as possible...")
     global sighup_received
     sighup_received = True
 

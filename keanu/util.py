@@ -15,6 +15,12 @@ from .sql_loader import SqlLoader
 terminal = pygments.formatters.get_formatter_by_name("console256")
 mysql = pygments.lexers.get_lexer_by_name("mysql")
 
+def clear_line():
+    "On a tty, clears the line with carriage return, on non-tty echoes a newline"
+    if click.get_text_stream('stdout').isatty():
+        click.echo("\r", nl=False)
+    else:
+        click.echo("")
 
 def highlight_sql(code):
     ends_with_nl = code.endswith("\n")
