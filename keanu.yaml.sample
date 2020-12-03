@@ -1,4 +1,8 @@
 ---
+# Definition of sources and destination of transformation. It operates on same
+# DB, using different schemas ("databases").
+# 
+# The sources are given names to be able to distinguish between them.
 - source:
     name: rates
     db:
@@ -7,13 +11,26 @@
     name: civi
     db:
       schema: civicrm_subset
+# There can be only one destination in a yaml file. If you need more, you must use many files.
 - destination:
+    # You can set the timezone on sources and destination.
+    # The TZ informaton can be used by Python tranforms.
+    timezone: Europe/Berlin
+    # Only the destination is given a full URL to database and schema
+    # The sources are "local" to the destination, which means they are on the same DB instance.
+    # 
+    # Such setup lets us use SQL transformations which run on the same machine.
+    # (no download/upload of data required)
     db:
       url: ${DATABASE_URL}
+
 - transform:
+    # The transoform specifies the rates source - schema civicrm_subset
     source: rates
+    # Specify directory containing SQL loaders
     sql:
       directory: currency_sql
+
 - transform:
     sql:
       directory: sql

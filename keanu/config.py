@@ -58,7 +58,7 @@ def build_batch(mode, configuration):
             step = step["source"]
             if "db" in step:
                 source = DBSource(
-                    step["db"], name=step.get("name"), dry_run=batch.is_dry_run
+                    step, name=step.get("name"), dry_run=batch.is_dry_run
                 )
                 batch.add_source(source)
             else:
@@ -67,7 +67,7 @@ def build_batch(mode, configuration):
             step = step["destination"]
             if "db" in step:
                 destination = DBDestination(
-                    step["db"], name=step.get("name"), dry_run=batch.is_dry_run
+                    step, name=step.get("name"), dry_run=batch.is_dry_run
                 )
                 batch.add_destination(destination)
             else:

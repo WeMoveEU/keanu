@@ -2,8 +2,8 @@ from .data_store import DataStore
 
 
 class DBSource(DataStore):
-    def __init__(self, db_spec, name=None, dry_run=False):
-        super().__init__(name, db_spec, dry_run)
+    def __init__(self, spec, name=None, dry_run=False):
+        super().__init__(name, spec, dry_run)
 
     def environ(self):
         env = {}
