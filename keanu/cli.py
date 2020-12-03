@@ -166,7 +166,7 @@ def delete(order, display, dry_run, warn, config_or_dir):
 @click.option("-H", "--helper", default=[], multiple=True, help="Load this helper SQL")
 @click.argument("database_url")
 def schema(drop, loads, helper, database_url):
-    dest = DBDestination({"url": database_url or environ.get("DATABASE_URL")})
+    dest = DBDestination({"db": {"url": database_url or environ.get("DATABASE_URL")}})
     connection = dest.connection()
 
     if drop:

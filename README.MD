@@ -57,8 +57,9 @@ Example: source in the same DB as destination, but in `exchange_rates` database
 - source:
     name: currency_data
     db:
-    schema: exchange_rates
+      schema: exchange_rates
 ```
+
 
 #### Destination
 
@@ -75,9 +76,15 @@ The python loaders run inside the keanu cli process, and download/upload data. T
 Example:
 ```
 - destination:
+    timezone: Europe/Berlin
+    region: eu-west-1 
     db:
       url: ${DATABASE_URL}
 ```
+
+You can specify additional keys under `source` as well as under `destination`. The whole dictionary is available under `config` property, eg. `batch.destination.config`. Some of them get special treatment:
+- `timezone` key is parsed by Python and available to python loaders using `batch.destination.timezone` property.
+
 
 #### Transform
 

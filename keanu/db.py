@@ -6,6 +6,8 @@ from sqlalchemy import create_engine
 
 
 def url_to_schema(url):
+    if url is None:
+        return None
     return urlparse(url).path[1:]
 
 
