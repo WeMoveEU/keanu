@@ -249,6 +249,35 @@ WHERE c.id NOT IN (SELECT external_id FROM jar)
 
 Enviroment variable interpolation. Similar to shell, simple variable interpolation is supported. `${FOO}` will be interpolated into value of FOO environment variable. This is currently used to insert the source schema name with `${SOURCE}`.
 
+### Working with Timezones
+
+Python has a myriad ways to work with timezones, which can be confusing.
+
+Remember:
+- When you run a Python loader, you need to manage the timezone of all datetimes.
+- When you run an SQL loader, it is run inside the DB server, so the connection/server timezone applies
+
+We recommend:
+- from `pytz` import `timezone` - to create a timezone, call it with TZ name:
+  `timezone('Europe/Warsaw')` or `timezone('CET')`. There is also `timezone.utc`
+  shorthand.
+- from `datetime` import `datetime` - datetimes can have `tzinfo` set, and
+  always make sure it is in your app. Then you can be sure that TZ is tracked no
+  matter what, and you only need to make sure to be careful about input and
+  output of such datetimes.
+- always pass tz to datetime constructors, for example: `datetime.now(tz=abc)`;
+  otherwise you get a naive datetime with no timezone info (but in local time of
+  the machine).
+- when reading datetime from string with `datetime.fromisoformat` also use
+  strings with timezone info
+  `datetime.fromisoformat("2021-01-02T10:10:10+01:00")`.
+- Mysql version below 8 do not properly handle timezones (they have not datetime
+  with timezone) - so if your mysql/mariadb server is in a non-UTC timezone, you
+  will need to convert the datetime to server timezone
+  (`dt.astimezone(server_tz)`) and then store it (with SQLAlchemty for example).
+  The TZ will just be dropped, but the result is what you want. (You can
+  consider migrating your server to use UTC to make this all easier).
+
 ### Contributing
 
 TODO
