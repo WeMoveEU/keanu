@@ -4,8 +4,17 @@ Welcome to Project Keanu!
 
 ![](https://media.giphy.com/media/MC6eSuC3yypCU/source.gif)
 
-Project Keanu consists of:
-- ETL tool to run the queries
+Keanu is an ETL tool to run the queries, and to work on your data transform. It
+lets you define an ordered list of data loaders, and run them (also partially)
+forward and in reverse. The data loaders can be written in SQL or Python. You
+must keep in mind the SQL loader is executed in the destination DB, so can be
+useful to transform data between two schemas of same DB, and do it fast. The
+Python loader selects the data and INSERTS/UPDATES it to the destination, so can
+operate on different source and destination DB.
+
+(TODO: We should explore using `SELECT` to CSV file and bulk insert into
+destination DB).
+
 
 # Keanu CLI
 
