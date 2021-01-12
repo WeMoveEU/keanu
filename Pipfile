@@ -12,6 +12,7 @@ petl = "*"
 pygments = "*"
 pymysql = "*"
 sqlalchemy = "*"
+pyaml = "*"
 
 [dev-packages]
 setuptools = "*"
@@ -24,4 +25,3 @@ pylint = "*"
 
 [requires]
 python_version = "3.8"
-
