@@ -140,7 +140,10 @@ class SqlLoader(RunStatement, tracing.Tags):
             env.update(self.destination.environ())
 
         def get_var(m):
-            return env[m.group(1)]
+            k = m.group(1)
+            if k in env:
+                return str(env[k])
+            return os.environ[k]
 
         return re.subn(r"[$]{([A-Za-z1-9_]+)}", get_var, line)[0]
 

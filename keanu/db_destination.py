@@ -26,4 +26,9 @@ class DBDestination(DataStore):
         return None
 
     def environ(self):
-        return {}
+        env = {}
+
+        if 'env' in self.config:
+            env = {**self.config['env'], **env}
+
+        return env
