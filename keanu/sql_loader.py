@@ -223,7 +223,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.tracer.start_active_span(
+        with tracing.span(
             "delete.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
         ):
             with connection.begin() as transaction:
@@ -249,7 +249,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.tracer.start_active_span(
+        with tracing.span(
             "script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
         ):
             with connection.begin() as transaction:

@@ -5,7 +5,7 @@ from time import sleep
 import click
 
 from . import util
-from .tracing import tracer
+from . import tracing
 
 
 sighup_received = False
@@ -83,7 +83,7 @@ class Batch:
             self.scripts.reverse()
 
     def execute(self):
-        with tracer.start_active_span("batch", tags=self.tracer_tags):
+        with tracing.transaction("batch", tags=self.tracer_tags):
             for scr in self.scripts:
                 for tries in range(RETRY_COUNT):
                     try:
