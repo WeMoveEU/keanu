@@ -6,11 +6,11 @@ name = "pypi"
 [packages]
 click = "*"
 click-aliases = "*"
-jaeger-client = "*"
 pandas = "*"
 petl = "*"
 pygments = "*"
 pymysql = "*"
+sentry-sdk = "*"
 sqlalchemy = "*"
 pyaml = "*"
 
