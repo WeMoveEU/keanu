@@ -1,35 +1,11 @@
 from atexit import register
 from getpass import getuser
 from time import sleep
+from os import environ
+from contextlib import contextmanager
 
-from jaeger_client import Config
-
-config = Config(
-    {
-        "sampler": {
-            "type": "const",
-            "param": 1,
-        },
-        "logging": True,
-        "tags": {"user": getuser()},
-    },
-    service_name="keanu",
-    validate=True,
-)
-
-tracer = config.initialize_tracer()
-
-
-def close_tracer(*a):
-    try:
-        tracer.close()
-    except RuntimeError:
-        pass
-    # this is unfortunately needed as silly jaeger does not let to sync flush spans :(
-    sleep(1)
-
-
-register(close_tracer)
+import sentry_sdk
+sentry_sdk.init(environ['SENTRY_DSN'], traces_sample_rate=1.0)
 
 
 class Tags:
@@ -52,3 +28,20 @@ class Tags:
     @tracing_tags.setter
     def tracing_tags(self, tags):
         self._tracing_tags = tags
+
+@contextmanager
+def transaction(description, tags={}):
+    with sentry_sdk.start_transaction() as t:
+        t.name = description
+        for k,v in tags.items():
+            t.set_tag(k, v)
+        yield t
+
+@contextmanager
+def span(description, tags={}):
+    with sentry_sdk.start_span() as s:
+        s.description = description
+        
+        for k,v in tags.items():
+            s.set_tag(k,v) 
+        yield s
