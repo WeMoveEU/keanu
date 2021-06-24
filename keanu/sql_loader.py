@@ -223,20 +223,17 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.span(
-            "delete.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
-        ):
-            with connection.begin() as transaction:
-                yield "sql.script.start.delete", {"script": self}
-                try:
-                    for event, data in super().execute(
-                        connection, self.deleteSql, warn=self.options["warn"]
-                    ):
-                        yield event, data
-                except KeyboardInterrupt as ctrlc:
-                    transaction.rollback()
-                    raise ctrlc
-                yield "sql.script.end.delete", {"script": self}
+        with connection.begin() as transaction:
+            yield "sql.script.start.delete", {"script": self}
+            try:
+                for event, data in super().execute(
+                    connection, self.deleteSql, warn=self.options["warn"]
+                ):
+                    yield event, data
+            except KeyboardInterrupt as ctrlc:
+                transaction.rollback()
+                raise ctrlc
+            yield "sql.script.end.delete", {"script": self}
 
     def display_error(self, e):
         msg = str(e.args[0])
@@ -249,8 +246,8 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.span(
-            "script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
+        with tracing.transaction(
+            "{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
         ):
             with connection.begin() as transaction:
                 try:

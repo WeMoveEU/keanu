@@ -103,8 +103,8 @@ class PyLoader(tracing.Tags):
 
             if self.options["dry_run"]:
                 return
-            with tracing.span(
-                "delete.{}".format(self.filename.replace("/", ".")),
+            with tracing.transaction(
+                "{}".format(self.filename.replace("/", ".")),
                 tags=self.tracing_tags,
             ):
                 self.module.delete(self)
@@ -124,8 +124,8 @@ class PyLoader(tracing.Tags):
             if self.options["dry_run"]:
                 return
 
-            with tracing.span(
-                "script.{}".format(self.filename.replace("/", ".")),
+            with tracing.transaction(
+                "{}".format(self.filename.replace("/", ".")),
                 tags=self.tracing_tags,
             ):
 

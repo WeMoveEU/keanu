@@ -1,6 +1,7 @@
 import warnings
 from signal import SIGTERM, signal
 from time import time
+from . import tracing
 
 from click import echo, exceptions
 from sqlalchemy import text
@@ -18,7 +19,8 @@ class RunStatement:
                     sql = sql.replace(":", "\\:")
                     yield "sql.statement.start", {"sql": sql, "script": self}
                     start_time = time()
-                    result = connection.execute(text(sql))
+                    with tracing.span(sql[0:32]):
+                        result = connection.execute(text(sql))
                     yield "sql.statement.end", {
                         "sql": sql,
                         "script": self,

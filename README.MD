@@ -42,7 +42,7 @@ Depending on subcommand, you configure keanu cli with:
 
 1. API keys and Database access urls
 
-Keanu uses Database credentials in form of database url in format suitable for SQLalchemy. Because keanu can have many sources and another destination, the urls are provided using a yaml configuration. 
+Keanu uses Database credentials in form of database url in format suitable for SQLalchemy. Because keanu can have many sources and another destination, the urls are provided using a yaml configuration.
 
 ### Configuration file
 
@@ -86,7 +86,7 @@ Example:
 ```
 - destination:
     timezone: Europe/Berlin
-    region: eu-west-1 
+    region: eu-west-1
     db:
       url: ${DATABASE_URL}
 ```
@@ -115,7 +115,7 @@ Example: a transform using just one python loader file.
       file: python_scripts/conversions.py
 ```
 
-1. You can  Copy the `cli/.env.sample` file to `.env` and change it to taste. 
+1. You can  Copy the `cli/.env.sample` file to `.env` and change it to taste.
 ### Default setting
 
 However, keanu can also run with minamal default configuration.
@@ -153,10 +153,10 @@ To upload it to PyPI:
 
 1. Create a `~/.pypirc` file:
 ```
-[distutils] 
+[distutils]
 index-servers=pypi
-[pypi] 
-repository = https://upload.pypi.org/legacy/ 
+[pypi]
+repository = https://upload.pypi.org/legacy/
 username = pypi-username
 ```
 
@@ -181,7 +181,7 @@ These are the commands related to creating and filling in the Keanu schema (from
 Currently we support two kinds of loaders:
 
 - SQL loader - consists of SQL file, containing special metadata in comments. It is run in the destination database server, and the source data must be available on the same server (in another database/schema).
-- Python loader - consists of Python file, and is run on the local machine. Keanu bundles sqlalchemy and pandas libraries in case you need them. 
+- Python loader - consists of Python file, and is run on the local machine. Keanu bundles sqlalchemy and pandas libraries in case you need them.
 
 Loaders are run in order specified in each loader's metadata (`ORDER` key), unless they are ingored (`IGNORE` key). See other metadata keys in sql and py loader reference.
 
@@ -194,7 +194,7 @@ Options:
 
 #### delete: deleting data
 
-`keanu.py delete SQLDIR` will go through the SQL scripts in _reverse order_ and execute the commented `DELETE` and `TRUNCATE` statements in the scripts. 
+`keanu.py delete SQLDIR` will go through the SQL scripts in _reverse order_ and execute the commented `DELETE` and `TRUNCATE` statements in the scripts.
 
 Options:
 
@@ -221,7 +221,7 @@ Supported commands are:
 `-- TRUNCATE` - similar to above. Please note: TRUNCATE will fail if any other table has reference to this table, even when it's empty.
 `-- IGNORE` - the rest of the file will be ignored.
 
-Blocks are also supported. They are marked by a pair of lines: 
+Blocks are also supported. They are marked by a pair of lines:
 
 ```sql
 -- BEGIN keyword
@@ -241,7 +241,7 @@ Supported blocks are:
 
 INSERT INTO jar (colour, size, external_id)
 SELECT
-  cd.name, 
+  cd.name,
   c.size,
   c.id
 FROM cookie c

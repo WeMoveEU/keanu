@@ -10,7 +10,7 @@ pandas = "*"
 petl = "*"
 pygments = "*"
 pymysql = "*"
-sentry-sdk = "*"
+sentry-sdk = "==1.1.0"
 sqlalchemy = "*"
 pyaml = "*"
 

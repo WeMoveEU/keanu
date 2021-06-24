@@ -83,7 +83,11 @@ class Batch:
             self.scripts.reverse()
 
     def execute(self):
-        with tracing.transaction("batch", tags=self.tracer_tags):
+        batch_desc = "BATCH {} {} {}".format(
+            self.destination.name, 
+            self.mode['incremental'] and "INCREMENTAL" or "FULL", 
+            self.mode["rewind"] and "DELETE" or "INSERT")
+        with tracing.transaction(batch_desc):
             for scr in self.scripts:
                 for tries in range(RETRY_COUNT):
                     try:

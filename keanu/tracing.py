@@ -5,7 +5,7 @@ from os import environ
 from contextlib import contextmanager
 
 import sentry_sdk
-sentry_sdk.init(environ['SENTRY_DSN'], traces_sample_rate=1.0)
+client = sentry_sdk.init(environ['SENTRY_DSN'], traces_sample_rate=1.0)
 
 
 class Tags:
