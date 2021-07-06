@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import click
 from sqlalchemy import create_engine
 
+engines = {}
 
 def url_to_schema(url):
     if url is None:
@@ -13,32 +14,20 @@ def url_to_schema(url):
 
 def get_engine(url, dry_run=False):
     """dry_run - if true, use DryRunEngine"""
+    global engines
+
     if dry_run:
         return DryRunEngine()
+    elif url in engines:
+        return engines[url]
     else:
-        return create_engine(url, pool_size=2, max_overflow=30)
+        engine = create_engine(url, pool_size=2, max_overflow=30)
+        engines[url] = engine
+        return engine
 
 
 def get_connection(engine):
-    tl = threading.local()
-    if not hasattr(tl, "db_connections"):
-        tl.db_connections = {}
-
-    eh = hash(engine)
-    if eh in tl.db_connections:
-        return tl.db_connections[eh]
-    else:
-        conn = engine.connect()
-        tl.db_connections[eh] = conn
-        return conn
-
-
-def close_connections():
-    tl = threading.local()
-    if hasattr(tl, "db_connections"):
-        for k, c in tl.db_connections.items():
-            del tl[k]
-            c.close()
+    return engine.connect()
 
 
 class DryRunEngine:

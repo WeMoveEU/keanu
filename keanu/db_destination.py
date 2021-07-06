@@ -8,7 +8,6 @@ class DBDestination(DataStore):
     def __init__(self, spec, name=None, dry_run=False):
         super().__init__(name, spec, dry_run)
         if not self.local:
-            self.engine = db.get_engine(self.url, self.dry_run)
             self.Session = sessionmaker(bind=self.engine)
 
     def connection(self):

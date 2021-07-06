@@ -248,10 +248,7 @@ class SqlLoader(RunStatement, tracing.Tags):
         if len(self.statements) == 0:
             return
 
-        connection = self.destination.connection()
-        with tracing.span(
-            "script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
-        ):
+        with self.destination.connection() as connection, tracing.span("script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags):
             with connection.begin() as transaction:
                 try:
                     yield "sql.script.start", {"script": self}
