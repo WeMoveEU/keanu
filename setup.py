@@ -6,7 +6,7 @@ with open("README.MD", "r") as fh:
 
 setuptools.setup(
     name="keanu-etl",
-    version="0.14.0",
+    version="0.14.1",
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
