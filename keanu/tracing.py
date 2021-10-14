@@ -4,8 +4,9 @@ from time import sleep
 from os import environ
 from contextlib import contextmanager
 
-import sentry_sdk
-sentry_sdk.init(environ['SENTRY_DSN'], traces_sample_rate=1.0)
+if 'SENTRY_DSN' in environ:
+    import sentry_sdk
+    sentry_sdk.init(environ['SENTRY_DSN'], traces_sample_rate=1.0)
 
 
 class Tags:
