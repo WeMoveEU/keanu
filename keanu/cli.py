@@ -166,8 +166,10 @@ def delete(order, display, dry_run, warn, config_or_dir):
 @click.option("-H", "--helper", default=[], multiple=True, help="Load this helper SQL")
 @click.argument("database_url_or_config")
 def schema(drop, loads, helper, database_url_or_config):
-    if '/' in database_url_or_config or database_url_or_config is None:
-        dest = DBDestination({"db": {"url": database_url_or_config or environ.get("DATABASE_URL")}})
+    "Parameter can be DB url or keanu config"
+    # lousy check to is if this is a url... 
+    if '://' in database_url_or_config:
+        dest = DBDestination({"db": {"url": database_url_or_config}})
         connection = dest.connection()
     else:
         configuration = config.configuration_from_argument(database_url_or_config)
