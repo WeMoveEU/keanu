@@ -8,21 +8,30 @@ from .sql_loader import SqlLoader
 
 current_config = None
 
-def batch_test(mode, func):
+def _batch_test(func, mode):
     func._keanu_batchMode = mode
     return func
 
 def initial_test(func):
-    return batch_test("INITIAL", func)
+    return _batch_test(func, "INITIAL")
 
 def incremental_test(func):
-    return batch_test("INCREMENTAL", func)
+    return _batch_test(func, "INCREMENTAL")
 
-def incremental_fixture(source):
+def _fixture(func, source, load_after_step):
+    func._keanu_fixture = True
+    func._keanu_source = source
+    func._keanu_step = load_after_step
+    return func
+
+def initial_fixture(source, load_after_step=0):
     def decorator(func):
-        func._keanu_fixture = True
-        func._keanu_source = source
-        return incremental_test(func)
+        return initial_test(_fixture(func, source, load_after_step))
+    return decorator
+
+def incremental_fixture(source, load_after_step=0):
+    def decorator(func):
+        return incremental_test(_fixture(func, source, load_after_step))
     return decorator
 
 class BatchTestCase(unittest.TestCase):
@@ -83,13 +92,11 @@ class TestRunner:
         (initial_fixtures, incremental_fixtures) = self.discover_fixtures(directory, pattern)
 
         self.run_global_fixtures()
-        self.run_fixtures(initial_fixtures, text_runner.stream, "initial")
-        self.initial_load()
+        self.initial_load(initial_fixtures, text_runner.stream)
 
         text_runner.run(initial_tests)
 
-        self.run_fixtures(incremental_fixtures, text_runner.stream, "incremental")
-        self.incremental_load()
+        self.incremental_load(incremental_fixtures, text_runner.stream)
 
         text_runner.run(incremental_tests)
 
@@ -100,7 +107,7 @@ class TestRunner:
         return self.split_suite(suite)
 
     def discover_fixtures(self, directory, pattern):
-        return self.discover_tests(directory, pattern, "load")
+      return map(lambda suite: self.map_steps(suite), self.discover_tests(directory, pattern, "load"))
 
     def run_global_fixtures(self):
         mode = {}
@@ -142,19 +149,40 @@ class TestRunner:
 
         return (initial, incremental)
 
-    def run_load(self, incremental):
-        click.echo("🚚 Performing {} load...".format("incremental" if incremental else "initial"))
+    def map_steps(self, fixtures, result=None):
+        if result is None:
+            result = {}
+        for fixture in fixtures:
+            if isinstance(fixture, TestSuite):
+                self.map_steps(fixture, result)
+            else:
+                method = getattr(fixture, fixture._testMethodName)
+                step = method._keanu_step
+                if step not in result:
+                    result[step] = TestSuite()
+                result[step].addTest(fixture)
+        return result
+
+    def run_load(self, incremental, fixtures, stream):
+        flavor = "incremental" if incremental else "initial"
+        if 0 in fixtures:
+            self.run_test_fixtures(fixtures[0], stream, flavor)
+        click.echo(f"🚚 Performing {flavor} load...")
         batch = config.build_batch({"incremental": incremental}, self.config)
-        for _ in batch.execute():
-            pass
+        steps_run = set()
+        for event, data in batch.execute():
+            scr = data["script"]
+            if event.endswith(".end") and scr.order in fixtures and scr.order not in steps_run:
+                self.run_test_fixtures(fixtures[scr.order], stream, "post-step " + str(scr.order))
+                steps_run.add(scr.order)
 
-    def initial_load(self):
-        self.run_load(False)
+    def initial_load(self, fixtures, stream):
+        self.run_load(False, fixtures, stream)
 
-    def incremental_load(self):
-        self.run_load(True)
+    def incremental_load(self, fixtures, stream):
+        self.run_load(True, fixtures, stream)
 
-    def run_fixtures(self, fixtures, stream, flavor):
+    def run_test_fixtures(self, fixtures, stream, flavor):
         click.echo("🚚 Loading {} fixtures...".format(flavor))
         fixtures.run(unittest.TextTestResult(stream, True, verbosity=1))
         click.echo("")
