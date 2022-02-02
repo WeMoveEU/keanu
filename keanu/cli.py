@@ -231,7 +231,8 @@ def test(test_config, test_dir, spec):
     """
     configuration = config.configuration_from_argument(test_config)
     runner = TestRunner(configuration)
-    runner.run(test_dir, spec)
+    if runner.run(test_dir, spec):
+      return 0
 
     sys.exit(1)
 

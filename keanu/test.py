@@ -94,11 +94,13 @@ class TestRunner:
         self.run_global_fixtures()
         self.initial_load(initial_fixtures, text_runner.stream)
 
-        text_runner.run(initial_tests)
+        initial_result = text_runner.run(initial_tests)
 
         self.incremental_load(incremental_fixtures, text_runner.stream)
 
-        text_runner.run(incremental_tests)
+        incremental_result = text_runner.run(incremental_tests)
+
+        return initial_result.wasSuccessful() and incremental_result.wasSuccessful()
 
     def discover_tests(self, directory, pattern, methodPrefix="test"):
         test_loader = unittest.TestLoader()
