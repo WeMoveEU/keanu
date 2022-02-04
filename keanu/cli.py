@@ -9,6 +9,8 @@ from . import config, helpers, util
 from .db_destination import DBDestination
 from .sql_loader import SqlLoader
 from .test import TestLoaders
+from .run_statement import RunStatement
+from sqlalchemy.schema import MetaData
 
 
 @click.group(cls=ClickAliasedGroup)
@@ -178,12 +180,11 @@ def schema(drop, loads, helper, database_url_or_config):
         connection = dest.connection()
 
     if drop:
-        for (table, _) in connection.execute(
-            "show full tables where Table_Type = 'BASE TABLE'"
-        ):
-            connection.execute("SET FOREIGN_KEY_CHECKS = 0")
+        ddl = RunStatement()
+        ddl.disable_fk_checks(connection)
+        for table in connection.engine.table_names():
             click.echo("💥 Dropping table {}".format(table))
-            connection.execute("DROP TABLE {}".format(table))
+            ddl.drop_table(connection, table)
 
     loads = [helpers.schema_path(x) for x in helper] + list(loads)
 

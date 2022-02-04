@@ -68,6 +68,8 @@ class SqlLoader(RunStatement, tracing.Tags):
 
         lines = map(self.interpolate_environ, lines)
 
+        flv = self.flavor(self.destination.connection())
+
         for l in lines:
             m = re.match(r" *-- *ORDER: (\d+)", l)
             if m:
@@ -114,6 +116,9 @@ class SqlLoader(RunStatement, tracing.Tags):
                 l = comment_line(l)
 
             if "INITIAL" in contexts and self.options["incremental"]:
+                l = comment_line(l)
+
+            if any(map(lambda x: x in contexts, ["MYSQL", "POSTGRESQL"])) and flv not in contexts:
                 l = comment_line(l)
 
             out.insert(0, l)

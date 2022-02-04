@@ -82,6 +82,9 @@ def build_batch(mode, configuration):
                     source_spec = lambda s: s.local == True
                 src = batch.find_source(source_spec)
 
+                if src is None:
+                    raise ConfigError("No local source found for SQL transform")
+
                 if "directory" in step["sql"]:
                     transform = SQLTransform(
                         mode, src, dst, directory=step["sql"]["directory"]

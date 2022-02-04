@@ -11,6 +11,7 @@ CREATE TABLE last_sync (
 CREATE UNIQUE INDEX last_sync_tables_unique ON last_sync (dst, src);
 
 
+-- BEGIN MYSQL
 DROP FUNCTION IF EXISTS last_sync_id;
 
 DELIMITER //
@@ -91,3 +92,4 @@ END
 //
 DELIMITER ;
 
+-- END MYSQL
