@@ -174,7 +174,7 @@ class TestRunner:
         steps_run = set()
         for event, data in batch.execute():
             scr = data["script"]
-            if event.endswith(".end") and scr.order in fixtures and scr.order not in steps_run:
+            if event.endswith("script.end") and scr.order in fixtures and scr.order not in steps_run:
                 self.run_test_fixtures(fixtures[scr.order], stream, "post-step " + str(scr.order))
                 steps_run.add(scr.order)
 
