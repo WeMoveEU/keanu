@@ -118,7 +118,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             if "INITIAL" in contexts and self.options["incremental"]:
                 l = comment_line(l)
 
-            if any(map(lambda x: x in contexts, ["MYSQL", "POSTGRESQL"])) and flv not in contexts:
+            if any(map(lambda x: x in contexts, ["MYSQL", "POSTGRESQL"])) and flv.upper() not in contexts:
                 l = comment_line(l)
 
             out.insert(0, l)
