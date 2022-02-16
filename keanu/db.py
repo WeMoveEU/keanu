@@ -47,6 +47,11 @@ class DryRunEngine:
     It allows to leave the code using with transaction.begin() blocks also in the dry run.
     In such case it will just run the with block.
     """
+    name = "mysql"
+
+    @property
+    def engine(self):
+        return self
 
     def connect(self):
         return self
