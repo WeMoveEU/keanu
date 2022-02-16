@@ -45,19 +45,21 @@ RETURN last_id2;
 END
 //
 DELIMITER ;
+-- END MYSQL
 
--- LAST SYNC DATE TIME
+-- LAST SYNC DATE TIME -----------------------------------------------
 DROP TABLE IF EXISTS last_sync_dt;
 
 CREATE TABLE last_sync_dt (
 dst VARCHAR(64) not null,
 src VARCHAR(64) not null,
-last_dt DATETIME not null
+last_dt TIMESTAMP not null
 );
 
-CREATE UNIQUE INDEX last_sync_tables_unique ON last_sync_dt (dst, src);
+CREATE UNIQUE INDEX last_sync_dt_tables_unique ON last_sync_dt (dst, src);
 
 
+-- BEGIN MYSQL
 DROP FUNCTION IF EXISTS last_sync_dt;
 
 DELIMITER //
