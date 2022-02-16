@@ -4,13 +4,13 @@ from os import environ
 
 import click
 from click_aliases import ClickAliasedGroup
+from sqlalchemy.schema import MetaData
 
 from . import config, helpers, util
 from .db_destination import DBDestination
 from .sql_loader import SqlLoader
-from .test import TestLoaders
 from .run_statement import RunStatement
-from sqlalchemy.schema import MetaData
+from .test import TestRunner
 
 
 @click.group(cls=ClickAliasedGroup)
@@ -220,36 +220,20 @@ def schema(drop, loads, helper, database_url_or_config):
 
 
 @cli.command(aliases=["t"])
-@click.option(
-    "--no-fixtures",
-    is_flag=True,
-    help="Do not load configured fixtures before running the test suite",
-)
 @click.argument("test_config", default="keanu-test.yaml", type=click.Path(exists=True))
 @click.argument("test_dir", default="tests", type=click.Path(exists=True))
-@click.argument("spec", required=False)
-def test(test_config, test_dir, spec, no_fixtures):
+@click.argument("spec", required=False, default='test*.py')
+def test(test_config, test_dir, spec):
     """
     Run tests from TEST_DIR (default tests), using batch configuration from TEST_CONFIG (default keanu-test.yaml).
-    You should configure the batch in test file in a way that is similar to your production setup. Each test will make a full load of loaders defined by script ORDER variable, similar to load -o option format.
+    You should configure the batch in test file in a way that is similar to your production setup. The command will execute initial fixtures, run a full load, execute each test marked as @initial_test, run incremental fixtures, run an incremental load and finally execute incremental tests.
 
     Use spec to limit test files, it defaults to test*.py when omitted.
     """
     configuration = config.configuration_from_argument(test_config)
-    suite = TestLoaders(configuration, no_fixtures)
-    result = suite.run(test_dir, spec)
-
-    if result.wasSuccessful():
-        click.echo("All {} tests pass".format(result.testsRun))
-        return 0
-
-    for (t, tb) in result.errors:
-        click.echo("💔  Error in {}\n{}".format(t, tb))
-
-    for (t, tb) in result.failures:
-        click.echo("😞  Failure in {}\n{}".format(t, tb))
-
-    click.echo("{} tests failed".format(len(result.failures)))
+    runner = TestRunner(configuration)
+    if runner.run(test_dir, spec):
+      return 0
 
     sys.exit(1)
 

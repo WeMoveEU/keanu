@@ -17,6 +17,8 @@ DROP FUNCTION IF EXISTS last_sync_id;
 DELIMITER //
 CREATE FUNCTION last_sync_id (destination varchar(32), source varchar(32))
 RETURNS BIGINT
+READS SQL DATA
+DETERMINISTIC
 BEGIN
   DECLARE lid INT;
   SET lid = (SELECT last_id from last_sync WHERE dst=destination AND src=source);
@@ -35,6 +37,8 @@ DROP FUNCTION IF EXISTS save_last_sync_id;
 DELIMITER //
 CREATE FUNCTION save_last_sync_id (destination varchar(32), source varchar(32), last_id2 BIGINT)
 RETURNS BIGINT
+MODIFIES SQL DATA
+DETERMINISTIC
 BEGIN
 INSERT INTO last_sync (dst, src, last_id)
 SELECT destination, source, last_id2
@@ -65,6 +69,8 @@ DROP FUNCTION IF EXISTS last_sync_dt;
 DELIMITER //
 CREATE FUNCTION last_sync_dt (destination varchar(32), source varchar(32))
 RETURNS DATETIME
+READS SQL DATA
+DETERMINISTIC
 BEGIN
 DECLARE ldt DATETIME;
 SET ldt = (SELECT last_dt from last_sync_dt WHERE dst=destination AND src=source);
@@ -83,6 +89,8 @@ DROP FUNCTION IF EXISTS save_last_sync_dt;
 DELIMITER //
 CREATE FUNCTION save_last_sync_dt (destination varchar(32), source varchar(32), last_dt2 DATETIME)
 RETURNS DATETIME
+MODIFIES SQL DATA
+DETERMINISTIC
 BEGIN
 INSERT INTO last_sync_dt (dst, src, last_dt)
 SELECT destination, source, last_dt2
