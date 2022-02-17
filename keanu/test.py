@@ -9,32 +9,43 @@ from .sql_loader import SqlLoader
 current_config = None
 
 def _batch_test(func, mode):
+    "Annotate a function with mode (initial or incremental)"
     func._keanu_batchMode = mode
     return func
 
 def initial_test(func):
+    "Annotate function with initial mode"
     return _batch_test(func, "INITIAL")
 
 def incremental_test(func):
+    "Annotate function with incremental mode"
     return _batch_test(func, "INCREMENTAL")
 
 def _fixture(func, source, load_after_step):
+    """Annotate function with fixture metadata.
+
+    :param int load_after_step: fixture will be loaded after given step - lets you inject some change in the middle of keanu batch
+    :param source: the source db .. ?
+    """
     func._keanu_fixture = True
     func._keanu_source = source
     func._keanu_step = load_after_step
     return func
 
 def initial_fixture(source, load_after_step=0):
+    "Decorate funcation with mode=initial and fixture metadata"
     def decorator(func):
         return initial_test(_fixture(func, source, load_after_step))
     return decorator
 
 def incremental_fixture(source, load_after_step=0):
+    "Decorate funcation with mode=incremental and fixture metadata"
     def decorator(func):
         return incremental_test(_fixture(func, source, load_after_step))
     return decorator
 
 class BatchTestCase(unittest.TestCase):
+    "A single test case (one file)"
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.default_order = 0
@@ -50,7 +61,7 @@ class BatchTestCase(unittest.TestCase):
         return testMethod._keanu_source
 
     def setUp(self):
-        self.batch = config.build_batch({}, self.config)
+        self.batch = config.build_batch({'display': True}, self.config)
         if self._is_fixture():
             sourcedb = self.batch.find_source_by_name(self._source)
             sourcedb.use()
@@ -62,7 +73,7 @@ class BatchTestCase(unittest.TestCase):
     def incremental_load(self, order=None):
         if order is None:
             order = self.default_order
-        batch = config.build_batch({"incremental": True, "order": order}, self.config)
+        batch = config.build_batch({'display': True, "incremental": True, "order": order}, self.config)
 
         for _ in batch.execute():
             pass
@@ -166,10 +177,10 @@ class TestRunner:
         return result
 
     def run_load(self, incremental, fixtures, stream):
-        flavor = "incremental" if incremental else "initial"
+        mode = "incremental" if incremental else "initial"
         if 0 in fixtures:
-            self.run_test_fixtures(fixtures[0], stream, flavor)
-        click.echo(f"🚚 Performing {flavor} load...")
+            self.run_test_fixtures(fixtures[0], stream, mode)
+        click.echo(f"🚚 Performing {mode} load...")
         batch = config.build_batch({"incremental": incremental}, self.config)
         steps_run = set()
         for event, data in batch.execute():
@@ -184,7 +195,7 @@ class TestRunner:
     def incremental_load(self, fixtures, stream):
         self.run_load(True, fixtures, stream)
 
-    def run_test_fixtures(self, fixtures, stream, flavor):
-        click.echo("🚚 Loading {} fixtures...".format(flavor))
+    def run_test_fixtures(self, fixtures, stream, mode):
+        click.echo("🚚 Loading {} fixtures...".format(mode))
         fixtures.run(unittest.TextTestResult(stream, True, verbosity=1))
         click.echo("")
