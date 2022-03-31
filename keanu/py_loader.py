@@ -65,6 +65,12 @@ class PyLoader(tracing.Tags):
         else:
             self.ignore = not self.defines("execute")
 
+        self.use_transaction = False
+        if self.defines("TRANSACTION"):
+            self.use_transaction = self.module.TRANSACTION
+        if self.defines("TRANSACTION_INCREMENTAL") and self.options['incremental']:
+            self.use_transaction = self.module.TRANSACTION_INCREMENTAL
+
         self.checkpoint = None
 
     @staticmethod
@@ -104,8 +110,8 @@ class PyLoader(tracing.Tags):
             if self.options["dry_run"]:
                 return
             with tracing.span(
-                "delete.{}".format(self.filename.replace("/", ".")),
-                tags=self.tracing_tags,
+                    "delete.{}".format(self.filename.replace("/", ".")),
+                    tags=self.tracing_tags,
             ):
                 self.module.delete(self)
             yield "py.script.end.delete", {"script": self, "time": time() - start_time}
@@ -113,42 +119,68 @@ class PyLoader(tracing.Tags):
         except KeyboardInterrupt as ctrlc:
             raise ctrlc
 
+
     def execute(self):
         if self.ignore:
             return
 
-        try:
-            yield "py.script.start", {"script": self}
-            start_time = time()
+        yield "py.script.start", {"script": self}
+        start_time = time()
 
-            if self.options["dry_run"]:
-                return
+        if self.options["dry_run"]:
+            return
 
-            with tracing.span(
+        with tracing.span(
                 "script.{}".format(self.filename.replace("/", ".")),
                 tags=self.tracing_tags,
-            ):
+        ):
+            result = self.wrap_in_transaction(lambda: self.module.execute(self))
 
-                result = self.module.execute(self)
+        yield "py.script.end", {
+            "script": self,
+            "time": time() - start_time,
+            "result": result,
+        }
 
-            yield "py.script.end", {
-                "script": self,
-                "time": time() - start_time,
-                "result": result,
-            }
-        except KeyboardInterrupt:
+    def wrap_in_transaction(self, funct):
+        if self.use_transaction:
+            inner_funct = funct
+            def funct_in_transaction():
+                conn = self.destination.connection()
+                with conn.begin() as transaction:
+                    try:
+                        r = inner_funct()
+                        return r
+                    except KeyboardInterrupt as e:
+                        print("rolling back due interrupt")
+                        transaction.rollback()
+                        raise e
+
+                    except Exception as e:
+                        print("rolling back")
+                        transaction.rollback()
+                        raise e
+
+            funct = funct_in_transaction
+
+        try:
+            result = funct()
+        except KeyboardInterrupt as e:
             raise click.Abort("aborted.")
         except (
-            ProgrammingError,
-            IntegrityError,
-            MySQLError,
-            InternalError,
-            DataError,
+                ProgrammingError,
+                IntegrityError,
+                MySQLError,
+                InternalError,
+                DataError,
         ) as e:
             msg = str(e.args[0])
             msg = msg.replace("\\n", "\n")
             click.echo(message=msg, err=True)
             raise click.Abort(msg)
+
+        return result
+
 
     @staticmethod
     def slice_for_thread(iterable, thread):
@@ -182,13 +214,16 @@ class PyLoader(tracing.Tags):
 
             def execute_then_close_connections(thr):
                 try:
-                    r = function(thr)
+
+                    r = self.wrap_in_transaction(lambda: function(thr))
                     return ("ok", r)
                 except Exception as exc:
                     click.echo(exc)
                     return ("error", exc.__class__.__name__, exc.args)
                 finally:
-                    db.close_connections()
+                    self.destination.threadsafe_close()
+                    self.source.threadsafe_close()
+
 
             thr_ct = self.options["threads"]
             threads = [
