@@ -13,7 +13,7 @@ class DBDestination(DataStore):
 
     def connection(self):
         if not self.local:
-            conn = db.get_connection(self.engine)
+            conn = self.threadsafe_connection
         else:
             src = self.batch.find_source(lambda s: s.local == False)
             conn = src.connection()
