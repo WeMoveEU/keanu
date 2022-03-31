@@ -1,5 +1,6 @@
 from pytz import utc, timezone
 from . import db
+import threading
 
 class DataStore:
     """
@@ -45,6 +46,8 @@ class DataStore:
         else:
             self.timezone = utc
 
+        self.thread_local = threading.local()
+
     def set_batch(self, b):
         self.batch = b
 
@@ -52,9 +55,21 @@ class DataStore:
     def config(self):
         return self._spec
 
+    @property
+    def threadsafe_connection(self):
+        tl = self.thread_local
+        if not hasattr(tl, "connection"):
+            tl.connection = self.engine.connect()
+        return tl.connection
+
+    def threadsafe_close(self):
+        tl = self.thread_local
+        if not hasattr(tl, "connection"):
+            tl.connection.close()
+
     def connection(self):
         if not self.local:
-            return db.get_connection(self.engine)
+            return self.threadsafe_connection
 
         return self.batch.destination.connection()
 
