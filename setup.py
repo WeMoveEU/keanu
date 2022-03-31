@@ -6,13 +6,13 @@ with open("README.MD", "r") as fh:
 
 setuptools.setup(
     name="keanu-etl",
-    version="0.15.4",
+    version="0.15.5",
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.wemove.eu/internal/keanu",
+    url="https://gitlab.wemove.eu/campeval/keanu",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
