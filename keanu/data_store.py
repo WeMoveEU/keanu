@@ -64,7 +64,7 @@ class DataStore:
 
     def threadsafe_close(self):
         tl = self.thread_local
-        if not hasattr(tl, "connection"):
+        if hasattr(tl, "connection"):
             tl.connection.close()
 
     def connection(self):
