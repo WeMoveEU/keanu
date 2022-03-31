@@ -65,6 +65,12 @@ class PyLoader(tracing.Tags):
         else:
             self.ignore = not self.defines("execute")
 
+        self.use_transaction = False
+        if self.defines("TRANSACTION"):
+            self.use_transaction = self.module.TRANSACTION
+        if self.defines("TRANSACTION_INCREMENTAL") and self.options['incremental']:
+            self.use_transaction = self.module.TRANSACTION_INCREMENTAL
+
         self.checkpoint = None
 
     @staticmethod
@@ -129,7 +135,18 @@ class PyLoader(tracing.Tags):
                 tags=self.tracing_tags,
             ):
 
-                result = self.module.execute(self)
+                if self.use_transaction:
+                    conn = self.destination.connection()
+                    with conn.begin() as transaction:
+                        try:
+                            result = self.module.execute(self)
+                        except KeyboardInterrupt:
+                            transaction.rollback()
+                            raise click.Abort("aborted.")
+
+                else:
+                    result = self.module.execute(self)
+
 
             yield "py.script.end", {
                 "script": self,
