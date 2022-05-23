@@ -117,6 +117,9 @@ class TestRunner:
         test_loader = unittest.TestLoader()
         test_loader.testMethodPrefix = methodPrefix
         suite = test_loader.discover(directory, pattern)
+        if test_loader.errors:
+            raise Exception("💥 Error while discovering {methodPrefix} functions:\n"
+                + "\n".join(test_loader.errors))
         return self.split_suite(suite)
 
     def discover_fixtures(self, directory, pattern):
@@ -197,5 +200,10 @@ class TestRunner:
 
     def run_test_fixtures(self, fixtures, stream, mode):
         click.echo("🚚 Loading {} fixtures...".format(mode))
-        fixtures.run(unittest.TextTestResult(stream, True, verbosity=1))
-        click.echo("")
+        result = unittest.TextTestResult(stream, True, verbosity=1)
+        fixtures.run(result)
+        if result.errors:
+            raise Exception("💥 Error(s) while loading fixtures:\n"
+                + "\n".join(map(lambda e: e[1], result.errors)))
+        else:
+            click.echo("")
