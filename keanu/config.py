@@ -51,8 +51,8 @@ def load(file_path):
         return yaml.safe_load(txt)
 
 
-def build_batch(mode, configuration):
-    batch = Batch(mode)
+def build_batch(mode, configuration, name='batch'):
+    batch = Batch(mode, name)
     for step in configuration:
         if "source" in step:
             step = step["source"]

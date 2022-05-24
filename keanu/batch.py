@@ -30,7 +30,7 @@ RETRY_SLEEP = 10
 
 
 class Batch:
-    def __init__(self, mode):
+    def __init__(self, mode, name='batch'):
         """
         mode - running mode of this batch. Map containing:
         = {
@@ -56,6 +56,7 @@ class Batch:
         self.sources = []
         self.destination = None
         self.scripts = []
+        self.name = name
 
     @property
     def is_dry_run(self):
@@ -83,7 +84,7 @@ class Batch:
             self.scripts.reverse()
 
     def execute(self):
-        with tracing.transaction("batch", tags=self.tracer_tags):
+        with tracing.batch(self) as tx:
             for scr in self.scripts:
                 for tries in range(RETRY_COUNT):
                     try:
@@ -125,7 +126,7 @@ class Batch:
         return scripts
 
     @property
-    def tracer_tags(self):
+    def tracing_tags(self):
         return {
             "mode": "delete" if self.mode["rewind"] else "load",
             "incremental": self.mode["incremental"] == True,

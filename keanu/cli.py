@@ -61,7 +61,7 @@ def load(incremental, order, dry_run, display, warn, threads, config_or_dir, ver
     }
 
     configuration = config.configuration_from_argument(config_or_dir)
-    batch = config.build_batch(mode, configuration)
+    batch = config.build_batch(mode, configuration, name=config_or_dir)
 
     for event, data in batch.execute():
         scr = data["script"]

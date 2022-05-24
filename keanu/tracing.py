@@ -10,6 +10,10 @@ if 'SENTRY_DSN' in environ:
 
 
 class Tags:
+    """
+    Loader mixin that adds self.tracing_tags property.
+
+    """
     def __init__(self):
         self._tracing_tags = {}
 
@@ -46,3 +50,37 @@ def span(description, tags={}):
         for k,v in tags.items():
             s.set_tag(k,v) 
         yield s
+
+
+@contextmanager
+def batch(batch):
+    with sentry_sdk.start_transaction(name=batch.name, op="batch") as t:
+        tags = batch.tracing_tags
+        for k,v in tags.items():
+            t.set_tag(k,v)
+
+        # pass this in thread local storage of Sentry too
+        sentry_sdk.hub.Hub.current._parent_tx = t
+        yield t
+
+@contextmanager
+def loader(loader, batch_tx=None):
+    if batch_tx is None:
+        batch_tx = sentry_sdk.hub.Hub.current._parent_tx
+
+    if loader.options['rewind']:
+        name_prefix="delete"
+    else:
+        name_prefix="script"
+    name = "{}.{}".format(name_prefix, loader.filename.replace("/", "."))
+
+    with sentry_sdk.start_span(description=loader.filename) as s:
+        tags = loader.tracing_tags
+        for k,v in tags.items():
+            s.set_tag(k,v)
+
+        with sentry_sdk.start_transaction(
+                name=name, op='loader', trace_id=batch_tx.trace_id,
+                parent_span_id=s.span_id, containing_transaction=batch_tx) as t:
+
+            yield t
