@@ -84,6 +84,7 @@ def loader(loader, batch_tx=None):
     # another directory, remove the ../ from name (case for helpers)
     with sentry_sdk.start_span(description=loader.filename) as s:
         tags = {}
+        tags.update(batch_tx._tags)
         tags.update(loader.tracing_tags)
         for k,v in tags.items():
             s.set_tag(k,v)

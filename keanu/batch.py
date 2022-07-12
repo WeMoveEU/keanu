@@ -127,7 +127,15 @@ class Batch:
 
     @property
     def tracing_tags(self):
+        if self.mode['dry_run']:
+            mode = 'dry_run'
+        else:
+            if self.mode['rewind']:
+                mode = 'delete'
+            else:
+                mode = 'load'
+
         return {
-            "mode": "delete" if self.mode["rewind"] else "load",
+            "mode": mode,
             "incremental": self.mode["incremental"] == True,
         }
