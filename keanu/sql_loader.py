@@ -30,7 +30,13 @@ class SqlLoader(RunStatement, tracing.Tags):
 
         # filename and class options
         self.filename = filename
-        self.options = {"incremental": False, "display": False, "warn": False}
+        self.options = {
+            "incremental": False,
+            "display": False,
+            "warn": False,
+            "rewind": False,
+            "dry_run": False
+        }
         self.options.update(mode)
         self.source = source
         self.destination = destination

@@ -6,7 +6,7 @@ import click
 from click_aliases import ClickAliasedGroup
 from sqlalchemy.schema import MetaData
 
-from . import config, helpers, util
+from . import config, helpers, util, tracing
 from .db_destination import DBDestination
 from .sql_loader import SqlLoader
 from .run_statement import RunStatement
@@ -175,7 +175,7 @@ def schema(drop, loads, helper, database_url_or_config):
         connection = dest.connection()
     else:
         configuration = config.configuration_from_argument(database_url_or_config)
-        batch = config.build_batch({}, configuration)
+        batch = config.build_batch({}, configuration, 'schema')
         dest = batch.destination
         connection = dest.connection()
 
@@ -189,28 +189,29 @@ def schema(drop, loads, helper, database_url_or_config):
     loads = [helpers.schema_path(x) for x in helper] + list(loads)
 
     if loads:
-        for load in loads:
-            script = SqlLoader(load, {}, None, dest)
-            click.echo("🚚 Loading {}...".format(script.filename))
-            with connection.begin():
-                for event, data in script.execute():
-                    scr = data["script"]
-                    if event.startswith("sql.statement.start"):
-                        click.echo(
-                            "📦 {0}...".format(
-                                util.highlight_sql(scr.statement_abbrev(data["sql"]))
-                            ),
-                            nl=False,
-                        )
-                    elif event.startswith("sql.statement.end"):
-                        util.clear_line()
-                        click.echo(
-                            "✅️ {} rows in {:0.2f}s {:}".format(
-                                data["result"].rowcount,
-                                data["time"],
-                                util.highlight_sql(scr.statement_abbrev(data["sql"])),
+        with tracing.batch(batch):
+            for load in loads:
+                script = SqlLoader(load, {}, None, dest)
+                click.echo("🚚 Loading {}...".format(script.filename))
+                with connection.begin():
+                    for event, data in script.execute():
+                        scr = data["script"]
+                        if event.startswith("sql.statement.start"):
+                            click.echo(
+                                "📦 {0}...".format(
+                                    util.highlight_sql(scr.statement_abbrev(data["sql"]))
+                                ),
+                                nl=False,
                             )
-                        )
+                        elif event.startswith("sql.statement.end"):
+                            util.clear_line()
+                            click.echo(
+                                "✅️ {} rows in {:0.2f}s {:}".format(
+                                    data["result"].rowcount,
+                                    data["time"],
+                                    util.highlight_sql(scr.statement_abbrev(data["sql"])),
+                                )
+                            )
 
     if not drop and not loads:
         click.echo("Specify -D to drop tables and/or")

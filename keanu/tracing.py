@@ -1,7 +1,8 @@
 from atexit import register
 from getpass import getuser
 from time import sleep
-from os import environ
+from os import environ, path
+
 from contextlib import contextmanager
 import sentry_sdk
 
@@ -69,13 +70,21 @@ def loader(loader, batch_tx=None):
         batch_tx = sentry_sdk.hub.Hub.current._parent_tx
 
     if loader.options['rewind']:
-        name_prefix="delete"
+        name_prefix='delete'
     else:
-        name_prefix="script"
-    name = "{}.{}".format(name_prefix, loader.filename.replace("/", "."))
+        name_prefix='load'
 
+    # dry run are called dry_run_delete dry_run_load
+    if loader.options['dry_run']:
+        name_prefix = 'dry_run_' + name_prefix
+
+    name = "{}.{}".format(name_prefix, path.relpath(loader.filename).replace('../', '').replace("/", "."))
+
+    # loader description - filename, but make it relative, and if the file is in
+    # another directory, remove the ../ from name (case for helpers)
     with sentry_sdk.start_span(description=loader.filename) as s:
-        tags = loader.tracing_tags
+        tags = {}
+        tags.update(loader.tracing_tags)
         for k,v in tags.items():
             s.set_tag(k,v)
 

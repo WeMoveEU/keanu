@@ -32,6 +32,7 @@ class PyLoader(tracing.Tags):
             "incremental": False,
             "display": False,
             "warn": False,
+            "rewind": False,
             "dry_run": False,
             "threads": 1,
         }
