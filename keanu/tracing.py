@@ -83,14 +83,15 @@ def loader(loader, batch_tx=None):
     # loader description - filename, but make it relative, and if the file is in
     # another directory, remove the ../ from name (case for helpers)
     with sentry_sdk.start_span(description=loader.filename) as s:
-        tags = {}
-        tags.update(batch_tx._tags)
-        tags.update(loader.tracing_tags)
-        for k,v in tags.items():
-            s.set_tag(k,v)
-
         with sentry_sdk.start_transaction(
                 name=name, op='loader', trace_id=batch_tx.trace_id,
                 parent_span_id=s.span_id, containing_transaction=batch_tx) as t:
+
+            tags = {}
+            tags.update(batch_tx._tags)
+            tags.update(loader.tracing_tags)
+
+            for k,v in tags.items():
+                s.set_tag(k,v)
 
             yield t
