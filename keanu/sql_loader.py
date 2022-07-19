@@ -30,7 +30,13 @@ class SqlLoader(RunStatement, tracing.Tags):
 
         # filename and class options
         self.filename = filename
-        self.options = {"incremental": False, "display": False, "warn": False}
+        self.options = {
+            "incremental": False,
+            "display": False,
+            "warn": False,
+            "rewind": False,
+            "dry_run": False
+        }
         self.options.update(mode)
         self.source = source
         self.destination = destination
@@ -231,9 +237,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.span(
-            "delete.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
-        ):
+        with tracing.loader(self):
             with connection.begin() as transaction:
                 yield "sql.script.start.delete", {"script": self}
                 try:
@@ -257,9 +261,7 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
-        with tracing.span(
-            "script.{}".format(self.filename.replace("/", ".")), tags=self.tracing_tags
-        ):
+        with tracing.loader(self):
             with connection.begin() as transaction:
                 try:
                     yield "sql.script.start", {"script": self}
