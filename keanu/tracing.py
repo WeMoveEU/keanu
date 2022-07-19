@@ -61,12 +61,14 @@ def batch(batch):
             t.set_tag(k,v)
 
         # pass this in thread local storage of Sentry too
-        sentry_sdk.hub.Hub.current._parent_tx = t
+        if 'SENTRY_DSN' in environ:
+            sentry_sdk.hub.Hub.current._parent_tx = t
+
         yield t
 
 @contextmanager
 def loader(loader, batch_tx=None):
-    if batch_tx is None:
+    if batch_tx is None and 'SENTRY_DSN' in environ:
         batch_tx = sentry_sdk.hub.Hub.current._parent_tx
 
     if loader.options['rewind']:
