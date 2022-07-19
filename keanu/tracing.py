@@ -92,6 +92,6 @@ def loader(loader, batch_tx=None):
             tags.update(loader.tracing_tags)
 
             for k,v in tags.items():
-                s.set_tag(k,v)
+                t.set_tag(k,v)
 
             yield t
