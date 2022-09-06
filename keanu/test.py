@@ -3,7 +3,7 @@ from unittest import TestSuite
 
 
 import click
-from . import config, helpers
+from . import config, helpers, tracing
 from .sql_loader import SqlLoader
 
 current_config = None
@@ -129,12 +129,14 @@ class TestRunner:
         mode = {}
         batch = config.build_batch(mode, self.config)
 
-        for step in self.config:
-            if "destination" in step and "fixtures" in step["destination"]:
-                self.load_fixtures(batch.destination, step["destination"]["fixtures"])
-            elif "source" in step and "fixtures" in step["source"]:
-                src = batch.find_source(lambda s: s.name == step["source"]["name"])
-                self.load_fixtures(src, step["source"]["fixtures"])
+        # Loaders expect to be within a tracing batch transaction
+        with tracing.batch(batch):
+            for step in self.config:
+                if "destination" in step and "fixtures" in step["destination"]:
+                    self.load_fixtures(batch.destination, step["destination"]["fixtures"])
+                elif "source" in step and "fixtures" in step["source"]:
+                    src = batch.find_source(lambda s: s.name == step["source"]["name"])
+                    self.load_fixtures(src, step["source"]["fixtures"])
 
         return batch
 

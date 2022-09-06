@@ -84,7 +84,7 @@ class Batch:
             self.scripts.reverse()
 
     def execute(self):
-        with tracing.batch(self) as tx:
+        with tracing.batch(self):
             for scr in self.scripts:
                 for tries in range(RETRY_COUNT):
                     try:
