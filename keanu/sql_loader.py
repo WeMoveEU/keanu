@@ -261,15 +261,14 @@ class SqlLoader(RunStatement, tracing.Tags):
             return
 
         connection = self.destination.connection()
+        yield "sql.script.start", {"script": self}
         with tracing.loader(self):
             with connection.begin() as transaction:
                 try:
-                    yield "sql.script.start", {"script": self}
                     for event, data in super().execute(
                         connection, self.statements, warn=self.options["warn"]
                     ):
                         yield event, data
-                    yield "sql.script.end", {"script": self}
                 except KeyboardInterrupt:
                     transaction.rollback()
                     raise click.Abort("aborted.")
@@ -282,3 +281,4 @@ class SqlLoader(RunStatement, tracing.Tags):
                     else:
                         transaction.rollback()
                         raise click.Abort(self.display_error(e))
+        yield "sql.script.end", {"script": self}
