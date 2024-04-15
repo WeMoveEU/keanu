@@ -12,7 +12,7 @@ pygments = "*"
 pymysql = "*"
 sentry-sdk = "*"
 sqlalchemy = "*"
-pyaml = "*"
+PyYAML = "<= 5.3.1"
 
 [dev-packages]
 setuptools = "*"
