@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import setuptools
 
-with open("README.MD", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="keanu-etl",
-    version="0.15.10",
+    version="0.15.11",
     author="Romain Thouvenin, Marcin Koziej",
     author_email="romain@wemove.eu, marcin@cahoots.pl",
     description="Analytics ETL and collaboration tool for progressive campaigning",
