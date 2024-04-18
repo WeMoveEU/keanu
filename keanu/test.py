@@ -246,7 +246,6 @@ class TestRunner:
                 ready = {item for item in remain if is_satisfied(item, satisfied)}
                 for r in ready:
                     satisfied.add(_method(r).__qualname__)
-                    print(f"yielding {_method(r).__qualname__}")
                     yield r
                 remain = remain - ready
                 if ready == set() and remain != set():
