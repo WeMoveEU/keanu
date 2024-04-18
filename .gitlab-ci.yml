@@ -17,7 +17,7 @@ feature_docker:
   image: docker:24-git
   stage: build
   rules:
-   - if: $CI_COMMIT_BRANCH =~ /^feature[/]/
+   - if: $CI_COMMIT_BRANCH =~ /^feature/
      when: always
   script:
    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
