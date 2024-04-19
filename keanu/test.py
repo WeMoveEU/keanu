@@ -29,8 +29,8 @@ def _fixture(func, source, load_after_step, depend_on=[]):
     """Annotate function with fixture metadata.
 
     :param int load_after_step: fixture will be loaded after given step - lets you inject some change in the middle of keanu batch
-    :param source: the source db .. ?
-    :param depend_on:
+    :param source: source name in keanu config. The fixture will USE this db.
+    :param depend_on: list of fixture methods of test case classes. Eg. TestAction.load_signatures
     """
     func._keanu_fixture = True
     func._keanu_source = source
