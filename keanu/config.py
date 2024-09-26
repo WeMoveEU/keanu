@@ -51,15 +51,13 @@ def load(file_path):
         return yaml.safe_load(txt)
 
 
-def build_batch(mode, configuration, name='batch'):
+def build_batch(mode, configuration, name="batch"):
     batch = Batch(mode, name)
     for step in configuration:
         if "source" in step:
             step = step["source"]
             if "db" in step:
-                source = DBSource(
-                    step, name=step.get("name"), dry_run=batch.is_dry_run
-                )
+                source = DBSource(step, name=step.get("name"), dry_run=batch.is_dry_run)
                 batch.add_source(source)
             else:
                 raise ConfigError("config file: source without db spec")
@@ -123,4 +121,6 @@ def build_batch(mode, configuration, name='batch'):
 
             else:
                 raise ConfigError("config file: not a sql or py transform")
+        else:
+            raise ConfigError(f"config file: unknown step: {step}")
     return batch

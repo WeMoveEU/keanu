@@ -221,16 +221,18 @@ def schema(drop, loads, helper, database_url_or_config):
 
 
 @cli.command(aliases=["t"])
+@click.option("-v", "--verbose", is_flag=True, default=False, help="More logging")
 @click.argument("test_config", default="keanu-test.yaml", type=click.Path(exists=True))
 @click.argument("test_dir", default="tests", type=click.Path(exists=True))
 @click.argument("spec", required=False, default='test*.py')
-def test(test_config, test_dir, spec):
+def test(verbose, test_config, test_dir, spec):
     """
     Run tests from TEST_DIR (default tests), using batch configuration from TEST_CONFIG (default keanu-test.yaml).
     You should configure the batch in test file in a way that is similar to your production setup. The command will execute initial fixtures, run a full load, execute each test marked as @initial_test, run incremental fixtures, run an incremental load and finally execute incremental tests.
 
     Use spec to limit test files, it defaults to test*.py when omitted.
     """
+    set_verbose(verbose)
     configuration = config.configuration_from_argument(test_config)
     runner = TestRunner(configuration)
     if runner.run(test_dir, spec):
