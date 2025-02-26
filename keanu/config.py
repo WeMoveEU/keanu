@@ -53,11 +53,16 @@ def load(file_path):
 
 def build_batch(mode, configuration, name="batch"):
     batch = Batch(mode, name)
+    pool_size = 2
+
+    if mode["threads"]:
+        pool_size = mode["threads"]
+
     for step in configuration:
         if "source" in step:
             step = step["source"]
             if "db" in step:
-                source = DBSource(step, name=step.get("name"), dry_run=batch.is_dry_run)
+                source = DBSource(step, name=step.get("name"), dry_run=batch.is_dry_run, pool_size=pool_size)
                 batch.add_source(source)
             else:
                 raise ConfigError("config file: source without db spec")
@@ -65,7 +70,10 @@ def build_batch(mode, configuration, name="batch"):
             step = step["destination"]
             if "db" in step:
                 destination = DBDestination(
-                    step, name=step.get("name"), dry_run=batch.is_dry_run
+                    step,
+                    name=step.get("name"),
+                    dry_run=batch.is_dry_run,
+                    pool_size=pool_size,
                 )
                 batch.add_destination(destination)
             else:

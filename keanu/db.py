@@ -11,13 +11,12 @@ def url_to_schema(url):
     return urlparse(url).path[1:]
 
 
-def get_engine(url, dry_run=False):
+def get_engine(url, dry_run=False, pool_size=2, pool_overflow=20):
     """dry_run - if true, use DryRunEngine"""
     if dry_run:
         return DryRunEngine()
     else:
-        return create_engine(url, pool_size=2, max_overflow=30)
-
+        return create_engine(url, pool_size=pool_size, max_overflow=pool_overflow)
 
 
 class DryRunEngine:
@@ -26,6 +25,7 @@ class DryRunEngine:
     It allows to leave the code using with transaction.begin() blocks also in the dry run.
     In such case it will just run the with block.
     """
+
     name = "mysql"
 
     @property

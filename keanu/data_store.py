@@ -2,6 +2,7 @@ from pytz import utc, timezone
 from . import db
 import threading
 
+
 class DataStore:
     """
     Arguments:
@@ -23,7 +24,7 @@ class DataStore:
     - schema - or logical "database", but in general case path in store url. Would also work for an AMQP vhost for example
     """
 
-    def __init__(self, name, spec, dry_run=False):
+    def __init__(self, name, spec, dry_run=False, pool_size=2):
         db_spec = spec["db"]
 
         self.name = name
@@ -39,10 +40,10 @@ class DataStore:
         self.local = self.url is None
 
         if not self.local:
-            self.engine = db.get_engine(self.url, self.dry_run)
+            self.engine = db.get_engine(self.url, self.dry_run, pool_size=pool_size)
 
-        if 'timezone' in spec:
-            self.timezone = timezone(spec['timezone'])
+        if "timezone" in spec:
+            self.timezone = timezone(spec["timezone"])
         else:
             self.timezone = utc
 
