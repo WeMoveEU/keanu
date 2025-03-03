@@ -7,9 +7,9 @@ from . import db
 class DBDestination(DataStore):
     def __init__(self, spec, name=None, dry_run=False, pool_size=2):
         super().__init__(name, spec, dry_run, pool_size=pool_size)
-        # if not self.local:
+        if not self.local:
         #     self.engine = db.get_engine(self.url, self.dry_run, pool_size=pool_size)
-        #     self.Session = sessionmaker(bind=self.engine)
+            self.Session = sessionmaker(bind=self.engine)
 
     def connection(self):
         if not self.local:
