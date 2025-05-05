@@ -2,8 +2,6 @@
 
 Welcome to Project Keanu!
 
-![](https://media.giphy.com/media/MC6eSuC3yypCU/source.gif)
-
 Keanu is an ETL tool to run the queries, and to work on your data transform. It
 lets you define an ordered list of data loaders, and run them (also partially)
 forward and in reverse. The data loaders can be written in SQL or Python. You
