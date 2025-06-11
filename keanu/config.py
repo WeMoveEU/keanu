@@ -55,7 +55,7 @@ def build_batch(mode, configuration, name="batch"):
     batch = Batch(mode, name)
     pool_size = 2
 
-    if mode["threads"]:
+    if 'threads' in mode:
         pool_size = mode["threads"]
 
     for step in configuration:

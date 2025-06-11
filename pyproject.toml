@@ -1,0 +1,22 @@
+[project]
+name = "keanu-etl"  # Replace with the actual project name
+version = "0.16.3"         # Replace with the actual project version
+description = "ETL runner"  # Replace with the project description
+authors = [
+    {name="Marcin Koziej", email="marcin@wemove.eu"}
+]
+readme = "README.md"       # Replace with the actual path to your README, if applicable
+requires-python = ">=3.8"
+
+dependencies = [
+    "click",
+    "click-aliases",
+    "pygments",
+    "pymysql",
+    "sentry-sdk",
+    "sqlalchemy == 1.4.*",
+    "PyYAML <= 5.3.1",
+    "cryptography; python_version >= '3.13'"
+]
+
+[dependency-groups]
