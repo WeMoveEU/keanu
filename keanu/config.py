@@ -53,10 +53,7 @@ def load(file_path):
 
 def build_batch(mode, configuration, name="batch"):
     batch = Batch(mode, name)
-    pool_size = 2
-
-    if 'threads' in mode:
-        pool_size = mode["threads"]
+    pool_size = mode.get('threads', 2)
 
     for step in configuration:
         if "source" in step:

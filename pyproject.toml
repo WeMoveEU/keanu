@@ -1,6 +1,6 @@
 [project]
 name = "keanu-etl"  # Replace with the actual project name
-version = "0.16.3"         # Replace with the actual project version
+version = "0.16.5"         # Replace with the actual project version
 description = "ETL runner"  # Replace with the project description
 authors = [
     {name="Marcin Koziej", email="marcin@wemove.eu"}
