@@ -16,7 +16,14 @@ dependencies = [
     "sentry-sdk",
     "sqlalchemy == 1.4.*",
     "PyYAML <= 5.3.1",
+    "pytz",
     "cryptography; python_version >= '3.13'"
 ]
+
+[project.scripts]
+keanu = "keanu.cli:cli"
+
+[tool.setuptools.package-data]
+keanu = ["helpers/*.sql"]
 
 [dependency-groups]
