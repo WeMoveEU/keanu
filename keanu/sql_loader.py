@@ -5,7 +5,7 @@ from glob import glob
 
 import click
 from pymysql.err import MySQLError
-from sqlalchemy.exc import DataError, InternalError, ProgrammingError
+from sqlalchemy.exc import DataError, InternalError, OperationalError, ProgrammingError
 
 from . import tracing
 from .batch import RetryScript
@@ -275,7 +275,7 @@ class SqlLoader(RunStatement, tracing.Tags):
                 except (ProgrammingError, MySQLError, DataError) as e:
                     transaction.rollback()
                     raise click.Abort(self.display_error(e))
-                except InternalError as e:
+                except (InternalError, OperationalError) as e:
                     if "Lock wait timeout exceeded" in e.orig.args[1]:
                         raise RetryScript() from e
                     else:

@@ -9,9 +9,10 @@ from time import time
 
 import click
 from pymysql.err import MySQLError
-from sqlalchemy.exc import DataError, IntegrityError, InternalError, ProgrammingError
+from sqlalchemy.exc import DataError, IntegrityError, InternalError, OperationalError, ProgrammingError
 
 from . import db, tracing
+from .batch import RetryScript
 
 ThreadInfo = namedtuple("ThreadInfo", ["index", "count"])
 
@@ -162,11 +163,18 @@ class PyLoader(tracing.Tags):
             result = funct()
         except KeyboardInterrupt as e:
             raise click.Abort("aborted.")
+        except (InternalError, OperationalError) as e:
+            if "Lock wait timeout exceeded" in e.orig.args[1]:
+                raise RetryScript() from e
+            else:
+                msg = str(e.args[0])
+                msg = msg.replace("\\n", "\n")
+                click.echo(message=msg, err=True)
+                raise click.Abort(msg)
         except (
                 ProgrammingError,
                 IntegrityError,
                 MySQLError,
-                InternalError,
                 DataError,
         ) as e:
             msg = str(e.args[0])
