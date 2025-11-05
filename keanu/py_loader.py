@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from collections import namedtuple
@@ -12,6 +13,8 @@ from pymysql.err import MySQLError
 from sqlalchemy.exc import DataError, IntegrityError, InternalError, ProgrammingError
 
 from . import db, tracing
+
+logger = logging.getLogger(__name__)
 
 ThreadInfo = namedtuple("ThreadInfo", ["index", "count"])
 
@@ -147,12 +150,12 @@ class PyLoader(tracing.Tags):
                         r = inner_funct()
                         return r
                     except KeyboardInterrupt as e:
-                        print("rolling back due interrupt")
+                        logger.warning("Rolling back transaction due to interrupt")
                         transaction.rollback()
                         raise e
 
                     except Exception as e:
-                        print("rolling back")
+                        logger.warning("Rolling back transaction due to exception: %s", str(e))
                         transaction.rollback()
                         raise e
 

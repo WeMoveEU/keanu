@@ -242,6 +242,19 @@ def test(verbose, test_config, test_dir, spec):
 
 
 def set_verbose(verbose):
+    """Configure logging with a nice format including timestamp."""
     if verbose:
-        logging.basicConfig()
+        # Configure logging with timestamp and nice formatting
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
         logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    else:
+        # Even when not verbose, configure basic logging for the keanu logger
+        logging.basicConfig(
+            level=logging.WARNING,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
