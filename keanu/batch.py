@@ -1,4 +1,5 @@
 import operator
+import traceback
 from signal import signal, SIGUSR1
 from time import sleep
 
@@ -6,6 +7,7 @@ import click
 
 from . import util
 from . import tracing
+from .helpers import run_history
 
 
 sighup_received = False
@@ -84,32 +86,70 @@ class Batch:
             self.scripts.reverse()
 
     def execute(self):
-        with tracing.batch(self):
-            for scr in self.scripts:
-                for tries in range(RETRY_COUNT):
-                    try:
-                        if self.mode["rewind"] == False:
-                            for e, d in scr.execute():
-                                yield e, d
-                        else:
-                            for e, d in scr.delete():
-                                yield e, d
+        # Dry-run and destination-less batches skip history tracking — they don't
+        # represent real loader cycles and shouldn't pollute the stats.
+        track_history = (
+            not self.mode["dry_run"] and self.destination is not None
+        )
 
-                        if sighup_received:
-                            raise click.Abort("Stopped gracefully due to USR1 signal")
+        conn = self.destination.connection() if track_history else None
+        cycle_id = None
+        cycle_status = 'success'
 
-                        break  # from retry loop
-                    except RetryScript as rse:
-                        if tries + 1 == RETRY_COUNT:
-                            raise click.Abort("Too many retries, aborting") from rse
-                        else:
-                            click.echo(
-                                "Encountered error that can be retried: {}.\n😴  Sleeping 10 seconds....".format(
-                                    rse.__cause__
-                                )
+        if track_history:
+            run_history.prune(conn)
+            cycle_id = run_history.start_cycle(conn, self.name)
+
+        try:
+            with tracing.batch(self):
+                for scr in self.scripts:
+                    for tries in range(RETRY_COUNT):
+                        run_id = None
+                        if track_history:
+                            run_id = run_history.start_run(
+                                conn, cycle_id, scr.filename, scr.order
                             )
-                            sleep(RETRY_SLEEP)
-                            click.echo("Retrying....")
+                        try:
+                            if self.mode["rewind"] == False:
+                                for e, d in scr.execute():
+                                    yield e, d
+                            else:
+                                for e, d in scr.delete():
+                                    yield e, d
+
+                            if sighup_received:
+                                raise click.Abort("Stopped gracefully due to USR1 signal")
+
+                            if track_history:
+                                run_history.end_run(conn, run_id, 'success')
+                            break  # from retry loop
+                        except RetryScript as rse:
+                            if track_history:
+                                run_history.end_run(
+                                    conn, run_id, 'failure', traceback.format_exc()
+                                )
+                            if tries + 1 == RETRY_COUNT:
+                                raise click.Abort("Too many retries, aborting") from rse
+                            else:
+                                click.echo(
+                                    "Encountered error that can be retried: {}.\n😴  Sleeping 10 seconds....".format(
+                                        rse.__cause__
+                                    )
+                                )
+                                sleep(RETRY_SLEEP)
+                                click.echo("Retrying....")
+                        except Exception:
+                            if track_history:
+                                run_history.end_run(
+                                    conn, run_id, 'failure', traceback.format_exc()
+                                )
+                            raise
+        except Exception:
+            cycle_status = 'failure'
+            raise
+        finally:
+            if track_history and cycle_id is not None:
+                run_history.end_cycle(conn, cycle_id, cycle_status)
 
     def find_source(self, criteria):
         for s in reversed(self.sources):
