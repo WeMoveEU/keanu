@@ -1,6 +1,6 @@
 [project]
 name = "keanu-etl"  # Replace with the actual project name
-version = "0.17.0"         # Replace with the actual project version
+version = "0.18.0"         # Replace with the actual project version
 description = "ETL runner"  # Replace with the project description
 authors = [
     {name="Marcin Koziej", email="marcin@wemove.eu"}
@@ -15,7 +15,7 @@ dependencies = [
     "pymysql",
     "sentry-sdk",
     "sqlalchemy == 1.4.*",
-    "PyYAML <= 5.3.1",
+    "PyYAML >= 6.0.2",
     "pytz",
     "cryptography; python_version >= '3.13'"
 ]
