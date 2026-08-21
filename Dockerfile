@@ -1,4 +1,4 @@
-FROM python:3.11 as deps 
+FROM python:3.14 as deps 
 
 WORKDIR /src/keanu
 
