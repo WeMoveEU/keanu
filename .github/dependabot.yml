@@ -1,0 +1,44 @@
+version: 2
+
+# Tier 3: a human decides when keanu ships. Dependabot batches minor/patch bumps
+# into one Monday-morning PR that waits for review — nothing here auto-merges.
+
+updates:
+  # keanu is uv-managed: pyproject.toml + uv.lock, since commit 3e471d0 "move to uv".
+  # The root Pipfile/Pipfile.lock are orphans from the pre-uv era (last touched
+  # 2024-04-19) and are deliberately NOT declared — a "pip" block would resolve
+  # against them, not against uv.lock.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    groups:
+      uv-minor-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Root Dockerfile: tracks the `FROM python:3.11` base image.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    groups:
+      docker-minor-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
