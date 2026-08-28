@@ -6,7 +6,7 @@ authors = [
     {name="Marcin Koziej", email="marcin@wemove.eu"}
 ]
 readme = "README.md"       # Replace with the actual path to your README, if applicable
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 
 dependencies = [
     "click",
@@ -25,5 +25,11 @@ keanu = "keanu.cli:cli"
 
 [tool.setuptools.package-data]
 keanu = ["helpers/*.sql"]
+
+[tool.python-pins]
+# requires-python is a compatibility range here, not a runtime pin: this package is
+# imported from git by zenbaki (3.11) and kabona (3.14), so no single ==X.Y.* works.
+# `library` opts out of the form rule only -- the values still have to agree.
+role = "library"
 
 [dependency-groups]
