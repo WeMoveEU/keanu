@@ -26,8 +26,9 @@ Keanu command lives in `cli` directory. It is a multitool consisting of followin
 
 ## Setup
 
-1. Install Pipenv command in your system: `sudo apt install pipenv`
-2. Install dependencies in `cli` directory: `pipenv install`
+1. Install [uv](https://docs.astral.sh/uv/) if you do not have it:
+   `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2. Install dependencies from `pyproject.toml` / `uv.lock`: `uv sync`
 
 ## Configuration
 
@@ -141,11 +142,16 @@ Keanu commands has a set of subcommands, similar to git or heroku.
 
 ## Running from source
 
-Install dependencies using `pipenv insall` and open shell with needed requirements with `pipenv shell`.
+Install dependencies with `uv sync`, then run the CLI through the root entry script:
+`uv run python keanu.py --help`.
+
+Note that `uv run keanu` does not work: `pyproject.toml` declares no `build-system`, so
+the project is not packaged into the venv and the `project.scripts` entry point is never
+installed. `uv sync` warns about this.
 
 ## Package building
 
-To build the package use `python setup.py bdist_wheel`.
+To build the package use `uv build`. This writes a wheel and an sdist to `dist/`.
 
 To upload it to PyPI:
 
