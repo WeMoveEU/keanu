@@ -1,0 +1,176 @@
+# Copied from WeMoveEU/dependency-policy templates/pin-override.yml — the PYTHON-ONLY
+# variant: this repo has one pyproject.toml + uv.lock at the repository root and no
+# package.json, so the template's node/corepack setup is replaced by setup-uv and its
+# backend+frontend steps are collapsed into one step at `path: "."`.
+#
+# The action (ci-workflows pin-override, v14.7.0 and later) tells the two kinds of root
+# apart by their lockfiles and gives a Python root the template's first pass in uv's
+# dialect: pip-audit over a frozen `uv export`, then `uv lock --upgrade-package
+# '<pkg><next-line>'` for every package it names — capped at each package's own
+# compatibility line (its major, or its minor below 1.0) — then pip-audit again, and
+# anything that did not actually clear its advisory is reverted. `uv.lock` is the only
+# file that moves; pyproject.toml is never edited, so a floor like `pytest>=8.3` is never
+# turned into an 8 -> 9 jump a robot chose.
+#
+# Why this runs next to Dependabot: Dependabot's security PR is one exact version for one
+# package, and once such a PR has been closed by hand it records an ignore for that
+# version and never re-proposes the fix. This job instead moves every named package to
+# the newest release its own line already allows — what `uv lock --upgrade-package` gives
+# a person at the keyboard — and checks the result against the advisory data rather than
+# trusting the version arithmetic.
+#
+# It opens the PR as the org's policy App and merges nothing: this repo is tier 3, so a
+# person decides when it ships. The PR sits under the App's name, where the daily brief
+# lists it as awaiting review. The template's `Arm auto-merge` step is deleted here on
+# purpose.
+#
+# Action pins match the rest of the fleet. This repo's dependabot.yml has no github-actions
+# block yet, so until it gets one these pins are refreshed by hand when the org sweeps
+# action versions.
+
+name: Dependabot pin override
+
+on:
+  schedule:
+    # 04:46 UTC Mon-Thu: an hour after the 03:00 Dependabot window, so the day's own PRs
+    # have landed and are not re-proposed, and before the 05:07 brief — anything this job
+    # fixes therefore never reaches the brief's UNPATCHED section, and what remains there
+    # is genuinely a human's to-do list. Mon-Thu because a merge here reaches production on
+    # tier 1/2 and the fleet does not ship on Fridays.
+    #
+    # THE MINUTE IS PER-REPO, do not copy another repo's. The fleet runs these one at a
+    # time inside 04:00-04:55, and the slot table lives in the template
+    # (dependency-policy templates/pin-override.yml): take a free minute there when adding
+    # a repo, and write it down there.
+    - cron: "46 4 * * 1-4"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: pin-override
+  cancel-in-progress: true
+
+jobs:
+  override:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # `uv` on PATH: the action runs this repo's own `uv export` / `uv lock` and fetches
+      # pip-audit with `uv run --with`, so nothing else is installed. An exact release, not
+      # a floating major: astral-sh/setup-uv publishes no `vN` tag past v7, and Dependabot
+      # keeps this pin current.
+      - uses: astral-sh/setup-uv@v10.2.0
+
+      - name: Override pins
+        id: override
+        uses: WeMoveEU/ci-workflows/.github/actions/pin-override@v14
+        with:
+          path: "."
+
+      # Step outputs reach bash through `env:`, never through ${{ }} interpolation inside
+      # the script, and every use is a quoted printf argument. Two reasons, and the first
+      # one already bit: the action emits markdown with backticks around package names, and
+      # interpolated backticks are COMMAND SUBSTITUTION — the first run of this job opened
+      # PRs whose every row read "-  →  (high, GHSA-...)" because bash had executed `tar`
+      # and `qs` and substituted their empty output. The second is that advisory text is
+      # third-party content flowing into a shell, an injection surface whatever it looks
+      # like. All prose lives in env: below for the same reason: nothing to re-quote.
+      - name: Collect the outcome
+        id: collect
+        env:
+          BUMPED: ${{ steps.override.outputs.bumped }}
+          BLOCKED: ${{ steps.override.outputs.blocked }}
+          PREAMBLE: |
+            Written by the `pin-override` action on a schedule. `uv.lock` only —
+            `pyproject.toml` is untouched.
+
+            **Re-locked in range** means `uv lock --upgrade-package '<pkg><next-line>'`:
+            each package pip-audit named moved to the newest release inside its own
+            compatibility line (its major, or its minor below 1.0), and the rest of the
+            lock stays pinned where it was. Dependabot proposes one exact version instead,
+            and stops proposing it at all once a PR for it has been closed by hand.
+
+            Everything below was **verified by re-running `pip-audit`** over a fresh
+            `uv export` — anything that did not actually clear its advisory was reverted
+            rather than left in place.
+          BLOCKED_INTRO: |
+            Not safe to automate, with the reason: the fix is outside the package's own
+            compatibility line, or no fixed release exists yet.
+          NOTES: |
+            ### Review notes
+
+            - This repo's `ci` is the python-pins drift check only — nothing installs from
+              the regenerated lock before merge. Run `uv sync --locked` and the tests on
+              this branch before merging. A person merges this; consumers pin keanu by git
+              tag and pick it up when they bump.
+            - pip-audit reads the PyPA advisory database, so it can name an advisory
+              before GitHub has a Dependabot alert for it; the alert, when it arrives,
+              closes on its own once this lands.
+        run: |
+          set -euo pipefail
+          {
+            echo "body<<__BODY__"
+            printf '%s\n' "$PREAMBLE"
+            if [ -n "$BUMPED" ]; then
+              printf 'Re-locked in range:\n%s\n\n' "$BUMPED"
+            fi
+            printf '### Left for a human\n\n'
+            if [ -n "$BLOCKED" ]; then
+              printf '%s\n' "$BLOCKED_INTRO"
+              printf '%s\n\n' "$BLOCKED"
+            else
+              printf 'Nothing.\n\n'
+            fi
+            printf '%s\n' "$NOTES"
+            echo "__BODY__"
+          } >> "$GITHUB_OUTPUT"
+
+      # THE PR IS OPENED AS THE ORG'S POLICY APP, not as a person.
+      #
+      # Two things have to be true of this credential. The PR must arrive with checks —
+      # installing from the regenerated `uv.lock` is what validates what this job writes.
+      # And the PR must not look like a human wrote it: GitHub notifies nobody about their
+      # own PR, and the daily brief selects on the author, so a PR under a person's name is
+      # invisible to everyone. Sixteen sat that way across the fleet on 2026-09-18, one for
+      # four days.
+      #
+      # The App does both. This chain ran on a PAT from 2026-09-09 to 2026-09-18 because an
+      # App-opened PR appeared to arrive with "no checks reported" (wemove-charity.eu#87).
+      # That was a misread of a slow queue: the run existed (34359897268 — `pull_request`,
+      # actor dependabot-global-policies[bot], created 13:52:28Z) and the PR was closed as
+      # check-less at 13:52:49Z, twenty seconds after the run started. GitHub's recursion
+      # guard applies to GITHUB_TOKEN only; an installation token starts workflows like any
+      # user, which is also why merges armed with it fire the deploy push (see
+      # dependency-policy README).
+      #
+      # The App is installed on every repo and the secrets are org-level, so unlike the
+      # fine-grained PAT there is no per-repo list to forget (the 403 that hit fundraiser-api
+      # on 2026-09-10). `author`/`committer` are set to the App's bot user explicitly:
+      # create-pull-request otherwise attributes the commit to `github.actor`, which on a
+      # schedule is whoever last touched this file.
+      - name: Mint App token
+        id: app
+        if: steps.override.outputs.changed == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.DEPENDABOT_POLICY_APP_ID }}
+          private-key: ${{ secrets.DEPENDABOT_POLICY_APP_KEY }}
+
+      - name: Open PR
+        id: pr
+        if: steps.override.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.app.outputs.token }}
+          author: dependabot-global-policies[bot] <319052427+dependabot-global-policies[bot]@users.noreply.github.com>
+          committer: dependabot-global-policies[bot] <319052427+dependabot-global-policies[bot]@users.noreply.github.com>
+          branch: chore/pin-override
+          delete-branch: true
+          add-paths: |
+            uv.lock
+          commit-message: "fix(deps): re-lock the advisories Dependabot cannot move"
+          title: "fix(deps): re-lock the advisories Dependabot cannot move"
+          body: ${{ steps.collect.outputs.body }}
