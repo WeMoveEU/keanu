@@ -5,8 +5,8 @@ version: 2
 
 updates:
   # keanu is uv-managed: pyproject.toml + uv.lock, since commit 3e471d0 "move to uv".
-  # This is the only ecosystem declared here. The pre-uv Pipfile/Pipfile.lock and the
-  # Dockerfile that installed from them were deleted — see issues #9 and #10.
+  # The pre-uv Pipfile/Pipfile.lock and the Dockerfile that installed from them were
+  # deleted — see issues #9 and #10.
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
@@ -25,6 +25,30 @@ updates:
       # the only kind `@dependabot unignore` works on. Canonical shape: dependency-policy
       # templates/tier*.yml.
       uv-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Action pins in .github/workflows. Added 2026-09-21 with the pin-override workflow, which
+  # pins astral-sh/setup-uv to an EXACT release (that action publishes no floating major tag
+  # past v7) — without this block that pin would never move again. Same tier 3 shape as
+  # the uv block: one Monday PR, a person merges it.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions-minor-patch:
+        update-types: ["minor", "patch"]
+      github-actions-security:
         applies-to: security-updates
         patterns: ["*"]
     ignore:
