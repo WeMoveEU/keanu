@@ -27,6 +27,14 @@ updates:
       uv-security:
         applies-to: security-updates
         patterns: ["*"]
+    # Direct dependencies only: what this manifest names. A package of a package is its
+    # parent's job — we never bump one, never pin one, never report one. The fix for a
+    # transitive advisory arrives when its parent ships a release that carries it.
+    # `allow` applies to version AND security updates, so this is also what stops the
+    # security stream opening PRs for transitive packages. Rule settled 2026-10-02;
+    # canonical shape in WeMoveEU/dependency-policy templates/tier*.yml.
+    allow:
+      - dependency-type: "direct"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
