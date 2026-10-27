@@ -16,7 +16,7 @@ updates:
       timezone: "Etc/UTC"
     open-pull-requests-limit: 10
     cooldown:
-      default-days: 7
+      default-days: 3
     groups:
       uv-minor-patch:
         update-types: ["minor", "patch"]
@@ -54,7 +54,7 @@ updates:
       timezone: "Etc/UTC"
     open-pull-requests-limit: 10
     cooldown:
-      default-days: 7
+      default-days: 3
     groups:
       github-actions-minor-patch:
         update-types: ["minor", "patch"]
