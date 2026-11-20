@@ -1,8 +1,18 @@
 name: CI
 
-# This repo has no PR gate. The pins check is the whole job -- it is cheap, needs
-# no secrets, and stops the manifest and the lockfile drifting apart again.
-# Adding it does NOT make this repo tier 2: nothing here auto-merges.
+# Required check (named "ci") and the gate in front of auto-merged Dependabot bumps
+# (tier 1, see WeMoveEU/dependency-policy tiers.yml). A merge here reaches no consumer
+# until a human tags a release and kabona / zenbaki move their `@vX.Y.Z` pin, so this
+# gate only has to catch a bump that no longer installs or imports.
+#
+# keanu has no unit suite: keanu/test.py is the ETL test runner, and the loaders need
+# MySQL fixtures. So, on both interpreters the consumers run (zenbaki 3.11, kabona
+# 3.14), one job named `ci` so the ruleset has a single context to require:
+#   1. the pins check, as before;
+#   2. sync the LOCKED environment -- what a Dependabot bump actually changes -- then
+#      import every keanu module and start the CLI;
+#   3. install the package the way the consumers do (a non-editable build, run from
+#      outside the checkout), which also checks helpers/*.sql ships as package data.
 
 on:
   pull_request:
@@ -16,3 +26,29 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: WeMoveEU/ci-workflows/.github/actions/python-pins@v14
+      - uses: astral-sh/setup-uv@v10.3.3  # exact: no floating major past v7
+      - name: Smoke on Python 3.11 and 3.14
+        run: |
+          set -euo pipefail
+          for py in 3.11 3.14; do
+            echo "::group::Python $py: locked environment"
+            rm -rf .venv
+            uv sync --locked --python "$py"
+            uv run --no-sync python - <<'PY'
+          import importlib, pkgutil, keanu
+          mods = [m.name for m in pkgutil.walk_packages(keanu.__path__, "keanu.")]
+          for m in mods:
+              importlib.import_module(m)
+          print(f"imported {len(mods)} modules")
+          PY
+            uv run --no-sync python keanu.py --help
+            echo "::endgroup::"
+
+            echo "::group::Python $py: consumer-style install"
+            venv="$RUNNER_TEMP/consumer-$py"
+            uv venv --python "$py" "$venv"
+            VIRTUAL_ENV="$venv" uv pip install .
+            (cd "$RUNNER_TEMP" && "$venv/bin/keanu" --help \
+              && "$venv/bin/python" -c "import importlib.resources as r; assert r.files('keanu.helpers').joinpath('last_sync.sql').is_file()")
+            echo "::endgroup::"
+          done
